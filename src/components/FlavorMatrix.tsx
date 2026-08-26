@@ -577,7 +577,7 @@ export function FlavorMatrix() {
 
   return (
     <section
-      className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[1.5rem] px-3 py-5 text-[var(--km-ink)] sm:px-5 sm:py-7 lg:min-h-[calc(100dvh-72px)] lg:rounded-[2.5rem] lg:px-6 lg:py-4"
+      className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[1.5rem] px-3 py-5 text-[var(--km-ink)] sm:px-5 sm:py-7 lg:rounded-[2.5rem] lg:px-6 lg:py-4"
       style={{
         ["--km-accent" as string]: ACCENT,
         background:
@@ -592,7 +592,7 @@ export function FlavorMatrix() {
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E\")",
         }}
       />
-      <div className="relative grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:grid-cols-[minmax(0,1fr)_380px] xl:gap-7">
+      <div className="relative grid gap-5 lg:grid-cols-[minmax(0,680px)_1fr] lg:items-stretch xl:grid-cols-[minmax(0,720px)_1fr] xl:gap-6">
         {/* Instrument surface */}
         <div className={`relative flex w-full min-h-0 flex-col overflow-hidden ${SURFACE}`}>
           <div
@@ -616,7 +616,7 @@ export function FlavorMatrix() {
           {loadState === "error" ? (
             <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
           ) : (
-            <div className="relative px-4 pb-6 pt-5 sm:px-7 sm:pb-8 lg:px-7 lg:pb-5 lg:pt-4 xl:px-9 xl:pb-7">
+            <div className="relative px-4 pb-4 pt-4 sm:px-7 sm:pb-5 lg:px-7 lg:pb-4 lg:pt-3 xl:px-8 xl:pb-4">
               <div className="flex gap-3 sm:gap-4">
                 <AxisLegend orientation="vertical" low="すっきり" high="ふくよか" name="甘み" />
 
@@ -637,7 +637,7 @@ export function FlavorMatrix() {
                       setEngaged(false);
                     }}
                     onPointerCancel={() => setEngaged(false)}
-                    className="relative h-[clamp(320px,86vw,560px)] w-full shrink-0 touch-none select-none overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[#f8f1e4] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_0_80px_rgba(185,139,50,0.06)] sm:rounded-[1.5rem] lg:h-[clamp(280px,44dvh,540px)]"
+                    className="relative aspect-square w-full touch-none select-none overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[#f8f1e4] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_0_80px_rgba(185,139,50,0.06)] sm:rounded-[1.5rem]"
                   >
                     <MatrixGrid />
                     <QuadrantHints />
@@ -707,8 +707,8 @@ export function FlavorMatrix() {
           <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
         </div>
 
-        <aside className="flex min-h-0 flex-col divide-y divide-[var(--km-border)] rounded-[2rem] border border-[var(--km-border)] bg-[var(--km-surface)]/92 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_28px_70px_-46px_rgba(83,65,48,0.38)] sm:p-6 lg:overflow-visible lg:p-5 xl:p-7">
-          <div className="pb-6 lg:pb-5 xl:pb-6">
+        <aside className="flex h-full min-h-0 flex-col divide-y divide-[var(--km-border)] rounded-[2rem] border border-[var(--km-border)] bg-[var(--km-surface)]/92 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_28px_70px_-46px_rgba(83,65,48,0.38)] sm:p-6 lg:p-5 xl:p-6">
+          <div className="flex flex-1 flex-col pb-5 lg:pb-5 xl:pb-6">
             <div className="flex items-baseline justify-between gap-4">
               <h3 className="text-base font-semibold tracking-tight text-[var(--km-ink)]">
                 侍米師のおすすめ
@@ -770,7 +770,7 @@ export function FlavorMatrix() {
             </div>
           </div>
 
-          <div className="pt-6 lg:pt-5 xl:pt-7">
+          <div className="mt-auto shrink-0 pt-5 lg:pt-5 xl:pt-6">
             <h3 className="text-base font-semibold tracking-tight text-[var(--km-ink)]">
               侍米師に相談
             </h3>
@@ -1081,7 +1081,7 @@ function TasteControls({
   onAxisChange: (axis: keyof TasteCoordinate, value: number) => void;
 }) {
   return (
-    <section className="relative shrink-0 border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/55 px-5 py-4 sm:px-7 lg:px-7 xl:px-9">
+    <section className="relative shrink-0 border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/55 px-5 py-3 sm:px-7 lg:px-7 xl:px-8">
       <div className="mb-3 flex items-center justify-between gap-4">
         <h3 className="text-sm font-semibold tracking-tight text-[var(--km-ink)]">
           現在の味わい
