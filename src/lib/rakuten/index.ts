@@ -1,0 +1,1 @@
+export { RakutenAffiliateClient } from "./client";

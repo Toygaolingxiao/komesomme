@@ -12,6 +12,8 @@
 src/
 ├── app/
 │   ├── page.tsx                 # 主交互界面（左矩阵 + 右AI）
+│   ├── layout.tsx
+│   ├── globals.css
 │   ├── api/
 │   │   └── recommend/route.ts   # AI RAG 推荐接口 (Streaming 返回)
 │   └── [brand]/page.tsx         # 品牌米详情 SSR 页面 (SEO 用)
@@ -22,7 +24,13 @@ src/
 │   │   └── SommeChat.tsx        # AI 侍米师对话框
 │   └── ui/                      # shadcn/ui 通用组件
 ├── lib/
-│   ├── supabase/                # 严格分层的数据库客户端 (client, server, admin)
-│   └── rakuten/                 # 乐天 Affiliate API 封装类
+│   ├── supabase/                # client / server / admin / queries
+│   ├── rakuten/                 # 乐天 Affiliate API 封装
+│   └── data/
+│       └── seed-rice.json       # ブランド米シードデータ
 └── types/
     └── database.ts              # 数据库强类型定义 (包含向量 RPC 返回值)
+
+scripts/
+└── seed.ts                      # OpenAI embedding + Supabase seed
+```
