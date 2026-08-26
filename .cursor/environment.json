@@ -1,0 +1,16 @@
+{
+  "name": "KomeSomme",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "npm run dev"
+    }
+  ],
+  "ports": [
+    {
+      "name": "next",
+      "port": 3000
+    }
+  ]
+}
