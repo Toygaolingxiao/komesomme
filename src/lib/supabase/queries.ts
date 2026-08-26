@@ -44,13 +44,15 @@ export async function getRiceBrands(filters?: {
 
 export async function searchRiceBrandsByEmbedding(
   embedding: number[],
-  limit: number = 5
+  limit: number = 5,
+  threshold: number = 0
 ) {
   const client = createServerClient();
 
   const { data, error } = await client.rpc("match_rice_brands", {
     query_embedding: embedding,
     match_count: limit,
+    match_threshold: threshold,
   });
 
   if (error) {

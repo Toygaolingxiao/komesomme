@@ -12,7 +12,8 @@
 | `stickiness` | `integer` | 1〜5 | 粘りスコア |
 | `best_match_dishes` | `text[]` | | 相性料理数组 |
 | `description` | `text` | NOT NULL | 特征、历史与口感详细解说 |
-| `embedding` | `vector(1536)` | | 用于 RAG 的向量字段 (`text-embedding-3-small`) |
+| `embedding` | `vector(1536)` | | 用于 RAG 的向量字段 (`gemini-embedding-001`, outputDimensionality=1536) |
+| `rakuten_search_keyword` | `text` | | 乐天检索用关键词 |
 | `affiliate_amazon` | `text` | | Amazon 购买链接 |
 | `affiliate_furusato` | `text` | | 故乡纳税购买链接 |
 

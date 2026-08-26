@@ -1,7 +1,7 @@
 /**
- * Seed rice_brands with Gemini text-embedding-004 (768-dim) + Supabase service_role.
+ * Seed rice_brands with Gemini embeddings + Supabase service_role (bypasses RLS).
  *
- * Usage: npx tsx scripts/seed.ts
+ * Usage: npm run seed
  *
  * Required (.env.local):
  *   NEXT_PUBLIC_SUPABASE_URL
@@ -19,10 +19,14 @@ import { fileURLToPath } from "node:url";
 loadEnv({ path: path.resolve(process.cwd(), ".env.local") });
 loadEnv();
 
-const EMBEDDING_MODEL = "text-embedding-004";
-const EMBEDDING_DIMENSIONS = 768;
+const EMBEDDING_MODEL = "gemini-embedding-001";
+/** Must match the `vector(N)` column on rice_brands.embedding. */
+const EMBEDDING_DIMENSIONS = 1536;
 const MAX_RETRIES = 5;
 const BASE_RETRY_MS = 1_000;
+const MAX_RETRY_MS = 30_000;
+/** Spacing between brands so the embedding API is not hit concurrently. */
+const REQUEST_INTERVAL_MS = 1_000;
 
 interface SeedRiceBrand {
   name: string;
@@ -51,6 +55,15 @@ function buildEmbeddingInput(brand: SeedRiceBrand): string {
   return `${brand.description}\n相性の良い料理: ${brand.best_match_dishes.join("、")}`;
 }
 
+/**
+ * gemini-embedding-001 only returns unit-length vectors at its native 3072 dims;
+ * truncated MRL outputs must be re-normalized before cosine distance is used.
+ */
+function normalize(values: number[]): number[] {
+  const norm = Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
+  return norm > 0 ? values.map((v) => v / norm) : values;
+}
+
 async function createEmbedding(
   ai: GoogleGenAI,
   text: string,
@@ -63,6 +76,7 @@ async function createEmbedding(
       const response = await ai.models.embedContent({
         model: EMBEDDING_MODEL,
         contents: text,
+        config: { outputDimensionality: EMBEDDING_DIMENSIONS },
       });
 
       const values = response.embeddings?.[0]?.values;
@@ -74,11 +88,14 @@ async function createEmbedding(
           `Unexpected embedding size for "${brandName}": expected ${EMBEDDING_DIMENSIONS}, got ${values.length}`
         );
       }
-      return values;
+
+      return normalize(values);
     } catch (error) {
       lastError = error;
       if (attempt < MAX_RETRIES) {
-        const waitMs = BASE_RETRY_MS * 2 ** (attempt - 1);
+        const backoffMs = Math.min(BASE_RETRY_MS * 2 ** (attempt - 1), MAX_RETRY_MS);
+        // Jitter avoids retry bursts lining up again after a rate-limit hit.
+        const waitMs = backoffMs + Math.floor(Math.random() * BASE_RETRY_MS);
         console.warn(
           `  ⚠ embed retry ${attempt}/${MAX_RETRIES} for "${brandName}": ${String(error)} (${waitMs}ms)`
         );
@@ -93,8 +110,37 @@ async function createEmbedding(
   );
 }
 
+function validateBrand(item: unknown, index: number): SeedRiceBrand {
+  const brand = item as Record<string, unknown>;
+  const strings = ["name", "prefecture", "description", "rakuten_search_keyword"] as const;
+  for (const key of strings) {
+    if (typeof brand?.[key] !== "string" || !(brand[key] as string).trim()) {
+      throw new Error(`seed-rice.json[${index}]: "${key}" must be a non-empty string`);
+    }
+  }
+
+  for (const key of ["sweetness", "hardness", "stickiness"] as const) {
+    const value = brand[key];
+    if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 5) {
+      throw new Error(`seed-rice.json[${index}]: "${key}" must be an integer 1-5`);
+    }
+  }
+
+  if (
+    !Array.isArray(brand.best_match_dishes) ||
+    brand.best_match_dishes.length === 0 ||
+    !brand.best_match_dishes.every((d) => typeof d === "string" && d.trim())
+  ) {
+    throw new Error(
+      `seed-rice.json[${index}]: "best_match_dishes" must be a non-empty string array`
+    );
+  }
+
+  return brand as unknown as SeedRiceBrand;
+}
+
 async function main(): Promise<void> {
-  console.log("🌾 KomeSomme seed (Gemini text-embedding-004 / 768-dim)\n");
+  console.log(`🌾 KomeSomme seed (${EMBEDDING_MODEL} / ${EMBEDDING_DIMENSIONS}-dim)\n`);
 
   const supabaseUrl = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
   const serviceRoleKey = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
@@ -104,11 +150,13 @@ async function main(): Promise<void> {
     path.dirname(fileURLToPath(import.meta.url)),
     "../src/lib/data/seed-rice.json"
   );
-  const brands = JSON.parse(await readFile(seedPath, "utf8")) as SeedRiceBrand[];
+  const parsed = JSON.parse(await readFile(seedPath, "utf8")) as unknown;
 
-  if (!Array.isArray(brands) || brands.length === 0) {
+  if (!Array.isArray(parsed) || parsed.length === 0) {
     throw new Error(`No brands found in ${seedPath}`);
   }
+
+  const brands = parsed.map(validateBrand);
 
   const ai = new GoogleGenAI({ apiKey: geminiApiKey });
   const supabase = createClient(supabaseUrl, serviceRoleKey, {
@@ -121,6 +169,10 @@ async function main(): Promise<void> {
   for (let i = 0; i < brands.length; i++) {
     const brand = brands[i];
     const progress = `[${i + 1}/${brands.length}]`;
+
+    if (i > 0) {
+      await sleep(REQUEST_INTERVAL_MS);
+    }
 
     try {
       console.log(`${progress} Embedding "${brand.name}"…`);
@@ -148,7 +200,7 @@ async function main(): Promise<void> {
       }
 
       ok += 1;
-      console.log(`${progress} ✓ Inserted "${brand.name}"\n`);
+      console.log(`${progress} ✓ Inserted "${brand.name}" (${embedding.length}-dim)\n`);
     } catch (error) {
       fail += 1;
       console.error(

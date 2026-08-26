@@ -24,7 +24,9 @@ export interface Database {
           stickiness: number;
           best_match_dishes: string[] | null;
           description: string;
+          /** Gemini gemini-embedding-001 truncated to 1536 dims and re-normalized. */
           embedding: number[] | null;
+          rakuten_search_keyword: string | null;
           affiliate_amazon: string | null;
           affiliate_furusato: string | null;
           created_at?: string;
@@ -40,6 +42,7 @@ export interface Database {
           best_match_dishes?: string[] | null;
           description: string;
           embedding?: number[] | null;
+          rakuten_search_keyword?: string | null;
           affiliate_amazon?: string | null;
           affiliate_furusato?: string | null;
           created_at?: string;
@@ -55,6 +58,7 @@ export interface Database {
           best_match_dishes?: string[] | null;
           description?: string;
           embedding?: number[] | null;
+          rakuten_search_keyword?: string | null;
           affiliate_amazon?: string | null;
           affiliate_furusato?: string | null;
           created_at?: string;
@@ -68,9 +72,17 @@ export interface Database {
       match_rice_brands: {
         Args: {
           query_embedding: number[];
-          match_count?: number;
+          match_count: number;
+          match_threshold: number;
         };
-        Returns: Database["public"]["Tables"]["rice_brands"]["Row"][];
+        Returns: {
+          id: string;
+          name: string;
+          prefecture: string;
+          description: string;
+          rakuten_search_keyword: string | null;
+          similarity: number;
+        }[];
       };
     };
     Enums: Record<string, never>;
@@ -88,7 +100,9 @@ export interface RiceBrand {
   stickiness: number;
   best_match_dishes: string[];
   description: string;
+  /** 1536-dim vector (gemini-embedding-001, normalized). */
   embedding?: number[];
+  rakuten_search_keyword?: string | null;
   affiliate_amazon?: string | null;
   affiliate_furusato?: string | null;
   created_at?: string;

@@ -3,16 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "seed": "tsx scripts/seed.ts"
+    "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
+    "build": "cross-env NODE_OPTIONS=--use-system-ca next build",
+    "start": "cross-env NODE_OPTIONS=--use-system-ca next start",
+    "lint": "eslint .",
+    "seed": "node --use-system-ca --import tsx scripts/seed.ts"
   },
   "dependencies": {
     "@google/genai": "^2.19.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.49.8",
+    "cross-env": "^10.1.0",
     "dotenv": "^16.5.0",
+    "motion": "^13.1.1",
     "next": "^15.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
