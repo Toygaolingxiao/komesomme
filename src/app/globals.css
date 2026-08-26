@@ -5,7 +5,39 @@
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
+:root {
+  --km-bg: #f4eddf;
+  --km-bg-soft: #ebe0ce;
+  --km-surface: #fbf7ef;
+  --km-surface-warm: #f1e5d2;
+  --km-ink: #352a21;
+  --km-ink-soft: #6f6254;
+  --km-muted: #918371;
+  --km-gold: #b98b32;
+  --km-gold-strong: #d3a84f;
+  --km-border: rgba(83, 65, 48, 0.16);
+  --km-grid: rgba(83, 65, 48, 0.09);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--km-bg);
+}
+
 body {
-  @apply bg-zinc-950 text-zinc-50 antialiased;
+  @apply min-h-screen antialiased;
+  color: var(--km-ink);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 253, 247, 0.94), transparent 34rem),
+    radial-gradient(circle at 88% 38%, rgba(205, 175, 122, 0.16), transparent 38rem),
+    linear-gradient(145deg, var(--km-bg) 0%, #eee3d1 58%, #e6d6bd 100%);
   font-family: var(--font-sans);
+}
+
+::selection {
+  color: var(--km-surface);
+  background: var(--km-ink);
 }

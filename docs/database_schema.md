@@ -1,22 +1,39 @@
-# 数据库设计书 (Supabase / PostgreSQL)
+# データベース設計（Supabase / PostgreSQL）
 
-## 核心表结构：`rice_brands`
+## `rice_brands`
 
-| カラム名 | データ型 | 制約 | 説明 |
-| :--- | :--- | :--- | :--- |
-| `id` | `uuid` | Primary Key | 自动生成 UUID |
-| `name` | `text` | NOT NULL | 品牌米名称（例：青天の霹靂） |
-| `prefecture` | `text` | NOT NULL | 产地（例：青森県） |
-| `sweetness` | `integer` | 1〜5 | 甘みスコア |
-| `hardness` | `integer` | 1〜5 | 硬さスコア |
-| `stickiness` | `integer` | 1〜5 | 粘りスコア |
-| `best_match_dishes` | `text[]` | | 相性料理数组 |
-| `description` | `text` | NOT NULL | 特征、历史与口感详细解说 |
-| `embedding` | `vector(1536)` | | 用于 RAG 的向量字段 (`gemini-embedding-001`, outputDimensionality=1536) |
-| `rakuten_search_keyword` | `text` | | 乐天检索用关键词 |
-| `affiliate_amazon` | `text` | | Amazon 购买链接 |
-| `affiliate_furusato` | `text` | | 故乡纳税购买链接 |
+| カラム | 型 | 用途 |
+| --- | --- | --- |
+| `id` | `uuid` | Primary Key |
+| `name` | `text` | 銘柄名 |
+| `prefecture` | `text` | 都道府県 |
+| `sweetness` | `integer` (1〜5) | 甘み、マップ Y 座標 |
+| `hardness` | `integer` (1〜5) | 硬さ。UI 上は粒感、マップ X 座標 |
+| `stickiness` | `integer` (1〜5) | 粘り、点サイズと詳細表示 |
+| `best_match_dishes` | `text[]` | 相性の良い料理 |
+| `description` | `text` | 特徴と味わいの説明 |
+| `embedding` | `vector(1536)` | `gemini-embedding-001` の正規化済みベクトル |
+| `rakuten_search_keyword` | `text` | 現行の楽天市場検索 CTA |
+| `affiliate_amazon` | `text` | 将来の affiliate URL 用 |
+| `affiliate_furusato` | `text` | 将来のふるさと納税 URL 用 |
+| `created_at` / `updated_at` | timestamp | 任意の監査日時 |
 
-## 扩展与安全配置
-- 启用 `pgvector` 扩展。
-- 配置 RLS (Row Level Security)，仅允许匿名用户进行 `SELECT` 读取，禁止客户端直接写入。
+シードが現在投入するのは `name`、`prefecture`、3指標、`best_match_dishes`、`description`、`rakuten_search_keyword`、`embedding` である。
+
+## `match_rice_brands` RPC
+
+入力:
+
+- `query_embedding`: 1536 次元 vector
+- `match_count`: 返却上限
+- `match_threshold`: similarity 下限
+
+戻り値は少なくとも `id`、`name`、`prefecture`、`description`、`rakuten_search_keyword`、`similarity` を含む。cosine similarity の高い順で返す。
+
+## 拡張と安全
+
+- pgvector を有効化する
+- embedding の次元を seed / API / DB で 1536 に揃える
+- 匿名 client は `SELECT` のみ許可し、書き込みを拒否する RLS を前提とする
+- seed は `SUPABASE_SERVICE_ROLE_KEY` をサーバー側で使用する
+- service role key と Gemini key を Browser へ公開しない

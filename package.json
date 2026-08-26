@@ -6,7 +6,7 @@
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
     "build": "cross-env NODE_OPTIONS=--use-system-ca next build",
     "start": "cross-env NODE_OPTIONS=--use-system-ca next start",
-    "lint": "eslint .",
+    "lint": "eslint src scripts --cache --cache-location .next/cache/eslint/.eslintcache",
     "seed": "node --use-system-ca --import tsx scripts/seed.ts"
   },
   "dependencies": {
