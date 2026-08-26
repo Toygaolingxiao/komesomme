@@ -1,0 +1,202 @@
+[
+    {
+      "name": "ゆめぴりか",
+      "prefecture": "北海道",
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 5,
+      "best_match_dishes": ["卵かけご飯 (TKG)", "肉料理", "塩おにぎり"],
+      "description": "北海道が誇る最高峰。圧倒的な甘みと、もっちりとした強い粘りが特徴です。味が濃いおかずにも負けない、主役級の存在感を放つお米です。",
+      "rakuten_search_keyword": "ゆめぴりか 白米 5kg 北海道産"
+    },
+    {
+      "name": "青天の霹靂",
+      "prefecture": "青森県",
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3,
+      "best_match_dishes": ["海鮮丼", "カレーライス", "焼き魚"],
+      "description": "粒立ちが良く、さっぱりとした上品な甘さが魅力。口の中でパラリと解けるため、新鮮な海の幸や、ルーを使う料理との相性が抜群です。",
+      "rakuten_search_keyword": "青天の霹靂 白米 5kg 青森県産"
+    },
+    {
+      "name": "新之助",
+      "prefecture": "新潟県",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 4,
+      "best_match_dishes": ["すき焼き", "ハンバーグ", "洋食全般"],
+      "description": "大粒で美しいツヤ、そして噛むほどに溢れるコクと甘み。しっかりとした硬さがありながらも、豊かな粘りを持つ次世代の新潟米です。",
+      "rakuten_search_keyword": "新之助 白米 5kg 新潟県産"
+    },
+    {
+      "name": "コシヒカリ (魚沼産)",
+      "prefecture": "新潟県",
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 4,
+      "best_match_dishes": ["お刺身", "和食全般", "お漬物"],
+      "description": "言わずと知れたお米の王様。芳醇な香りと強い旨み、そして完璧なバランスの粘りが、日本の伝統的な食卓を格調高く彩ります。",
+      "rakuten_search_keyword": "魚沼産 コシヒカリ 白米 5kg"
+    },
+    {
+      "name": "雪若丸",
+      "prefecture": "山形県",
+      "sweetness": 3,
+      "hardness": 5,
+      "stickiness": 3,
+      "best_match_dishes": ["チャーハン", "お寿司", "カレー"],
+      "description": "際立つ白さと、弾けるようなしっかりとした粒感が特徴。「かため」のお米が好きな方にはたまらない、新食感のサッパリ系ブランドです。",
+      "rakuten_search_keyword": "雪若丸 白米 5kg 山形県産"
+    },
+    {
+      "name": "ササニシキ",
+      "prefecture": "宮城県",
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "best_match_dishes": ["お寿司", "繊細な和食", "手巻き寿司"],
+      "description": "粘りが少なく、口どけが良いのが最大の特徴。高級寿司店で愛され続ける、素材の味を極限まで引き立てる名脇役です。",
+      "rakuten_search_keyword": "ササニシキ 白米 5kg 宮城県産"
+    },
+    {
+      "name": "いちほまれ",
+      "prefecture": "福井県",
+      "sweetness": 5,
+      "hardness": 3,
+      "stickiness": 4,
+      "best_match_dishes": ["とんかつ", "ステーキ", "炊き込みご飯"],
+      "description": "絹のような白さとツヤ。口に含んだ瞬間に広がる優しい甘みと、心地よい余韻が残る、福井が誇る新しいプレミアム米です。",
+      "rakuten_search_keyword": "いちほまれ 白米 5kg 福井県産"
+    },
+    {
+      "name": "彩のきずな",
+      "prefecture": "埼玉県",
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 4,
+      "best_match_dishes": ["天ぷら", "野菜炒め", "日常の食卓"],
+      "description": "爽やかな甘みと、なめらかな食感が特徴。バランスが良く、どんな料理にも寄り添うため、毎日の食卓に欠かせない安心感のある味わいです。",
+      "rakuten_search_keyword": "彩のきずな 白米 5kg 埼玉県産"
+    },
+    {
+      "name": "星空舞",
+      "prefecture": "鳥取県",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 3,
+      "best_match_dishes": ["牛丼", "親子丼", "お茶漬け"],
+      "description": "星のように輝くツヤが自慢。粒がしっかりしていて水を吸いすぎないため、つゆだくの丼ものに入れてもご飯がベチャッとしません。",
+      "rakuten_search_keyword": "星空舞 白米 5kg 鳥取県産"
+    },
+    {
+      "name": "さがびより",
+      "prefecture": "佐賀県",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 4,
+      "best_match_dishes": ["おにぎり", "お弁当", "煮魚"],
+      "description": "粒が大きく、噛み応えのあるしっかりとした食感。冷めても甘みとモチモチ感が損なわれないため、お弁当やおにぎりに最適な一品です。",
+      "rakuten_search_keyword": "さがびより 白米 5kg 佐賀県産"
+    },
+    {
+      "name": "ミルキークイーン",
+      "prefecture": "全国銘柄",
+      "sweetness": 5,
+      "hardness": 1,
+      "stickiness": 5,
+      "best_match_dishes": ["おこわ", "お弁当", "和風ハンバーグ"],
+      "description": "もち米のように強い粘りと、冷めても固くなりにくい極上の柔らかさ。お米自体の味が非常に濃く、甘みを存分に楽しめます。",
+      "rakuten_search_keyword": "ミルキークイーン 白米 5kg"
+    },
+    {
+      "name": "つや姫",
+      "prefecture": "山形県",
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 4,
+      "best_match_dishes": ["焼き魚", "おひたし", "和食"],
+      "description": "その名の通り、炊き上がりの輝きは一級品。旨み成分であるアミノ酸が豊富で、ひとくち食べれば上品な甘みが口いっぱいに広がります。",
+      "rakuten_search_keyword": "つや姫 白米 5kg 山形県産"
+    },
+    {
+      "name": "だて正夢",
+      "prefecture": "宮城県",
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 5,
+      "best_match_dishes": ["豚の角煮", "濃厚なシチュー", "焼肉"],
+      "description": "とびきりのもっちり感と、記憶に残る強い甘み。宮城の新しい顔として、しっかりとした味付けの料理を力強く受け止めます。",
+      "rakuten_search_keyword": "だて正夢 白米 5kg 宮城県産"
+    },
+    {
+      "name": "富富富",
+      "prefecture": "富山県",
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "best_match_dishes": ["白えびの天ぷら", "お刺身", "繊細なおかず"],
+      "description": "粒ぞろいが良く、澄んだ甘みと軽やかな食感が特徴。食材の繊細な風味を邪魔せず、そっと引き立てる上品な味わいです。",
+      "rakuten_search_keyword": "富富富 白米 5kg 富山県産"
+    },
+    {
+      "name": "元気つくし",
+      "prefecture": "福岡県",
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 4,
+      "best_match_dishes": ["明太子", "がめ煮", "お弁当"],
+      "description": "春夏秋冬、いつでも美味しい。特に冷めたときのモチモチ感と旨みに定評があり、九州の食卓を支える頼もしい存在です。",
+      "rakuten_search_keyword": "元気つくし 白米 5kg 福岡県産"
+    },
+    {
+      "name": "あきたこまち",
+      "prefecture": "秋田県",
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "best_match_dishes": ["きりたんぽ", "納豆", "日常の和食"],
+      "description": "透明感のある光沢と、香りの良さが際立ちます。バランスの取れた味わいで、毎日食べても飽きがこない、日本のスタンダードです。",
+      "rakuten_search_keyword": "あきたこまち 白米 5kg 秋田県産"
+    },
+    {
+      "name": "ひめの凜",
+      "prefecture": "愛媛県",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 3,
+      "best_match_dishes": ["鯛めし", "お茶漬け", "あっさりとした和食"],
+      "description": "大粒で華やかな香り。しっかりとした噛み応えがあり、口の中でほろりと解ける食感が、瀬戸内の海の幸と見事なハーモニーを奏でます。",
+      "rakuten_search_keyword": "ひめの凜 白米 5kg 愛媛県産"
+    },
+    {
+      "name": "愛ひとつぶ",
+      "prefecture": "愛知県",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 4,
+      "best_match_dishes": ["ひつまぶし", "味噌煮込み", "濃い味付けの和食"],
+      "description": "一粒一粒がしっかりとしており、弾力のあるモチモチ感が特徴。愛知特有の濃厚な食文化にも負けない、力強い味わいです。",
+      "rakuten_search_keyword": "愛ひとつぶ 白米 5kg 愛知県産"
+    },
+    {
+      "name": "みずかがみ",
+      "prefecture": "滋賀県",
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4,
+      "best_match_dishes": ["琵琶湖の湖魚料理", "おにぎり", "お弁当"],
+      "description": "琵琶湖の豊かな水に育まれた、ツヤツヤと輝く白さ。冷めてもまろやかな甘みが持続し、環境にも人にも優しいお米です。",
+      "rakuten_search_keyword": "みずかがみ 白米 5kg 滋賀県産"
+    },
+    {
+      "name": "きぬむすめ",
+      "prefecture": "全国銘柄",
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4,
+      "best_match_dishes": ["カレーライス", "ピラフ", "洋食"],
+      "description": "絹のように白く美しい炊き上がり。コシヒカリに匹敵する食味を持ちながら、ややあっさりとしているため、多様な料理にマッチします。",
+      "rakuten_search_keyword": "きぬむすめ 白米 5kg"
+    }
+  ]
