@@ -407,7 +407,7 @@ export function FlavorMatrix() {
           <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(2.5rem,calc(env(safe-area-inset-bottom)+1.25rem))] pt-3">
+        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-3">
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}
@@ -428,10 +428,10 @@ export function FlavorMatrix() {
               </div>
             )}
 
-            {selected && !mapOpen ? (
+            {selected && !mapOpen && selected.id !== bestMatchId ? (
               <MobileSelectedCard
                 rice={selected}
-                isBestMatch={selected.id === bestMatchId}
+                isBestMatch={false}
                 onOpen={() => openDetail(selected.id)}
               />
             ) : null}
