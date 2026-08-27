@@ -230,7 +230,9 @@ export function riceCharacter(rice: RiceProfileV2): string[] {
   return Array.from(new Set(traits)).slice(0, 3);
 }
 
-const DRINK_HINT = /ワイン|ビール|焼酎|日本酒|ハイボール|ウイスキー|茶/;
+const DRINK_HINT = /ワイン|ビール|焼酎|日本酒|ハイボール|ウイスキー|茶|ラガー|エール|ピルスナー|IPA|純米|吟醸|本醸造|熱燗|冷酒|ぬる燗|玉露|番茶/;
+const FOODISH =
+  /唐揚|餃子|おにぎり|ハンバーグ|カルパッチョ|枝豆|天ぷら|寿司|丼|炒|焼肉|鍋|串揚|焼き鳥|和惣菜/;
 
 export function parseDrinkItem(item: string): { style: string; dish?: string } {
   const match = item.match(/^(.+?)と(.+)$/);
@@ -241,7 +243,18 @@ export function parseDrinkItem(item: string): { style: string; dish?: string } {
 }
 
 export function isDrinkStyle(item: string): boolean {
-  return DRINK_HINT.test(item) && !item.includes("と");
+  return DRINK_HINT.test(item) && !FOODISH.test(item);
+}
+
+/** Drink names only. Food leftovers in beer/tea fields are dropped. */
+export function drinkStyleLabels(items: string[]): string[] {
+  return Array.from(
+    new Set(
+      items
+        .map((item) => parseDrinkItem(item).style.trim())
+        .filter((style) => style.length >= 2 && isDrinkStyle(style))
+    )
+  );
 }
 
 export const DISCLAIMER =

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>KomeSomme</title>
+  <rect width="64" height="64" fill="#FFF5E5"/>
+  <g transform="translate(4 3) scale(0.88)">
+    <path d="M27 12.2C29.6 14.7 34.4 14.7 37 12.2C45.4 15.4 51 23.2 51 33.6C51 45.4 43.2 54.8 32 57.6C20.8 54.8 13 45.4 13 33.6C13 23.2 18.6 15.4 27 12.2Z" stroke="#302820" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M20.6 13.8A23.4 24.2 0 1 1 48.8 51.6" stroke="#302820" stroke-width="2.1" stroke-linecap="round"/>
+    <circle cx="27.4" cy="35.6" r="4" fill="#D49A2A"/>
+  </g>
+</svg>

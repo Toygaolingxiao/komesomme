@@ -38,7 +38,6 @@ function grainShape(id: string) {
  */
 export function ProfileNode({
   rice,
-  index,
   isBestMatch,
   isRunnerUp,
   isSelected,
@@ -52,7 +51,6 @@ export function ProfileNode({
   onSelect,
 }: {
   rice: RiceDisplayPoint;
-  index: number;
   isBestMatch: boolean;
   isRunnerUp: boolean;
   isSelected: boolean;
@@ -68,13 +66,20 @@ export function ProfileNode({
   const featured = isBestMatch || isSelected;
   const connected = featured || isRunnerUp || isHighlighted;
   const muted = density !== "full" && !connected;
+  const passThrough = muted || (touchFriendly && dimmed && !connected);
   const premium = rice.data_confidence === "high" || rice.sweetness >= 4.5;
   const baseW = touchFriendly ? 13 : 12.5;
   const baseH = touchFriendly ? 8 : 7.5;
   const grow = featured ? 1.9 : isRunnerUp || isHighlighted ? 1.35 : muted ? 0.72 : 1;
   const width = baseW * grow;
   const height = baseH * grow;
-  const hit = touchFriendly ? 40 : Math.max(width, 18);
+  const hit = touchFriendly
+    ? featured
+      ? 32
+      : connected
+        ? 24
+        : Math.max(width, 16)
+    : Math.max(width, 18);
   const left = valueToPosition(rice.display_x, INSET);
   const top = 100 - valueToPosition(rice.display_y, INSET);
   const fill = rice.region_color ?? regionColor(rice.region);
@@ -88,16 +93,15 @@ export function ProfileNode({
       onClick={onSelect}
       aria-label={`${rice.name}、${rice.prefecture}、味わいを見る`}
       aria-current={isSelected || isBestMatch ? "true" : undefined}
-      initial={reduceMotion ? false : { opacity: 0, scale: 0.55 }}
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.72 }}
       animate={{
-        opacity: dimmed ? 0.42 : muted ? 0.55 : connected ? 1 : 0.86,
-        scale: isHighlighted && !featured ? 1.1 : 1,
+        opacity: dimmed ? 0.38 : muted ? 0.55 : connected ? 1 : 0.88,
+        scale: isHighlighted && !featured ? 1.08 : 1,
       }}
-      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.14 }}
+      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.1 }}
       transition={{
-        duration: 0.45,
-        delay: reduceMotion ? 0 : Math.min(index * 0.01, 0.4),
-        ease: [0.16, 1, 0.3, 1],
+        duration: reduceMotion ? 0 : 0.18,
+        ease: [0.22, 1, 0.36, 1],
       }}
       style={{
         left: `${left}%`,
@@ -114,7 +118,7 @@ export function ProfileNode({
               : LAYER.node,
       }}
       className={`group absolute -translate-x-1/2 -translate-y-1/2 ${FOCUS} ${
-        muted && !touchFriendly ? "pointer-events-none" : ""
+        passThrough ? "pointer-events-none" : ""
       }`}
     >
       <span
@@ -124,11 +128,9 @@ export function ProfileNode({
           width,
           height,
           ...shape,
-          background: featured
-            ? `radial-gradient(circle at 30% 26%, #fff6ea 0 16%, #e56b3f 28% 52%, ${fill} 68%)`
-            : `radial-gradient(circle at 28% 24%, rgba(255,253,247,0.38) 0 14%, ${fill} 32%)`,
+          background: `radial-gradient(circle at 28% 24%, rgba(255,253,247,0.42) 0 16%, ${fill} 34%)`,
           boxShadow: featured
-            ? "0 0 0 1.5px rgba(48,40,32,0.22), 0 3px 8px rgba(112,69,34,0.22)"
+            ? `0 0 12px ${fill}, 0 0 26px color-mix(in srgb, ${fill} 55%, transparent)`
             : "0 0 0 1px rgba(48,40,32,0.2), 0 1px 3px rgba(112,69,34,0.18)",
         }}
       />
@@ -152,7 +154,7 @@ export function ProfileNode({
                 ? "right-0"
                 : "left-1/2 -translate-x-1/2"
           } ${
-            isBestMatch
+            isBestMatch || isSelected
               ? "opacity-100"
               : muted
                 ? "hidden"

@@ -29,8 +29,7 @@ import {
   affinityLabel,
   appetiteLine,
   contrastLine,
-  isDrinkStyle,
-  parseDrinkItem,
+  drinkStyleLabels,
   regionColor,
   shortTasteTags,
   technicalLine,
@@ -163,15 +162,17 @@ function TodayEat({ rice, appetite }: { rice: RiceProfileV2; appetite: string })
 }
 
 function DrinkPairings({ rice }: { rice: RiceProfileV2 }) {
-  const groups: Array<[string, string[], typeof Wine, "drink" | "dish"]> = [
-    ["日本酒", rice.sake_pairings, Wine, "drink"],
-    ["ビール", rice.beer_pairings, BeerBottle, "dish"],
-    ["ワイン", rice.wine_pairings, Wine, "drink"],
-    ["ウイスキー", rice.whisky_pairings, Wine, "drink"],
-    ["お茶", rice.tea_pairings, Leaf, "drink"],
+  const groups: Array<[string, string[], typeof Wine]> = [
+    ["日本酒", rice.sake_pairings, Wine],
+    ["ビール", rice.beer_pairings, BeerBottle],
+    ["ワイン", rice.wine_pairings, Wine],
+    ["ウイスキー", rice.whisky_pairings, Wine],
+    ["お茶", rice.tea_pairings, Leaf],
   ];
 
-  const visible = groups.filter(([, items]) => items.length > 0);
+  const visible = groups
+    .map(([drink, items, Icon]) => [drink, drinkStyleLabels(items), Icon] as const)
+    .filter(([, styles]) => styles.length > 0);
   if (visible.length === 0) return null;
 
   return (
@@ -183,43 +184,17 @@ function DrinkPairings({ rice }: { rice: RiceProfileV2 }) {
         米ソムリエの編集による目安です。酒そのものの公式評価ではありません。
       </p>
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        {visible.map(([drink, items, Icon, kind]) => {
-          const parsed = items.map(parseDrinkItem);
-          const styles = Array.from(
-            new Set(
-              kind === "drink"
-                ? parsed.map((item) => item.style)
-                : parsed.filter((item) => isDrinkStyle(item.style)).map((item) => item.style)
-            )
-          );
-          const dishes = parsed
-            .map((item) => item.dish)
-            .filter((item): item is string => Boolean(item));
-          const leftoverDishes =
-            kind === "dish"
-              ? parsed.filter((item) => !item.dish && !isDrinkStyle(item.style)).map((item) => item.style)
-              : [];
-          const dishList = [...dishes, ...leftoverDishes];
-
-          return (
-            <article key={drink} className="rounded-xl bg-[var(--km-surface-warm)]/70 px-3 py-2.5">
-              <p className="flex items-center gap-1.5 text-xs text-[var(--km-ink)]">
-                <Icon size={13} weight={ICON_WEIGHT} />
-                {drink}
-              </p>
-              {styles.length > 0 ? (
-                <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
-                  {styles.join("、")}
-                </p>
-              ) : null}
-              {dishList.length > 0 ? (
-                <p className="mt-1.5 text-[10px] leading-relaxed text-[var(--km-muted)]">
-                  合わせやすい料理：{dishList.join("、")}
-                </p>
-              ) : null}
-            </article>
-          );
-        })}
+        {visible.map(([drink, styles, Icon]) => (
+          <article key={drink} className="rounded-xl bg-[var(--km-surface-warm)]/70 px-3 py-2.5">
+            <p className="flex items-center gap-1.5 text-xs text-[var(--km-ink)]">
+              <Icon size={13} weight={ICON_WEIGHT} />
+              {drink}
+            </p>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
+              {styles.join("、")}
+            </p>
+          </article>
+        ))}
       </div>
     </div>
   );

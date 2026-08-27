@@ -8,6 +8,96 @@ import { nameMatch } from "./semanticScore";
  * separately after ranking, and may only name those ranked brands.
  */
 
+const PREFECTURE_STEMS = [
+  "北海道",
+  "青森",
+  "岩手",
+  "宮城",
+  "秋田",
+  "山形",
+  "福島",
+  "茨城",
+  "栃木",
+  "群馬",
+  "埼玉",
+  "千葉",
+  "東京",
+  "神奈川",
+  "新潟",
+  "富山",
+  "石川",
+  "福井",
+  "山梨",
+  "長野",
+  "岐阜",
+  "静岡",
+  "愛知",
+  "三重",
+  "滋賀",
+  "京都",
+  "大阪",
+  "兵庫",
+  "奈良",
+  "和歌山",
+  "鳥取",
+  "島根",
+  "岡山",
+  "広島",
+  "山口",
+  "徳島",
+  "香川",
+  "愛媛",
+  "高知",
+  "福岡",
+  "佐賀",
+  "長崎",
+  "熊本",
+  "大分",
+  "宮崎",
+  "鹿児島",
+  "沖縄",
+] as const;
+
+function originStem(value: string) {
+  let next = value.replace(/\s+/g, "");
+  next = next.replace(/(の米|のお米|のお薦め|のおすすめ)$/g, "");
+
+  // These names already end in 都 / 道 / 府, so they cannot use a generic suffix strip.
+  if (next.startsWith("北海道")) return "北海道";
+  if (next.startsWith("東京")) return "東京";
+  if (next.startsWith("京都")) return "京都";
+  if (next.startsWith("大阪")) return "大阪";
+
+  return next.replace(/(県産|府産)$/g, "").replace(/産$/g, "").replace(/(府|県)$/g, "");
+}
+
+/** True when the consultation is naming this rice's prefecture. */
+export function queryTargetsPrefecture(query: string, prefecture: string) {
+  const detected = detectPrefectureStem(query);
+  if (!detected) return false;
+  return originStem(prefecture) === detected;
+}
+
+export function detectPrefectureStem(query: string): string | null {
+  const compact = query.replace(/\s+/g, "");
+  if (compact.length < 2) return null;
+
+  const exact = originStem(compact);
+  const exactHit = PREFECTURE_STEMS.find((stem) => exact === stem);
+  if (exactHit) return exactHit;
+
+  // Prefix only — never substring. 「東京都」 must not match 「京都」.
+  return (
+    PREFECTURE_STEMS.find(
+      (stem) =>
+        compact === `${stem}県` ||
+        compact.startsWith(`${stem}県`) ||
+        compact.startsWith(`${stem}の`) ||
+        compact.startsWith(`${stem}産`)
+    ) ?? null
+  );
+}
+
 export type DrinkCategory =
   | "highball"
   | "smoky"
@@ -229,12 +319,43 @@ const SCENE_RULES: Array<[keywords: string[], build: (rice: RiceProfileV2) => st
 /**
  * Explanation for a semantic match.
  *
- * An exact brand-name lookup says so plainly. Otherwise prefers a drink-specific
- * Flavor Bridge, then a scene rule, then the brand's own editorial pairing reason.
+ * Named-brand + cooking questions use catalogue dishes. Exact lookup says so
+ * plainly. Otherwise prefers a drink-specific Flavor Bridge, then a scene rule,
+ * then the brand's own editorial pairing reason.
  */
+export function asksCookingUse(query: string) {
+  return /料理|向[いくけ]|合う|用途|弁当|酢飯|寿司|丼|炒|炊き|どんな|どの|どう/.test(
+    query
+  );
+}
+
+function usageReason(rice: RiceProfileV2): string {
+  const dishes = rice.best_match_dishes.filter(Boolean).slice(0, 3);
+  const why = rice.short_.trim() || rice.pairing_reason.trim();
+  if (dishes.length && why) {
+    const dishLine = `${dishes.join("、")}に向きます。`;
+    return why.startsWith(dishLine) ? why : `${dishLine}${why}`;
+  }
+  if (dishes.length) {
+    return `${dishes.join("、")}に向きます。${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
+  }
+  if (why) return why;
+  return `${rice.prefecture}の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
+}
+
 export function buildSemanticReason(query: string, rice: RiceProfileV2): string {
-  if (nameMatch(query, rice.name) === "exact") {
+  const named = nameMatch(query, rice.name);
+
+  if (named && asksCookingUse(query)) {
+    return usageReason(rice);
+  }
+
+  if (named === "exact") {
     return `お探しの銘柄です。${rice.prefecture}の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
+  }
+
+  if (queryTargetsPrefecture(query, rice.prefecture)) {
+    return `${rice.prefecture}産の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
   }
 
   const category = detectDrinkCategory(query);

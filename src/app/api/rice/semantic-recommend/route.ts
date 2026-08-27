@@ -3,7 +3,7 @@ import { createEmbedding, getEmbeddingModel, resolveProvider } from "@/lib/embed
 import { expandConsultationQuery } from "@/lib/rice/consultExpand";
 import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
 import { buildSemanticReason } from "@/lib/rice/flavorBridge";
-import { nameMatch, semanticDisplayScore } from "@/lib/rice/semanticScore";
+import { nameMatch, semanticDisplayScore, brandCoreQuery } from "@/lib/rice/semanticScore";
 import { generateSommelierReply } from "@/lib/rice/sommelierReply";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { RiceProfileV2 } from "@/types/rice";
@@ -156,12 +156,19 @@ async function findExactNameMatch(
 ) {
   if (alreadyExact) return null;
 
-  const { data, error } = await supabase
-    .from("rice_catalog")
-    .select(RICE_PROFILE_COLUMNS)
-    .eq("name", query)
-    .maybeSingle();
+  const names = [query, brandCoreQuery(query)].filter(
+    (name, index, all) => name.length >= 3 && name.length <= 20 && all.indexOf(name) === index
+  );
 
-  if (error || !data) return null;
-  return mapRowToRiceProfile(data as unknown as Record<string, unknown>);
+  for (const name of names) {
+    const { data, error } = await supabase
+      .from("rice_catalog")
+      .select(RICE_PROFILE_COLUMNS)
+      .eq("name", name)
+      .maybeSingle();
+
+    if (!error && data) return mapRowToRiceProfile(data as unknown as Record<string, unknown>);
+  }
+
+  return null;
 }

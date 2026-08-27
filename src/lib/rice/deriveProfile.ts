@@ -85,14 +85,13 @@ function deriveWinter(r: RiceSource): string[] {
 function deriveBeer(r: RiceSource): string[] {
   return pick(
     [
-      [r.oil_compatibility >= 4, "唐揚げ"],
-      [r.hardness >= 4, "餃子"],
-      [r.clarity >= 4, "塩おにぎり"],
-      [r.aftertaste <= 3, "焼き鳥"],
-      [r.richness >= 4, "焼き餃子"],
-      [r.oil_compatibility >= 3, "串揚げ"],
+      [r.oil_compatibility >= 4, "ラガー"],
+      [r.hardness >= 4, "ピルスナー"],
+      [r.richness >= 4, "黒ビール"],
+      [r.clarity >= 4, "すっきりしたラガー"],
+      [r.aftertaste <= 3, "エール"],
     ],
-    ["和惣菜"]
+    ["ラガー"]
   );
 }
 
@@ -118,7 +117,7 @@ function deriveTea(r: RiceSource): string[] {
       [r.aroma >= 4, "玄米茶"],
       [r.sweetness >= 4, "玉露"],
       [r.aftertaste >= 4, "番茶"],
-      [r.cold_rice_quality >= 4, "麦茶と塩おにぎり"],
+      [r.cold_rice_quality >= 4, "麦茶"],
     ],
     ["ほうじ茶"]
   );

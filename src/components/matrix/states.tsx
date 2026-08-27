@@ -38,29 +38,92 @@ export function MatrixSkeleton() {
   );
 }
 
-export function RailSkeleton() {
+export function RailSkeleton({ reduceMotion = false }: { reduceMotion?: boolean }) {
   return (
-    <div
-      role="status"
-      className="flex items-center gap-3 border-y border-[var(--km-border)] py-6"
-    >
-      <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[var(--km-accent)]/55" />
-      <p className="text-sm text-[var(--km-muted)]">銘柄を読み込んでいます</p>
-    </div>
+    <RailAwaiting
+      kicker="味わいの地図"
+      message="銘柄を読み込んでいます"
+      reduceMotion={reduceMotion}
+    />
   );
 }
 
 export function SemanticReading({ reduceMotion }: { reduceMotion: boolean }) {
   return (
-    <div className="flex items-center gap-3 border-y border-[var(--km-border)] py-6">
-      <motion.span
-        className="h-2.5 w-2.5 rounded-full bg-[var(--km-accent)]/70"
-        animate={
-          reduceMotion ? undefined : { opacity: [0.35, 1, 0.35], scale: [0.9, 1.08, 0.9] }
-        }
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <p className="text-sm text-[var(--km-ink-soft)]">料理に合う一膳を探しています</p>
+    <RailAwaiting
+      kicker="米ソムリエ"
+      message="言葉を読み、味わいの近い銘柄を探しています"
+      reduceMotion={reduceMotion}
+    />
+  );
+}
+
+function RailAwaiting({
+  kicker,
+  message,
+  reduceMotion,
+}: {
+  kicker: string;
+  message: string;
+  reduceMotion: boolean;
+}) {
+  const bar = reduceMotion
+    ? "bg-[var(--km-ink)]/[0.08]"
+    : "animate-pulse bg-[var(--km-ink)]/10";
+
+  return (
+    <div role="status" aria-live="polite" aria-label={message}>
+      <div className="mb-3 flex items-center gap-2.5">
+        <motion.span
+          className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--km-accent)]/75"
+          animate={
+            reduceMotion ? undefined : { opacity: [0.35, 1, 0.35], scale: [0.92, 1.08, 0.92] }
+          }
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="min-w-0">
+          <p className="text-[10px] tracking-[0.14em] text-[var(--km-accent)]">{kicker}</p>
+          <p className="mt-0.5 text-[13px] leading-snug text-[var(--km-ink)]">{message}</p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3">
+        <span className={`block h-2.5 w-[4.5rem] rounded ${bar}`} />
+        <span className={`mt-3 block h-6 w-36 rounded ${bar}`} />
+        <span className={`mt-2.5 block h-3 w-full rounded ${bar}`} />
+        <span className={`mt-1.5 block h-3 w-4/5 rounded ${bar}`} />
+        <span className="mt-3 flex items-end justify-between gap-3">
+          <span className={`h-3 w-24 rounded ${bar}`} />
+          <span className={`h-11 w-11 rounded-full border border-[var(--km-border)] ${bar}`} />
+        </span>
+        <span className="mt-2 block min-h-[2.5rem]">
+          <span className={`block h-2.5 w-16 rounded ${bar}`} />
+          <span className="mt-1.5 flex gap-1">
+            <span className={`h-4 w-14 rounded ${bar}`} />
+            <span className={`h-4 w-16 rounded ${bar}`} />
+            <span className={`h-4 w-12 rounded ${bar}`} />
+          </span>
+        </span>
+      </div>
+
+      <p className="mb-1 mt-2.5 font-serif text-[13px] font-semibold text-[var(--km-ink)]">
+        近い味わいの銘柄
+      </p>
+      <ol className="flex flex-col gap-1">
+        {[0, 1, 2].map((index) => (
+          <li
+            key={index}
+            className="grid grid-cols-[1.4rem_minmax(0,1fr)_auto] items-center gap-2 px-2 py-1.5"
+          >
+            <span className="font-serif text-xs text-[var(--km-gold)]/50">0{index + 2}</span>
+            <span className="min-w-0">
+              <span className={`block h-3.5 w-28 rounded ${bar}`} />
+              <span className={`mt-1.5 block h-2.5 w-16 rounded ${bar}`} />
+            </span>
+            <span className={`h-8 w-8 rounded-full ${bar}`} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

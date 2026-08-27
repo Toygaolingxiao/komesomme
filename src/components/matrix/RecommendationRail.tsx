@@ -89,8 +89,8 @@ function BestMatchCard({
         <AffinitySeal score={match.score} />
       </span>
 
-      {!semantic && dishes.length > 0 ? (
-        <span className="relative mt-2 block pl-2">
+      {dishes.length > 0 ? (
+        <span className="relative mt-2 block min-h-[2.5rem] pl-2">
           <span className="text-[10px] text-[var(--km-muted)]">今日の食卓なら</span>
           <span className="mt-1 flex flex-wrap gap-1">
             {dishes.slice(0, 3).map((dish) => (
@@ -104,7 +104,9 @@ function BestMatchCard({
             ))}
           </span>
         </span>
-      ) : null}
+      ) : (
+        <span className="relative mt-2 block min-h-[2.5rem] pl-2" aria-hidden />
+      )}
 
       <span className="relative mt-2 inline-flex items-center gap-1 pl-2 text-[11px] text-[var(--km-accent)]">
         詳しく見る
@@ -119,6 +121,7 @@ function RunnerUpList({
   reference,
   activeId,
   reduceMotion,
+  semantic,
   onSelect,
   onHover,
 }: {
@@ -126,13 +129,14 @@ function RunnerUpList({
   reference: RailMatch["rice"];
   activeId: string | null;
   reduceMotion: boolean;
+  semantic: boolean;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
   return (
     <div className="mt-2.5">
       <p className="mb-1 font-serif text-[13px] font-semibold text-[var(--km-ink)]">
-        近い味わいの銘柄
+        {semantic ? "この相談のほかの銘柄" : "近い味わいの銘柄"}
       </p>
       <ol className="flex flex-col gap-1">
         {matches.map((match, index) => {
@@ -141,10 +145,9 @@ function RunnerUpList({
           return (
             <motion.li
               key={match.rice.id}
-              layout={!reduceMotion}
-              initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.32, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.18 }}
             >
               <button
                 type="button"
@@ -179,7 +182,7 @@ function RunnerUpList({
                     {match.rice.prefecture}
                   </span>
                   <span className="mt-0.5 line-clamp-1 block text-[10px] leading-snug text-[var(--km-ink-soft)]">
-                    {contrastLine(reference, match.rice)}
+                    {semantic ? match.reason : contrastLine(reference, match.rice)}
                   </span>
                 </span>
                 <span className="text-right">
@@ -207,7 +210,6 @@ function RunnerUpList({
  */
 export function RecommendationRail({
   matches,
-  reply,
   mode,
   loading,
   pending,
@@ -215,10 +217,8 @@ export function RecommendationRail({
   reduceMotion,
   onSelect,
   onHover,
-  onResetMode,
 }: {
   matches: RailMatch[];
-  reply?: string | null;
   mode: RecommendationMode;
   loading: boolean;
   pending: boolean;
@@ -226,16 +226,15 @@ export function RecommendationRail({
   reduceMotion: boolean;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
-  onResetMode: () => void;
 }) {
   const primary = matches[0] ?? null;
   const runnerUps = matches.slice(1);
 
   return (
-    <div className="flex min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col">
       <div>
         {loading ? (
-          <RailSkeleton />
+          <RailSkeleton reduceMotion={reduceMotion} />
         ) : pending ? (
           <SemanticReading reduceMotion={reduceMotion} />
         ) : matches.length === 0 ? (
@@ -243,33 +242,13 @@ export function RecommendationRail({
             該当する銘柄が見つかりませんでした。
           </p>
         ) : (
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence initial={false}>
             <motion.div
               key={`${mode}-${primary?.rice.id ?? "empty"}`}
-              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.18 }}
             >
-              {mode === "semantic" ? (
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  {reply ? (
-                    <p className="min-w-0 line-clamp-2 break-keep text-[12px] leading-relaxed text-[var(--km-ink)]">
-                      {reply}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <button
-                    type="button"
-                    onClick={onResetMode}
-                    className={`shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
-                  >
-                    地図で選び直す
-                  </button>
-                </div>
-              ) : null}
-
               {primary ? (
                 <>
                   <BestMatchCard
@@ -284,6 +263,7 @@ export function RecommendationRail({
                       reference={primary.rice}
                       activeId={selectedId}
                       reduceMotion={reduceMotion}
+                      semantic={mode === "semantic"}
                       onSelect={onSelect}
                       onHover={onHover}
                     />

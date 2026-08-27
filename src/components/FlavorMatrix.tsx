@@ -53,18 +53,18 @@ type SemanticState = "idle" | "pending" | "error";
 
 const INITIAL_COORDINATE: TasteCoordinate = { hardness: 3, sweetness: 3 };
 
-function useMdUp() {
-  const [md, setMd] = useState(false);
+function useLgUp() {
+  const [lg, setLg] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 768px)");
-    const sync = () => setMd(media.matches);
+    const media = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setLg(media.matches);
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
 
-  return md;
+  return lg;
 }
 
 function probeLeftOf(coordinate: TasteCoordinate) {
@@ -77,7 +77,7 @@ function probeTopOf(coordinate: TasteCoordinate) {
 
 export function FlavorMatrix() {
   const reduceMotion = useReducedMotion() ?? false;
-  const isMd = useMdUp();
+  const isLg = useLgUp();
 
   const [profiles, setProfiles] = useState<RiceProfileV2[]>([]);
   const [regions, setRegions] = useState<RiceRegionRecord[]>(RICE_REGIONS);
@@ -177,32 +177,19 @@ export function FlavorMatrix() {
     );
   }, [recommendationMode, railMatches, points, coordinate]);
 
-  const inspected =
-    profiles.find((rice) => rice.id === selectedId) ??
-    railMatches[0]?.rice ??
-    null;
-
   const openDetail = useCallback((id: string) => {
     setSelectedId(id);
     setDetailOpen(true);
   }, []);
 
-  const inspectOnMap = useCallback(
-    (id: string) => {
-      setSelectedId(id);
-      if (isMd) setDetailOpen(true);
-    },
-    [isMd]
-  );
-
   const closeDetail = useCallback(() => {
     setDetailOpen(false);
-    if (isMd) setSelectedId(null);
-  }, [isMd]);
+    if (isLg) setSelectedId(null);
+  }, [isLg]);
 
   useEffect(() => {
-    if (isMd) setMapOpen(false);
-  }, [isMd]);
+    if (isLg) setMapOpen(false);
+  }, [isLg]);
 
   useEffect(() => {
     if (!mapOpen) return;
@@ -236,6 +223,27 @@ export function FlavorMatrix() {
     [recommendationMode, resetSemantic]
   );
 
+  const inspectOnMap = useCallback(
+    (id: string) => {
+      setSelectedId(id);
+      const placed = points.find((point) => point.id === id);
+      if (!placed) return;
+      const next = coordinateFromDisplayPoint(placed);
+      probeLeft.set(probeLeftOf(next));
+      probeTop.set(probeTopOf(next));
+      commitCoordinate(next);
+    },
+    [points, commitCoordinate, probeLeft, probeTop]
+  );
+
+  const pickOnMap = useCallback(
+    (id: string) => {
+      inspectOnMap(id);
+      if (isLg) openDetail(id);
+    },
+    [inspectOnMap, isLg, openDetail]
+  );
+
   const setAxis = useCallback(
     (axis: keyof TasteCoordinate, value: number) => {
       setCoordinate((previous) => {
@@ -251,6 +259,7 @@ export function FlavorMatrix() {
 
   const moveProbe = useCallback(
     (hardness: number, sweetness: number) => {
+      setSelectedId(null);
       commitCoordinate({ hardness, sweetness });
     },
     [commitCoordinate]
@@ -324,7 +333,8 @@ export function FlavorMatrix() {
     bestMatchId,
     selectedId,
     highlightId: hoveredId,
-    bestCaption: "いちばん近い一膳" as const,
+    bestCaption:
+      recommendationMode === "semantic" ? "今日の一膳" : "いちばん近い一膳",
     probeLeft,
     probeTop,
     probeKey: `${coordinate.hardness}-${coordinate.sweetness}`,
@@ -339,64 +349,62 @@ export function FlavorMatrix() {
       query={query}
       pending={semanticState === "pending"}
       failed={semanticState === "error"}
+      reply={recommendationMode === "semantic" ? semanticReply : null}
       onQueryChange={setQuery}
       onSubmit={() => void runSemantic()}
-      layout={isMd ? "wide" : "stack"}
+      onResetMode={recommendationMode === "semantic" ? resetSemantic : undefined}
+      layout={isLg ? "wide" : "stack"}
     />
   );
 
   return (
     <section className="w-full min-w-0 lg:h-full lg:min-h-0">
-      {isMd ? (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-4 px-4 py-2 sm:px-5 lg:h-full lg:min-h-0 lg:gap-3 lg:py-2">
-          <div className="grid w-full min-h-0 min-w-0 flex-1 grid-rows-[minmax(0,1fr)] items-stretch gap-4 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:gap-4">
-            <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
-              <div className="shrink-0 px-4 pt-3 sm:px-5">
-                <h2 className="font-serif text-lg font-semibold tracking-tight text-[var(--km-ink)] sm:text-xl">
-                  味わいの地図
-                </h2>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--km-muted)]">
-                  地図を選ぶ / 好みを動かす / 一膳を見る
-                </p>
-              </div>
-
-              {loadState === "error" ? (
-                <div className="px-5 py-4">
-                  <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
-                </div>
-              ) : (
-                <div className="min-h-[min(360px,46vh)] min-w-0 flex-1 px-2 pb-1 pt-1 lg:min-h-0">
-                  <TasteMap
-                    {...mapShared}
-                    variant="desktop"
-                    runnerUpIds={runnerUpIds}
-                    onSelect={inspectOnMap}
-                  />
-                </div>
-              )}
-
-              <div className="shrink-0 px-4 sm:px-5">
-                <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
-              </div>
+      {isLg ? (
+        <div className="mx-auto grid h-full min-h-0 w-full max-w-[1440px] grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-3 px-4 py-2 sm:px-5">
+          <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+            <div className="shrink-0 px-4 pt-3 sm:px-5">
+              <h2 className="font-serif text-lg font-semibold tracking-tight text-[var(--km-ink)] sm:text-xl">
+                味わいの地図
+              </h2>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--km-muted)]">
+                地図を選ぶ / 好みを動かす / 一膳を見る
+              </p>
             </div>
 
-            <aside className="min-h-0 min-w-0 overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5 lg:overflow-y-auto">
-              <RecommendationRail
-                matches={railMatches}
-                reply={recommendationMode === "semantic" ? semanticReply : null}
-                mode={recommendationMode}
-                loading={loadState === "loading"}
-                pending={semanticState === "pending"}
-                selectedId={selectedId}
-                reduceMotion={reduceMotion}
-                onSelect={openDetail}
-                onHover={setHoveredId}
-                onResetMode={resetSemantic}
-              />
-            </aside>
+            {loadState === "error" ? (
+              <div className="px-5 py-4">
+                <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
+              </div>
+            ) : (
+              <div className="min-h-0 min-w-0 flex-1 px-2 pb-1 pt-1">
+                <TasteMap
+                  {...mapShared}
+                  variant="desktop"
+                  runnerUpIds={runnerUpIds}
+                  onSelect={pickOnMap}
+                />
+              </div>
+            )}
+
+            <div className="shrink-0 px-4 sm:px-5">
+              <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
+            </div>
           </div>
 
-          <div className="shrink-0">{consult}</div>
+          <aside className="h-full min-h-0 min-w-0 overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
+            <RecommendationRail
+              matches={railMatches}
+              mode={recommendationMode}
+              loading={loadState === "loading"}
+              pending={semanticState === "pending"}
+              selectedId={selectedId}
+              reduceMotion={reduceMotion}
+              onSelect={openDetail}
+              onHover={setHoveredId}
+            />
+          </aside>
+
+          <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
         <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 py-3">
@@ -420,11 +428,11 @@ export function FlavorMatrix() {
             </div>
           )}
 
-          {selectedId && inspected && !mapOpen ? (
+          {selected && !mapOpen ? (
             <MobileSelectedCard
-              rice={inspected}
-              isBestMatch={inspected.id === bestMatchId}
-              onOpen={() => openDetail(inspected.id)}
+              rice={selected}
+              isBestMatch={selected.id === bestMatchId}
+              onOpen={() => openDetail(selected.id)}
             />
           ) : null}
 
@@ -434,7 +442,7 @@ export function FlavorMatrix() {
         </div>
       )}
 
-      {mapOpen && !isMd ? (
+      {mapOpen && !isLg ? (
         <div
           role="dialog"
           aria-modal="true"
@@ -478,11 +486,11 @@ export function FlavorMatrix() {
           </div>
 
           <div className="shrink-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
-            {inspected ? (
+            {selected ? (
               <MobileSelectedCard
-                rice={inspected}
-                isBestMatch={inspected.id === bestMatchId}
-                onOpen={() => openDetail(inspected.id)}
+                rice={selected}
+                isBestMatch={selected.id === bestMatchId}
+                onOpen={() => openDetail(selected.id)}
               />
             ) : null}
           </div>

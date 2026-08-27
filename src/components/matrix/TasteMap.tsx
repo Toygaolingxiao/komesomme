@@ -295,13 +295,18 @@ export function TasteMap({
             setEngaged(false);
           }}
           onPointerCancel={() => setEngaged(false)}
-          className="relative min-h-0 min-w-0 w-full touch-none select-none overflow-visible rounded-[1.35rem] border border-[var(--km-border)] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
-          style={{
-            background:
-              "radial-gradient(ellipse at 22% 18%, rgba(255,245,229,0.98), transparent 42%), radial-gradient(ellipse at 78% 82%, rgba(226,154,53,0.12), transparent 48%), linear-gradient(180deg, #fffdf7 0%, #fff6ea 100%)",
-          }}
+          className="relative min-h-0 min-w-0 w-full touch-none select-none overflow-visible rounded-[1.35rem] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
         >
-          <MatrixGrid />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.35rem] border border-[var(--km-border)]"
+            style={{
+              background:
+                "radial-gradient(ellipse at 22% 18%, rgba(255,245,229,0.98), transparent 42%), radial-gradient(ellipse at 78% 82%, rgba(226,154,53,0.12), transparent 48%), linear-gradient(180deg, #fffdf7 0%, #fff6ea 100%)",
+            }}
+          >
+            <MatrixGrid />
+          </div>
 
           {loading ? (
             <MatrixSkeleton />
@@ -309,11 +314,10 @@ export function TasteMap({
             <EmptyPanel />
           ) : (
             <>
-              {visiblePoints.map((rice, index) => (
+              {visiblePoints.map((rice) => (
                 <ProfileNode
                   key={rice.id}
                   rice={rice}
-                  index={index}
                   density={density}
                   dimmed={
                     (Boolean(focusRegion) &&

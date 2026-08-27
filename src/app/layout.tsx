@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "KomeSomme | 米ソムリエ",
   description:
     "日本のブランド米を味わいの地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。",
+  icons: {
+    icon: [{ url: "/icon", type: "image/png" }],
+    apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({

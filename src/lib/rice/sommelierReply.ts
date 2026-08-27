@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { nameMatch } from "./semanticScore";
 
 const GEMINI_CHAT_MODEL = "gemini-3.6-flash";
 const OPENAI_CHAT_MODEL = "gpt-4o-mini";
@@ -17,11 +18,52 @@ function fallbackReply(query: string, matches: SommelierMatchBrief[]): string {
   if (!top) {
     return "ご相談の内容に近い銘柄を探しています。言葉を少し変えて、もう一度聞いてみてください。";
   }
+  if (nameMatch(query, top.name)) {
+    const reason = top.reason.trim();
+    const text = reason.includes(top.name)
+      ? reason
+      : `${top.name}は、${reason}`;
+    return clipReply(text);
+  }
   const cue = query.replace(/\s+/g, "").slice(0, 16);
   const text = cue
     ? `「${cue}」なら、${top.prefecture}の${top.name}です。${top.reason}`
     : `${top.prefecture}の${top.name}です。${top.reason}`;
-  return text.length > MAX_REPLY_CHARS ? `${text.slice(0, MAX_REPLY_CHARS - 1)}…` : text;
+  return clipReply(text);
+}
+
+function clipReply(text: string): string {
+  if (text.length <= MAX_REPLY_CHARS) return text;
+  const slice = text.slice(0, MAX_REPLY_CHARS);
+  const stop = Math.max(slice.lastIndexOf("。"), slice.lastIndexOf("！"));
+  if (stop >= 24) return slice.slice(0, stop + 1);
+  return `${slice.slice(0, MAX_REPLY_CHARS - 1)}…`;
+}
+
+function looksBroken(text: string): boolean {
+  if (text.length < 18) return true;
+  if (/^(確認|候補|リスト)[：:]/.test(text)) return true;
+  if (/^[0-9０-９]+\.\s/.test(text)) return true;
+  if (
+    /禁止事項|番号付き|禁止語|確認：|候補:|思考過程|ゲストの相談|出力は本文|結びついて/.test(
+      text
+    )
+  ) {
+    return true;
+  }
+  if (
+    /thought process|confirmation questions?|prohibitions?|ONLY\s+\d+\s+sentences?|main text/i.test(
+      text
+    )
+  ) {
+    return true;
+  }
+  // Guest-facing copy is Japanese. A run of English is almost always a leaked rule.
+  const latin = text.match(/[A-Za-z]{2,}/g) ?? [];
+  if (latin.length >= 4 || latin.join("").length >= 16) return true;
+  const opens = (text.match(/「/g) ?? []).length;
+  const closes = (text.match(/」/g) ?? []).length;
+  return opens !== closes;
 }
 
 function cleanReply(text: string, query: string, matches: SommelierMatchBrief[]): string {
@@ -29,9 +71,8 @@ function cleanReply(text: string, query: string, matches: SommelierMatchBrief[])
   for (const word of BANNED) {
     if (next.includes(word)) return fallbackReply(query, matches);
   }
-  if (next.length > MAX_REPLY_CHARS) {
-    next = `${next.slice(0, MAX_REPLY_CHARS - 1)}…`;
-  }
+  next = clipReply(next);
+  if (looksBroken(next)) return fallbackReply(query, matches);
   return next;
 }
 
@@ -43,13 +84,12 @@ function buildPrompt(query: string, matches: SommelierMatchBrief[]): string {
     )
     .join("\n");
 
-  return `あなたは米ソムリエです。ゲストの相談に、日本語で2文だけ答えてください。
-口調はやさしく、短く、具体的に。銘柄は次の候補だけを使います。新しい銘柄名は作らないでください。
-ゲストの相談に出てくる具体的な言葉（料理・酒・食後・果物など）を、必ずどちらかの文で拾ってください。
-「和食に合う」「食卓に寄り添う」だけの一般論は禁止です。
-候補に書いてある味わいと、相談の言葉だけを結びつける。知らない相性の事実は作らないでください。
-禁止語: ${BANNED.join("、")}
-絵文字は使いません。
+  return `役割: 米ソムリエ。出力: 日本語の本文2文のみ。
+候補以外の銘柄名は出さない。知らない相性は書かない。
+相談が候補の銘柄を名指しし、料理や向きを聞いているなら、その銘柄の料理向きを答える。質問文を繰り返さない。
+産地・地名なら、その土地の候補を味わいで短く勧める。
+料理・酒・気分の言葉があれば、どちらかの文で拾う。
+使わない語: ${BANNED.join("、")}
 
 相談: ${query}
 
@@ -59,10 +99,21 @@ ${list}`;
 
 function extractGeminiText(payload: unknown): string {
   if (!payload || typeof payload !== "object") return "";
-  const record = payload as { text?: unknown; candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
-  if (typeof record.text === "string" && record.text.trim()) return record.text;
+  const record = payload as {
+    text?: unknown;
+    candidates?: Array<{
+      content?: { parts?: Array<{ text?: string; thought?: boolean }> };
+    }>;
+  };
   const parts = record.candidates?.[0]?.content?.parts ?? [];
-  return parts.map((part) => part.text ?? "").join("").trim();
+  const spoken = parts
+    .filter((part) => !part.thought)
+    .map((part) => part.text ?? "")
+    .join("")
+    .trim();
+  if (spoken) return spoken;
+  if (typeof record.text === "string" && record.text.trim()) return record.text.trim();
+  return "";
 }
 
 async function generateWithGemini(prompt: string): Promise<string> {
@@ -70,13 +121,27 @@ async function generateWithGemini(prompt: string): Promise<string> {
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.");
 
   const ai = new GoogleGenAI({ apiKey });
-  const response = await ai.models.generateContent({
-    model: GEMINI_CHAT_MODEL,
-    contents: prompt,
-    config: { temperature: 0.4, maxOutputTokens: 220 },
-  });
+  const base = { temperature: 0.4, maxOutputTokens: 512 };
 
-  return extractGeminiText(response);
+  try {
+    const response = await ai.models.generateContent({
+      model: GEMINI_CHAT_MODEL,
+      contents: prompt,
+      config: {
+        ...base,
+        thinkingConfig: { thinkingBudget: 0, includeThoughts: false },
+      },
+    });
+    return extractGeminiText(response);
+  } catch (cause) {
+    console.warn("Gemini thinkingConfig rejected, retrying without it:", cause);
+    const response = await ai.models.generateContent({
+      model: GEMINI_CHAT_MODEL,
+      contents: prompt,
+      config: base,
+    });
+    return extractGeminiText(response);
+  }
 }
 
 async function generateWithOpenAI(prompt: string): Promise<string> {

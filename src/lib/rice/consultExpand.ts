@@ -1,4 +1,4 @@
-import { detectDrinkCategory, type DrinkCategory } from "./flavorBridge";
+import { detectDrinkCategory, detectPrefectureStem, type DrinkCategory } from "./flavorBridge";
 
 /**
  * Prefab retrieval hints for consultation.
@@ -44,6 +44,11 @@ export function expandConsultationQuery(query: string): string {
   const drink = detectDrinkCategory(query);
   if (drink) {
     lines.push(`酒: ${DRINK_HINTS[drink]}`);
+  }
+
+  const prefecture = detectPrefectureStem(query);
+  if (prefecture) {
+    lines.push(`産地: ${prefecture} 県産 土地の銘柄`);
   }
 
   const normalized = query.toLowerCase();

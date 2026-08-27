@@ -23,10 +23,19 @@ export function normalizeBrandQuery(value: string) {
   return toKatakana(value.normalize("NFKC").replace(/[\s　]+/g, "").toLowerCase());
 }
 
-const NAME_QUERY_SUFFIX = /(について|とは|を知りたい|のお米|のお米を知りたい|米)$/;
+const NAME_QUERY_SUFFIX = /(について|とは|を知りたい|のお米を知りたい|のお米|米)$/;
 
 function coreQuery(value: string) {
-  return normalizeBrandQuery(value).replace(NAME_QUERY_SUFFIX, "");
+  return normalizeBrandQuery(value)
+    .replace(/[？?。！!]+$/g, "")
+    .replace(/は(どの|どんな|どういう|何の|なにの?).+$/g, "")
+    .replace(/(の特徴|を教えて|ってなに|って何).*$/g, "")
+    .replace(NAME_QUERY_SUFFIX, "");
+}
+
+/** Stripped brand token, for catalog lookup when the guest names a rice in a longer question. */
+export function brandCoreQuery(query: string) {
+  return coreQuery(query);
 }
 
 export function nameMatch(query: string, riceName: string): NameMatch {

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { BrandLockup } from "@/components/brand/BrandMark";
+import { FOCUS } from "@/components/matrix/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findRiceProfile, riceProfiles } from "@/data/riceProfilesV2";
@@ -6,6 +8,7 @@ import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import {
   DISCLAIMER,
   appetiteLine,
+  drinkStyleLabels,
   regionColor,
   technicalLine,
   todayServeLine,
@@ -94,21 +97,18 @@ export default async function BrandPage({ params }: BrandPageProps) {
   ];
 
   const drinks: Array<[string, string[]]> = [
-    ["日本酒", rice.sake_pairings],
-    ["ビール", rice.beer_pairings],
-    ["ワイン", rice.wine_pairings],
-    ["ウイスキー", rice.whisky_pairings],
-    ["お茶", rice.tea_pairings],
-  ];
+    ["日本酒", drinkStyleLabels(rice.sake_pairings)],
+    ["ビール", drinkStyleLabels(rice.beer_pairings)],
+    ["ワイン", drinkStyleLabels(rice.wine_pairings)],
+    ["ウイスキー", drinkStyleLabels(rice.whisky_pairings)],
+    ["お茶", drinkStyleLabels(rice.tea_pairings)],
+  ].filter(([, items]) => items.length > 0) as Array<[string, string[]]>;
 
   return (
     <main className="min-h-[100dvh] w-full text-[var(--km-ink)]">
       <header className="mx-auto flex h-16 max-w-[960px] items-center justify-between border-b border-[var(--km-border)] px-4 md:px-8 lg:h-[72px]">
-        <Link
-          href="/"
-          className="text-sm font-semibold tracking-tight text-[var(--km-ink)] transition hover:text-[var(--km-gold)]"
-        >
-          KomeSomme
+        <Link href="/" className={`min-w-0 ${FOCUS}`}>
+          <BrandLockup />
         </Link>
         <Link
           href="/#matrix"
@@ -242,13 +242,13 @@ export default async function BrandPage({ params }: BrandPageProps) {
             </dl>
           </section>
 
+          {drinks.length > 0 ? (
           <section>
             <h2 className="text-xs tracking-[0.12em] text-[var(--km-muted)]">
               お酒・お茶との相性
             </h2>
             <dl className="mt-4 divide-y divide-[var(--km-border)]">
-              {drinks.map(([drink, items]) =>
-                items.length > 0 ? (
+              {drinks.map(([drink, items]) => (
                   <div key={drink} className="flex gap-6 py-3">
                     <dt className="w-24 shrink-0 text-sm text-[var(--km-ink)]">
                       {drink}
@@ -257,10 +257,10 @@ export default async function BrandPage({ params }: BrandPageProps) {
                       {items.join("、")}
                     </dd>
                   </div>
-                ) : null
-              )}
+              ))}
             </dl>
           </section>
+          ) : null}
 
           <TagList label="暮らしのシーン" items={rice.lifestyle_scenes} />
         </div>

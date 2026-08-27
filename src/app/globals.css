@@ -112,12 +112,6 @@ body {
   }
 }
 
-@media (min-width: 1024px) and (max-height: 800px) {
-  .km-consult-examples {
-    display: none;
-  }
-}
-
 @media (max-width: 767px) {
   .km-slider::-webkit-slider-thumb {
     width: 28px;

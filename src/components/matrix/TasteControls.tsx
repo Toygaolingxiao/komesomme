@@ -80,9 +80,6 @@ export function TasteControls({
 
   return (
     <section className="relative shrink-0 border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-1 pb-1.5 pt-2">
-      <h3 className="mb-1 font-serif text-[12px] font-semibold text-[var(--km-ink)]">
-        現在の味わい
-      </h3>
       <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
         <AxisControl
           id="km-hardness"
