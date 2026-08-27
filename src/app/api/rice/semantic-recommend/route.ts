@@ -107,14 +107,23 @@ export async function POST(request: Request) {
     });
 
     const ranked = unique.slice(0, matchCount);
-    const reply = await generateSommelierReply(
-      query,
-      ranked.map((match) => ({
-        name: match.rice.name,
-        prefecture: match.rice.prefecture,
-        reason: match.reason,
-      }))
-    );
+    let reply = "";
+    try {
+      reply = await generateSommelierReply(
+        query,
+        ranked.map((match) => ({
+          name: match.rice.name,
+          prefecture: match.rice.prefecture,
+          reason: match.reason,
+        }))
+      );
+    } catch (cause) {
+      console.error("Sommelier reply generation failed:", cause);
+      const top = ranked[0]?.rice;
+      reply = top
+        ? `${top.prefecture}の${top.name}です。${ranked[0].reason}`
+        : "ご相談の内容に近い銘柄を探しています。言葉を少し変えて、もう一度聞いてみてください。";
+    }
 
     return NextResponse.json({
       query,

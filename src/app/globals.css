@@ -34,10 +34,14 @@
 
 html {
   background: var(--km-bg);
+  overflow-x: clip;
 }
 
 body {
-  @apply min-h-screen antialiased;
+  @apply min-h-dvh antialiased;
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
   color: var(--km-ink);
   background:
     radial-gradient(ellipse at 8% 0%, rgba(226, 154, 53, 0.16), transparent 36%),
@@ -99,8 +103,32 @@ body {
   background: var(--km-track);
 }
 
-.km-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(229, 107, 63, 0.28);
+@media (min-width: 1024px) {
+  html:has(main.km-home),
+  html:has(main.km-home) body {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 1024px) and (max-height: 800px) {
+  .km-consult-examples {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .km-slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+    margin-top: -10px;
+  }
+
+  .km-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 .km-slider-grain {

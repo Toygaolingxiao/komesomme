@@ -35,7 +35,7 @@ function AxisControl({
   const fill = `${((value - AXIS_MIN) / (AXIS_MAX - AXIS_MIN)) * 100}%`;
 
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1">
       <div className="flex items-end justify-between gap-2">
         <div>
           <label htmlFor={id} className="block text-[11px] text-[var(--km-muted)]">
@@ -79,11 +79,11 @@ export function TasteControls({
   const grainDisplay = hardnessToDisplayY(coordinate.hardness);
 
   return (
-    <section className="relative shrink-0 rounded-b-[1.1rem] bg-[var(--km-surface-warm)]/70 px-1 pb-1 pt-3">
-      <h3 className="mb-2.5 font-serif text-[13px] font-semibold text-[var(--km-ink)]">
+    <section className="relative shrink-0 border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-1 pb-1.5 pt-2">
+      <h3 className="mb-1 font-serif text-[12px] font-semibold text-[var(--km-ink)]">
         現在の味わい
       </h3>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
         <AxisControl
           id="km-hardness"
           name="粒感"

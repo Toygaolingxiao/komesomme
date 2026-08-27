@@ -87,26 +87,26 @@ function deriveBeer(r: RiceSource): string[] {
     [
       [r.oil_compatibility >= 4, "唐揚げ"],
       [r.hardness >= 4, "餃子"],
-      [r.clarity >= 4, "枝豆と塩おにぎり"],
+      [r.clarity >= 4, "塩おにぎり"],
       [r.aftertaste <= 3, "焼き鳥"],
-      [r.richness >= 4, "焼き餃子と炒飯"],
+      [r.richness >= 4, "焼き餃子"],
       [r.oil_compatibility >= 3, "串揚げ"],
     ],
-    ["和惣菜の盛り合わせ"]
+    ["和惣菜"]
   );
 }
 
 function deriveWine(r: RiceSource): string[] {
   return pick(
     [
-      [r.clarity >= 4, "白ワインと白身魚のカルパッチョ"],
-      [r.richness >= 4, "赤ワインと牛肉の赤ワイン煮"],
-      [r.aroma >= 4, "スパークリングと出汁の前菜"],
-      [r.oil_compatibility >= 4, "赤ワインとハンバーグ"],
-      [r.sweetness >= 4, "白ワインと帆立のバター焼き"],
-      [r.umami >= 4, "赤ワインときのこのソテー"],
+      [r.clarity >= 4, "辛口の白ワイン"],
+      [r.richness >= 4, "フルボディの赤ワイン"],
+      [r.aroma >= 4, "スパークリング"],
+      [r.oil_compatibility >= 4, "ミディアムボディの赤ワイン"],
+      [r.sweetness >= 4, "まろやかな白ワイン"],
+      [r.umami >= 4, "ミディアムボディの赤ワイン"],
     ],
-    ["軽めの白ワインと季節の野菜"]
+    ["軽やかな白ワイン"]
   );
 }
 

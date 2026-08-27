@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findRiceProfile, riceProfiles } from "@/data/riceProfilesV2";
+import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import {
-  amazonUrl,
-  furusatoUrl,
-  rakutenUrl,
+  DISCLAIMER,
+  appetiteLine,
   regionColor,
+  technicalLine,
+  todayServeLine,
 } from "@/components/matrix/shared";
 
 type BrandPageProps = {
@@ -57,19 +59,31 @@ export default async function BrandPage({ params }: BrandPageProps) {
   const rice = findRiceProfile(decodeURIComponent(brand));
   if (!rice) notFound();
 
-  const scores: Array<[string, number]> = [
+  const appetite = appetiteLine(rice);
+  const technical = technicalLine(rice);
+  const serve = todayServeLine(rice);
+  const pairReason = rice.pairing_reason.trim();
+  const showReason = Boolean(pairReason) && pairReason !== appetite;
+  const days = [...rice.mood_pairings, ...rice.occasion_pairings]
+    .filter(Boolean)
+    .slice(0, 2);
+
+  const core: Array<[string, number]> = [
     ["粒感", rice.hardness],
     ["甘み", rice.sweetness],
     ["粘り", rice.stickiness],
-    ["香り", rice.aroma],
     ["旨み", rice.umami],
-    ["余韻", rice.aftertaste],
-    ["粒の大きさ", rice.grain_size],
-    ["淡麗さ", rice.clarity],
-    ["コク", rice.richness],
-    ["冷めても", rice.cold_rice_quality],
     ["タレ相性", rice.sauce_absorption],
+  ];
+
+  const extra: Array<[string, number]> = [
+    ["冷めても", rice.cold_rice_quality],
     ["油相性", rice.oil_compatibility],
+    ["余韻", rice.aftertaste],
+    ["淡麗さ", rice.clarity],
+    ["香り", rice.aroma],
+    ["粒の大きさ", rice.grain_size],
+    ["コク", rice.richness],
   ];
 
   const seasons: Array<[string, string[]]> = [
@@ -115,19 +129,47 @@ export default async function BrandPage({ params }: BrandPageProps) {
           />
           {rice.prefecture}・{rice.region}
         </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tighter md:text-5xl">
+        <h1 className="mt-3 font-serif text-4xl font-semibold tracking-tighter md:text-5xl">
           {rice.name}
         </h1>
         <p className="mt-2 text-sm text-[var(--km-ink-soft)]">
-          {rice.texture_label}／{rice.sweetness_label} ・ {rice.quadrant}
+          {rice.prefecture}産 ・ {rice.texture_label}／{rice.sweetness_label}
         </p>
 
-        <p className="mt-8 max-w-[52ch] text-base leading-[1.9] text-[var(--km-ink-soft)]">
-          {rice.description}
+        <p className="mt-8 max-w-[52ch] break-keep font-serif text-xl leading-[1.9] text-[var(--km-ink)]">
+          {appetite}
         </p>
+        {technical ? (
+          <p className="mt-3 max-w-[52ch] text-sm leading-relaxed text-[var(--km-muted)]">
+            {technical}
+          </p>
+        ) : null}
+
+        {serve || showReason || days.length > 0 ? (
+          <section className="mt-10 max-w-[52ch]">
+            <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
+              今日どう食べると美味しいか
+            </h2>
+            {serve ? (
+              <p className="mt-3 font-serif text-base leading-[1.85] text-[var(--km-ink)]">
+                {serve}
+              </p>
+            ) : null}
+            {showReason ? (
+              <p className="mt-2 text-sm leading-relaxed text-[var(--km-ink-soft)]">
+                {pairReason}
+              </p>
+            ) : null}
+            {days.length > 0 ? (
+              <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-muted)]">
+                こんな日に：{days.join("、")}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
 
         {rice.sommelier_note ? (
-          <blockquote className="mt-6 max-w-[52ch] rounded-2xl border border-[var(--km-accent)]/25 bg-[#fff4e5]/90 px-5 py-4 text-sm leading-relaxed text-[var(--km-ink-soft)]">
+          <blockquote className="mt-10 max-w-[52ch] border-l-[3px] border-[var(--km-gold)] bg-[var(--km-surface-warm)]/90 px-5 py-4 text-sm leading-relaxed text-[var(--km-ink-soft)]">
             <span className="mb-2 block text-[11px] tracking-[0.12em] text-[var(--km-gold)]">
               米ソムリエメモ
             </span>
@@ -135,16 +177,36 @@ export default async function BrandPage({ params }: BrandPageProps) {
           </blockquote>
         ) : null}
 
-        <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-[var(--km-border)] py-6 sm:grid-cols-3 md:grid-cols-4">
-          {scores.map(([label, value]) => (
-            <div key={label}>
-              <dt className="text-[11px] text-[var(--km-muted)]">{label}</dt>
-              <dd className="mt-1 font-mono text-2xl leading-none text-[var(--km-ink)]">
-                {value}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <section className="mt-10">
+          <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
+            主要な味わい
+          </h2>
+          <dl className="mt-4 grid grid-cols-3 gap-3 border-y border-[var(--km-border)] py-6 sm:grid-cols-5">
+            {core.map(([label, value]) => (
+              <div key={label}>
+                <dt className="text-[11px] text-[var(--km-muted)]">{label}</dt>
+                <dd className="mt-1 font-serif text-2xl leading-none text-[var(--km-brown)]">
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <details className="mt-4">
+            <summary className="cursor-pointer text-[12px] text-[var(--km-muted)]">
+              詳しい味わいを見る
+            </summary>
+            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+              {extra.map(([label, value]) => (
+                <div key={label}>
+                  <dt className="text-[10px] text-[var(--km-muted)]">{label}</dt>
+                  <dd className="mt-0.5 font-serif text-lg leading-none text-[var(--km-ink-soft)]">
+                    {value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </details>
+        </section>
 
         <div className="mt-10 flex flex-col gap-8">
           <TagList label="相性の良い料理" items={rice.best_match_dishes} />
@@ -200,46 +262,15 @@ export default async function BrandPage({ params }: BrandPageProps) {
             </dl>
           </section>
 
-          <TagList label="こんな気分に" items={rice.mood_pairings} />
-          <TagList label="こんな場面に" items={rice.occasion_pairings} />
           <TagList label="暮らしのシーン" items={rice.lifestyle_scenes} />
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 sm:flex-row">
-          {rice.rakuten_search_keyword ? (
-            <a
-              href={rakutenUrl(rice.rakuten_search_keyword)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center rounded-full bg-[var(--km-gold)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--km-gold-strong)]"
-            >
-              楽天で探す
-            </a>
-          ) : null}
-          {rice.amazon_search_keyword ? (
-            <a
-              href={amazonUrl(rice.amazon_search_keyword)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center rounded-full border border-[var(--km-border)] px-5 py-3 text-sm text-[var(--km-ink-soft)] transition hover:border-[var(--km-gold)]/45 hover:text-[var(--km-ink)]"
-            >
-              Amazon で探す
-            </a>
-          ) : null}
-          {rice.furusato_keywords && rice.furusato_keywords.length > 0 ? (
-            <a
-              href={furusatoUrl(rice.furusato_keywords[0])}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center rounded-full border border-[var(--km-border)] px-5 py-3 text-sm text-[var(--km-ink-soft)] transition hover:border-[var(--km-gold)]/45 hover:text-[var(--km-ink)]"
-            >
-              ふるさと納税
-            </a>
-          ) : null}
+        <div className="mt-12">
+          <PurchaseLinks rice={rice} />
         </div>
 
         <p className="mt-8 text-[11px] leading-relaxed text-[var(--km-muted)]">
-          味わい評価は KomeSomme の編集による目安です。公的な測定値ではありません。
+          {DISCLAIMER}
         </p>
       </article>
     </main>

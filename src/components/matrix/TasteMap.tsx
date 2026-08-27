@@ -10,25 +10,21 @@ import { ProfileNode } from "./ProfileNode";
 import { AXIS_POLES, FOCUS, INSET, LAYER, type MapDensity } from "./shared";
 import { EmptyPanel, MatrixSkeleton } from "./states";
 
-const POLE_X = 52;
-const POLE_Y = 30;
-const LEGEND = 34;
+export type TasteMapVariant = "desktop" | "preview" | "fullscreen";
+
+const POLES = {
+  desktop: { x: 36, y: 26 },
+  preview: { x: 28, y: 22 },
+  fullscreen: { x: 36, y: 28 },
+} as const;
+const LEGEND = 28;
 const SPARSE_MIN = 380;
 const FOCUS_MIN = 280;
 
 function fitPlot(availW: number, availH: number) {
-  const width = Math.max(0, availW);
-  const height = Math.max(0, availH);
-  const ratio = width < 480 ? 5 / 6 : width < 720 ? 4 / 3 : 16 / 10;
-  let plotW = width;
-  let plotH = plotW / ratio;
-  if (plotH > height) {
-    plotH = height;
-    plotW = plotH * ratio;
-  }
   return {
-    w: Math.floor(plotW),
-    h: Math.floor(plotH),
+    w: Math.floor(Math.max(0, availW)),
+    h: Math.floor(Math.max(0, availH)),
   };
 }
 
@@ -73,7 +69,7 @@ function PoleCapsule({
 }) {
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-full bg-[var(--km-brown)] px-2.5 py-1 text-[10px] font-medium leading-tight text-[#fffdf7] shadow-[0_4px_12px_rgba(112,69,34,0.22)] ${
+      className={`self-center justify-self-center inline-flex items-center justify-center rounded-full bg-[var(--km-brown)] px-2.5 py-1 text-[10px] font-medium leading-tight text-[#fffdf7] shadow-[0_4px_12px_rgba(112,69,34,0.22)] ${
         vertical
           ? "[writing-mode:vertical-rl] whitespace-nowrap px-1.5 py-2.5"
           : "whitespace-nowrap"
@@ -87,33 +83,48 @@ function PoleCapsule({
 function MapLegend({
   regions,
   activeId,
+  variant,
   onHover,
   onToggle,
 }: {
   regions: RiceRegionRecord[];
   activeId: string | null;
+  variant: "wrap" | "chips";
   onHover: (id: string | null) => void;
   onToggle: (id: string) => void;
 }) {
   return (
     <ul
       aria-label="産地域の色分け"
-      className="flex min-h-[32px] flex-wrap items-center justify-center gap-x-1 gap-y-1 px-1 py-0.5"
+      className={
+        variant === "chips"
+          ? "flex min-h-10 max-w-full items-center gap-2 overflow-x-auto px-1 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          : "flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-1 py-0.5"
+      }
     >
       {regions.map(({ id, name, color }) => {
         const idle = activeId !== null && activeId !== id;
+        const pressed = activeId === id;
         return (
-          <li key={id}>
+          <li key={id} className="shrink-0">
             <button
               type="button"
-              aria-pressed={activeId === id}
+              aria-pressed={pressed}
               onMouseEnter={() => onHover(id)}
               onMouseLeave={() => onHover(null)}
               onFocus={() => onHover(id)}
               onBlur={() => onHover(null)}
               onClick={() => onToggle(id)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-1.5 py-0.5 text-[10px] leading-tight transition ${FOCUS} ${
+              className={`inline-flex items-center gap-1.5 rounded-full leading-tight transition ${FOCUS} ${
                 idle ? "opacity-40" : "opacity-100"
+              } ${
+                variant === "chips"
+                  ? `min-h-10 border px-3 py-2 text-[11px] ${
+                      pressed
+                        ? "border-[var(--km-gold)] bg-[var(--km-surface-warm)]"
+                        : "border-[var(--km-border)] bg-[var(--km-surface)]"
+                    }`
+                  : "px-1.5 py-0.5 text-[10px]"
               }`}
             >
               <span
@@ -121,7 +132,7 @@ function MapLegend({
                 className="h-2.5 w-2.5 rounded-full border border-white/70 shadow-[0_0_0_1px_rgba(112,69,34,0.12)]"
                 style={{
                   backgroundColor: color,
-                  transform: activeId === id ? "scale(1.25)" : "scale(1)",
+                  transform: pressed ? "scale(1.25)" : "scale(1)",
                 }}
               />
               <span className="whitespace-nowrap text-[var(--km-ink-soft)]">{name}</span>
@@ -153,6 +164,7 @@ export function TasteMap({
   interactive,
   loading,
   reduceMotion,
+  variant = "desktop",
   onProbeMove,
   onSelect,
 }: {
@@ -169,6 +181,7 @@ export function TasteMap({
   interactive: boolean;
   loading: boolean;
   reduceMotion: boolean;
+  variant?: TasteMapVariant;
   onProbeMove: (hardness: number, sweetness: number) => void;
   onSelect: (id: string) => void;
 }) {
@@ -179,14 +192,28 @@ export function TasteMap({
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [pinnedRegion, setPinnedRegion] = useState<string | null>(null);
   const focusRegion = hoveredRegion ?? pinnedRegion;
+  const pole = POLES[variant];
+  const showLegend = variant !== "preview";
+  const touchFriendly = variant !== "desktop";
+  const showTooltip = variant === "desktop";
 
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
 
     const measure = () => {
+      const canvas = canvasRef.current;
       setPlot(
-        fitPlot(stage.clientWidth - POLE_X * 2, stage.clientHeight - POLE_Y * 2 - LEGEND)
+        fitPlot(
+          canvas?.clientWidth || Math.max(0, stage.clientWidth - pole.x * 2),
+          canvas?.clientHeight ||
+            Math.max(
+              0,
+              stage.clientHeight -
+                pole.y * 2 -
+                (variant === "desktop" ? LEGEND : variant === "fullscreen" ? 44 : 0)
+            )
+        )
       );
     };
 
@@ -194,7 +221,7 @@ export function TasteMap({
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
     return () => observer.disconnect();
-  }, []);
+  }, [pole.x, pole.y, variant]);
 
   const moveProbe = useCallback(
     (clientX: number, clientY: number) => {
@@ -211,12 +238,16 @@ export function TasteMap({
 
   const shortSide = Math.min(plot.w, plot.h);
   const density: MapDensity =
-    shortSide > 0 && shortSide < FOCUS_MIN
+    variant === "preview"
       ? "focus"
-      : shortSide > 0 && shortSide < SPARSE_MIN
-        ? "sparse"
-        : "full";
-  const compactPoles = density !== "full";
+      : variant === "fullscreen"
+        ? "full"
+        : shortSide > 0 && shortSide < FOCUS_MIN
+          ? "focus"
+          : shortSide > 0 && shortSide < SPARSE_MIN
+            ? "sparse"
+            : "full";
+  const longPoles = variant === "fullscreen" || (variant === "desktop" && density === "full");
 
   const visiblePoints =
     density === "focus" && (bestMatchId || selectedId)
@@ -229,21 +260,23 @@ export function TasteMap({
       : points;
 
   return (
-    <div ref={stageRef} className="flex h-full min-h-0 w-full items-center justify-center">
+    <div ref={stageRef} className="flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden">
       <div
-        className="grid items-center justify-items-center"
+        className="grid h-full min-h-0 w-full min-w-0 max-w-full"
         style={{
-          gridTemplateColumns: `${POLE_X}px ${plot.w || 0}px ${POLE_X}px`,
-          gridTemplateRows: `${POLE_Y}px ${plot.h || 0}px ${POLE_Y}px auto`,
+          gridTemplateColumns: `${pole.x}px minmax(0,1fr) ${pole.x}px`,
+          gridTemplateRows: showLegend
+            ? `${pole.y}px minmax(0,1fr) ${pole.y}px auto`
+            : `${pole.y}px minmax(0,1fr) ${pole.y}px`,
         }}
       >
         <div />
-        <PoleCapsule label={compactPoles ? AXIS_POLES.softShort : AXIS_POLES.soft} />
+        <PoleCapsule label={longPoles ? AXIS_POLES.soft : AXIS_POLES.softShort} />
         <div />
 
         <PoleCapsule
           vertical
-          label={compactPoles ? AXIS_POLES.sweetLowShort : AXIS_POLES.sweetLow}
+          label={longPoles ? AXIS_POLES.sweetLow : AXIS_POLES.sweetLowShort}
         />
 
         <div
@@ -262,10 +295,8 @@ export function TasteMap({
             setEngaged(false);
           }}
           onPointerCancel={() => setEngaged(false)}
-          className="relative touch-none select-none overflow-visible rounded-[1.35rem] border border-[var(--km-border)] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
+          className="relative min-h-0 min-w-0 w-full touch-none select-none overflow-visible rounded-[1.35rem] border border-[var(--km-border)] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
           style={{
-            width: plot.w,
-            height: plot.h,
             background:
               "radial-gradient(ellipse at 22% 18%, rgba(255,245,229,0.98), transparent 42%), radial-gradient(ellipse at 78% 82%, rgba(226,154,53,0.12), transparent 48%), linear-gradient(180deg, #fffdf7 0%, #fff6ea 100%)",
           }}
@@ -285,12 +316,19 @@ export function TasteMap({
                   index={index}
                   density={density}
                   dimmed={
-                    Boolean(focusRegion) &&
-                    rice.region_id !== focusRegion &&
-                    rice.region !== regions.find((region) => region.id === focusRegion)?.name
+                    (Boolean(focusRegion) &&
+                      rice.region_id !== focusRegion &&
+                      rice.region !== regions.find((region) => region.id === focusRegion)?.name) ||
+                    (Boolean(bestMatchId || selectedId) &&
+                      rice.id !== bestMatchId &&
+                      rice.id !== selectedId &&
+                      !runnerUpIds.has(rice.id) &&
+                      rice.id !== highlightId)
                   }
                   bestCaption={bestCaption}
                   reduceMotion={reduceMotion}
+                  showTooltip={showTooltip}
+                  touchFriendly={touchFriendly}
                   isBestMatch={rice.id === bestMatchId}
                   isRunnerUp={runnerUpIds.has(rice.id)}
                   isSelected={rice.id === selectedId}
@@ -326,18 +364,19 @@ export function TasteMap({
 
         <PoleCapsule
           vertical
-          label={compactPoles ? AXIS_POLES.sweetHighShort : AXIS_POLES.sweetHigh}
+          label={longPoles ? AXIS_POLES.sweetHigh : AXIS_POLES.sweetHighShort}
         />
 
         <div />
-        <PoleCapsule label={compactPoles ? AXIS_POLES.firmShort : AXIS_POLES.firm} />
+        <PoleCapsule label={longPoles ? AXIS_POLES.firm : AXIS_POLES.firmShort} />
         <div />
 
-        {regions.length > 0 ? (
-          <div style={{ gridColumn: "1 / -1" }}>
+        {showLegend && regions.length > 0 ? (
+          <div className="min-w-0 max-w-full" style={{ gridColumn: "1 / -1" }}>
             <MapLegend
               regions={regions}
               activeId={focusRegion}
+              variant={variant === "fullscreen" ? "chips" : "wrap"}
               onHover={setHoveredRegion}
               onToggle={(id) => setPinnedRegion((current) => (current === id ? null : id))}
             />
