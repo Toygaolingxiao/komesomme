@@ -1,6 +1,7 @@
 import { riceSources } from "@/data/rice";
 import { curatedRiceProfiles } from "@/lib/data/riceProfilesv2";
 import { deriveRiceProfiles } from "@/lib/rice/deriveProfile";
+import { dedupeRiceCatalogue } from "@/lib/rice/cultivarDedup";
 import type { RiceProfileV2, RiceRegion } from "@/types/rice";
 
 /**
@@ -150,7 +151,10 @@ for (const [key, rice] of curatedByName) {
   );
 }
 
-export const riceProfiles: RiceProfileV2[] = [...mergedFromSources, ...curatedOnly];
+export const riceProfiles: RiceProfileV2[] = dedupeRiceCatalogue([
+  ...mergedFromSources,
+  ...curatedOnly,
+]);
 
 export function findRiceProfile(id: string): RiceProfileV2 | undefined {
   return riceProfiles.find((rice) => rice.id === id);

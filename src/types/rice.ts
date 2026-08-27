@@ -24,6 +24,8 @@ export type RiceProfileV2 = {
   name: string;
   prefecture: string;
   region: RiceRegion;
+  region_id?: string;
+  region_color?: string;
 
   // Core taste values: 1-5
   sweetness: number;
@@ -72,6 +74,8 @@ export type RiceProfileV2 = {
   description: string;
   sommelier_note: string;
   pairing_reason: string;
+  /** Why this row is kept or merged. Used in search_text, not shown as lab data. */
+  curation_notes?: string;
 
   // Search and commerce
   semantic_tags: string[];

@@ -42,20 +42,22 @@ OPENAI_API_KEY=
 
 ### データベース
 
-1. Supabase SQL Editor で [`supabase/migrations/0001_create_rice_profiles.sql`](./supabase/migrations/0001_create_rice_profiles.sql) を実行する
+1. Supabase SQL Editor で [`supabase/migrations/0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) を実行する  
+   - すでに `0001` の `rice_profiles` がある場合は、3 テーブルへ移行してワイドテーブルを削除する  
+   - 空のプロジェクトなら **0003 だけ**でよい（0001 は不要）
 2. カタログを検証する
 
 ```bash
 npm run validate:rice
 ```
 
-3. embedding を生成して upsert する
+3. embedding を生成して 3 テーブルへ upsert する
 
 ```bash
 npm run seed:rice
 ```
 
-旧 `rice_brands` の削除は、V2 確認後に [`0002_drop_rice_brands.sql`](./supabase/migrations/0002_drop_rice_brands.sql) を手動実行します。
+V1 の旧 `rice_brands`（0003 より前）だけ、任意で [`0002_drop_rice_brands.sql`](./supabase/migrations/0002_drop_rice_brands.sql) を実行する。0003 適用後の名称マスタは同名のため、0002 は `region_id` があるとスキップする。詳細は [docs/database_schema.md](./docs/database_schema.md)。
 
 ## 開発コマンド
 
@@ -70,7 +72,7 @@ npm run build
 
 ```text
 初期表示
-Browser → rice_profiles → FlavorMatrix
+Browser → rice_catalog + rice_regions → FlavorMatrix（点色 = region_color）
 
 座標推薦
 Map / sliders → display 座標距離 → Top 4（API なし）
@@ -82,7 +84,8 @@ Map / sliders → display 座標距離 → Top 4（API なし）
        → Flavor Bridge → Top 4
 
 シード
-src/data/rice/*.ts → deriveRiceProfile → search_text → embedding → rice_profiles
+src/data/rice/*.ts → deriveRiceProfile → search_text → embedding
+  → rice_regions / rice_brands / rice_profile_details
 ```
 
 主要ファイル:

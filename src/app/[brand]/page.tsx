@@ -109,7 +109,9 @@ export default async function BrandPage({ params }: BrandPageProps) {
           <span
             aria-hidden
             className="h-2.5 w-2.5 rounded-[55%_45%_50%_50%]"
-            style={{ backgroundColor: regionColor(rice.region) }}
+            style={{
+              backgroundColor: rice.region_color ?? regionColor(rice.region),
+            }}
           />
           {rice.prefecture}・{rice.region}
         </p>

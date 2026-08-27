@@ -35,7 +35,8 @@
 
 ### 1.5 データと状態
 
-- マップは Supabase `rice_profiles` から取得する（embedding 列は送らない）
+- マップは Supabase `rice_catalog` と `rice_regions` から取得する（embedding 列は送らない）
+- 点色は地域マスタの `color`（`region_color`）を使う
 - 手書きソースは `src/data/rice/*.ts`、派生は `deriveRiceProfile`
 - Loading / Empty / Error / 意味検索中を日本語で表示する
 - 鍵を Browser に公開しない

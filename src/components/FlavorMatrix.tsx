@@ -10,7 +10,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, useMotionValue, useReducedMotion } from "motion/react";
-import { fetchRiceProfiles } from "@/lib/rice/fetchRiceProfiles";
+import { fetchRiceCatalog } from "@/lib/rice/fetchRiceProfiles";
+import { RICE_REGIONS, type RiceRegionRecord } from "@/lib/rice/regions";
 import {
   calculateTasteNeighbours,
   calculateTopCoordinateMatches,
@@ -47,6 +48,7 @@ export function FlavorMatrix() {
   const reduceMotion = useReducedMotion() ?? false;
 
   const [profiles, setProfiles] = useState<RiceProfileV2[]>([]);
+  const [regions, setRegions] = useState<RiceRegionRecord[]>(RICE_REGIONS);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -70,8 +72,9 @@ export function FlavorMatrix() {
     setLoadState("loading");
     setLoadError(null);
     try {
-      const rows = await fetchRiceProfiles();
-      setProfiles(rows);
+      const catalog = await fetchRiceCatalog();
+      setProfiles(catalog.profiles);
+      setRegions(catalog.regions);
       setLoadState("ready");
     } catch (cause) {
       setLoadError(cause instanceof Error ? cause.message : String(cause));
@@ -273,7 +276,7 @@ export function FlavorMatrix() {
             </div>
           )}
 
-          <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
+          <TasteControls coordinate={coordinate} onAxisChange={setAxis} regions={regions} />
         </div>
 
         <aside className="flex h-full min-h-0 flex-col divide-y divide-[var(--km-border)] rounded-[2rem] border border-[var(--km-border)] bg-[var(--km-surface)]/92 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_28px_70px_-46px_rgba(83,65,48,0.38)] sm:p-6 lg:p-5 xl:p-6">

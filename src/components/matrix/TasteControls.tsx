@@ -1,8 +1,9 @@
 "use client";
 
 import { AXIS_MAX, AXIS_MIN, getSweetnessLabel, getTextureLabel } from "@/lib/rice/matrix";
+import { RICE_REGIONS, type RiceRegionRecord } from "@/lib/rice/regions";
 import type { TasteCoordinate } from "@/types/rice";
-import { FOCUS, REGION_STYLES } from "./shared";
+import { FOCUS } from "./shared";
 
 function ReadoutRow({
   label,
@@ -59,20 +60,22 @@ function AxisControl({
   );
 }
 
-function RegionLegend() {
+function RegionLegend({ regions }: { regions: RiceRegionRecord[] }) {
+  const items = regions.length > 0 ? regions : RICE_REGIONS;
+
   return (
     <ul
       aria-label="産地域の色分け"
       className="hidden flex-wrap justify-end gap-x-3 gap-y-1.5 text-[10px] text-[var(--km-muted)] md:flex"
     >
-      {REGION_STYLES.map(({ region, color }) => (
-        <li key={region} className="inline-flex items-center gap-1.5 whitespace-nowrap">
+      {items.map(({ id, name, color }) => (
+        <li key={id} className="inline-flex items-center gap-1.5 whitespace-nowrap">
           <span
             aria-hidden
             className="h-2 w-2 rounded-[55%_45%_50%_50%]"
             style={{ backgroundColor: color }}
           />
-          {region}
+          {name}
         </li>
       ))}
     </ul>
@@ -88,9 +91,11 @@ function RegionLegend() {
 export function TasteControls({
   coordinate,
   onAxisChange,
+  regions,
 }: {
   coordinate: TasteCoordinate;
   onAxisChange: (axis: keyof TasteCoordinate, value: number) => void;
+  regions?: RiceRegionRecord[];
 }) {
   return (
     <section className="relative shrink-0 border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/55 px-5 py-3 sm:px-7 lg:px-7 xl:px-8">
@@ -98,7 +103,7 @@ export function TasteControls({
         <h3 className="text-sm font-semibold tracking-tight text-[var(--km-ink)]">
           現在の味わい
         </h3>
-        <RegionLegend />
+        <RegionLegend regions={regions ?? RICE_REGIONS} />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

@@ -46,51 +46,127 @@ interface RiceProfileLists {
   lifestyle_scenes: string[];
   semantic_tags: string[];
   search_queries: string[];
-  furusato_keywords: string[];
 }
 
-interface RiceProfileText {
-  quadrant: string;
-  texture_label: string;
-  sweetness_label: string;
-  short_: string;
-  description: string;
-  sommelier_note: string;
-  pairing_reason: string;
-  search_text: string | null;
-  rakuten_search_keyword: string;
+interface RiceEditorialText {
+  quadrant: string | null;
+  texture_label: string | null;
+  sweetness_label: string | null;
+  short_: string | null;
+  description: string | null;
+  sommelier_note: string | null;
+  pairing_reason: string | null;
+  data_source: string | null;
+  data_confidence: string | null;
+}
+
+type RiceRegionRow = {
+  id: string;
+  name: string;
+  color: string;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+};
+
+type RiceBrandRow = {
+  id: string;
+  name: string;
+  prefecture: string;
+  region_id: string;
+  rakuten_search_keyword: string | null;
   amazon_search_keyword: string | null;
-  data_source: string;
-  data_confidence: string;
-}
+  furusato_keywords: string[];
+  created_at?: string;
+  updated_at?: string;
+};
 
-type RiceProfileRow = RiceProfileScores &
+type RiceProfileDetailsRow = RiceProfileScores &
   RiceProfileLists &
-  RiceProfileText & {
-    id: string;
-    name: string;
-    prefecture: string;
-    region: string;
-    /** 1536 dims from gemini-embedding-001 (truncated, re-normalized) or text-embedding-3-small. */
+  RiceEditorialText & {
+    brand_id: string;
+    search_text: string | null;
     embedding: number[] | null;
-    /** Model that produced `embedding`; vectors from different models are not comparable. */
     embedding_model: string | null;
     created_at?: string;
     updated_at?: string;
   };
 
+/** Joined catalogue (view) plus the match RPC payload. No embedding / search_text. */
+type RiceCatalogRow = RiceProfileScores &
+  RiceProfileLists &
+  RiceEditorialText & {
+    id: string;
+    name: string;
+    prefecture: string;
+    region: string;
+    region_id: string;
+    region_color: string;
+    rakuten_search_keyword: string | null;
+    amazon_search_keyword: string | null;
+    furusato_keywords: string[];
+  };
+
+/** Legacy wide table kept only so the client can fall back before 0003 is applied. */
+type LegacyRiceProfileRow = RiceCatalogRow & {
+  search_text: string | null;
+  embedding: number[] | null;
+  embedding_model: string | null;
+};
+
 export interface Database {
   public: {
     Tables: {
+      rice_regions: {
+        Row: RiceRegionRow;
+        Insert: Partial<RiceRegionRow> & Pick<RiceRegionRow, "id" | "name" | "color">;
+        Update: Partial<RiceRegionRow>;
+        Relationships: [];
+      };
+      rice_brands: {
+        Row: RiceBrandRow;
+        Insert: Partial<RiceBrandRow> &
+          Pick<RiceBrandRow, "id" | "name" | "prefecture" | "region_id">;
+        Update: Partial<RiceBrandRow>;
+        Relationships: [
+          {
+            foreignKeyName: "rice_brands_region_id_fkey";
+            columns: ["region_id"];
+            isOneToOne: false;
+            referencedRelation: "rice_regions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      rice_profile_details: {
+        Row: RiceProfileDetailsRow;
+        Insert: Partial<RiceProfileDetailsRow> &
+          Pick<RiceProfileDetailsRow, "brand_id" | "sweetness" | "hardness" | "stickiness">;
+        Update: Partial<RiceProfileDetailsRow>;
+        Relationships: [
+          {
+            foreignKeyName: "rice_profile_details_brand_id_fkey";
+            columns: ["brand_id"];
+            isOneToOne: true;
+            referencedRelation: "rice_brands";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       rice_profiles: {
-        Row: RiceProfileRow;
-        Insert: Partial<RiceProfileRow> &
-          Pick<RiceProfileRow, "id" | "name" | "prefecture" | "region">;
-        Update: Partial<RiceProfileRow>;
+        Row: LegacyRiceProfileRow;
+        Insert: Partial<LegacyRiceProfileRow> &
+          Pick<LegacyRiceProfileRow, "id" | "name" | "prefecture" | "region">;
+        Update: Partial<LegacyRiceProfileRow>;
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      rice_catalog: {
+        Row: RiceCatalogRow;
+        Relationships: [];
+      };
+    };
     Functions: {
       match_rice_profiles: {
         Args: {
@@ -99,11 +175,7 @@ export interface Database {
           match_count: number;
           match_threshold: number;
         };
-        Returns: Array<
-          Omit<RiceProfileRow, "embedding" | "embedding_model" | "search_text"> & {
-            similarity: number;
-          }
-        >;
+        Returns: Array<RiceCatalogRow & { similarity: number }>;
       };
     };
     Enums: Record<string, never>;
@@ -111,4 +183,7 @@ export interface Database {
   };
 }
 
-export type RiceProfileDbRow = RiceProfileRow;
+export type RiceProfileDbRow = RiceCatalogRow;
+export type RiceRegionDbRow = RiceRegionRow;
+export type RiceBrandDbRow = RiceBrandRow;
+export type RiceProfileDetailsDbRow = RiceProfileDetailsRow;

@@ -19,7 +19,7 @@
 | 鍵 | `GEMINI_API_KEY` | `OPENAI_API_KEY` |
 | 正規化 | MRL 1536 切詰後に L2 | L2（念のため） |
 
-異なるモデルのベクトルは比較できない。`rice_profiles.embedding_model` に生成モデルを記録し、RPC は同モデルの行だけを対象にする。切替後は再シードが必要。
+異なるモデルのベクトルは比較できない。`rice_profile_details.embedding_model` に生成モデルを記録し、RPC は同モデルの行だけを対象にする。切替後は再シードが必要。
 
 ## 3. シード
 
@@ -28,7 +28,7 @@
 1. `riceProfiles` を走査する
 2. `buildRiceSearchText` で本文を作る
 3. `createEmbeddingWithRetry`（指数バックオフ + jitter、最大5回）
-4. `rice_profiles` へ upsert（`onConflict: id`）、`embedding_model` も書き込む
+4. `rice_regions` を upsert したあと、銘柄ごとに `rice_brands` と `rice_profile_details` を upsert する
 5. 銘柄間は 1 秒間隔
 
 ## 4. 検索時

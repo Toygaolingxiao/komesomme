@@ -16,7 +16,7 @@
 ## Phase 2: RiceProfile V2 — 完了
 
 - `RiceProfileV2`（約 90 銘柄、12 指標、季節・酒・気分）
-- `rice_profiles` テーブル、`match_rice_profiles`、`embedding_model`
+- `rice_regions` / `rice_brands` / `rice_profile_details`、VIEW `rice_catalog`、`match_rice_profiles`、`embedding_model`
 - Gemini / OpenAI 両対応の embedding 抽象層
 - `search_text` と Flavor Bridge
 - FlavorMatrix の分割（`src/components/matrix/`）

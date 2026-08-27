@@ -37,11 +37,12 @@ src/
 │   └── rakuten/
 └── types/
     ├── rice.ts
-    └── database.ts                   # rice_profiles / match_rice_profiles
+    └── database.ts                   # 3 tables + rice_catalog / match_rice_profiles
 
 supabase/migrations/
-├── 0001_create_rice_profiles.sql
-└── 0002_drop_rice_brands.sql         # 任意・手動
+├── 0001_create_rice_profiles.sql     # 旧ワイドテーブル（既存環境のみ）
+├── 0002_drop_rice_brands.sql         # V1 名称テーブルの任意削除
+└── 0003_normalize_rice_catalog.sql   # 地域 / 名称 / 詳細 + rice_catalog
 
 scripts/
 ├── validate-rice-profiles.ts
@@ -52,9 +53,10 @@ scripts/
 
 ```text
 RiceSource → deriveRiceProfile → riceProfiles
-  → buildRiceSearchText → createEmbedding → rice_profiles
+  → buildRiceSearchText → createEmbedding
+  → rice_regions / rice_brands / rice_profile_details
 
-Browser → fetchRiceProfiles → calculateMatrixDisplayPoint
+Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
        → calculateTopCoordinateMatches（ローカル Top 4）
 
 相談 → POST /api/rice/semantic-recommend
@@ -78,6 +80,7 @@ Browser → fetchRiceProfiles → calculateMatrixDisplayPoint
 ## 5. データ境界と安全性
 
 - Browser には anon key のみ
-- `rice_profiles` は匿名 SELECT のみ
+- `rice_regions` / `rice_brands` / `rice_profile_details` は匿名 SELECT のみ
+- 地図の点色は `rice_regions.color`（VIEW の `region_color`）
 - 通常クエリは `embedding` / `search_text` を取得しない
 - ベクトル比較は必ず `embedding_model` で絞る

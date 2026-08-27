@@ -180,6 +180,24 @@ for (const [quadrant, count] of quadrantCounts) {
 console.log(`\nRiceProfile V2 validation`);
 console.log(`  profiles: ${riceProfiles.length}`);
 console.log(`  quadrants: ${quadrantCounts.size}`);
+const giRows = riceProfiles.filter((rice) =>
+  ["koshihikari-uonuma", "koshihikari-sado", "nitamai", "ryu-no-hitomi"].includes(
+    rice.id
+  )
+);
+for (const rice of giRows) {
+  console.log(`    GI ${rice.id}: ${rice.name} (${rice.prefecture})`);
+}
+
+const requiredGi = ["koshihikari-uonuma", "koshihikari-sado", "nitamai", "ryu-no-hitomi"];
+const missingGi = requiredGi.filter((id) => !riceProfiles.some((rice) => rice.id === id));
+if (missingGi.length > 0) {
+  fail(`Missing GI / premium ids: ${missingGi.join(", ")}`);
+}
+const genericKoshi = riceProfiles.filter((rice) => rice.id === "koshihikari-bl");
+if (genericKoshi.length !== 1) {
+  fail(`Expected one generic コシヒカリ (koshihikari-bl), found ${genericKoshi.length}`);
+}
 for (const [region, count] of [...regionCounts].sort((a, b) => b[1] - a[1])) {
   console.log(`    ${region}: ${count}`);
 }

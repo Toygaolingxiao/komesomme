@@ -1,10 +1,11 @@
 /**
- * Seeds `rice_profiles` with V2 data plus embeddings, via the Supabase service role.
+ * Seeds the normalized catalogue (regions + brands + profile details) plus embeddings.
  *
  * Usage: npm run seed:rice
  *
  * Prerequisites:
- *   1. Run supabase/migrations/0001_create_rice_profiles.sql in the SQL Editor
+ *   1. Run supabase/migrations/0003_normalize_rice_catalog.sql in the SQL Editor
+ *      (0001 is only needed if you still have the wide rice_profiles table to migrate)
  *   2. npm run validate:rice
  *
  * Required (.env.local):
@@ -24,6 +25,7 @@ import {
   resolveProvider,
 } from "../src/lib/embedding";
 import { buildRiceSearchText } from "../src/lib/rice/buildRiceSearchText";
+import { RICE_REGIONS, regionByName } from "../src/lib/rice/regions";
 import type { RiceProfileV2 } from "../src/types/rice";
 
 loadEnv({ path: path.resolve(process.cwd(), ".env.local") });
@@ -44,18 +46,26 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function buildRow(
+function brandRow(rice: RiceProfileV2) {
+  return {
+    id: rice.id,
+    name: rice.name,
+    prefecture: rice.prefecture,
+    region_id: regionByName(rice.region).id,
+    rakuten_search_keyword: rice.rakuten_search_keyword,
+    amazon_search_keyword: rice.amazon_search_keyword ?? null,
+    furusato_keywords: rice.furusato_keywords ?? [],
+  };
+}
+
+function detailsRow(
   rice: RiceProfileV2,
   searchText: string,
   embedding: number[],
   embeddingModel: string
 ) {
   return {
-    id: rice.id,
-    name: rice.name,
-    prefecture: rice.prefecture,
-    region: rice.region,
-
+    brand_id: rice.id,
     sweetness: rice.sweetness,
     hardness: rice.hardness,
     stickiness: rice.stickiness,
@@ -68,46 +78,33 @@ function buildRow(
     cold_rice_quality: rice.cold_rice_quality,
     sauce_absorption: rice.sauce_absorption,
     oil_compatibility: rice.oil_compatibility,
-
     quadrant: rice.quadrant,
     texture_label: rice.texture_label,
     sweetness_label: rice.sweetness_label,
-
     best_match_dishes: rice.best_match_dishes,
     good_with: rice.good_with,
     avoid_pairings: rice.avoid_pairings,
-
     spring_pairings: rice.spring_pairings,
     summer_pairings: rice.summer_pairings,
     autumn_pairings: rice.autumn_pairings,
     winter_pairings: rice.winter_pairings,
-
     sake_pairings: rice.sake_pairings,
     beer_pairings: rice.beer_pairings,
     wine_pairings: rice.wine_pairings,
     whisky_pairings: rice.whisky_pairings,
     tea_pairings: rice.tea_pairings,
-
     mood_pairings: rice.mood_pairings,
     occasion_pairings: rice.occasion_pairings,
     lifestyle_scenes: rice.lifestyle_scenes,
-
     short_: rice.short_,
     description: rice.description,
     sommelier_note: rice.sommelier_note,
     pairing_reason: rice.pairing_reason,
-
     semantic_tags: rice.semantic_tags,
     search_queries: rice.search_queries,
     search_text: searchText,
-
-    rakuten_search_keyword: rice.rakuten_search_keyword,
-    amazon_search_keyword: rice.amazon_search_keyword ?? null,
-    furusato_keywords: rice.furusato_keywords ?? [],
-
     embedding,
     embedding_model: embeddingModel,
-
     data_source: rice.data_source,
     data_confidence: rice.data_confidence,
   };
@@ -128,6 +125,25 @@ async function main(): Promise<void> {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
+  const { error: regionError } = await supabase.from("rice_regions").upsert(
+    RICE_REGIONS.map((region) => ({
+      id: region.id,
+      name: region.name,
+      color: region.color,
+      sort_order: region.sort_order,
+    })),
+    { onConflict: "id" }
+  );
+
+  if (regionError) {
+    throw new Error(
+      `rice_regions upsert failed ([${regionError.code ?? "db"}] ${regionError.message}). ` +
+        "Run supabase/migrations/0003_normalize_rice_catalog.sql first."
+    );
+  }
+
+  console.log(`✓ rice_regions (${RICE_REGIONS.length})\n`);
+
   let ok = 0;
   const failures: string[] = [];
 
@@ -140,6 +156,14 @@ async function main(): Promise<void> {
     }
 
     try {
+      const { error: brandError } = await supabase
+        .from("rice_brands")
+        .upsert(brandRow(rice), { onConflict: "id" });
+
+      if (brandError) {
+        throw new Error(`[brand ${brandError.code ?? "db"}] ${brandError.message}`);
+      }
+
       const searchText = buildRiceSearchText(rice);
       const embedding = await createEmbeddingWithRetry(
         searchText,
@@ -148,19 +172,20 @@ async function main(): Promise<void> {
         (message) => console.warn(`  ⚠ ${message}`)
       );
 
-      // Upsert keeps re-seeding idempotent, which matters when switching providers.
-      const { error } = await supabase
-        .from("rice_profiles")
-        .upsert(buildRow(rice, searchText, embedding, embeddingModel), {
-          onConflict: "id",
+      const { error: detailsError } = await supabase
+        .from("rice_profile_details")
+        .upsert(detailsRow(rice, searchText, embedding, embeddingModel), {
+          onConflict: "brand_id",
         });
 
-      if (error) {
-        throw new Error(`[${error.code ?? "db"}] ${error.message}`);
+      if (detailsError) {
+        throw new Error(`[details ${detailsError.code ?? "db"}] ${detailsError.message}`);
       }
 
       ok += 1;
-      console.log(`${progress} ✓ ${rice.name} (${rice.prefecture})`);
+      console.log(
+        `${progress} ✓ ${rice.name} (${rice.prefecture} / ${regionByName(rice.region).id})`
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(`${rice.name}: ${message}`);

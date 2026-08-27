@@ -12,6 +12,7 @@ import {
   amazonUrl,
   furusatoUrl,
   rakutenUrl,
+  regionColor,
 } from "./shared";
 
 const CONFIDENCE_LABEL: Record<string, string> = {
@@ -153,7 +154,14 @@ export function BrandDetailPanel({
             <h3 className="text-3xl font-semibold leading-tight tracking-tighter text-[var(--km-ink)]">
               {rice.name}
             </h3>
-            <p className="mt-2 text-xs text-[var(--km-muted)]">
+            <p className="mt-2 flex items-center gap-2 text-xs text-[var(--km-muted)]">
+              <span
+                aria-hidden
+                className="h-2 w-2 rounded-[55%_45%_50%_50%]"
+                style={{
+                  backgroundColor: rice.region_color ?? regionColor(rice.region),
+                }}
+              />
               {rice.prefecture}・{rice.region}
             </p>
             <p className="mt-1 text-[11px] text-[var(--km-muted)]">

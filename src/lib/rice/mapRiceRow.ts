@@ -1,4 +1,5 @@
 import type { RiceProfileV2, RiceRegion } from "@/types/rice";
+import { RICE_REGIONS } from "./regions";
 import { normalizeTasteValue } from "./matrix";
 
 /**
@@ -10,11 +11,13 @@ import { normalizeTasteValue } from "./matrix";
  * `embedding` and `search_text` are deliberately excluded: nothing in the UI ranks by
  * vector, so shipping ~90 embeddings of 1536 floats to the browser would be wasted.
  */
-export const RICE_PROFILE_COLUMNS = [
+const RICE_PROFILE_COLUMN_LIST = [
   "id",
   "name",
   "prefecture",
   "region",
+  "region_id",
+  "region_color",
   "sweetness",
   "hardness",
   "stickiness",
@@ -56,17 +59,16 @@ export const RICE_PROFILE_COLUMNS = [
   "furusato_keywords",
   "data_source",
   "data_confidence",
-].join(",");
+] as const;
 
-const REGIONS: RiceRegion[] = [
-  "北海道・東北",
-  "関東・甲信越",
-  "東海・北陸",
-  "近畿",
-  "中国・四国",
-  "九州・沖縄",
-  "全国銘柄",
-];
+export const RICE_PROFILE_COLUMNS = RICE_PROFILE_COLUMN_LIST.join(",");
+
+/** Wide `rice_profiles` (0001) has no region_id / region_color columns. */
+export const RICE_PROFILE_COLUMNS_LEGACY = RICE_PROFILE_COLUMN_LIST.filter(
+  (column) => column !== "region_id" && column !== "region_color"
+).join(",");
+
+const REGIONS: RiceRegion[] = RICE_REGIONS.map((region) => region.name);
 
 function asStringArray(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -100,6 +102,8 @@ export function mapRowToRiceProfile(row: Record<string, unknown>): RiceProfileV2
     name: asText(row.name),
     prefecture: asText(row.prefecture),
     region: asRegion(row.region),
+    region_id: asText(row.region_id) || undefined,
+    region_color: asText(row.region_color) || undefined,
 
     sweetness: normalizeTasteValue(Number(row.sweetness)),
     hardness: normalizeTasteValue(Number(row.hardness)),

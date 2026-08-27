@@ -64,7 +64,7 @@ export function ProfileNode({
         top: `${top}%`,
         width: size,
         height: size,
-        ["--node-color" as string]: regionColor(rice.region),
+        ["--node-color" as string]: rice.region_color ?? regionColor(rice.region),
         zIndex: isBestMatch
           ? LAYER.bestNode
           : isRunnerUp

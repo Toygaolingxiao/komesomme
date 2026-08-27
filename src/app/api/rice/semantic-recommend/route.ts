@@ -66,12 +66,13 @@ export async function POST(request: Request) {
 
   try {
     const supabase = createAdminClient();
+    // number[] does not satisfy supabase-js GenericFunction Args (Record<string, unknown>).
     const { data, error } = await supabase.rpc("match_rice_profiles", {
       query_embedding: embedding,
       p_embedding_model: embeddingModel,
       match_count: matchCount,
       match_threshold: MATCH_THRESHOLD,
-    });
+    } as never);
 
     if (error) throw new Error(error.message);
 

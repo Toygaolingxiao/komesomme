@@ -28,6 +28,7 @@ export function buildRiceSearchText(rice: RiceProfileV2): string {
     line("説明：", rice.description),
     line("侍米師メモ：", rice.sommelier_note),
     line("相性の理由：", rice.pairing_reason),
+    line("位置づけ：", rice.curation_notes ?? ""),
 
     line("合う料理：", join(rice.best_match_dishes)),
     line("相性のよい食材：", join(rice.good_with)),

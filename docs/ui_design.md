@@ -105,7 +105,7 @@ KomeSomme は、AI ダッシュボードではなく「和紙の味わい地図�
 
 ```text
 初期表示
-Browser → Supabase rice_profiles → 味わいマップ
+Browser → Supabase rice_catalog + rice_regions → 味わいマップ（点色は地域マスタ）
 
 座標推薦
 Map / sliders → display 座標の距離 → Top 4（ローカル）
@@ -118,7 +118,7 @@ Map / sliders → display 座標の距離 → Top 4（ローカル）
 
 シード
 src/data/rice/*.ts → deriveRiceProfile → buildRiceSearchText
-  → createEmbedding → rice_profiles
+  → createEmbedding → rice_regions / rice_brands / rice_profile_details
 ```
 
 Supabase を mock data に置き換えない。UI 改修のために未導入の UI / chart 依存を追加しない。
@@ -156,4 +156,4 @@ Supabase を mock data に置き換えない。UI 改修のために未導入の
 - Desktop は左にマップと現在値、右に No.1・近い銘柄・相談が収まり、右側スクロールがない
 - 座標推薦と意味検索が混ざらず、どちらも Top 4 を表示する
 - マップの No.1 は探針に最も近い点である
-- `rice_profiles` / embedding 抽象層 / Flavor Bridge / 購買 CTA の V2 データフローが保たれる
+- `rice_catalog` / 地域色 / embedding 抽象層 / Flavor Bridge / 購買 CTA の V2 データフローが保たれる
