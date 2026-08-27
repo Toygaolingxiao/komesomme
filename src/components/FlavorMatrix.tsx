@@ -407,7 +407,7 @@ export function FlavorMatrix() {
           <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3">
+        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(2.5rem,calc(env(safe-area-inset-bottom)+1.25rem))] pt-3">
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}
@@ -418,7 +418,7 @@ export function FlavorMatrix() {
             {loadState === "error" ? (
               <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
             ) : mapOpen ? null : (
-              <div className="-mx-2 h-[min(34svh,220px)] min-h-[148px] w-[calc(100%+1rem)]">
+              <div className="-mx-2 h-[min(30svh,200px)] min-h-[140px] w-[calc(100%+1rem)]">
                 <TasteMap
                   {...mapShared}
                   variant="preview"
@@ -439,7 +439,7 @@ export function FlavorMatrix() {
             <OpenMapButton onClick={() => setMapOpen(true)} />
           </div>
 
-          <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+          <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             {consult}
           </div>
         </div>
