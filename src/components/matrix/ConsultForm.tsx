@@ -31,7 +31,7 @@ export function ConsultForm({
   return (
     <div className="mt-auto shrink-0 pt-5 lg:pt-5 xl:pt-6">
       <h3 className="text-base font-semibold tracking-tight text-[var(--km-ink)]">
-        侍米師に相談
+        米ソムリエに相談
       </h3>
       <p className="mt-2 text-sm leading-relaxed text-[var(--km-ink-soft)]">
         料理・気分・お酒の言葉から、今日の一膳を探します。

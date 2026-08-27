@@ -6,7 +6,7 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  title: "KomeSomme | 侍米師",
+  title: "KomeSomme | 米ソムリエ",
   description:
     "日本のブランド米を粒感と甘みの味わい地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。",
 };

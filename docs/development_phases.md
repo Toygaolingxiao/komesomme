@@ -15,8 +15,10 @@
 
 ## Phase 2: RiceProfile V2 — 完了
 
-- `RiceProfileV2`（約 90 銘柄、12 指標、季節・酒・気分）
+- `RiceProfileV2`（約 107 銘柄、12 指標、季節・酒・気分）
 - `rice_regions` / `rice_brands` / `rice_profile_details`、VIEW `rice_catalog`、`match_rice_profiles`、`embedding_model`
+- 品種去重（県名・SKU 統合、魚沼・佐渡・仁多・龍の瞳は独立）
+- 画面案内役は **米ソムリエ**（造語「侍米師」は使わない）
 - Gemini / OpenAI 両対応の embedding 抽象層
 - `search_text` と Flavor Bridge
 - FlavorMatrix の分割（`src/components/matrix/`）
@@ -28,7 +30,7 @@
 - 単体・統合・E2E・アクセシビリティ試験
 - Rate limit、構造化ログ、監視
 - 本番デプロイ、独自ドメイン、分析
-- `rice_brands` の手動 drop と本番 RLS 確認
+- 本番 RLS と seed 済みデータの確認
 
 ## Phase 4: コンテンツ・収益化 — 将来
 

@@ -27,7 +27,7 @@ function BestMatchCard({
       <span className="flex items-start justify-between gap-5">
         <span>
           <span className="block text-[11px] tracking-[0.12em] text-[var(--km-accent)]">
-            侍米師の一膳
+            米ソムリエの一膳
           </span>
           <span className="mt-3 block text-xl font-semibold tracking-tight text-[var(--km-ink)] transition-colors group-hover:text-[var(--km-gold)]">
             {match.rice.name}
@@ -144,7 +144,7 @@ export function RecommendationRail({
     <div className="flex flex-1 flex-col pb-5 lg:pb-5 xl:pb-6">
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="text-base font-semibold tracking-tight text-[var(--km-ink)]">
-          侍米師のおすすめ
+          米ソムリエのおすすめ
         </h3>
         {mode === "semantic" ? (
           <button

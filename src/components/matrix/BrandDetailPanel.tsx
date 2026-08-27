@@ -185,7 +185,7 @@ export function BrandDetailPanel({
         {rice.sommelier_note ? (
           <blockquote className="mt-5 rounded-2xl border border-[var(--km-gold)]/25 bg-[#f6ecd8]/70 px-4 py-3.5 text-xs leading-relaxed text-[var(--km-ink-soft)]">
             <span className="mb-1.5 block text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
-              侍米師メモ
+              米ソムリエメモ
             </span>
             {rice.sommelier_note}
           </blockquote>

@@ -31,7 +31,8 @@ src/
 │   ├── rice/*.ts                     # 地域別 RiceSource
 │   └── riceProfilesV2.ts             # derive 済みカタログ
 ├── lib/
-│   ├── rice/                         # matrix / derive / search_text / bridge / fetch
+│   ├── rice/                         # matrix / derive / dedup / search_text / bridge / fetch / regions
+│   ├── data/                         # curated overlay + backup archive
 │   ├── embedding/                    # Gemini / OpenAI
 │   ├── supabase/
 │   └── rakuten/
@@ -52,7 +53,7 @@ scripts/
 ## 3. 主要データフロー
 
 ```text
-RiceSource → deriveRiceProfile → riceProfiles
+RiceSource → deriveRiceProfile → overlay → cultivarDedup → riceProfiles
   → buildRiceSearchText → createEmbedding
   → rice_regions / rice_brands / rice_profile_details
 

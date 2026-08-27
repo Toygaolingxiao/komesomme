@@ -129,7 +129,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
         {rice.sommelier_note ? (
           <blockquote className="mt-6 max-w-[52ch] rounded-2xl border border-[var(--km-gold)]/25 bg-[#f6ecd8]/70 px-5 py-4 text-sm leading-relaxed text-[var(--km-ink-soft)]">
             <span className="mb-2 block text-[11px] tracking-[0.12em] text-[var(--km-gold)]">
-              侍米師メモ
+              米ソムリエメモ
             </span>
             {rice.sommelier_note}
           </blockquote>

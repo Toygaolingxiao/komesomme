@@ -20,7 +20,7 @@
 
 ### 1.3 意味検索
 
-- 「侍米師に相談」の明示的 submit 時だけ `POST /api/rice/semantic-recommend` を呼ぶ
+- 「米ソムリエに相談」の明示的 submit 時だけ `POST /api/rice/semantic-recommend` を呼ぶ
 - サーバーで embedding を生成し、RPC `match_rice_profiles` が **Top 4** を返す
 - `embedding_model` で絞り込み、Gemini / OpenAI の混在比較を防ぐ
 - Flavor Bridge が酒種・場面に応じた理由を付ける（LLM なし）
