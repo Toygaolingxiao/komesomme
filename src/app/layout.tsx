@@ -6,9 +6,9 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  title: "KomeSomme | AI 侍米师",
+  title: "KomeSomme | 侍米師",
   description:
-    "日本ブランド米の2D風味マトリクスとAI献立ペアリングで、最適な一品を見つけるナビゲート体験。",
+    "日本のブランド米を粒感と甘みの味わい地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。",
 };
 
 export default function RootLayout({

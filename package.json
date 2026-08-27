@@ -7,7 +7,9 @@
     "build": "cross-env NODE_OPTIONS=--use-system-ca next build",
     "start": "cross-env NODE_OPTIONS=--use-system-ca next start",
     "lint": "eslint src scripts --cache --cache-location .next/cache/eslint/.eslintcache",
-    "seed": "node --use-system-ca --import tsx scripts/seed.ts"
+    "typecheck": "tsc --noEmit",
+    "validate:rice": "node --import tsx scripts/validate-rice-profiles.ts",
+    "seed:rice": "node --use-system-ca --import tsx scripts/seed-rice-profiles.ts"
   },
   "dependencies": {
     "@google/genai": "^2.19.0",

@@ -11,78 +11,99 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+/** Taste score columns, all rated 1-5. */
+interface RiceProfileScores {
+  sweetness: number;
+  hardness: number;
+  stickiness: number;
+  aroma: number;
+  umami: number;
+  aftertaste: number;
+  grain_size: number;
+  clarity: number;
+  richness: number;
+  cold_rice_quality: number;
+  sauce_absorption: number;
+  oil_compatibility: number;
+}
+
+/** jsonb string-array columns. */
+interface RiceProfileLists {
+  best_match_dishes: string[];
+  good_with: string[];
+  avoid_pairings: string[];
+  spring_pairings: string[];
+  summer_pairings: string[];
+  autumn_pairings: string[];
+  winter_pairings: string[];
+  sake_pairings: string[];
+  beer_pairings: string[];
+  wine_pairings: string[];
+  whisky_pairings: string[];
+  tea_pairings: string[];
+  mood_pairings: string[];
+  occasion_pairings: string[];
+  lifestyle_scenes: string[];
+  semantic_tags: string[];
+  search_queries: string[];
+  furusato_keywords: string[];
+}
+
+interface RiceProfileText {
+  quadrant: string;
+  texture_label: string;
+  sweetness_label: string;
+  short_: string;
+  description: string;
+  sommelier_note: string;
+  pairing_reason: string;
+  search_text: string | null;
+  rakuten_search_keyword: string;
+  amazon_search_keyword: string | null;
+  data_source: string;
+  data_confidence: string;
+}
+
+type RiceProfileRow = RiceProfileScores &
+  RiceProfileLists &
+  RiceProfileText & {
+    id: string;
+    name: string;
+    prefecture: string;
+    region: string;
+    /** 1536 dims from gemini-embedding-001 (truncated, re-normalized) or text-embedding-3-small. */
+    embedding: number[] | null;
+    /** Model that produced `embedding`; vectors from different models are not comparable. */
+    embedding_model: string | null;
+    created_at?: string;
+    updated_at?: string;
+  };
+
 export interface Database {
   public: {
     Tables: {
-      rice_brands: {
-        Row: {
-          id: string;
-          name: string;
-          prefecture: string;
-          sweetness: number;
-          hardness: number;
-          stickiness: number;
-          best_match_dishes: string[] | null;
-          description: string;
-          /** Gemini gemini-embedding-001 truncated to 1536 dims and re-normalized. */
-          embedding: number[] | null;
-          rakuten_search_keyword: string | null;
-          affiliate_amazon: string | null;
-          affiliate_furusato: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          prefecture: string;
-          sweetness: number;
-          hardness: number;
-          stickiness: number;
-          best_match_dishes?: string[] | null;
-          description: string;
-          embedding?: number[] | null;
-          rakuten_search_keyword?: string | null;
-          affiliate_amazon?: string | null;
-          affiliate_furusato?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          prefecture?: string;
-          sweetness?: number;
-          hardness?: number;
-          stickiness?: number;
-          best_match_dishes?: string[] | null;
-          description?: string;
-          embedding?: number[] | null;
-          rakuten_search_keyword?: string | null;
-          affiliate_amazon?: string | null;
-          affiliate_furusato?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
+      rice_profiles: {
+        Row: RiceProfileRow;
+        Insert: Partial<RiceProfileRow> &
+          Pick<RiceProfileRow, "id" | "name" | "prefecture" | "region">;
+        Update: Partial<RiceProfileRow>;
         Relationships: [];
       };
     };
     Views: Record<string, never>;
     Functions: {
-      match_rice_brands: {
+      match_rice_profiles: {
         Args: {
           query_embedding: number[];
+          p_embedding_model: string;
           match_count: number;
           match_threshold: number;
         };
-        Returns: {
-          id: string;
-          name: string;
-          prefecture: string;
-          description: string;
-          rakuten_search_keyword: string | null;
-          similarity: number;
-        }[];
+        Returns: Array<
+          Omit<RiceProfileRow, "embedding" | "embedding_model" | "search_text"> & {
+            similarity: number;
+          }
+        >;
       };
     };
     Enums: Record<string, never>;
@@ -90,46 +111,4 @@ export interface Database {
   };
 }
 
-/** App-level rice brand model (aligned with `rice_brands` + docs/database_schema.md). */
-export interface RiceBrand {
-  id: string;
-  name: string;
-  prefecture: string;
-  sweetness: number;
-  hardness: number;
-  stickiness: number;
-  best_match_dishes: string[];
-  description: string;
-  /** 1536-dim vector (gemini-embedding-001, normalized). */
-  embedding?: number[];
-  rakuten_search_keyword?: string | null;
-  affiliate_amazon?: string | null;
-  affiliate_furusato?: string | null;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface UserSelection {
-  id: string;
-  user_id: string;
-  rice_brand_id: string;
-  reason: string;
-  created_at?: string;
-}
-
-export interface RecipeRecommendation {
-  recipe_name: string;
-  rice_recommendations: RiceBrand[];
-  reasons: string;
-  confidence: number;
-}
-
-export interface MatrixFilterQuery {
-  hardness_min?: number;
-  hardness_max?: number;
-  stickiness_min?: number;
-  stickiness_max?: number;
-  sweetness_min?: number;
-  sweetness_max?: number;
-  limit?: number;
-}
+export type RiceProfileDbRow = RiceProfileRow;

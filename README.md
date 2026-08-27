@@ -1,122 +1,106 @@
 # KomeSomme
 
-KomeSomme（コメソム）は、日本のブランド米を「粒感 × 甘み」の味わいマップと料理・気分の言葉から探せる選米ナビゲーションです。座標による即時推薦と Gemini embedding による意味検索を分離し、近い銘柄 Top 4 と詳細、楽天市場への購入導線を表示します。
+KomeSomme（コメソム）は、日本のブランド米を「粒感 × 甘み」の味わいマップと、料理・気分・お酒の言葉から探せる選米ナビゲーションです。座標推薦は端末内で即時に行い、自然言語の相談だけ embedding 検索になります。
 
 ## 現行 MVP
 
-実装済み:
+- 約 90 銘柄の `RiceProfileV2`（12 の味わい指標、季節・酒・気分）
+- 正方形の風味マトリクス。X=粒感、Y=甘み、点サイズ=粘り
+- 決定論的 Jitter による点の自然な配置
+- マップ / スライダーによるローカル座標推薦 Top 4
+- 「侍米師に相談」による意味検索 Top 4（Flavor Bridge 付き）
+- 詳細パネルと `/[brand]` ページ
+- 楽天 / Amazon / ふるさと納税の検索 CTA
 
-- Supabase `rice_brands` の実データを表示する2D風味マトリクス
-- X=粒感（`hardness`）、Y=甘み（`sweetness`）、点サイズ=粘り（`stickiness`）
-- マップ、探針、スライダーによるクライアント座標推薦 Top 4
-- 相談文を Gemini で embedding 化し、Supabase pgvector で検索する意味推薦 Top 4
-- 銘柄詳細、相性料理、近い銘柄、楽天市場検索 CTA
-- Loading / Empty / Error と reduced motion 対応
-
-ブランド詳細ページの実データ化、Affiliate API、Amazon / ふるさと納税 CTA、LLM による推薦文、Auth、rate limit は未実装です。
+Rakuten Affiliate API、LLM 文章生成、Auth は未実装です。
 
 ## 技術スタック
 
-- Next.js 15 App Router / React 19
-- TypeScript 5
-- Tailwind CSS 4
-- Motion（`motion/react`）
-- Phosphor Icons
-- Supabase（PostgreSQL、pgvector、RLS 前提）
-- Gemini `gemini-embedding-001`（1536次元）
-- Next.js Node.js Route Handler（非 Streaming JSON）
-
-OpenAI API、shadcn/ui、Recharts、Lucide React は現行実装では使用していません。
+- Next.js 15 App Router / React 19 / TypeScript 5 / Tailwind CSS 4
+- Motion、Phosphor Icons
+- Supabase（PostgreSQL、pgvector、RLS）
+- Embedding: Gemini `gemini-embedding-001` または OpenAI `text-embedding-3-small`（1536 次元）
 
 ## セットアップ
-
-Node.js と npm を用意し、依存をインストールします。
 
 ```bash
 npm install
 ```
 
-`.env.example` を `.env.local` にコピーし、次の値を設定します。
+`.env.example` を `.env.local` にコピーします。
 
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+EMBEDDING_PROVIDER=gemini
 GEMINI_API_KEY=
+OPENAI_API_KEY=
 ```
 
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Browser からの銘柄読取
-- `SUPABASE_SERVICE_ROLE_KEY`: recommend API と seed のサーバー処理
-- `GEMINI_API_KEY`: recommend API と seed の embedding 生成
+`EMBEDDING_PROVIDER` を変えたら、必ず再シードしてください。異なるモデルのベクトルは比較できません。
 
-秘密鍵を commit せず、service role key と Gemini key をクライアントコードへ公開しないでください。
+### データベース
+
+1. Supabase SQL Editor で [`supabase/migrations/0001_create_rice_profiles.sql`](./supabase/migrations/0001_create_rice_profiles.sql) を実行する
+2. カタログを検証する
+
+```bash
+npm run validate:rice
+```
+
+3. embedding を生成して upsert する
+
+```bash
+npm run seed:rice
+```
+
+旧 `rice_brands` の削除は、V2 確認後に [`0002_drop_rice_brands.sql`](./supabase/migrations/0002_drop_rice_brands.sql) を手動実行します。
 
 ## 開発コマンド
 
-開発サーバー:
-
 ```bash
 npm run dev
-```
-
-ブラウザで `http://localhost:3000` を開きます。
-
-シードデータの embedding を生成し、`rice_brands` へ投入:
-
-```bash
-npm run seed
-```
-
-本番 build:
-
-```bash
+npm run lint
+npm run typecheck
 npm run build
 ```
-
-build の起動確認:
-
-```bash
-npm run start
-```
-
-`npm run seed` は各銘柄を insert するため、同じ DB へ再実行する前に重複方針を確認してください。
 
 ## アーキテクチャ
 
 ```text
 初期表示
-Browser → Supabase rice_brands → FlavorMatrix
+Browser → rice_profiles → FlavorMatrix
 
 座標推薦
-Map / sliders → hardness × sweetness の client-side distance → Top 4
+Map / sliders → display 座標距離 → Top 4（API なし）
 
 意味検索
-相談文 → POST /api/recommend
-       → Gemini gemini-embedding-001（1536次元）
-       → Supabase match_rice_brands RPC / pgvector
-       → JSON Top 4
+相談文 → POST /api/rice/semantic-recommend
+       → createEmbedding
+       → match_rice_profiles（embedding_model で絞り込み）
+       → Flavor Bridge → Top 4
 
 シード
-src/lib/data/seed-rice.json
-  → scripts/seed.ts
-  → Gemini embedding
-  → Supabase rice_brands
+src/data/rice/*.ts → deriveRiceProfile → search_text → embedding → rice_profiles
 ```
 
 主要ファイル:
 
-- `src/components/FlavorMatrix.tsx`: 現行 UI、座標推薦、意味検索結果、詳細
-- `src/app/api/recommend/route.ts`: Node runtime の embedding-only JSON API
-- `scripts/seed.ts`: シード検証、embedding 生成、DB insert
-- `src/lib/supabase/`: Browser / Server / Admin client と query
-- `src/types/database.ts`: DB と RPC の TypeScript 型
+- `src/components/FlavorMatrix.tsx` — 状態とレイアウト
+- `src/components/matrix/` — マップ、レール、相談、詳細
+- `src/lib/rice/` — 座標計算、導出、search_text、Flavor Bridge
+- `src/lib/embedding/` — プロバイダ抽象
+- `src/app/api/rice/semantic-recommend/route.ts`
+- `src/data/rice/` — 手書きソース
 
 ## ドキュメント
 
 - [UI デザイン正本](./docs/ui_design.md)
 - [システム設計](./docs/master_design_spec.md)
 - [要件定義](./docs/requirements.md)
-- [Gemini Embedding・意味検索設計](./docs/rag_prompt_design.md)
+- [Embedding・意味検索](./docs/rag_prompt_design.md)
 - [データベース設計](./docs/database_schema.md)
 - [開発フェーズ](./docs/development_phases.md)
 - [事業概要](./docs/business_plan.md)
+- [RiceProfile V2 原典](./docs/kome-somme-rice-v2-implementation.md)（編集しない）
