@@ -16,8 +16,9 @@ import {
   calculateTasteNeighbours,
   calculateTopCoordinateMatches,
   clamp,
+  coordinateFromDisplayPoint,
   toDisplayPoints,
-  hardnessToDisplayX,
+  hardnessToDisplayY,
   valueToPosition,
 } from "@/lib/rice/matrix";
 import type {
@@ -43,6 +44,14 @@ type SemanticState = "idle" | "pending" | "error";
 
 const INITIAL_COORDINATE: TasteCoordinate = { hardness: 3, sweetness: 3 };
 
+function probeLeftOf(coordinate: TasteCoordinate) {
+  return `${valueToPosition(coordinate.sweetness, INSET)}%`;
+}
+
+function probeTopOf(coordinate: TasteCoordinate) {
+  return `${100 - valueToPosition(hardnessToDisplayY(coordinate.hardness), INSET)}%`;
+}
+
 export function FlavorMatrix() {
   const reduceMotion = useReducedMotion() ?? false;
 
@@ -53,6 +62,7 @@ export function FlavorMatrix() {
 
   const [coordinate, setCoordinate] = useState<TasteCoordinate>(INITIAL_COORDINATE);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   const [recommendationMode, setRecommendationMode] =
@@ -61,12 +71,8 @@ export function FlavorMatrix() {
   const [semanticMatches, setSemanticMatches] = useState<RailMatch[]>([]);
   const [semanticReply, setSemanticReply] = useState<string | null>(null);
 
-  const probeLeft = useMotionValue(
-    `${valueToPosition(hardnessToDisplayX(INITIAL_COORDINATE.hardness), INSET)}%`
-  );
-  const probeTop = useMotionValue(
-    `${100 - valueToPosition(INITIAL_COORDINATE.sweetness, INSET)}%`
-  );
+  const probeLeft = useMotionValue(probeLeftOf(INITIAL_COORDINATE));
+  const probeTop = useMotionValue(probeTopOf(INITIAL_COORDINATE));
 
   const loadProfiles = useCallback(async () => {
     setLoadState("loading");
@@ -87,8 +93,8 @@ export function FlavorMatrix() {
   }, [loadProfiles]);
 
   useEffect(() => {
-    probeLeft.set(`${valueToPosition(hardnessToDisplayX(coordinate.hardness), INSET)}%`);
-    probeTop.set(`${100 - valueToPosition(coordinate.sweetness, INSET)}%`);
+    probeLeft.set(probeLeftOf(coordinate));
+    probeTop.set(probeTopOf(coordinate));
   }, [coordinate.hardness, coordinate.sweetness, probeLeft, probeTop]);
 
   const points = useMemo(() => toDisplayPoints(profiles), [profiles]);
@@ -109,11 +115,11 @@ export function FlavorMatrix() {
 
   const scoreById = useMemo(() => {
     const map = new Map<string, number>();
-    for (const match of coordinateMatches) {
+    for (const match of railMatches) {
       map.set(match.rice.id, match.score);
     }
     return map;
-  }, [coordinateMatches]);
+  }, [railMatches]);
 
   const selected = useMemo(
     () => profiles.find((rice) => rice.id === selectedId) ?? null,
@@ -128,10 +134,10 @@ export function FlavorMatrix() {
     [profiles, selected]
   );
 
-  const bestMatchId = coordinateMatches[0]?.rice.id ?? null;
+  const bestMatchId = railMatches[0]?.rice.id ?? null;
   const runnerUpIds = useMemo(
-    () => new Set(coordinateMatches.slice(1).map((match) => match.rice.id)),
-    [coordinateMatches]
+    () => new Set(railMatches.slice(1).map((match) => match.rice.id)),
+    [railMatches]
   );
 
   const resetSemantic = useCallback(() => {
@@ -156,8 +162,8 @@ export function FlavorMatrix() {
     (axis: keyof TasteCoordinate, value: number) => {
       setCoordinate((previous) => {
         const next = { ...previous, [axis]: clamp(value) };
-        probeLeft.set(`${valueToPosition(hardnessToDisplayX(next.hardness), INSET)}%`);
-        probeTop.set(`${100 - valueToPosition(next.sweetness, INSET)}%`);
+        probeLeft.set(probeLeftOf(next));
+        probeTop.set(probeTopOf(next));
         return next;
       });
       if (recommendationMode === "semantic") resetSemantic();
@@ -212,6 +218,19 @@ export function FlavorMatrix() {
 
       setSemanticMatches(matches);
       setSemanticReply(typeof body.reply === "string" ? body.reply.trim() : null);
+      const top = matches[0]?.rice;
+      if (top) {
+        const placed = points.find((point) => point.id === top.id);
+        const next = placed
+          ? coordinateFromDisplayPoint(placed)
+          : {
+              hardness: clamp(top.hardness),
+              sweetness: clamp(top.sweetness),
+            };
+        setCoordinate(next);
+        probeLeft.set(probeLeftOf(next));
+        probeTop.set(probeTopOf(next));
+      }
       setSemanticState("idle");
     } catch (cause) {
       console.error("Semantic recommend failed:", cause);
@@ -219,31 +238,37 @@ export function FlavorMatrix() {
       setSemanticReply(null);
       setSemanticState("error");
     }
-  }, [query, profiles]);
+  }, [query, profiles, points, probeLeft, probeTop]);
 
   return (
-    <section className="relative mx-auto w-full max-w-[1400px] px-4 py-5 text-[var(--km-ink)] sm:px-6 sm:py-6 lg:px-8 lg:py-4">
-      <div className="relative grid gap-8 lg:min-h-[calc(100dvh-8rem)] lg:grid-cols-[minmax(0,1fr)_minmax(280px,22rem)] lg:items-stretch xl:grid-cols-[minmax(0,1fr)_minmax(300px,24rem)] xl:gap-10">
-        <div className="relative flex h-full min-h-0 w-full flex-col">
-          <div className="relative shrink-0 pb-3 pt-1">
-            <h2 className="text-2xl font-semibold leading-tight tracking-tighter text-[var(--km-ink)] sm:text-3xl">
-              風味マトリクス
+    <section className="flex h-full min-h-0 flex-col px-3 py-2 sm:px-4 sm:py-3">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-[1440px] flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] lg:flex-row">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col px-4 py-3 sm:px-5 sm:py-4">
+          <div className="flex shrink-0 flex-col gap-1">
+            <h2 className="font-serif text-xl font-semibold tracking-tight text-[var(--km-ink)]">
+              味わいの地図
             </h2>
-            <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[var(--km-ink-soft)]">
-              探針を置くと、味わいの近い銘柄が浮かび上がります。
+            <p className="max-w-[36ch] text-[11px] leading-relaxed text-[var(--km-muted)]">
+              {recommendationMode === "semantic"
+                ? "探針は、いまのおすすめの位置です。"
+                : "探針を置くと、味わいの近い銘柄がふわりと浮かび上がります。"}
             </p>
           </div>
 
           {loadState === "error" ? (
             <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
           ) : (
-            <div className="relative flex min-h-[min(70vw,26rem)] flex-1 flex-col pb-2 pt-1 lg:min-h-0">
+            <div className="relative mt-2 min-h-0 flex-1">
               <TasteMap
                 points={points}
                 regions={regions}
                 bestMatchId={bestMatchId}
                 runnerUpIds={runnerUpIds}
                 selectedId={selectedId}
+                highlightId={hoveredId}
+                bestCaption={
+                  recommendationMode === "semantic" ? "米ソムリエ推薦" : "いちばん近い一膳"
+                }
                 probeLeft={probeLeft}
                 probeTop={probeTop}
                 probeKey={`${coordinate.hardness}-${coordinate.sweetness}`}
@@ -259,7 +284,7 @@ export function FlavorMatrix() {
           <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
         </div>
 
-        <aside className="flex h-full min-h-0 flex-col border-t border-[var(--km-border)] pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-1">
+        <aside className="flex max-h-[42%] w-full shrink-0 flex-col overflow-y-auto border-t border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-4 py-3 sm:px-5 lg:max-h-none lg:w-[22rem] lg:overflow-hidden lg:border-l lg:border-t-0 lg:py-4">
           <RecommendationRail
             matches={railMatches}
             reply={recommendationMode === "semantic" ? semanticReply : null}
@@ -269,6 +294,7 @@ export function FlavorMatrix() {
             selectedId={selectedId}
             reduceMotion={reduceMotion}
             onSelect={setSelectedId}
+            onHover={setHoveredId}
             onResetMode={resetSemantic}
           />
 

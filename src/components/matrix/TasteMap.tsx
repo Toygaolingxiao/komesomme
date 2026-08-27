@@ -3,48 +3,59 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Drop } from "@phosphor-icons/react";
 import { motion, type MotionValue } from "motion/react";
-import { displayXToHardness, positionToValue } from "@/lib/rice/matrix";
+import { displayYToHardness, positionToValue } from "@/lib/rice/matrix";
 import type { RiceRegionRecord } from "@/lib/rice/regions";
 import type { RiceDisplayPoint } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
-import { INSET, LAYER } from "./shared";
+import { AXIS_POLES, FOCUS, INSET, LAYER, type MapDensity } from "./shared";
 import { EmptyPanel, MatrixSkeleton } from "./states";
 
-const Y_GUTTER = 42;
-const X_LABEL = 28;
-const LEGEND = 42;
+const POLE_X = 52;
+const POLE_Y = 30;
+const LEGEND = 34;
+const SPARSE_MIN = 380;
+const FOCUS_MIN = 280;
+
+function fitPlot(availW: number, availH: number) {
+  const width = Math.max(0, availW);
+  const height = Math.max(0, availH);
+  const ratio = width < 480 ? 5 / 6 : width < 720 ? 4 / 3 : 16 / 10;
+  let plotW = width;
+  let plotH = plotW / ratio;
+  if (plotH > height) {
+    plotH = height;
+    plotW = plotH * ratio;
+  }
+  return {
+    w: Math.floor(plotW),
+    h: Math.floor(plotH),
+  };
+}
 
 function MatrixGrid() {
-  const ticks = [0, 1, 2, 3, 4];
+  const ticks = [0, 2, 4];
 
   return (
     <div aria-hidden className="absolute inset-0" style={{ zIndex: LAYER.grid }}>
       {ticks.map((tick) => {
         const position = (tick / 4) * 100;
         const emphasis = tick === 2;
-        const edge = tick === 0 || tick === 4;
 
         return (
           <div key={tick}>
             <div
-              className={`absolute top-0 h-full ${
-                emphasis
-                  ? "w-[2px] bg-[var(--km-ink)]/22"
-                  : edge
-                    ? "w-px bg-[var(--km-ink)]/12"
-                    : "w-px bg-[var(--km-grid)]"
-              }`}
-              style={{ left: `${position}%` }}
+              className={`absolute top-0 h-full ${emphasis ? "w-[2px]" : "w-px"}`}
+              style={{
+                left: `${position}%`,
+                background: emphasis ? "var(--km-cross)" : "rgba(112,69,34,0.1)",
+              }}
             />
             <div
-              className={`absolute left-0 w-full ${
-                emphasis
-                  ? "h-[2px] bg-[var(--km-ink)]/22"
-                  : edge
-                    ? "h-px bg-[var(--km-ink)]/12"
-                    : "h-px bg-[var(--km-grid)]"
-              }`}
-              style={{ top: `${position}%` }}
+              className={`absolute left-0 w-full ${emphasis ? "h-[2px]" : "h-px"}`}
+              style={{
+                top: `${position}%`,
+                background: emphasis ? "var(--km-cross)" : "rgba(112,69,34,0.1)",
+              }}
             />
           </div>
         );
@@ -53,91 +64,80 @@ function MatrixGrid() {
   );
 }
 
-/** Soft washi bars through the origin — stronger poles without infographic chroma. */
-function AxisBands() {
+function PoleCapsule({
+  label,
+  vertical = false,
+}: {
+  label: string;
+  vertical?: boolean;
+}) {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0" style={{ zIndex: LAYER.grid }}>
-      <div
-        className="absolute w-[5px] -translate-x-1/2 rounded-full opacity-50"
-        style={{
-          left: "50%",
-          top: 0,
-          height: "100%",
-          background:
-            "linear-gradient(180deg, rgba(196,92,26,0.28) 0%, rgba(196,92,26,0.04) 48%, rgba(20,184,166,0.22) 100%)",
-        }}
-      />
-      <div
-        className="absolute h-[5px] -translate-y-1/2 rounded-full opacity-50"
-        style={{
-          top: "50%",
-          left: 0,
-          width: "100%",
-          background:
-            "linear-gradient(90deg, rgba(46,134,222,0.28) 0%, rgba(245,158,11,0.08) 48%, rgba(244,63,110,0.24) 100%)",
-        }}
-      />
-    </div>
+    <span
+      className={`inline-flex items-center justify-center rounded-full bg-[var(--km-brown)] px-2.5 py-1 text-[10px] font-medium leading-tight text-[#fffdf7] shadow-[0_4px_12px_rgba(112,69,34,0.22)] ${
+        vertical
+          ? "[writing-mode:vertical-rl] whitespace-nowrap px-1.5 py-2.5"
+          : "whitespace-nowrap"
+      }`}
+    >
+      {label}
+    </span>
   );
 }
 
-function MapLegend({ regions }: { regions: RiceRegionRecord[] }) {
+function MapLegend({
+  regions,
+  activeId,
+  onHover,
+  onToggle,
+}: {
+  regions: RiceRegionRecord[];
+  activeId: string | null;
+  onHover: (id: string | null) => void;
+  onToggle: (id: string) => void;
+}) {
   return (
     <ul
       aria-label="産地域の色分け"
-      className="flex min-h-[42px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-1 py-1 text-[10px] leading-tight text-[var(--km-ink-soft)]"
+      className="flex min-h-[32px] flex-wrap items-center justify-center gap-x-1 gap-y-1 px-1 py-0.5"
     >
-      {regions.map(({ id, name, color }) => (
-        <li key={id} className="inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span
-            aria-hidden
-            className="h-2.5 w-2.5 rounded-full border border-white/50 shadow-[0_0_0_1px_rgba(83,65,48,0.12)]"
-            style={{ backgroundColor: color }}
-          />
-          {name}
-        </li>
-      ))}
+      {regions.map(({ id, name, color }) => {
+        const idle = activeId !== null && activeId !== id;
+        return (
+          <li key={id}>
+            <button
+              type="button"
+              aria-pressed={activeId === id}
+              onMouseEnter={() => onHover(id)}
+              onMouseLeave={() => onHover(null)}
+              onFocus={() => onHover(id)}
+              onBlur={() => onHover(null)}
+              onClick={() => onToggle(id)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-1.5 py-0.5 text-[10px] leading-tight transition ${FOCUS} ${
+                idle ? "opacity-40" : "opacity-100"
+              }`}
+            >
+              <span
+                aria-hidden
+                className="h-2.5 w-2.5 rounded-full border border-white/70 shadow-[0_0_0_1px_rgba(112,69,34,0.12)]"
+                style={{
+                  backgroundColor: color,
+                  transform: activeId === id ? "scale(1.25)" : "scale(1)",
+                }}
+              />
+              <span className="whitespace-nowrap text-[var(--km-ink-soft)]">{name}</span>
+            </button>
+          </li>
+        );
+      })}
     </ul>
   );
 }
 
-function AxisLegend({
-  orientation,
-  low,
-  high,
-  name,
-}: {
-  orientation: "horizontal" | "vertical";
-  low: string;
-  high: string;
-  name: string;
-}) {
-  if (orientation === "vertical") {
-    return (
-      <div className="flex h-full w-full shrink-0 flex-col items-center justify-between py-0.5 text-[11px] text-[var(--km-muted)]">
-        <span className="whitespace-nowrap [writing-mode:vertical-rl]">{high}</span>
-        <span className="whitespace-nowrap font-medium tracking-wide text-[var(--km-ink)] [writing-mode:vertical-rl]">
-          {name}
-        </span>
-        <span className="whitespace-nowrap [writing-mode:vertical-rl]">{low}</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex h-7 w-full items-center justify-between px-[2%] text-[11px] text-[var(--km-muted)]">
-      <span>{low}</span>
-      <span className="font-medium tracking-wide text-[var(--km-ink)]">{name}</span>
-      <span>{high}</span>
-    </div>
-  );
-}
-
 /**
- * The tasting map: axes, quadrants, brand dots and the probe.
+ * The tasting map: axes, brand grains and the probe.
  *
- * The plot is a measured square: side = min(remaining width, remaining height), so a
- * tall stretched left column cannot flatten the grid into a rectangle.
+ * Plot size follows leftover space and a responsive aspect ratio, so wide screens
+ * get a landscape map instead of a locked square.
  */
 export function TasteMap({
   points,
@@ -145,6 +145,8 @@ export function TasteMap({
   bestMatchId,
   runnerUpIds,
   selectedId,
+  highlightId,
+  bestCaption,
   probeLeft,
   probeTop,
   probeKey,
@@ -159,6 +161,8 @@ export function TasteMap({
   bestMatchId: string | null;
   runnerUpIds: ReadonlySet<string>;
   selectedId: string | null;
+  highlightId?: string | null;
+  bestCaption: string;
   probeLeft: MotionValue<string>;
   probeTop: MotionValue<string>;
   probeKey: string;
@@ -170,20 +174,20 @@ export function TasteMap({
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [side, setSide] = useState(0);
+  const [plot, setPlot] = useState({ w: 0, h: 0 });
   const [engaged, setEngaged] = useState(false);
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [pinnedRegion, setPinnedRegion] = useState<string | null>(null);
+  const focusRegion = hoveredRegion ?? pinnedRegion;
 
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
 
     const measure = () => {
-      const width = stage.clientWidth;
-      const height = stage.clientHeight;
-      const next = Math.floor(
-        Math.max(0, Math.min(width - Y_GUTTER, height - X_LABEL - LEGEND))
+      setPlot(
+        fitPlot(stage.clientWidth - POLE_X * 2, stage.clientHeight - POLE_Y * 2 - LEGEND)
       );
-      setSide(next);
     };
 
     measure();
@@ -198,23 +202,49 @@ export function TasteMap({
       if (!rect || rect.width === 0 || rect.height === 0) return;
 
       onProbeMove(
-        displayXToHardness(positionToValue((clientX - rect.left) / rect.width, INSET)),
-        positionToValue(1 - (clientY - rect.top) / rect.height, INSET)
+        displayYToHardness(positionToValue(1 - (clientY - rect.top) / rect.height, INSET)),
+        positionToValue((clientX - rect.left) / rect.width, INSET)
       );
     },
     [onProbeMove]
   );
 
+  const shortSide = Math.min(plot.w, plot.h);
+  const density: MapDensity =
+    shortSide > 0 && shortSide < FOCUS_MIN
+      ? "focus"
+      : shortSide > 0 && shortSide < SPARSE_MIN
+        ? "sparse"
+        : "full";
+  const compactPoles = density !== "full";
+
+  const visiblePoints =
+    density === "focus" && (bestMatchId || selectedId)
+      ? points.filter(
+          (rice) =>
+            rice.id === bestMatchId ||
+            runnerUpIds.has(rice.id) ||
+            rice.id === selectedId
+        )
+      : points;
+
   return (
     <div ref={stageRef} className="flex h-full min-h-0 w-full items-center justify-center">
       <div
-        className="grid items-stretch"
+        className="grid items-center justify-items-center"
         style={{
-          gridTemplateColumns: `${Y_GUTTER}px ${side || 0}px`,
-          gridTemplateRows: `${side || 0}px ${X_LABEL}px auto`,
+          gridTemplateColumns: `${POLE_X}px ${plot.w || 0}px ${POLE_X}px`,
+          gridTemplateRows: `${POLE_Y}px ${plot.h || 0}px ${POLE_Y}px auto`,
         }}
       >
-        <AxisLegend orientation="vertical" low="すっきり" high="ふくよか" name="甘み" />
+        <div />
+        <PoleCapsule label={compactPoles ? AXIS_POLES.softShort : AXIS_POLES.soft} />
+        <div />
+
+        <PoleCapsule
+          vertical
+          label={compactPoles ? AXIS_POLES.sweetLowShort : AXIS_POLES.sweetLow}
+        />
 
         <div
           ref={canvasRef}
@@ -232,11 +262,15 @@ export function TasteMap({
             setEngaged(false);
           }}
           onPointerCancel={() => setEngaged(false)}
-          className="relative touch-none select-none overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)]"
-          style={{ width: side, height: side }}
+          className="relative touch-none select-none overflow-visible rounded-[1.35rem] border border-[var(--km-border)] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
+          style={{
+            width: plot.w,
+            height: plot.h,
+            background:
+              "radial-gradient(ellipse at 22% 18%, rgba(255,245,229,0.98), transparent 42%), radial-gradient(ellipse at 78% 82%, rgba(226,154,53,0.12), transparent 48%), linear-gradient(180deg, #fffdf7 0%, #fff6ea 100%)",
+          }}
         >
           <MatrixGrid />
-          <AxisBands />
 
           {loading ? (
             <MatrixSkeleton />
@@ -244,15 +278,23 @@ export function TasteMap({
             <EmptyPanel />
           ) : (
             <>
-              {points.map((rice, index) => (
+              {visiblePoints.map((rice, index) => (
                 <ProfileNode
                   key={rice.id}
                   rice={rice}
                   index={index}
+                  density={density}
+                  dimmed={
+                    Boolean(focusRegion) &&
+                    rice.region_id !== focusRegion &&
+                    rice.region !== regions.find((region) => region.id === focusRegion)?.name
+                  }
+                  bestCaption={bestCaption}
                   reduceMotion={reduceMotion}
                   isBestMatch={rice.id === bestMatchId}
                   isRunnerUp={runnerUpIds.has(rice.id)}
-                  active={rice.id === selectedId}
+                  isSelected={rice.id === selectedId}
+                  isHighlighted={rice.id === highlightId}
                   onSelect={() => onSelect(rice.id)}
                 />
               ))}
@@ -262,19 +304,19 @@ export function TasteMap({
                 style={{ left: probeLeft, top: probeTop, zIndex: LAYER.probe }}
                 className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
               >
-                <div className="relative grid h-20 w-20 place-items-center rounded-full bg-[var(--km-ink)]/[0.025] md:h-24 md:w-24">
+                <div className="relative grid h-11 w-11 place-items-center">
                   <motion.span
                     key={probeKey}
-                    className="absolute inset-0 rounded-full border border-[var(--km-ink)]/15"
+                    className="absolute inset-0 rounded-full border border-[var(--km-gold)]/40"
                     animate={
                       reduceMotion || engaged
-                        ? { scale: 1, opacity: 0.36 }
-                        : { scale: [0.45, 2.05], opacity: [0.45, 0] }
+                        ? { scale: 1, opacity: 0.4 }
+                        : { scale: [0.5, 1.7], opacity: [0.45, 0] }
                     }
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   />
-                  <span className="grid h-5 w-5 place-items-center rounded-full border border-[var(--km-ink)]/20 bg-[var(--km-ink)] shadow-[0_6px_18px_rgba(83,65,48,0.22)]">
-                    <Drop size={10} weight="fill" className="text-[#f4dfb2]" />
+                  <span className="grid h-5 w-5 place-items-center rounded-full border border-[#704522]/40 bg-[var(--km-brown)] shadow-[0_6px_16px_rgba(112,69,34,0.28)]">
+                    <Drop size={10} weight="fill" className="text-[#fff5e5]" />
                   </span>
                 </div>
               </motion.div>
@@ -282,11 +324,23 @@ export function TasteMap({
           )}
         </div>
 
+        <PoleCapsule
+          vertical
+          label={compactPoles ? AXIS_POLES.sweetHighShort : AXIS_POLES.sweetHigh}
+        />
+
         <div />
-        <AxisLegend orientation="horizontal" low="しっかり" high="やわらか" name="粒感" />
+        <PoleCapsule label={compactPoles ? AXIS_POLES.firmShort : AXIS_POLES.firm} />
+        <div />
+
         {regions.length > 0 ? (
           <div style={{ gridColumn: "1 / -1" }}>
-            <MapLegend regions={regions} />
+            <MapLegend
+              regions={regions}
+              activeId={focusRegion}
+              onHover={setHoveredRegion}
+              onToggle={(id) => setPinnedRegion((current) => (current === id ? null : id))}
+            />
           </div>
         ) : null}
       </div>

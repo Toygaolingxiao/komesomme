@@ -46,31 +46,31 @@ const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
  * looking like a rigid grid, while staying stable across renders and reloads. The
  * database stores pure taste data only; display coordinates are computed here.
  */
+
 /**
- * Chart axis: left = firm (hardness 5), right = soft (hardness 1).
- * Matches the usual Japanese rice infographic direction.
+ * Chart Y: bottom = firm (hardness 5), top = soft (hardness 1).
+ * X is sweetness as stored: left = すっきり澄む, right = 甘みふくらむ.
  */
-export function hardnessToDisplayX(hardness: number) {
+export function hardnessToDisplayY(hardness: number) {
   return AXIS_MAX + AXIS_MIN - normalizeTasteValue(hardness);
 }
 
-export function displayXToHardness(displayX: number) {
-  return AXIS_MAX + AXIS_MIN - normalizeTasteValue(displayX);
+export function displayYToHardness(displayY: number) {
+  return AXIS_MAX + AXIS_MIN - normalizeTasteValue(displayY);
 }
 
 export function calculateMatrixDisplayPoint(rice: RiceProfileV2): RiceDisplayPoint {
-  const baseX = hardnessToDisplayX(rice.hardness);
-  const baseY = normalizeTasteValue(rice.sweetness);
+  const baseX = normalizeTasteValue(rice.sweetness);
+  const baseY = hardnessToDisplayY(rice.hardness);
 
   const offsetX =
-    (normalizeTasteValue(rice.stickiness) - 3) * 0.08 +
-    (normalizeTasteValue(rice.grain_size) - 3) * -0.06 +
+    (normalizeTasteValue(rice.umami) - 3) * 0.08 +
+    (normalizeTasteValue(rice.richness) - 3) * 0.04 +
     stableNoise(rice.id, "x");
 
   const offsetY =
-    (normalizeTasteValue(rice.umami) - 3) * 0.08 +
-    (normalizeTasteValue(rice.aftertaste) - 3) * 0.05 +
-    (normalizeTasteValue(rice.richness) - 3) * 0.04 +
+    (normalizeTasteValue(rice.stickiness) - 3) * 0.08 +
+    (normalizeTasteValue(rice.grain_size) - 3) * -0.06 +
     stableNoise(rice.id, "y");
 
   return {
@@ -162,26 +162,37 @@ export function toDisplayPoints(riceList: RiceProfileV2[]): RiceDisplayPoint[] {
 }
 
 export function getQuadrant(hardness: number, sweetness: number) {
-  if (hardness < 3 && sweetness >= 3) return "やわらかく、甘み豊か";
-  if (hardness >= 3 && sweetness >= 3) return "粒立ちよく、甘み豊か";
-  if (hardness < 3 && sweetness < 3) return "やわらかく、すっきり";
-  return "粒立ちよく、すっきり";
+  if (hardness < 3 && sweetness >= 3) return "もちもちで甘い";
+  if (hardness >= 3 && sweetness >= 3) return "かためで甘い";
+  if (hardness < 3 && sweetness < 3) return "もちもちであっさり";
+  return "かためであっさり";
 }
 
 export function getTextureLabel(hardness: number) {
-  if (hardness < 2) return "とてもやわらか";
-  if (hardness < 3) return "やわらか";
+  if (hardness < 2) return "もちもち";
+  if (hardness < 3) return "やわらかめ";
   if (hardness < 4) return "ほどよい";
-  if (hardness < 4.6) return "粒立ち";
+  if (hardness < 4.6) return "かため";
   return "しっかり";
 }
 
 export function getSweetnessLabel(sweetness: number) {
-  if (sweetness < 2) return "すっきり";
-  if (sweetness < 3) return "ほの甘い";
-  if (sweetness < 4) return "甘みあり";
-  if (sweetness < 4.6) return "甘み豊か";
+  if (sweetness < 2) return "あっさり";
+  if (sweetness < 3) return "さっぱり";
+  if (sweetness < 4) return "ほどよい甘み";
+  if (sweetness < 4.6) return "甘い";
   return "ふくよか";
+}
+
+/** Probe / slider state that sits on a brand's visible map position. */
+export function coordinateFromDisplayPoint(point: {
+  display_x: number;
+  display_y: number;
+}): TasteCoordinate {
+  return {
+    sweetness: clamp(point.display_x),
+    hardness: displayYToHardness(point.display_y),
+  };
 }
 
 function hasDisplayCoordinates(
@@ -193,22 +204,21 @@ function hasDisplayCoordinates(
 /**
  * Measures against the coordinates the user can actually see.
  *
- * `display_x` is left=firm / right=soft. The probe stores raw `hardness`
- * (1=soft, 5=firm), so it must be converted before comparing, otherwise a
- * click on the right edge ranks the left-hand (firm) dots as nearest.
+ * `display_x` is sweetness. `display_y` is left inverted from stored hardness
+ * so the top of the map is soft. The probe stores raw hardness / sweetness.
  */
 export function calculateCoordinateDistance(
   target: TasteCoordinate,
   rice: RiceProfileV2 | RiceDisplayPoint
 ) {
-  const targetX = hardnessToDisplayX(target.hardness);
-  const targetY = normalizeTasteValue(target.sweetness);
+  const targetX = normalizeTasteValue(target.sweetness);
+  const targetY = hardnessToDisplayY(target.hardness);
 
   const point = hasDisplayCoordinates(rice)
     ? { x: rice.display_x, y: rice.display_y }
     : {
-        x: hardnessToDisplayX(rice.hardness),
-        y: normalizeTasteValue(rice.sweetness),
+        x: normalizeTasteValue(rice.sweetness),
+        y: hardnessToDisplayY(rice.hardness),
       };
 
   const dx = point.x - targetX;
@@ -264,7 +274,7 @@ export function generateCoordinateReason(
     return "重たさを抑えた軽やかな味わいで、和食や魚料理に合わせやすい一膳です。";
   }
 
-  return "甘みと食感のバランスがよく、毎日の食卓に合わせやすい一膳です。";
+  return "甘みと口当たりのバランスがよく、毎日の食卓に合わせやすい一膳です。";
 }
 
 /**
