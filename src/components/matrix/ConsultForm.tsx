@@ -15,6 +15,7 @@ const EXAMPLES: Array<{ text: string; Icon: typeof Sparkle }> = [
  *
  * Desktop keeps one two-row grid for idle, pending, and reply. Examples and the
  * sommelier reply swap in the same slot so the map and rail above do not resize.
+ * Mobile stack may grow with the reply and wraps example chips.
  */
 export function ConsultForm({
   query,
@@ -40,7 +41,7 @@ export function ConsultForm({
 
   const title = (
     <div className={wide ? "min-w-0 self-center" : undefined}>
-      <h3 className="font-serif text-[14px] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[15px]">
+      <h3 className="font-serif text-[15px] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[15px]">
         言葉でえらぶ、今日の一膳
       </h3>
       <p className="mt-0.5 text-[11px] leading-snug text-[var(--km-muted)]">
@@ -62,9 +63,11 @@ export function ConsultForm({
           placeholder={
             reply
               ? "料理・酒・気分を変えて、続けて聞く"
-              : "例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい"
+              : wide
+                ? "例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい"
+                : "例：刺身に合う、冷めても美味しい"
           }
-          className={`h-11 w-full min-w-0 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 py-2 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:bg-[var(--km-surface)] focus:outline-none ${
+          className={`h-11 w-full min-w-0 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 py-2 text-sm text-[var(--km-ink)] placeholder:truncate placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:bg-[var(--km-surface)] focus:outline-none ${
             hasQuery ? "px-3 pr-9" : "px-3"
           }`}
         />
@@ -98,16 +101,61 @@ export function ConsultForm({
     </button>
   );
 
+  const examples = (
+    <ul
+      className={
+        wide
+          ? "km-consult-examples flex max-w-full flex-nowrap gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          : "flex flex-wrap gap-1.5"
+      }
+    >
+      {EXAMPLES.map(({ text, Icon }, index) => {
+        const tone = TAG_TONES[index % TAG_TONES.length];
+        return (
+          <li key={text}>
+            <button
+              type="button"
+              onClick={() => onQueryChange(text)}
+              className={`inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[10px] leading-snug transition hover:-translate-y-px active:translate-y-0 ${FOCUS}`}
+              style={{
+                background: tone.bg,
+                border: `1px solid ${tone.border}`,
+                color: tone.text,
+              }}
+            >
+              <Icon size={11} weight={ICON_WEIGHT} />
+              {text}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+
   const slot = (
-    <div className="flex h-11 min-w-0 items-center overflow-hidden">
+    <div
+      className={
+        wide
+          ? "flex h-11 min-w-0 items-center overflow-hidden"
+          : "flex min-h-11 min-w-0 items-start"
+      }
+    >
       {failed ? (
         <p className="flex min-w-0 items-start gap-2 text-[11px] leading-relaxed text-[#a33b2a]">
           <Warning size={13} weight={ICON_WEIGHT} className="mt-0.5 shrink-0" />
           うまく読み取れませんでした。言葉を変えて、もう一度どうぞ。
         </p>
       ) : reply ? (
-        <div className="flex w-full min-w-0 items-center justify-between gap-3">
-          <p className="min-w-0 line-clamp-2 text-[13px] leading-snug text-[var(--km-ink)]">
+        <div
+          className={`flex w-full min-w-0 gap-3 ${
+            wide ? "items-center justify-between" : "flex-col items-stretch"
+          }`}
+        >
+          <p
+            className={`min-w-0 text-[13px] leading-snug text-[var(--km-ink)] ${
+              wide ? "line-clamp-2" : "leading-relaxed"
+            }`}
+          >
             <span className="mr-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
               <Sparkle size={11} weight="fill" />
               米ソムリエ
@@ -118,35 +166,16 @@ export function ConsultForm({
             <button
               type="button"
               onClick={onResetMode}
-              className={`shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
+              className={`shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS} ${
+                wide ? "" : "self-start"
+              }`}
             >
               地図で選び直す
             </button>
           ) : null}
         </div>
       ) : (
-        <ul className="km-consult-examples flex max-w-full flex-nowrap gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {EXAMPLES.map(({ text, Icon }, index) => {
-            const tone = TAG_TONES[index % TAG_TONES.length];
-            return (
-              <li key={text}>
-                <button
-                  type="button"
-                  onClick={() => onQueryChange(text)}
-                  className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] leading-snug transition hover:-translate-y-px active:translate-y-0 ${FOCUS}`}
-                  style={{
-                    background: tone.bg,
-                    border: `1px solid ${tone.border}`,
-                    color: tone.text,
-                  }}
-                >
-                  <Icon size={11} weight={ICON_WEIGHT} />
-                  {text}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        examples
       )}
     </div>
   );
@@ -157,14 +186,14 @@ export function ConsultForm({
       className={
         wide
           ? "min-w-0 w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-2.5 shadow-[0_16px_40px_-28px_rgba(112,69,34,0.35)] sm:px-5"
-          : "mt-3 min-w-0 shrink-0 border-t border-[var(--km-border)] pt-3"
+          : "min-w-0 shrink-0"
       }
     >
       <form
         className={
           wide
             ? "grid grid-cols-[11.5rem_minmax(0,1fr)_14rem] grid-rows-[2.75rem_2.75rem] items-center gap-x-3 gap-y-2"
-            : "flex flex-col gap-2"
+            : "flex flex-col gap-2.5"
         }
         onSubmit={(event) => {
           event.preventDefault();
