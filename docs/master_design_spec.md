@@ -13,7 +13,7 @@
 - **API:** Next.js Route Handler、Node.js runtime、非 Streaming JSON
 - **シード:** `tsx`、embedding 抽象層、service role
 
-チャートは HTML/CSS と Motion。意味検索は文章生成を行わない。
+チャートは HTML/CSS と Motion。座標推薦はクライアントだけ。相談の短い返事だけ Gemini / OpenAI が書く。
 
 ## 2. 実ファイル配置
 
@@ -26,7 +26,7 @@ src/
 │   └── api/rice/semantic-recommend/  # 意味検索
 ├── components/
 │   ├── FlavorMatrix.tsx              # オーケストレーション
-│   └── matrix/                       # マップ、点、レール、相談、詳細
+│   └── matrix/                       # マップ、点、レール、相談、詳細、購入リンク、モバイルカード
 ├── data/
 │   ├── rice/*.ts                     # 地域別 RiceSource
 │   └── riceProfilesV2.ts             # derive 済みカタログ
@@ -62,7 +62,8 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 
 相談 → POST /api/rice/semantic-recommend
     → createEmbedding → match_rice_profiles
-    → Flavor Bridge → 推薦欄
+    → Flavor Bridge → generateSommelierReply（失敗時は reason）
+    → 推薦欄
 ```
 
 座標操作はサーバーを呼ばない。マップの No.1 は display 座標の最近傍。
@@ -75,8 +76,8 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | カタログ読取 |
 | `SUPABASE_SERVICE_ROLE_KEY` | 意味検索と seed |
 | `EMBEDDING_PROVIDER` | `gemini`（既定）または `openai` |
-| `GEMINI_API_KEY` | Gemini embedding |
-| `OPENAI_API_KEY` | OpenAI embedding |
+| `GEMINI_API_KEY` | Gemini embedding と短い返事 |
+| `OPENAI_API_KEY` | OpenAI embedding。Gemini 返事が使えないときの控え |
 
 ## 5. データ境界と安全性
 

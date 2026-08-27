@@ -7,7 +7,7 @@
 - X 軸は左「すっきり澄む」、右「甘みふくらむ」（`sweetness` 1〜5）
 - Y 軸は下「粒立ちしっかり」、上「やわらか、ほどける」（`hardness` 1〜5。内部スコアは 5=しっかりのまま、表示 Y だけ反転）
 - `stickiness` は点サイズと詳細に使い、座標軸には使わない
-- 配置は `calculateMatrixDisplayPoint`。マトリクスは正方形
+- 配置は `calculateMatrixDisplayPoint`。マップは左ペインの残り領域いっぱいに広げる（正方形固定ではない）
 - 探針と甘み・硬さのスライダーは同期する
 - 12 の味わい指標を詳細パネルに表示する
 
@@ -23,7 +23,7 @@
 - 「米ソムリエに相談」の明示的 submit 時だけ `POST /api/rice/semantic-recommend` を呼ぶ
 - サーバーで embedding を生成し、RPC `match_rice_profiles` が **Top 4** を返す
 - `embedding_model` で絞り込み、Gemini / OpenAI の混在比較を防ぐ
-- Flavor Bridge が酒種・場面に応じた理由を付ける
+- Flavor Bridge が酒種・場面に応じた理由を付ける。短い返事は候補銘柄だけを名指しし、相談の言葉を拾う。返事生成に失敗しても Top 4 は返す
 - 相談の 1 位に探針を合わせる。マップ操作または「地図で選び直す」で座標推薦に復帰する
 - API は Node.js runtime の非 Streaming JSON
 
@@ -51,10 +51,13 @@
 
 ## 3. 将来要件（未実装）
 
+- 単体・統合・E2E・アクセシビリティ試験
+- Rate limit、構造化ログ、監視
+- 本番デプロイ、独自ドメイン、分析
+- 本番 RLS と seed 済みデータの確認
 - Rakuten Affiliate API、deep link、成果計測
-- LLM による個別推薦文、炊飯助言、会話
-- Rate limit、監視、構造化ログ
-- Auth、お気に入り、検索履歴
-- キャッシュ、E2E、アクセシビリティ試験の定量化
+- お気に入り、履歴、個人化
+- Auth
+- grounded LLM 推薦文と炊飯アドバイス
 
 将来要件を現行機能として README や UI に記載しない。

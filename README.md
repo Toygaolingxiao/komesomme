@@ -16,27 +16,46 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 ## 使い方
 
 1. サイトを開く
-2. 地図の好きな位置を置くか、下のスライダーを動かす
-3. 右の「米ソムリエのおすすめ」から一膳を開く
-4. 料理やお酒の言葉で相談するときは、下の入力から送る
+2. 地図の好きな位置を置くか、スライダーを動かす
+3. 右の「今日の一膳」から銘柄を開く
+4. 料理やお酒、気分の言葉で相談するときは、下の入力から送る
+
+Desktop は 100% 表示で一画面に収まります。Mobile は推薦 → 小さな地図 → 大きく見る、の順です。
 
 ## 開発者向け
 
-Next.js と Supabase で動いています。カタログは手書きの銘柄データから seed します。
+Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`supabase/migrations/0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。
 
 ```bash
 npm install
 cp .env.example .env.local
-```
-
-空の Supabase プロジェクトでは SQL Editor で [`supabase/migrations/0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) を実行し、そのあと:
-
-```bash
 npm run validate:rice
 npm run seed:rice
 npm run dev
 ```
 
-必要な環境変数は `.env.example` を見てください。相談機能は Gemini（または OpenAI）の embedding と、短い返事の生成を使います。
+`.env.local` に必要なもの:
 
-詳細なデータ設計は [docs/database_schema.md](./docs/database_schema.md)、画面の約束は [docs/ui_design.md](./docs/ui_design.md) です。
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`（seed と意味検索）
+- `EMBEDDING_PROVIDER=gemini`（既定）または `openai`
+- `GEMINI_API_KEY` または `OPENAI_API_KEY`
+
+`npm run validate:rice` は 80 件以上、ID / 名称の重複なし、魚沼・佐渡・仁多・龍の瞳の独立行を見ます。禁止語は warning です。
+
+`npm run seed:rice` は約 107 銘柄に embedding を付け、`rice_regions` / `rice_brands` / `rice_profile_details` へ upsert します。読み取りは VIEW `rice_catalog`。embedding モデルを変えたら再シードが必要です。地域色の正本は `src/lib/rice/regions.ts` と 0003 の upsert です。
+
+相談の短い返事は Gemini `gemini-3.6-flash`（失敗時は OpenAI、それも失敗なら Flavor Bridge の reason）です。照合そのものは返事生成が落ちても Top 4 を返します。
+
+### 手元での確認
+
+http://localhost:3000 で:
+
+- 点色が産地凡例と一致する
+- Desktop でページ全体のスクロールが出ない。マップが左ペインいっぱいに広がる
+- 探針やスライダーを動かすと、No.1 が常に最近傍
+- 「ハイボールと唐揚げに合う米」で Top 4 が返る
+- 銘柄詳細と `/[brand]` から楽天 / Amazon / ふるさと納税が開く
+
+画面の約束は [docs/ui_design.md](./docs/ui_design.md)、データは [docs/database_schema.md](./docs/database_schema.md)、文書一覧は [docs/README.md](./docs/README.md) です。原典 `docs/kome-somme-rice-v2-implementation.md` は編集しません。

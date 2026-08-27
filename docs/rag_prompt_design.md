@@ -40,7 +40,7 @@
   → createEmbedding
   → RPC match_rice_profiles (p_embedding_model, match_count, match_threshold)
   → Flavor Bridge で reason を付与
-  → generateSommelierReply（Gemini。失敗時は 1 位の reason）
+  → generateSommelierReply（Gemini `gemini-3.6-flash`。失敗時は OpenAI、それも失敗なら 1 位の reason。Top 4 は返す）
   → JSON { query, reply, embeddingModel, matches }
 ```
 
@@ -60,7 +60,7 @@
 
 問い合わせから酒種を判定する: ハイボール / スモーキー / シェリー樽 / バーボン / ジャパニーズウイスキー / 日本酒 / ビール / ワイン / 茶。汎用の「ウイスキー」はジャパニーズへ倒す。
 
-酒種が無い場合は弁当・カレー・刺身・疲れ・秋・すき焼き・夏などの場面ルール、それも無ければ銘柄の `pairing_reason` を使う。
+酒種が無い場合は弁当・カレー・刺身・疲れ・お祝い／食後の果実・秋・すき焼き・夏などの場面ルール、それも無ければ銘柄の `pairing_reason` を使う。
 
 ## 6. エラーと秘密情報
 
