@@ -7,10 +7,11 @@ import type { RiceProfileV2, RiceRegion } from "@/types/rice";
 /**
  * Running V2 catalogue.
  *
- * Hand-curated entries in `src/lib/data/riceProfilesv2.ts` win on matching brand
- * names (editorial copy, scores, pairings). Empty curated fields fall back to the
- * derived profile so incomplete drafts still validate. Brands that exist only in
- * the regional RiceSource files remain derived.
+ * Regional RiceSource files are the scoring and copy source of truth. Overlay
+ * entries in `src/lib/data/riceProfilesv2.ts` only add brands that do not yet
+ * exist in those files (trademark representatives, remaining editorial rows).
+ * Matching names keep the derived source profile so overlay drafts cannot
+ * overwrite prefecture or taste scores.
  */
 
 const ARRAY_FIELDS = [
@@ -34,17 +35,6 @@ const ARRAY_FIELDS = [
   "furusato_keywords",
 ] as const satisfies ReadonlyArray<keyof RiceProfileV2>;
 
-const TEXT_FIELDS = [
-  "short_",
-  "description",
-  "sommelier_note",
-  "pairing_reason",
-  "quadrant",
-  "texture_label",
-  "sweetness_label",
-  "rakuten_search_keyword",
-] as const satisfies ReadonlyArray<keyof RiceProfileV2>;
-
 const REGION_ALIASES: Record<string, RiceRegion> = {
   "関西・中部": "近畿",
 };
@@ -62,7 +52,7 @@ const REGIONS: RiceRegion[] = [
 function normalizeName(name: string) {
   return name
     .normalize("NFKC")
-    .replace(/[（）]/g, (char) => (char === "（" ? "(" : ")"))
+    .replace(/[（(][^）)]*[）)]/g, "")
     .replace(/\s+/g, "");
 }
 
@@ -86,30 +76,8 @@ function fillMissingLists(rice: RiceProfileV2): RiceProfileV2 {
   return filled;
 }
 
-function overlay(base: RiceProfileV2, curated: RiceProfileV2): RiceProfileV2 {
-  const merged: RiceProfileV2 = {
-    ...base,
-    ...curated,
-    id: base.id,
-    region: base.region,
-    prefecture: curated.prefecture || base.prefecture,
-  };
-
-  for (const field of ARRAY_FIELDS) {
-    const value = merged[field];
-    if (!Array.isArray(value) || value.length === 0) {
-      merged[field] = [...(base[field] ?? [])];
-    }
-  }
-
-  for (const field of TEXT_FIELDS) {
-    const value = merged[field];
-    if (typeof value !== "string" || !value.trim()) {
-      merged[field] = base[field];
-    }
-  }
-
-  return merged;
+function overlay(base: RiceProfileV2, _curated: RiceProfileV2): RiceProfileV2 {
+  return base;
 }
 
 /** Last occurrence wins — the file was appended as editorial drafts accumulated. */

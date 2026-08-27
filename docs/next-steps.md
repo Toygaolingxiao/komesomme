@@ -2,6 +2,8 @@
 
 0003 SQL 已经跑过的话，按这个顺序即可。不必再跑 0001 / 0002。
 
+地域色は `src/lib/rice/regions.ts` と 0003 の upsert が正本。`npm run seed:rice` でも `rice_regions` を上書きする。
+
 ## 1. 确认环境变量
 
 `.env.local` 需要：

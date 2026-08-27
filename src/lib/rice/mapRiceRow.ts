@@ -1,5 +1,5 @@
 import type { RiceProfileV2, RiceRegion } from "@/types/rice";
-import { RICE_REGIONS } from "./regions";
+import { RICE_REGIONS, regionByName } from "./regions";
 import { normalizeTasteValue } from "./matrix";
 
 /**
@@ -103,7 +103,7 @@ export function mapRowToRiceProfile(row: Record<string, unknown>): RiceProfileV2
     prefecture: asText(row.prefecture),
     region: asRegion(row.region),
     region_id: asText(row.region_id) || undefined,
-    region_color: asText(row.region_color) || undefined,
+    region_color: regionByName(asRegion(row.region)).color,
 
     sweetness: normalizeTasteValue(Number(row.sweetness)),
     hardness: normalizeTasteValue(Number(row.hardness)),

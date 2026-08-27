@@ -1,15 +1,15 @@
 import { RICE_REGIONS, regionColor as colorForRegion } from "@/lib/rice/regions";
 import type { RiceProfileV2, RiceRegion } from "@/types/rice";
 
-/** Percent inset so extreme axis values never touch the frame. */
-export const INSET = 10;
+/** Percent inset so 1 and 5 sit near the frame without clipping the dots. */
+export const INSET = 4;
 export const BAND = 100 - INSET * 2;
 
 export const MATCH_LIMIT = 4;
 export const NEIGHBOUR_LIMIT = 3;
 
 export const ICON_WEIGHT = "bold" as const;
-export const ACCENT = "#b98b32";
+export const ACCENT = "#c45c1a";
 
 export const LAYER = {
   grid: 0,
@@ -18,9 +18,6 @@ export const LAYER = {
   bestNode: 30,
   overlay: 40,
 } as const;
-
-export const SURFACE =
-  "rounded-[2rem] border border-[var(--km-border)] bg-[var(--km-surface)]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_28px_70px_-46px_rgba(83,65,48,0.42)]";
 
 export const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--km-accent)]";

@@ -157,7 +157,7 @@ export function BrandDetailPanel({
             <p className="mt-2 flex items-center gap-2 text-xs text-[var(--km-muted)]">
               <span
                 aria-hidden
-                className="h-2 w-2 rounded-[55%_45%_50%_50%]"
+                className="h-2 w-2 rounded-full"
                 style={{
                   backgroundColor: rice.region_color ?? regionColor(rice.region),
                 }}
@@ -183,7 +183,7 @@ export function BrandDetailPanel({
         </p>
 
         {rice.sommelier_note ? (
-          <blockquote className="mt-5 rounded-2xl border border-[var(--km-gold)]/25 bg-[#f6ecd8]/70 px-4 py-3.5 text-xs leading-relaxed text-[var(--km-ink-soft)]">
+            <blockquote className="mt-5 rounded-2xl border border-[var(--km-accent)]/25 bg-[#fff4e5]/90 px-4 py-3.5 text-xs leading-relaxed text-[var(--km-ink-soft)]">
             <span className="mb-1.5 block text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
               米ソムリエメモ
             </span>

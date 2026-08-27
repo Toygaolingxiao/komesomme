@@ -8,7 +8,7 @@
 | [master_design_spec.md](./master_design_spec.md) | 現行システムのファイル配置とデータフロー |
 | [requirements.md](./requirements.md) | 現行 MVP 要件と将来要件 |
 | [database_schema.md](./database_schema.md) | 3 テーブル + `rice_catalog` + 適用 SQL |
-| [rag_prompt_design.md](./rag_prompt_design.md) | embedding / 意味検索（文章生成ではない） |
+| [rag_prompt_design.md](./rag_prompt_design.md) | embedding / 相談の補助語と短い返事 |
 | [development_phases.md](./development_phases.md) | 実装フェーズ |
 | [business_plan.md](./business_plan.md) | 事業概要 |
 | [next-steps.md](./next-steps.md) | 運用チェックリスト（GAO 向け・中文） |

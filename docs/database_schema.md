@@ -21,7 +21,7 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 | `color` | `text` | 地図ドットと凡例の hex |
 | `sort_order` | `integer` | 凡例の並び |
 
-初期 7 行は 0003 が upsert する。色を変えたいときはこのテーブルだけ更新すれば、VIEW / RPC / UI が追従する。
+初期 7 行は 0003 が upsert する。色の hex は `src/lib/rice/regions.ts` と同じ。画面はコード側の `RICE_REGIONS` を優先して塗る。
 
 ## `rice_brands`（名称マスタ）
 
@@ -90,7 +90,7 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 
 **空のプロジェクト（0001 未実行）**
 
-1. **0003 だけ**実行する（0001 は不要。ワイドテーブルを作ってすぐ分割する無駄を避ける）
+1. **0003 だけ**実行する（0001 / 0002 は不要）
 2. `npm run validate:rice`
 3. `npm run seed:rice`
 
@@ -98,5 +98,6 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 
 - V1 の旧 `rice_brands` が残っていて、まだ 0003 を走らせていないときだけ [`0002_drop_rice_brands.sql`](../supabase/migrations/0002_drop_rice_brands.sql)
 - 0003 は V1 `rice_brands`（`region_id` なし）を検出して自動 drop する
+- 地域色の更新は 0003 の upsert、または `npm run seed:rice`（`rice_regions` を上書きする）
 
 書き込みは service role。anon / authenticated は SELECT のみ。

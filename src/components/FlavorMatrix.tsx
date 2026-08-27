@@ -17,6 +17,7 @@ import {
   calculateTopCoordinateMatches,
   clamp,
   toDisplayPoints,
+  hardnessToDisplayX,
   valueToPosition,
 } from "@/lib/rice/matrix";
 import type {
@@ -30,11 +31,9 @@ import { RecommendationRail } from "./matrix/RecommendationRail";
 import { TasteControls } from "./matrix/TasteControls";
 import { TasteMap } from "./matrix/TasteMap";
 import {
-  ACCENT,
   INSET,
   MATCH_LIMIT,
   NEIGHBOUR_LIMIT,
-  SURFACE,
   type RailMatch,
 } from "./matrix/shared";
 import { ErrorPanel } from "./matrix/states";
@@ -60,9 +59,10 @@ export function FlavorMatrix() {
     useState<RecommendationMode>("coordinate");
   const [semanticState, setSemanticState] = useState<SemanticState>("idle");
   const [semanticMatches, setSemanticMatches] = useState<RailMatch[]>([]);
+  const [semanticReply, setSemanticReply] = useState<string | null>(null);
 
   const probeLeft = useMotionValue(
-    `${valueToPosition(INITIAL_COORDINATE.hardness, INSET)}%`
+    `${valueToPosition(hardnessToDisplayX(INITIAL_COORDINATE.hardness), INSET)}%`
   );
   const probeTop = useMotionValue(
     `${100 - valueToPosition(INITIAL_COORDINATE.sweetness, INSET)}%`
@@ -87,7 +87,7 @@ export function FlavorMatrix() {
   }, [loadProfiles]);
 
   useEffect(() => {
-    probeLeft.set(`${valueToPosition(coordinate.hardness, INSET)}%`);
+    probeLeft.set(`${valueToPosition(hardnessToDisplayX(coordinate.hardness), INSET)}%`);
     probeTop.set(`${100 - valueToPosition(coordinate.sweetness, INSET)}%`);
   }, [coordinate.hardness, coordinate.sweetness, probeLeft, probeTop]);
 
@@ -138,6 +138,7 @@ export function FlavorMatrix() {
     setRecommendationMode("coordinate");
     setSemanticState("idle");
     setSemanticMatches([]);
+    setSemanticReply(null);
   }, []);
 
   const commitCoordinate = useCallback(
@@ -155,7 +156,7 @@ export function FlavorMatrix() {
     (axis: keyof TasteCoordinate, value: number) => {
       setCoordinate((previous) => {
         const next = { ...previous, [axis]: clamp(value) };
-        probeLeft.set(`${valueToPosition(next.hardness, INSET)}%`);
+        probeLeft.set(`${valueToPosition(hardnessToDisplayX(next.hardness), INSET)}%`);
         probeTop.set(`${100 - valueToPosition(next.sweetness, INSET)}%`);
         return next;
       });
@@ -187,6 +188,7 @@ export function FlavorMatrix() {
 
       const body = (await response.json()) as {
         matches?: Array<{ rice?: RiceProfileV2; score?: number; reason?: string }>;
+        reply?: string;
         message?: string;
       };
 
@@ -209,58 +211,36 @@ export function FlavorMatrix() {
         .filter((match): match is RailMatch => match !== null);
 
       setSemanticMatches(matches);
+      setSemanticReply(typeof body.reply === "string" ? body.reply.trim() : null);
       setSemanticState("idle");
     } catch (cause) {
       console.error("Semantic recommend failed:", cause);
       setSemanticMatches([]);
+      setSemanticReply(null);
       setSemanticState("error");
     }
   }, [query, profiles]);
 
   return (
-    <section
-      className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[1.5rem] px-3 py-5 text-[var(--km-ink)] sm:px-5 sm:py-7 lg:rounded-[2.5rem] lg:px-6 lg:py-4"
-      style={{
-        ["--km-accent" as string]: ACCENT,
-        background:
-          "radial-gradient(circle at 14% 0%, rgba(255,255,255,0.72), transparent 32%), radial-gradient(circle at 88% 82%, rgba(185,139,50,0.11), transparent 38%), linear-gradient(145deg, #f3eadb 0%, #e9dcc8 100%)",
-      }}
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.055] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E\")",
-        }}
-      />
-
-      <div className="relative grid gap-5 lg:grid-cols-[minmax(0,680px)_1fr] lg:items-stretch xl:grid-cols-[minmax(0,720px)_1fr] xl:gap-6">
-        <div className={`relative flex h-full w-full min-h-0 flex-col overflow-hidden ${SURFACE}`}>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(110% 80% at 15% 0%, rgba(255,255,255,0.58), transparent 58%), radial-gradient(90% 70% at 92% 100%, rgba(185,139,50,0.08), transparent 62%)",
-            }}
-          />
-
-          <div className="relative shrink-0 px-5 pt-6 sm:px-7 sm:pt-7 lg:px-7 lg:pt-5 xl:px-9 xl:pt-7">
-            <h2 className="text-2xl font-semibold leading-tight tracking-tighter text-[var(--km-ink)] sm:text-3xl xl:text-4xl">
+    <section className="relative mx-auto w-full max-w-[1400px] px-4 py-5 text-[var(--km-ink)] sm:px-6 sm:py-6 lg:px-8 lg:py-4">
+      <div className="relative grid gap-8 lg:min-h-[calc(100dvh-8rem)] lg:grid-cols-[minmax(0,1fr)_minmax(280px,22rem)] lg:items-stretch xl:grid-cols-[minmax(0,1fr)_minmax(300px,24rem)] xl:gap-10">
+        <div className="relative flex h-full min-h-0 w-full flex-col">
+          <div className="relative shrink-0 pb-3 pt-1">
+            <h2 className="text-2xl font-semibold leading-tight tracking-tighter text-[var(--km-ink)] sm:text-3xl">
               風味マトリクス
             </h2>
-            <p className="mt-2 max-w-[44ch] text-xs leading-relaxed text-[var(--km-ink-soft)] sm:text-sm">
-              探針を置くと、味わいの近い銘柄が静かに浮かび上がります。
+            <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[var(--km-ink-soft)]">
+              探針を置くと、味わいの近い銘柄が浮かび上がります。
             </p>
           </div>
 
           {loadState === "error" ? (
             <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
           ) : (
-            <div className="relative px-4 pb-4 pt-4 sm:px-7 sm:pb-5 lg:px-7 lg:pb-4 lg:pt-3 xl:px-8 xl:pb-4">
+            <div className="relative flex min-h-[min(70vw,26rem)] flex-1 flex-col pb-2 pt-1 lg:min-h-0">
               <TasteMap
                 points={points}
+                regions={regions}
                 bestMatchId={bestMatchId}
                 runnerUpIds={runnerUpIds}
                 selectedId={selectedId}
@@ -276,12 +256,13 @@ export function FlavorMatrix() {
             </div>
           )}
 
-          <TasteControls coordinate={coordinate} onAxisChange={setAxis} regions={regions} />
+          <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
         </div>
 
-        <aside className="flex h-full min-h-0 flex-col divide-y divide-[var(--km-border)] rounded-[2rem] border border-[var(--km-border)] bg-[var(--km-surface)]/92 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),0_28px_70px_-46px_rgba(83,65,48,0.38)] sm:p-6 lg:p-5 xl:p-6">
+        <aside className="flex h-full min-h-0 flex-col border-t border-[var(--km-border)] pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-1">
           <RecommendationRail
             matches={railMatches}
+            reply={recommendationMode === "semantic" ? semanticReply : null}
             mode={recommendationMode}
             loading={loadState === "loading"}
             pending={semanticState === "pending"}

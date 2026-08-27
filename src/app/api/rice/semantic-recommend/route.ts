@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { createEmbedding, getEmbeddingModel, resolveProvider } from "@/lib/embedding";
-import { mapRowToRiceProfile } from "@/lib/rice/mapRiceRow";
+import { expandConsultationQuery } from "@/lib/rice/consultExpand";
+import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
 import { buildSemanticReason } from "@/lib/rice/flavorBridge";
+import { nameMatch, semanticDisplayScore } from "@/lib/rice/semanticScore";
+import { generateSommelierReply } from "@/lib/rice/sommelierReply";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { RiceProfileV2 } from "@/types/rice";
 
 export const runtime = "nodejs";
 
@@ -53,9 +57,11 @@ export async function POST(request: Request) {
     );
   }
 
+  const searchText = expandConsultationQuery(query);
+
   let embedding: number[];
   try {
-    embedding = await createEmbedding(query, provider);
+    embedding = await createEmbedding(searchText, provider);
   } catch (cause) {
     console.error("Failed to embed consultation query:", cause);
     return NextResponse.json(
@@ -77,22 +83,76 @@ export async function POST(request: Request) {
     if (error) throw new Error(error.message);
 
     const rows = (data ?? []) as unknown as Array<Record<string, unknown>>;
-    const matches = rows.map((row) => {
-      const rice = mapRowToRiceProfile(row);
-      const similarity = typeof row.similarity === "number" ? row.similarity : 0;
+    const matches = rows.map((row) => toMatch(query, mapRowToRiceProfile(row), row.similarity));
 
-      return {
-        rice,
-        similarity,
-        // Whole numbers only: a decimal implies more precision than the data supports.
-        score: Math.round(Math.max(0, Math.min(1, similarity)) * 100),
-        reason: buildSemanticReason(query, rice),
-      };
+    const named = await findExactNameMatch(
+      supabase,
+      query,
+      matches.some((match) => nameMatch(query, match.rice.name) === "exact")
+    );
+    if (named) {
+      matches.unshift(toMatch(query, named, 1));
+    }
+
+    matches.sort((a, b) => {
+      if (a.score !== b.score) return b.score - a.score;
+      return a.rice.name.localeCompare(b.rice.name, "ja");
     });
 
-    return NextResponse.json({ query, embeddingModel, matches });
+    const seen = new Set<string>();
+    const unique = matches.filter((match) => {
+      if (seen.has(match.rice.id)) return false;
+      seen.add(match.rice.id);
+      return true;
+    });
+
+    const ranked = unique.slice(0, matchCount);
+    const reply = await generateSommelierReply(
+      query,
+      ranked.map((match) => ({
+        name: match.rice.name,
+        prefecture: match.rice.prefecture,
+        reason: match.reason,
+      }))
+    );
+
+    return NextResponse.json({
+      query,
+      reply,
+      embeddingModel,
+      matches: ranked,
+    });
   } catch (cause) {
     console.error("Failed to match rice profiles:", cause);
     return NextResponse.json({ message: "銘柄の照合に失敗しました。" }, { status: 502 });
   }
+}
+
+function toMatch(query: string, rice: RiceProfileV2, similarityRaw: unknown) {
+  const similarity = typeof similarityRaw === "number" ? similarityRaw : 0;
+  const match = nameMatch(query, rice.name);
+
+  return {
+    rice,
+    similarity,
+    score: semanticDisplayScore(similarity, match),
+    reason: buildSemanticReason(query, rice),
+  };
+}
+
+async function findExactNameMatch(
+  supabase: ReturnType<typeof createAdminClient>,
+  query: string,
+  alreadyExact: boolean
+) {
+  if (alreadyExact) return null;
+
+  const { data, error } = await supabase
+    .from("rice_catalog")
+    .select(RICE_PROFILE_COLUMNS)
+    .eq("name", query)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return mapRowToRiceProfile(data as unknown as Record<string, unknown>);
 }

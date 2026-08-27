@@ -1,11 +1,11 @@
 import type { RiceProfileV2 } from "@/types/rice";
+import { nameMatch } from "./semanticScore";
 
 /**
  * Flavor Bridge: explains why a rice suits the drink or dish the guest asked about.
  *
- * Deterministic rules only, no LLM call. The consultation flow already spends one
- * network round trip on the embedding, and a rule engine keeps the wording inside the
- * restrained vocabulary while staying instant and free of hallucination.
+ * Deterministic rules for each match card. The spoken 2-sentence reply is generated
+ * separately after ranking, and may only name those ranked brands.
  */
 
 export type DrinkCategory =
@@ -210,10 +210,14 @@ const SCENE_RULES: Array<[keywords: string[], build: (rice: RiceProfileV2) => st
 /**
  * Explanation for a semantic match.
  *
- * Prefers a drink-specific Flavor Bridge, then a scene rule, then the brand's own
- * editorial pairing reason so every recommendation carries a readable "why".
+ * An exact brand-name lookup says so plainly. Otherwise prefers a drink-specific
+ * Flavor Bridge, then a scene rule, then the brand's own editorial pairing reason.
  */
 export function buildSemanticReason(query: string, rice: RiceProfileV2): string {
+  if (nameMatch(query, rice.name) === "exact") {
+    return `お探しの銘柄です。${rice.prefecture}の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
+  }
+
   const category = detectDrinkCategory(query);
   if (category) {
     return BRIDGES[category](rice);

@@ -3,6 +3,10 @@
  *
  * Usage: npm run seed:rice
  *
+ * After upserts, brands whose id is no longer in `riceProfiles` are deleted
+ * (profile details cascade). This removes leftover overlay IDs such as
+ * `shinnosuke-editorial`.
+ *
  * Prerequisites:
  *   1. Run supabase/migrations/0003_normalize_rice_catalog.sql in the SQL Editor
  *      (0001 is only needed if you still have the wide rice_profiles table to migrate)
@@ -190,6 +194,36 @@ async function main(): Promise<void> {
       const message = error instanceof Error ? error.message : String(error);
       failures.push(`${rice.name}: ${message}`);
       console.error(`${progress} ✗ ${rice.name}: ${message}`);
+    }
+  }
+
+  const keepIds = new Set(riceProfiles.map((rice) => rice.id));
+  const { data: existingBrands, error: listError } = await supabase
+    .from("rice_brands")
+    .select("id");
+
+  if (listError) {
+    console.warn(`Could not list rice_brands for prune: ${listError.message}`);
+  } else {
+    const staleIds = (existingBrands ?? [])
+      .map((row) => String(row.id))
+      .filter((id) => !keepIds.has(id));
+
+    if (staleIds.length > 0) {
+      const { error: deleteError } = await supabase
+        .from("rice_brands")
+        .delete()
+        .in("id", staleIds);
+
+      if (deleteError) {
+        console.warn(
+          `Could not prune ${staleIds.length} stale brand(s): ${deleteError.message}`
+        );
+      } else {
+        console.log(
+          `\nPruned ${staleIds.length} stale brand(s): ${staleIds.join(", ")}`
+        );
+      }
     }
   }
 

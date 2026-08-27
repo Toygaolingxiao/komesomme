@@ -29,7 +29,7 @@ export function ConsultForm({
   onSubmit: () => void;
 }) {
   return (
-    <div className="mt-auto shrink-0 pt-5 lg:pt-5 xl:pt-6">
+    <div className="mt-auto shrink-0 border-t border-[var(--km-border)] pt-5">
       <h3 className="text-base font-semibold tracking-tight text-[var(--km-ink)]">
         米ソムリエに相談
       </h3>
@@ -52,7 +52,7 @@ export function ConsultForm({
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい"
-          className="w-full rounded-xl border border-[var(--km-border)] bg-white/65 px-3.5 py-3 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-gold)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--km-gold)]/20"
+          className="w-full rounded-lg border-0 border-b border-[var(--km-border)] bg-transparent px-0 py-2.5 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:outline-none focus-visible:ring-0"
         />
 
         <ul className="mt-1 flex flex-wrap gap-1.5">

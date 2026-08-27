@@ -10,7 +10,7 @@ export default function HomePage() {
         <nav className="flex items-center gap-5 text-sm text-[var(--km-muted)]">
           <a
             href="#matrix"
-            className="whitespace-nowrap transition hover:text-[var(--km-gold)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--km-gold)]"
+            className="whitespace-nowrap transition hover:text-[var(--km-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--km-accent)]"
           >
             味わいの地図
           </a>

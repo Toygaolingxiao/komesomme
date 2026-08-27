@@ -1,6 +1,6 @@
 # Embedding・意味検索設計
 
-現行の「米ソムリエに相談」は、LLM に文章を生成させる RAG chat ではない。自然言語を embedding に変換し、保存済み `search_text` ベクトルとの近さで Top 4 を返す意味検索である。理由文は決定論的な Flavor Bridge が付ける。
+現行の「米ソムリエに相談」は、自然言語を embedding して Top 4 を返す意味検索である。理由文は Flavor Bridge。Top 4 が揃ったあと、Gemini が 2 文の返事を書く。返事は候補銘柄以外の名前を創作しない。
 
 ## 1. search_text
 
@@ -36,10 +36,12 @@
 ```text
 相談フォーム
   → POST /api/rice/semantic-recommend { query, matchCount: 4 }
+  → expandConsultationQuery（酒・料理・食味の補助語。画面には出さない）
   → createEmbedding
   → RPC match_rice_profiles (p_embedding_model, match_count, match_threshold)
   → Flavor Bridge で reason を付与
-  → JSON { query, embeddingModel, matches }
+  → generateSommelierReply（Gemini。失敗時は 1 位の reason）
+  → JSON { query, reply, embeddingModel, matches }
 ```
 
 - Route: `src/app/api/rice/semantic-recommend/route.ts`
@@ -67,6 +69,8 @@
 - 内部例外をレスポンスへ出さない
 - Browser から embedding プロバイダを直接呼ばない
 
-## 7. 将来仕様: LLM 文章生成
+## 7. 短い返事
 
-文章生成を追加する場合も、先に embedding 検索を完了し、Top 4 以外を創作させない。System Prompt、streaming、rate limit は未決定。
+`src/lib/rice/sommelierReply.ts`。鍵があるときだけ生成し、失敗しても Top 4 は返す。
+
+禁止語は UI 正本と同じ（最強、圧倒的、究極、唯一無二、爆発、神、無敵）。

@@ -1,13 +1,18 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Drop } from "@phosphor-icons/react";
 import { motion, type MotionValue } from "motion/react";
-import { positionToValue } from "@/lib/rice/matrix";
+import { displayXToHardness, positionToValue } from "@/lib/rice/matrix";
+import type { RiceRegionRecord } from "@/lib/rice/regions";
 import type { RiceDisplayPoint } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
-import { BAND, INSET, LAYER } from "./shared";
+import { INSET, LAYER } from "./shared";
 import { EmptyPanel, MatrixSkeleton } from "./states";
+
+const Y_GUTTER = 42;
+const X_LABEL = 28;
+const LEGEND = 42;
 
 function MatrixGrid() {
   const ticks = [0, 1, 2, 3, 4];
@@ -15,18 +20,30 @@ function MatrixGrid() {
   return (
     <div aria-hidden className="absolute inset-0" style={{ zIndex: LAYER.grid }}>
       {ticks.map((tick) => {
-        const position = INSET + (tick / 4) * BAND;
-        // The centre lines carry the quadrant split, so they read stronger.
-        const emphasis = tick === 2 ? "bg-[var(--km-ink)]/18" : "bg-[var(--km-grid)]";
+        const position = (tick / 4) * 100;
+        const emphasis = tick === 2;
+        const edge = tick === 0 || tick === 4;
 
         return (
           <div key={tick}>
             <div
-              className={`absolute top-0 h-full w-px ${emphasis}`}
+              className={`absolute top-0 h-full ${
+                emphasis
+                  ? "w-[2px] bg-[var(--km-ink)]/22"
+                  : edge
+                    ? "w-px bg-[var(--km-ink)]/12"
+                    : "w-px bg-[var(--km-grid)]"
+              }`}
               style={{ left: `${position}%` }}
             />
             <div
-              className={`absolute left-0 h-px w-full ${emphasis}`}
+              className={`absolute left-0 w-full ${
+                emphasis
+                  ? "h-[2px] bg-[var(--km-ink)]/22"
+                  : edge
+                    ? "h-px bg-[var(--km-ink)]/12"
+                    : "h-px bg-[var(--km-grid)]"
+              }`}
               style={{ top: `${position}%` }}
             />
           </div>
@@ -36,27 +53,51 @@ function MatrixGrid() {
   );
 }
 
-function QuadrantHints() {
-  const hints = [
-    { className: "bottom-5 left-5", first: "やわらかく", second: "すっきり" },
-    { className: "left-5 top-5", first: "やわらかく", second: "甘み豊か" },
-    { className: "bottom-5 right-5 text-right", first: "粒立ちよく", second: "すっきり" },
-    { className: "right-5 top-5 text-right", first: "粒立ちよく", second: "甘み豊か" },
-  ];
-
+/** Soft washi bars through the origin — stronger poles without infographic chroma. */
+function AxisBands() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
-      {hints.map((hint) => (
-        <p
-          key={`${hint.first}-${hint.second}`}
-          className={`absolute max-w-24 text-[10px] leading-relaxed tracking-[0.08em] text-[var(--km-ink-soft)]/60 ${hint.className}`}
-        >
-          {hint.first}
-          <br />
-          {hint.second}
-        </p>
-      ))}
+    <div aria-hidden className="pointer-events-none absolute inset-0" style={{ zIndex: LAYER.grid }}>
+      <div
+        className="absolute w-[5px] -translate-x-1/2 rounded-full opacity-50"
+        style={{
+          left: "50%",
+          top: 0,
+          height: "100%",
+          background:
+            "linear-gradient(180deg, rgba(196,92,26,0.28) 0%, rgba(196,92,26,0.04) 48%, rgba(20,184,166,0.22) 100%)",
+        }}
+      />
+      <div
+        className="absolute h-[5px] -translate-y-1/2 rounded-full opacity-50"
+        style={{
+          top: "50%",
+          left: 0,
+          width: "100%",
+          background:
+            "linear-gradient(90deg, rgba(46,134,222,0.28) 0%, rgba(245,158,11,0.08) 48%, rgba(244,63,110,0.24) 100%)",
+        }}
+      />
     </div>
+  );
+}
+
+function MapLegend({ regions }: { regions: RiceRegionRecord[] }) {
+  return (
+    <ul
+      aria-label="産地域の色分け"
+      className="flex min-h-[42px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-1 py-1 text-[10px] leading-tight text-[var(--km-ink-soft)]"
+    >
+      {regions.map(({ id, name, color }) => (
+        <li key={id} className="inline-flex items-center gap-1.5 whitespace-nowrap">
+          <span
+            aria-hidden
+            className="h-2.5 w-2.5 rounded-full border border-white/50 shadow-[0_0_0_1px_rgba(83,65,48,0.12)]"
+            style={{ backgroundColor: color }}
+          />
+          {name}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -73,9 +114,9 @@ function AxisLegend({
 }) {
   if (orientation === "vertical") {
     return (
-      <div className="flex w-5 shrink-0 flex-col items-center justify-between py-1 text-[11px] text-[var(--km-muted)]">
+      <div className="flex h-full w-full shrink-0 flex-col items-center justify-between py-0.5 text-[11px] text-[var(--km-muted)]">
         <span className="whitespace-nowrap [writing-mode:vertical-rl]">{high}</span>
-        <span className="whitespace-nowrap font-medium text-[var(--km-ink)] [writing-mode:vertical-rl]">
+        <span className="whitespace-nowrap font-medium tracking-wide text-[var(--km-ink)] [writing-mode:vertical-rl]">
           {name}
         </span>
         <span className="whitespace-nowrap [writing-mode:vertical-rl]">{low}</span>
@@ -84,9 +125,9 @@ function AxisLegend({
   }
 
   return (
-    <div className="mt-3 flex items-center justify-between text-[11px] text-[var(--km-muted)]">
+    <div className="flex h-7 w-full items-center justify-between px-[2%] text-[11px] text-[var(--km-muted)]">
       <span>{low}</span>
-      <span className="font-medium text-[var(--km-ink)]">{name}</span>
+      <span className="font-medium tracking-wide text-[var(--km-ink)]">{name}</span>
       <span>{high}</span>
     </div>
   );
@@ -95,11 +136,12 @@ function AxisLegend({
 /**
  * The tasting map: axes, quadrants, brand dots and the probe.
  *
- * X = hardness (grain definition), Y = sweetness. Pointer input reports axis values
- * upward; the parent owns the coordinate so the map stays presentational.
+ * The plot is a measured square: side = min(remaining width, remaining height), so a
+ * tall stretched left column cannot flatten the grid into a rectangle.
  */
 export function TasteMap({
   points,
+  regions = [],
   bestMatchId,
   runnerUpIds,
   selectedId,
@@ -113,6 +155,7 @@ export function TasteMap({
   onSelect,
 }: {
   points: RiceDisplayPoint[];
+  regions: RiceRegionRecord[];
   bestMatchId: string | null;
   runnerUpIds: ReadonlySet<string>;
   selectedId: string | null;
@@ -125,8 +168,29 @@ export function TasteMap({
   onProbeMove: (hardness: number, sweetness: number) => void;
   onSelect: (id: string) => void;
 }) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [side, setSide] = useState(0);
   const [engaged, setEngaged] = useState(false);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const measure = () => {
+      const width = stage.clientWidth;
+      const height = stage.clientHeight;
+      const next = Math.floor(
+        Math.max(0, Math.min(width - Y_GUTTER, height - X_LABEL - LEGEND))
+      );
+      setSide(next);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
 
   const moveProbe = useCallback(
     (clientX: number, clientY: number) => {
@@ -134,7 +198,7 @@ export function TasteMap({
       if (!rect || rect.width === 0 || rect.height === 0) return;
 
       onProbeMove(
-        positionToValue((clientX - rect.left) / rect.width, INSET),
+        displayXToHardness(positionToValue((clientX - rect.left) / rect.width, INSET)),
         positionToValue(1 - (clientY - rect.top) / rect.height, INSET)
       );
     },
@@ -142,10 +206,16 @@ export function TasteMap({
   );
 
   return (
-    <div className="flex gap-3 sm:gap-4">
-      <AxisLegend orientation="vertical" low="すっきり" high="ふくよか" name="甘み" />
+    <div ref={stageRef} className="flex h-full min-h-0 w-full items-center justify-center">
+      <div
+        className="grid items-stretch"
+        style={{
+          gridTemplateColumns: `${Y_GUTTER}px ${side || 0}px`,
+          gridTemplateRows: `${side || 0}px ${X_LABEL}px auto`,
+        }}
+      >
+        <AxisLegend orientation="vertical" low="すっきり" high="ふくよか" name="甘み" />
 
-      <div className="flex min-w-0 flex-1 flex-col">
         <div
           ref={canvasRef}
           onPointerDown={(event) => {
@@ -162,10 +232,11 @@ export function TasteMap({
             setEngaged(false);
           }}
           onPointerCancel={() => setEngaged(false)}
-          className="relative aspect-square w-full touch-none select-none overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[#f8f1e4] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_0_80px_rgba(185,139,50,0.06)] sm:rounded-[1.5rem]"
+          className="relative touch-none select-none overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)]"
+          style={{ width: side, height: side }}
         >
           <MatrixGrid />
-          <QuadrantHints />
+          <AxisBands />
 
           {loading ? (
             <MatrixSkeleton />
@@ -211,7 +282,13 @@ export function TasteMap({
           )}
         </div>
 
-        <AxisLegend orientation="horizontal" low="やわらか" high="しっかり" name="粒感" />
+        <div />
+        <AxisLegend orientation="horizontal" low="しっかり" high="やわらか" name="粒感" />
+        {regions.length > 0 ? (
+          <div style={{ gridColumn: "1 / -1" }}>
+            <MapLegend regions={regions} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -2,7 +2,8 @@
 --
 -- Run this in the Supabase SQL Editor.
 -- If 0001 already created rice_profiles, this migrates then drops that wide table.
--- A new project can run 0003 only (0001 is not required).
+-- A new project can run 0003 only (0001 / 0002 are not required).
+-- Region colours here match src/lib/rice/regions.ts (food-chart chroma).
 --
 -- Tables:
 --   rice_regions          地域マスタ（表示名 + 地図色）
@@ -26,13 +27,13 @@ create table if not exists rice_regions (
 );
 
 insert into rice_regions (id, name, color, sort_order) values
-  ('hokkaido-tohoku', '北海道・東北', '#8a9c7c', 10),
-  ('kanto-koshinetsu', '関東・甲信越', '#b29350', 20),
-  ('tokai-hokuriku', '東海・北陸', '#aa765e', 30),
-  ('kansai', '近畿', '#bea27e', 40),
-  ('chugoku-shikoku', '中国・四国', '#7f9a8f', 50),
-  ('kyushu-okinawa', '九州・沖縄', '#b77b72', 60),
-  ('national', '全国銘柄', '#a89882', 70)
+  ('hokkaido-tohoku', '北海道・東北', '#2E86DE', 10),
+  ('kanto-koshinetsu', '関東・甲信越', '#D946A6', 20),
+  ('tokai-hokuriku', '東海・北陸', '#22A34A', 30),
+  ('kansai', '近畿', '#F97316', 40),
+  ('chugoku-shikoku', '中国・四国', '#14B8A6', 50),
+  ('kyushu-okinawa', '九州・沖縄', '#F43F6E', 60),
+  ('national', '全国銘柄', '#F59E0B', 70)
 on conflict (id) do update
 set name = excluded.name,
     color = excluded.color,

@@ -18,18 +18,16 @@ function BestMatchCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`group w-full rounded-2xl border p-5 text-left transition duration-300 active:scale-[0.99] ${FOCUS} ${
-        active
-          ? "border-[var(--km-gold)]/45 bg-[#f1e2c5]"
-          : "border-[var(--km-border)] bg-[var(--km-surface-warm)]/58 hover:border-[var(--km-gold)]/40"
-      } shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_20px_48px_-34px_rgba(83,65,48,0.30)]`}
+      className={`group w-full py-1 text-left transition duration-300 active:scale-[0.99] ${FOCUS}`}
     >
       <span className="flex items-start justify-between gap-5">
         <span>
           <span className="block text-[11px] tracking-[0.12em] text-[var(--km-accent)]">
             米ソムリエの一膳
           </span>
-          <span className="mt-3 block text-xl font-semibold tracking-tight text-[var(--km-ink)] transition-colors group-hover:text-[var(--km-gold)]">
+          <span className={`mt-2 block text-xl font-semibold tracking-tight transition-colors group-hover:text-[var(--km-accent)] ${
+            active ? "text-[var(--km-accent)]" : "text-[var(--km-ink)]"
+          }`}>
             {match.rice.name}
           </span>
           <span className="mt-1 block text-xs text-[var(--km-muted)]">
@@ -44,7 +42,7 @@ function BestMatchCard({
         </span>
       </span>
 
-      <span className="mt-4 block border-t border-[var(--km-border)] pt-3 text-xs leading-relaxed text-[var(--km-ink-soft)]">
+      <span className="mt-3 block text-xs leading-relaxed text-[var(--km-ink-soft)]">
         {match.reason}
       </span>
 
@@ -120,6 +118,7 @@ function RunnerUpList({
  */
 export function RecommendationRail({
   matches,
+  reply,
   mode,
   loading,
   pending,
@@ -129,6 +128,7 @@ export function RecommendationRail({
   onResetMode,
 }: {
   matches: RailMatch[];
+  reply?: string | null;
   mode: RecommendationMode;
   loading: boolean;
   pending: boolean;
@@ -175,6 +175,12 @@ export function RecommendationRail({
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
+              {reply ? (
+                <p className="mb-5 text-sm leading-relaxed text-[var(--km-ink-soft)]">
+                  {reply}
+                </p>
+              ) : null}
+
               {primary ? (
                 <BestMatchCard
                   match={primary}

@@ -60,11 +60,23 @@ export function identityOf(rice: Pick<RiceProfileV2, "id" | "name">): CultivarId
   if (/仁多|奥出雲|nitamai/.test(blob)) {
     return { cultivar: "コシヒカリ", branch: "nita" };
   }
+  if (/銀の朏|ginnomikazuki|ぎんのみかづき/.test(blob)) {
+    return { cultivar: "いのちの壱", branch: "mikazuki" };
+  }
   if (/龍の瞳|ryu-no-hitomi|ryunohitomi|dragon.eye|dragon_eye/.test(blob)) {
     return { cultivar: "いのちの壱", branch: "tatsunohitomi" };
   }
+  if (/雪ほたか|yukihotaka/.test(blob)) {
+    return { cultivar: "コシヒカリ", branch: "kawaba" };
+  }
+  if (/結びの神|musubi-no-kami/.test(blob)) {
+    return { cultivar: "三重23号", branch: "musubi" };
+  }
   if (/いのちの壱|inochi/.test(blob)) {
     return { cultivar: "いのちの壱", branch: "generic" };
+  }
+  if (/新之助|shinnosuke|しんのすけ/.test(blob)) {
+    return { cultivar: "新之助", branch: "generic" };
   }
   if (
     /コシヒカリ|koshihikari/.test(blob) &&
@@ -93,6 +105,13 @@ const CANONICAL: Record<
     notes: string;
   }
 > = {
+  "新之助::generic": {
+    id: "shinnosuke",
+    name: "新之助",
+    prefecture: "新潟県",
+    region: "関東・甲信越",
+    notes: "新潟県の大粒プレミアム品種。読み仮名違いの行は統合した。",
+  },
   "コシヒカリ::generic": {
     id: "koshihikari-bl",
     name: "コシヒカリ",
@@ -125,6 +144,14 @@ const CANONICAL: Record<
     notes:
       "コシヒカリの産地銘柄。奥出雲・仁多の水と寒暖差で流通上独立した一膳。",
   },
+  "コシヒカリ::kawaba": {
+    id: "yukihotaka",
+    name: "雪ほたか",
+    prefecture: "群馬県",
+    region: "関東・甲信越",
+    notes:
+      "川場村のコシヒカリ産地ブランド。一般のコシヒカリとは別ID。",
+  },
   "いのちの壱::tatsunohitomi": {
     id: "ryu-no-hitomi",
     name: "龍の瞳（いのちの壱）",
@@ -132,6 +159,22 @@ const CANONICAL: Record<
     region: "東海・北陸",
     notes:
       "いのちの壱の商標銘柄。一般栽培のいのちの壱とは別ID。",
+  },
+  "いのちの壱::mikazuki": {
+    id: "gin-no-mikazuki",
+    name: "銀の朏",
+    prefecture: "岐阜県",
+    region: "東海・北陸",
+    notes:
+      "いのちの壱の商標銘柄。龍の瞳・一般栽培とは別ID。",
+  },
+  "三重23号::musubi": {
+    id: "musubi-no-kami",
+    name: "結びの神",
+    prefecture: "三重県",
+    region: "東海・北陸",
+    notes:
+      "三重23号のうち、県基準を満たした産地ブランド。",
   },
   "いのちの壱::generic": {
     id: "inochi-no-ichi",

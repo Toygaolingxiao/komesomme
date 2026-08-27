@@ -1,6 +1,13 @@
+import { riceSources } from "@/data/rice";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { RICE_REGIONS, type RiceRegionRecord } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";
+import { dedupeRiceCatalogue, identityKey, identityOf } from "./cultivarDedup";
+import {
+  getQuadrant,
+  getSweetnessLabel,
+  getTextureLabel,
+} from "./matrix";
 import {
   RICE_PROFILE_COLUMNS,
   RICE_PROFILE_COLUMNS_LEGACY,
@@ -16,13 +23,61 @@ function mapRegions(rows: Array<Record<string, unknown>> | null): RiceRegionReco
   if (!rows || rows.length === 0) return RICE_REGIONS;
 
   return rows
-    .map((row) => ({
-      id: String(row.id),
-      name: String(row.name) as RiceRegionRecord["name"],
-      color: String(row.color),
-      sort_order: Number(row.sort_order ?? 0),
-    }))
+    .map((row) => {
+      const id = String(row.id);
+      const canonical = RICE_REGIONS.find((region) => region.id === id);
+      return {
+        id,
+        name: String(row.name) as RiceRegionRecord["name"],
+        color: canonical?.color ?? String(row.color),
+        sort_order: Number(row.sort_order ?? 0),
+      };
+    })
     .sort((a, b) => a.sort_order - b.sort_order);
+}
+
+/**
+ * Live map scores come from `src/data/rice/*`. Seed only upserts, so a stale
+ * overlay row (e.g. 新之助（しんのすけ）) can linger in the catalog with
+ * all-5 drafts. Matching local identity lets the UI show one calibrated point
+ * without waiting on a prune-and-reseed.
+ */
+function hydrateFromLocal(row: RiceProfileV2): RiceProfileV2 {
+  const key = identityKey(identityOf(row));
+  const local =
+    riceSources.find((rice) => rice.id === row.id) ??
+    riceSources.find(
+      (rice) => identityKey(identityOf({ id: rice.id, name: rice.name })) === key
+    );
+
+  if (!local) return row;
+
+  return {
+    ...row,
+    id: local.id,
+    name: local.name,
+    prefecture: local.prefecture,
+    region: local.region,
+    sweetness: local.sweetness,
+    hardness: local.hardness,
+    stickiness: local.stickiness,
+    aroma: local.aroma,
+    umami: local.umami,
+    aftertaste: local.aftertaste,
+    grain_size: local.grain_size,
+    clarity: local.clarity,
+    richness: local.richness,
+    cold_rice_quality: local.cold_rice_quality,
+    sauce_absorption: local.sauce_absorption,
+    oil_compatibility: local.oil_compatibility,
+    quadrant: getQuadrant(local.hardness, local.sweetness),
+    texture_label: getTextureLabel(local.hardness),
+    sweetness_label: getSweetnessLabel(local.sweetness),
+    short_: local.short_,
+    description: local.description,
+    sommelier_note: local.sommelier_note,
+    pairing_reason: local.pairing_reason,
+  };
 }
 
 /**
@@ -56,7 +111,9 @@ export async function fetchRiceCatalog(): Promise<RiceCatalog> {
   }
 
   return {
-    profiles: (rows ?? []).map(mapRowToRiceProfile),
+    profiles: dedupeRiceCatalogue(
+      (rows ?? []).map(mapRowToRiceProfile).map(hydrateFromLocal)
+    ),
     regions: mapRegions(
       (regionResult.data as Array<Record<string, unknown>> | null) ?? null
     ),

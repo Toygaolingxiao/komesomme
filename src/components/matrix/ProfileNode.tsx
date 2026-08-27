@@ -8,9 +8,8 @@ import { FOCUS, INSET, LAYER, regionColor } from "./shared";
 /**
  * One brand on the tasting map.
  *
- * Dot size follows stickiness so texture is legible at a glance. The best match is
- * drawn perfectly round and gold with a permanent label; runner-ups get a weak gold
- * tint; everything else sits at reduced opacity so ~90 points stay readable.
+ * Dots are true circles. Size follows stickiness. The nearest match keeps its
+ * region colour and is marked with a ring and standing label.
  */
 export function ProfileNode({
   rice,
@@ -29,19 +28,12 @@ export function ProfileNode({
   reduceMotion: boolean;
   onSelect: () => void;
 }) {
-  const baseSize = 9 + rice.stickiness * 1.8;
-  const size = isBestMatch ? baseSize + 10 : isRunnerUp ? baseSize + 4 : baseSize;
-
-  // Slightly irregular outlines read as grains rather than plotted data points.
-  const grainShape =
-    index % 3 === 0
-      ? "rounded-[58%_42%_52%_48%]"
-      : index % 3 === 1
-        ? "rounded-[46%_54%_43%_57%]"
-        : "rounded-[52%_48%_60%_40%]";
+  const baseSize = 8 + rice.stickiness * 1.35;
+  const size = isBestMatch ? baseSize + 8 : isRunnerUp ? baseSize + 3 : baseSize;
 
   const left = valueToPosition(rice.display_x, INSET);
   const top = 100 - valueToPosition(rice.display_y, INSET);
+  const fill = rice.region_color ?? regionColor(rice.region);
 
   return (
     <motion.button
@@ -51,8 +43,8 @@ export function ProfileNode({
       aria-label={`${rice.name} ${rice.prefecture} 粒感 ${rice.hardness} 甘み ${rice.sweetness}`}
       initial={reduceMotion ? false : { opacity: 0, scale: 0.55 }}
       animate={{
-        opacity: isBestMatch ? 1 : isRunnerUp ? 0.92 : active ? 1 : 0.45,
-        scale: active && !isBestMatch ? 1.18 : 1,
+        opacity: isBestMatch ? 1 : isRunnerUp ? 0.98 : active ? 1 : 0.94,
+        scale: active && !isBestMatch ? 1.16 : 1,
       }}
       transition={{
         duration: 0.55,
@@ -64,7 +56,7 @@ export function ProfileNode({
         top: `${top}%`,
         width: size,
         height: size,
-        ["--node-color" as string]: rice.region_color ?? regionColor(rice.region),
+        ["--node-color" as string]: fill,
         zIndex: isBestMatch
           ? LAYER.bestNode
           : isRunnerUp
@@ -74,35 +66,53 @@ export function ProfileNode({
       className={`group absolute -translate-x-1/2 -translate-y-1/2 rounded-full ${FOCUS}`}
     >
       <span
-        className={`absolute inset-0 border transition-colors duration-500 ${
-          isBestMatch ? "rounded-full" : grainShape
-        } ${
+        className={`absolute inset-0 rounded-full border transition-colors duration-500 ${
           isBestMatch
-            ? "border-[#8e6822]/30 bg-[var(--km-gold-strong)] ring-2 ring-[var(--km-gold)]/30 shadow-[0_0_0_5px_rgba(185,139,50,0.10),0_8px_20px_rgba(83,65,48,0.20)]"
+            ? "border-white/80 bg-[var(--node-color)] shadow-[0_0_0_3px_rgba(28,25,23,0.22),0_8px_18px_rgba(28,25,23,0.16)]"
             : isRunnerUp
-              ? "border-[var(--km-gold)]/35 bg-[var(--km-gold)]/72 ring-1 ring-[var(--km-gold)]/15"
+              ? "border-white/70 bg-[var(--node-color)] shadow-[0_0_0_2px_rgba(28,25,23,0.12)]"
               : active
-                ? "border-[var(--km-ink)]/40 bg-[var(--node-color)] ring-2 ring-[var(--km-ink)]/15"
-                : "border-[var(--km-ink)]/20 bg-[var(--node-color)] group-hover:border-[var(--km-ink)]/45 group-hover:opacity-100"
+                ? "border-[var(--km-ink)]/35 bg-[var(--node-color)] ring-2 ring-[var(--km-ink)]/12"
+                : "border-white/40 bg-[var(--node-color)] shadow-[0_0_0_1px_rgba(83,65,48,0.08)] group-hover:border-[var(--km-ink)]/30"
         }`}
       />
 
       {isBestMatch && !reduceMotion ? (
         <motion.span
-          className="absolute inset-0 rounded-full border border-[var(--km-gold)]/45"
-          animate={{ scale: [1, 2.05], opacity: [0.45, 0] }}
+          className="absolute inset-0 rounded-full border border-[var(--km-ink)]/25"
+          animate={{ scale: [1, 2.05], opacity: [0.4, 0] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: 0.25 }}
         />
       ) : null}
 
       <span
-        className={`pointer-events-none absolute left-1/2 top-full mt-3 -translate-x-1/2 whitespace-nowrap rounded-md border px-2.5 py-1 text-[10px] tracking-tight shadow-[0_8px_20px_rgba(83,65,48,0.16)] backdrop-blur-xl transition-opacity duration-200 ${
+        className={`pointer-events-none absolute z-10 rounded-full border px-2.5 py-1 text-left shadow-[0_8px_20px_rgba(83,65,48,0.16)] backdrop-blur-xl transition-opacity duration-200 ${
+          rice.display_y <= 1.8
+            ? "bottom-full mb-2.5"
+            : "top-full mt-2.5"
+        } ${
+          rice.display_x <= 1.55
+            ? "left-0"
+            : rice.display_x >= 4.45
+              ? "right-0"
+              : "left-1/2 -translate-x-1/2"
+        } ${
           isBestMatch
-            ? "border-[var(--km-gold)]/35 bg-[#f2e4c8]/95 px-3 py-1.5 text-[11px] font-medium text-[var(--km-ink)] opacity-100"
-            : "border-[var(--km-border)] bg-[var(--km-surface)]/95 text-[var(--km-ink)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+            ? "border-[var(--km-accent)]/40 bg-white/96 opacity-100"
+            : "border-[var(--km-border)] bg-[var(--km-surface)]/96 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
         }`}
       >
-        {isBestMatch ? `最も近い一膳｜${rice.name}` : rice.name}
+        {isBestMatch ? (
+          <span className="block whitespace-nowrap text-[9px] tracking-[0.08em] text-[var(--km-accent)]">
+            最も近い一膳
+          </span>
+        ) : null}
+        <span className="block whitespace-nowrap text-[9px] leading-tight text-[var(--km-muted)]">
+          {rice.prefecture}
+        </span>
+        <span className="block whitespace-nowrap text-[11px] font-medium leading-tight tracking-tight text-[var(--km-ink)]">
+          {rice.name}
+        </span>
       </span>
     </motion.button>
   );

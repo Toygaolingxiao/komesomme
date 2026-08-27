@@ -43,7 +43,7 @@ src/
 supabase/migrations/
 ├── 0001_create_rice_profiles.sql     # 旧ワイドテーブル（既存環境のみ）
 ├── 0002_drop_rice_brands.sql         # V1 名称テーブルの任意削除
-└── 0003_normalize_rice_catalog.sql   # 地域 / 名称 / 詳細 + rice_catalog
+├── 0003_normalize_rice_catalog.sql   # 現行スキーマ（地域 / 名称 / 詳細 + rice_catalog）
 
 scripts/
 ├── validate-rice-profiles.ts

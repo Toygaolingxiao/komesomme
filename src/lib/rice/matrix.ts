@@ -31,8 +31,13 @@ function stableHash(input: string): number {
 
 function stableNoise(id: string, axis: "x" | "y") {
   const hash = stableHash(`${id}:${axis}`);
-  return ((hash % 1000) / 1000 - 0.5) * 0.1;
+  return ((hash % 1000) / 1000 - 0.5) * 0.18;
 }
+
+/** Minimum axis-unit gap after jitter, so integer-scored brands do not pile up. */
+const SEPARATION = 0.15;
+const SEPARATION_ITERS = 12;
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
 /**
  * Spreads brands that share the same hardness / sweetness pair.
@@ -41,13 +46,25 @@ function stableNoise(id: string, axis: "x" | "y") {
  * looking like a rigid grid, while staying stable across renders and reloads. The
  * database stores pure taste data only; display coordinates are computed here.
  */
+/**
+ * Chart axis: left = firm (hardness 5), right = soft (hardness 1).
+ * Matches the usual Japanese rice infographic direction.
+ */
+export function hardnessToDisplayX(hardness: number) {
+  return AXIS_MAX + AXIS_MIN - normalizeTasteValue(hardness);
+}
+
+export function displayXToHardness(displayX: number) {
+  return AXIS_MAX + AXIS_MIN - normalizeTasteValue(displayX);
+}
+
 export function calculateMatrixDisplayPoint(rice: RiceProfileV2): RiceDisplayPoint {
-  const baseX = normalizeTasteValue(rice.hardness);
+  const baseX = hardnessToDisplayX(rice.hardness);
   const baseY = normalizeTasteValue(rice.sweetness);
 
   const offsetX =
-    (normalizeTasteValue(rice.stickiness) - 3) * -0.08 +
-    (normalizeTasteValue(rice.grain_size) - 3) * 0.06 +
+    (normalizeTasteValue(rice.stickiness) - 3) * 0.08 +
+    (normalizeTasteValue(rice.grain_size) - 3) * -0.06 +
     stableNoise(rice.id, "x");
 
   const offsetY =
@@ -63,8 +80,85 @@ export function calculateMatrixDisplayPoint(rice: RiceProfileV2): RiceDisplayPoi
   };
 }
 
+/**
+ * Spreads brands that share a hardness / sweetness cell, then nudges leftover overlaps.
+ *
+ * A sunflower spiral (stable by id) is the initial layout so integer scores do not start
+ * in a pile. A few damped repulsion steps then separate neighbouring cells. Ranking uses
+ * these same coordinates, so No.1 stays the nearest visible dot.
+ */
+function separateDisplayPoints(points: RiceDisplayPoint[]): RiceDisplayPoint[] {
+  const xs = points.map((point) => point.display_x);
+  const ys = points.map((point) => point.display_y);
+  const groups = new Map<string, number[]>();
+
+  points.forEach((point, index) => {
+    const key = `${Math.round(normalizeTasteValue(point.hardness))}:${Math.round(normalizeTasteValue(point.sweetness))}`;
+    const members = groups.get(key);
+    if (members) members.push(index);
+    else groups.set(key, [index]);
+  });
+
+  for (const [key, indexes] of groups) {
+    indexes.sort((a, b) => points[a].id.localeCompare(points[b].id));
+    if (indexes.length <= 1) continue;
+
+    const cx = indexes.reduce((sum, index) => sum + xs[index], 0) / indexes.length;
+    const cy = indexes.reduce((sum, index) => sum + ys[index], 0) / indexes.length;
+    const rot = (stableHash(key) % 360) * (Math.PI / 180);
+
+    indexes.forEach((index, i) => {
+      const radius = SEPARATION * Math.sqrt(i);
+      const angle = rot + i * GOLDEN_ANGLE;
+      xs[index] = clamp(cx + Math.cos(angle) * radius);
+      ys[index] = clamp(cy + Math.sin(angle) * radius);
+    });
+  }
+
+  const minSq = SEPARATION * SEPARATION;
+
+  for (let iter = 0; iter < SEPARATION_ITERS; iter += 1) {
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
+        let dx = xs[j] - xs[i];
+        let dy = ys[j] - ys[i];
+        let distSq = dx * dx + dy * dy;
+
+        if (distSq < 1e-8) {
+          const angle = (stableHash(`${points[i].id}|${points[j].id}`) % 360) * (Math.PI / 180);
+          dx = Math.cos(angle) * 0.002;
+          dy = Math.sin(angle) * 0.002;
+          distSq = dx * dx + dy * dy;
+        }
+
+        if (distSq >= minSq) continue;
+
+        const dist = Math.sqrt(distSq);
+        const push = ((SEPARATION - dist) / 2) * 0.6;
+        const ux = dx / dist;
+        const uy = dy / dist;
+        xs[i] -= ux * push;
+        ys[i] -= uy * push;
+        xs[j] += ux * push;
+        ys[j] += uy * push;
+      }
+    }
+
+    for (let i = 0; i < points.length; i += 1) {
+      xs[i] = clamp(xs[i]);
+      ys[i] = clamp(ys[i]);
+    }
+  }
+
+  return points.map((point, index) => ({
+    ...point,
+    display_x: Number(xs[index].toFixed(3)),
+    display_y: Number(ys[index].toFixed(3)),
+  }));
+}
+
 export function toDisplayPoints(riceList: RiceProfileV2[]): RiceDisplayPoint[] {
-  return riceList.map(calculateMatrixDisplayPoint);
+  return separateDisplayPoints(riceList.map(calculateMatrixDisplayPoint));
 }
 
 export function getQuadrant(hardness: number, sweetness: number) {
@@ -99,23 +193,26 @@ function hasDisplayCoordinates(
 /**
  * Measures against the coordinates the user can actually see.
  *
- * Ranking on raw taste values would let a visually farther dot win whenever the
- * deterministic jitter shifts points, so the highlighted No.1 must be measured from
- * the same position it is drawn at.
+ * `display_x` is left=firm / right=soft. The probe stores raw `hardness`
+ * (1=soft, 5=firm), so it must be converted before comparing, otherwise a
+ * click on the right edge ranks the left-hand (firm) dots as nearest.
  */
 export function calculateCoordinateDistance(
   target: TasteCoordinate,
   rice: RiceProfileV2 | RiceDisplayPoint
 ) {
+  const targetX = hardnessToDisplayX(target.hardness);
+  const targetY = normalizeTasteValue(target.sweetness);
+
   const point = hasDisplayCoordinates(rice)
-    ? { hardness: rice.display_x, sweetness: rice.display_y }
+    ? { x: rice.display_x, y: rice.display_y }
     : {
-        hardness: normalizeTasteValue(rice.hardness),
-        sweetness: normalizeTasteValue(rice.sweetness),
+        x: hardnessToDisplayX(rice.hardness),
+        y: normalizeTasteValue(rice.sweetness),
       };
 
-  const dx = point.hardness - target.hardness;
-  const dy = point.sweetness - target.sweetness;
+  const dx = point.x - targetX;
+  const dy = point.y - targetY;
   return Math.sqrt(dx * dx + dy * dy);
 }
 

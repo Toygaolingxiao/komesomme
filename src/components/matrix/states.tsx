@@ -27,7 +27,7 @@ export function MatrixSkeleton() {
         <span
           key={`${left}-${top}`}
           aria-hidden
-          className="absolute h-3 w-2 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-[60%_40%_55%_45%] bg-[var(--km-ink)]/12"
+          className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-[var(--km-ink)]/14"
           style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${index * 120}ms` }}
         />
       ))}
@@ -44,7 +44,7 @@ export function RailSkeleton() {
       role="status"
       className="flex items-center gap-3 border-y border-[var(--km-border)] py-6"
     >
-      <span className="h-3 w-2 animate-pulse rounded-[60%_40%_55%_45%] bg-[var(--km-accent)]/55" />
+      <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-[var(--km-accent)]/55" />
       <p className="text-sm text-[var(--km-muted)]">銘柄を読み込んでいます</p>
     </div>
   );
@@ -54,7 +54,7 @@ export function SemanticReading({ reduceMotion }: { reduceMotion: boolean }) {
   return (
     <div className="flex items-center gap-3 border-y border-[var(--km-border)] py-6">
       <motion.span
-        className="h-3 w-2 rounded-[55%_45%_50%_50%] bg-[var(--km-accent)]/70"
+        className="h-2.5 w-2.5 rounded-full bg-[var(--km-accent)]/70"
         animate={
           reduceMotion ? undefined : { opacity: [0.35, 1, 0.35], scale: [0.9, 1.08, 0.9] }
         }
