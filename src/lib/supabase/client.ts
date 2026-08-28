@@ -8,8 +8,8 @@ import { getSupabaseAnonKey, getSupabaseUrl } from "./env";
 export function createBrowserClient() {
   return createClient<Database>(getSupabaseUrl(), getSupabaseAnonKey(), {
     auth: {
-      persistSession: true,
-      autoRefreshToken: true,
+      persistSession: false,
+      autoRefreshToken: false,
     },
   });
 }

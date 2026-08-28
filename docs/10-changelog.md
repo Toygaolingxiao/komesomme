@@ -1,8 +1,10 @@
 # 変更履歴
 
-[Semantic Versioning](./01-versioning.md) に従う。現在: **0.2.1**（[`VERSION`](../VERSION)）。
+[Semantic Versioning](./01-versioning.md) に従う。現在: **0.3.0**（[`VERSION`](../VERSION)）。
 
 ## Unreleased
+
+## 0.3.0 — 2026-08
 
 ### 分析
 
@@ -13,9 +15,8 @@
 ### データ
 
 - 外部食味図 5 枚＋都道府県 / JA / Wikipedia 等の公開記述を突き合わせ、図上銘柄の `sweetness` / `hardness` / `stickiness` と `short_` を再校正（軸は従来の甘み×粒立ちのまま）
-- 正本アーカイブ: `scripts/data/`（README あり）。適用: `scripts/apply-taste-consensus.ts`
-- **本番 DB は `npm run seed:rice` の再実行が必要**（座標は seed 後の catalog / embedding と揃える）
-- `access_events` は SQL Editor で `0005_access_events.sql` を適用
+- 正本アーカイブ: `scripts/data/`。適用: `scripts/apply-taste-consensus.ts`
+- seed の Supabase 書き込みに一時的な `fetch failed` の再試行を追加
 
 ### Mobile UX
 
@@ -23,24 +24,23 @@
 - `break-keep` による文末クリップを解消（品鑑・今日の一膳）
 - プレビュー地図の負マージン横溢れを抑制、ヘッダー法務リンクを短縮、下部余白を拡大
 
-### セキュリティ / コンプライアンス（段階リリース）
+### セキュリティ / コンプライアンス
 
 - 相談 API: `SEMANTIC_RECOMMEND_ENABLED` kill switch、IP あたり分次・日次レート制限
 - 法務草案: `/privacy` `/terms` `/tokushoho`、ヘッダー法務ナビ、アフィリエイト表記
 - 特商法の事業者欄はプレースホルダ（公開前に記入）
 - CI: GitHub Actions で lint / typecheck / validate:rice / build
-- DB: `0004_restrict_embedding_access.sql` — anon から embedding / search_text 直読みと RPC を遮断（本番で実測済み）
+- DB: `0004_restrict_embedding_access.sql` — anon から embedding / search_text 直読みと RPC を遮断
 - `next.config.ts`: X-Frame-Options / nosniff / Referrer-Policy 等
-- [vercel-production.md](./vercel-production.md): Vercel env・Redeploy・ロールバック手順
 - SEO: `metadataBase`、OG/Twitter、`robots.ts`、`sitemap.ts`、OG 画像
-- 起動時 env 検証（Production fail-fast）。anon に service_role JWT があれば起動しない
-- CI: クライアント bundle に service_role が混入していないことを検査
-- `npm audit --omit=dev`: Critical なし。`next` 同梱 postcss の High は Next 16 への強制アップが必要なため見送り
-- [smoke-test.md](./smoke-test.md): 本番スモーク手順書
+- 起動時 env 検証（Production fail-fast）
+- クライアント bundle に service_role が混入していないことを CI で検査
 
-### ドキュメント
+### 開発
 
-- [11-launch-checklist.md](./11-launch-checklist.md): 収益化正式サイト向け本番チェックリスト（P0/P1/P2・実行バックログ）
+- VERSION 運用を [01-versioning.md](./01-versioning.md) と `.cursor/rules/semver.mdc` に明記
+- `.env.example` を「コードが読む変数」だけに整理。未使用のアフィ env / 空の `RakutenAffiliateClient` / 未使用 Supabase server client を削除
+- [11-launch-checklist.md](./11-launch-checklist.md) / [vercel-production.md](./vercel-production.md) / [smoke-test.md](./smoke-test.md)
 
 ## 0.2.1 — 2026-08
 
@@ -69,7 +69,7 @@
 
 - 購入導線 2 行 × 3 列、上部 CTA、チャネル説明
 - 詳細情報階層、味わいの輪郭、地図・スライダー改善
-- 似ている銘柄カード、`analytics.ts` イベント
+- 似ている銘柄カード、`analytics` イベント
 
 ## 0.1.0 — 2026-08 前半
 

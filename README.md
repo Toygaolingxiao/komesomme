@@ -24,7 +24,7 @@ Desktop は 100% 表示で一画面に収まります。Mobile は推薦 → 小
 
 ## 開発者向け
 
-Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
+Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql)、[`0005_access_events.sql`](./supabase/migrations/0005_access_events.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
 
 ```bash
 npm install
@@ -34,18 +34,11 @@ npm run seed:rice
 npm run dev
 ```
 
-`.env.local` に必要なもの:
-
-- `NEXT_PUBLIC_SITE_URL`（任意。本番の canonical / OG / sitemap 用）
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`（seed と意味検索）
-- `EMBEDDING_PROVIDER=gemini`（既定）または `openai`
-- `GEMINI_API_KEY` または `OPENAI_API_KEY`
+`.env.local` は `.env.example` をコピーして埋める。変数の意味は [docs/vercel-production.md](./docs/vercel-production.md)。
 
 `npm run validate:rice` は 80 件以上、ID / 名称の重複なし、魚沼・佐渡・仁多・龍の瞳の独立行を見ます。禁止語は warning です。
 
-`npm run seed:rice` は約 107 銘柄に embedding を付け、`rice_regions` / `rice_brands` / `rice_profile_details` へ upsert します。読み取りは VIEW `rice_catalog`。embedding モデルを変えたら再シードが必要です。地域色の正本は `src/lib/rice/regions.ts` と 0003 の upsert です。
+`npm run seed:rice` は約 106 銘柄に embedding を付け、`rice_regions` / `rice_brands` / `rice_profile_details` へ upsert します。読み取りは VIEW `rice_catalog`。embedding モデルを変えたら再シードが必要です。地域色の正本は `src/lib/rice/regions.ts` と 0003 の upsert です。
 
 相談の短い返事は Gemini `gemini-3.6-flash`（失敗時は OpenAI、それも失敗なら Flavor Bridge の reason）です。照合そのものは返事生成が落ちても Top 4 を返します。
 

@@ -1,6 +1,6 @@
 # ドキュメント索引
 
-KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手順は [README.md](../README.md)、銘柄データは [src/data/README.md](../src/data/README.md)。バージョンは [`VERSION`](../VERSION)（**0.2.1**）。
+KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手順は [README.md](../README.md)、銘柄データは [src/data/README.md](../src/data/README.md)。バージョンは [`VERSION`](../VERSION)（**0.3.0**）。
 
 ## 命名ルール
 

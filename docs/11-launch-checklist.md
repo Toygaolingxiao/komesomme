@@ -1,7 +1,7 @@
 # 本番リリース・チェックリスト（収益化サイト）
 
 対象: **B）アフィリエイト収益を伴う正式サイト**。  
-現状: MVP **0.2.1**（体験は閉じているが、防護・法務・計測・収益タグは未達）。  
+現状: MVP **0.3.0**（体験・防護・自前アクセス記録は入った。GTM ID・アフィタグ・特商法欄は未）。  
 ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。
 
 使い方: 各タスクの `[ ]` を完了したら `[x]`。完了条件（Done）を満たすまで次フェーズへ進まない。
@@ -14,7 +14,7 @@
 | --- | --- |
 | 公開形態 | ゲスト利用可（Auth は 1.0 必須ではない） |
 | 収益 | 楽天 / Yahoo / Amazon / ふるさと納税の **検索 CTA + Affiliate タグ** |
-| 分析 | 既存 `track()`（`src/lib/analytics.ts`）を GTM/GA4 等へ接続 |
+| 分析 | 既存 `track()`（`src/lib/analytics/`）を GTM/GA4 等へ接続 |
 | 相談 API | 公開する。**レート制限とコスト上限が必須** |
 | 後回し（1.0 後可） | Auth、お気に入り、多ターン相談、炊飯アドバイス、PWA、Affiliate 商品 API の本実装 |
 
@@ -95,15 +95,15 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P1-1b | Amazon アソシエイト（該当する場合） | タグ付き URL。未契約なら UI から Amazon を外すか「準備中」 | `amazonUrl` |
 | P1-1c | Yahoo! / ふるさと納税の提携状況を確定し URL を合わせる | 契約済みチャネルのみタグ付き。未契約は表記のみ or 非表示 | PurchaseLinks |
 | P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | [07-roadmap.md](./07-roadmap.md) 計測節を更新可 |
-| P1-1e | （任意）`RakutenAffiliateClient` を薄いタグ付与ヘルパーまで実装 | プレースホルダではなく本番 URL 生成に使われる | `src/lib/rakuten/` |
+| P1-1e | （任意）楽天アフィ URL ヘルパー | プレースホルダではなく本番 URL 生成に使われる | 実装時に `src/lib/rakuten/` を追加 |
 
 ### P1-2. 分析の本番接続
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | **コード済** `GtmSnippet` + `track()`。本番は `NEXT_PUBLIC_GTM_ID` を入れ GTM 内で GA4 接続 |
-| P1-2b | 必須イベントのダッシュボード: map / slider / detail / purchase_* / language_search | 初週の CVR 概算が取れる | `src/lib/analytics.ts` のイベント一覧 |
-| P1-2c | 本番では `console.debug` に依存しない | ユーザー向けコンソールが静か | analytics.ts |
+| P1-2b | 必須イベントのダッシュボード: map / slider / detail / purchase_* / language_search | 初週の CVR 概算が取れる | `src/lib/analytics/` のイベント一覧 |
+| P1-2c | 本番では `console.debug` に依存しない | ユーザー向けコンソールが静か | `src/lib/analytics/` |
 
 ### P1-3. エラー監視
 
@@ -223,13 +223,13 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 ---
 
-## 現状スナップショット（2026-08、0.2.1）
+## 現状スナップショット（2026-08、0.3.0）
 
 | 領域 | 状態 |
 | --- | --- |
 | 味わい地図・座標推薦・意味検索・銘柄詳細・購入 CTA UI | 実装済み |
 | Mobile 横溢れ・購入 1 列・探針ランダム・プレビュー拡大 | 0.2.1 済み |
-| `track()` イベント配線 | 済み（受け皿未接続） |
+| 味わい再校正 + `access_events` / GTM コード | 0.3.0 済み（`NEXT_PUBLIC_GTM_ID` は未設定） |
 | Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap | 実装済み（特商法欄・Affiliate タグは未） |
-| Affiliate タグ / GTM・GA4 / Sentry | **未着手**（週末以降 + P1-2/3） |
+| Affiliate タグ / GA4 接続 / Sentry | **未**（週末以降 + P1-2b/3） |
 | Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |

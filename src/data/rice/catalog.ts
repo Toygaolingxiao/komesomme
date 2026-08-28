@@ -76,10 +76,6 @@ function fillMissingLists(rice: RiceProfileV2): RiceProfileV2 {
   return filled;
 }
 
-function overlay(base: RiceProfileV2, _curated: RiceProfileV2): RiceProfileV2 {
-  return base;
-}
-
 /** Last occurrence wins — the file was appended as editorial drafts accumulated. */
 function latestCuratedByName() {
   const byName = new Map<string, RiceProfileV2>();
@@ -99,7 +95,8 @@ const mergedFromSources: RiceProfileV2[] = derived.map((base) => {
   if (!curated) return base;
 
   matchedNames.add(key);
-  return overlay(base, curated);
+  // Overlay drafts must not overwrite source scores or prefecture.
+  return base;
 });
 
 const curatedOnly: RiceProfileV2[] = [];

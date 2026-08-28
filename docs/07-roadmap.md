@@ -33,7 +33,7 @@
 | 3 | 味わいの輪郭 | **完了** | `TasteContour.tsx` |
 | 4 | 地図・スライダー | **完了** | 操作説明、hint、hover 連動 |
 | 5 | 比較・回遊 | **完了** | `SimilarRiceCards`、`suitabilityLine` |
-| 6 | 計測 | **完了** | `src/lib/analytics.ts`、スクロール・購入イベント |
+| 6 | 計測 | **完了** | `src/lib/analytics/`、スクロール・購入イベント |
 
 ## 詳細ページの情報順（実装済み）
 
