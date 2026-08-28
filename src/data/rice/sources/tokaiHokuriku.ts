@@ -7,9 +7,9 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "富富富",
     prefecture: "富山県",
     region: "東海・北陸",
-    sweetness: 2,
-    hardness: 4,
-    stickiness: 2,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 2,
@@ -24,7 +24,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["甘辛いタレの丼もの"],
     sake_pairings: ["淡麗辛口", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "スモーキーウイスキー"],
-    short_: "あっさりした粒立ち。富山湾の魚に寄り添う。",
+    short_: "粒立ちとやさしい甘みの均衡。富山の日常から贈答まで。",
     description:
       "粒ぞろいがよく、甘みは控えめで後味が短い。粘りも強くないため、食材の繊細な風味を邪魔しません。白えびの天ぷらや刺身のように、素材の甘みを立てたい献立に向きます。",
     sommelier_note:
@@ -38,7 +38,7 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "てんたかく",
     prefecture: "富山県",
     region: "東海・北陸",
-    sweetness: 3,
+    sweetness: 2,
     hardness: 4,
     stickiness: 2,
     aroma: 3,
@@ -100,7 +100,7 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "ひゃくまん穀",
     prefecture: "石川県",
     region: "東海・北陸",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 4,
     stickiness: 2,
     aroma: 3,
@@ -117,7 +117,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "大粒で噛み応えのある、加賀の食卓向き。",
+    short_: "大粒で噛み応えのある、石川の食卓向き。",
     description:
       "粒が大きく、しっかりした噛み応えを持つ石川の品種。煮汁をよく含み、加賀の治部煮のような料理とも自然に釣り合います。冷めても食感が落ちにくい性質があります。",
     sommelier_note:
@@ -163,8 +163,8 @@ export const tokaiHokuriku: RiceSource[] = [
     prefecture: "福井県",
     region: "東海・北陸",
     sweetness: 4,
-    hardness: 2,
-    stickiness: 4,
+    hardness: 3,
+    stickiness: 3,
     aroma: 4,
     umami: 5,
     aftertaste: 5,
@@ -179,7 +179,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "絹のような白さと、長く残る優しい甘み。",
+    short_: "絹のような白さと上品な甘み。福井のフラッグシップ。",
     description:
       "絹のような白さとツヤを持つ福井の上級銘柄。口に含んだ瞬間に広がる優しい甘みと、飲み込んだ後に続く心地よい余韻が持ち味です。とんかつやステーキのような脂の乗った主菜を、上品な甘さで包みます。",
     sommelier_note:
@@ -210,7 +210,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["粘りを楽しむおこわ風の食べ方"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール"],
-    short_: "冷めても粘りが出ない、酢飯と弁当向き。",
+    short_: "北陸の早生。さっぱり爽やかな口当たり。",
     description:
       "コシヒカリより早く穫れる福井の早生品種。程よい硬さがあり、冷めても粘りが出すぎないため、お弁当や酢飯にすると仕上がりが整います。粒感のよさが、とろみのある中華料理とも合います。",
     sommelier_note:
@@ -241,7 +241,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
-    short_: "煮汁をよく含む、穏やかな甘みの晩生。",
+    short_: "白く美しい外観と、しっかりした粒感の福井米。",
     description:
       "福井の晩生品種で、粒がやや大きく吸水がよい性格。煮汁やタレをよく含み、和食の煮物や丼ものと釣り合います。甘みは穏やかで、毎日の食卓に置きやすいお米です。",
     sommelier_note:
@@ -272,7 +272,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "際立つ大粒と、豊かな香りと甘み。",
+    short_: "いのちの壱系の大粒。つやと甘みが強い。",
     description:
       "コシヒカリの一・五倍ほどという大きな粒を持つ品種。偶然の発見から育てられ、豊かな甘みと、炊飯器を開けた瞬間に立つ香りが持ち味です。まずおかず無しで味わいたい上級銘柄で、上質なステーキとも釣り合います。",
     sommelier_note:
@@ -334,7 +334,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "大粒の原品種。商標を付けない一般栽培。",
+    short_: "通常より大きな粒。香りと甘みが広がる上級銘柄。",
     description:
       "下呂で見つかった大粒品種そのもの。龍の瞳や銀の朏は、この品種に付けられた商標です。一般栽培でも粒の大きさと甘み、粘りは共通します。",
     sommelier_note:
@@ -365,7 +365,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["粘りを楽しむおこわ風の食べ方"],
     sake_pairings: ["淡麗辛口", "大吟醸"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "大粒で粘りが少なく、寿司職人に好まれる。",
+    short_: "大粒で崩れにくい。美濃の晩生として知られる。",
     description:
       "幻の米とも呼ばれ、寿司の職人に長く求められてきた岐阜の品種。大粒で粘りが少なく、シャリ切りしたときに酢が均一に絡みます。汁気を吸っても粒がへたらないため、オムライスやカレーとも調和します。",
     sommelier_note:
@@ -379,7 +379,7 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "愛ひとつぶ",
     prefecture: "愛知県",
     region: "東海・北陸",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 4,
     aroma: 3,
@@ -396,7 +396,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["旨口の純米", "熱燗"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "弾力があり、赤味噌の濃さに釣り合う。",
+    short_: "大粒で香り立ちがよく、丼ものに強い愛知米。",
     description:
       "一粒ずつがしっかりしており、弾力のあるもっちり感が持ち味。愛知の赤味噌やたまり醤油を使った濃い食文化にも負けない、力強い味わいを備えています。ひつまぶしのタレや味噌カツと合わせると持ち味が出ます。",
     sommelier_note:
@@ -410,9 +410,9 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "あいちのかおり",
     prefecture: "愛知県",
     region: "東海・北陸",
-    sweetness: 3,
+    sweetness: 2,
     hardness: 4,
-    stickiness: 3,
+    stickiness: 2,
     aroma: 4,
     umami: 3,
     aftertaste: 3,
@@ -427,7 +427,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "大粒で香り立ちがよく、丼ものに強い。",
+    short_: "ほのかな甘みとやわらかさより粒立ち側。中山間の愛知米。",
     description:
       "粒が大きく、炊きたての香りが立つ愛知の品種。粘りが強すぎないため、タレの絡んだ丼ものや味噌カツと合わせても粒感が残ります。冷めても食感が落ちにくい性質があります。",
     sommelier_note:
@@ -442,8 +442,8 @@ export const tokaiHokuriku: RiceSource[] = [
     prefecture: "愛知県",
     region: "東海・北陸",
     sweetness: 3,
-    hardness: 2,
-    stickiness: 4,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 4,
     aftertaste: 3,
@@ -458,7 +458,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米酒", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "ほのかな甘みとやわらかさ。中山間の愛知米。",
+    short_: "愛知の銘柄。やわらかさと粘りの均衡。",
     description:
       "愛知県が中山間地向けに育成した品種。作付けは県内の限られた山地に集中します。ほのかな甘みと独特の風味、粘りがありながら軟らかい口当たり、つやとのどごしが持ち味です。",
     sommelier_note:
@@ -503,8 +503,8 @@ export const tokaiHokuriku: RiceSource[] = [
     name: "結びの神",
     prefecture: "三重県",
     region: "東海・北陸",
-    sweetness: 4,
-    hardness: 4,
+    sweetness: 3,
+    hardness: 3,
     stickiness: 3,
     aroma: 4,
     umami: 5,
@@ -520,7 +520,7 @@ export const tokaiHokuriku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "ジャパニーズウイスキー"],
-    short_: "三重23号の産地ブランド。大粒で旨みが厚い。",
+    short_: "三重の銘柄。主張しすぎないバランス型。",
     description:
       "県が定めた基準を満たした三重23号に付けられる産地ブランド。大粒で粒が立ち、旨みに厚みがあります。松阪牛のすき焼きのような上質な主菜とも釣り合います。",
     sommelier_note:

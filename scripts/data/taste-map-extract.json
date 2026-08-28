@@ -1,0 +1,2656 @@
+[
+  {
+    "name": "ゆめぴりか",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.88,
+        "ny": 0.65,
+        "notes": "右上・甘もち"
+      },
+      {
+        "map": 2,
+        "nx": 0.85,
+        "ny": 0.62,
+        "notes": "右上"
+      },
+      {
+        "map": 3,
+        "nx": 0.92,
+        "ny": 0.75,
+        "notes": "北海道"
+      },
+      {
+        "map": 4,
+        "nx": 0.78,
+        "ny": 0.72,
+        "notes": "柔・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.92,
+        "ny": 0.75,
+        "notes": "北海道"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 1,
+      "stickiness": 5
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "コシヒカリ",
+    "aliases": [
+      "こしひかり"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.72,
+        "ny": 0.85,
+        "notes": "右上高甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.75,
+        "ny": 0.82,
+        "notes": "右上"
+      },
+      {
+        "map": 4,
+        "nx": 0.55,
+        "ny": 0.7,
+        "notes": "中央やや柔・もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "コシヒカリ(魚沼産)",
+    "aliases": [
+      "魚沼コシヒカリ",
+      "コシヒカリ（魚沼産）"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.78,
+        "ny": 0.92,
+        "notes": "最上右寄り"
+      },
+      {
+        "map": 2,
+        "nx": 0.78,
+        "ny": 0.95,
+        "notes": "最上"
+      }
+    ],
+    "proposed": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "梨北米コシヒカリ",
+    "aliases": [
+      "梨北米こしひかり"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.82,
+        "ny": 0.78,
+        "notes": "山梨・sole maps 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.82,
+        "ny": 0.78,
+        "notes": "山梨"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "つや姫",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.55,
+        "ny": 0.82,
+        "notes": "中央上やや右"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.85,
+        "notes": "中央上"
+      },
+      {
+        "map": 4,
+        "nx": 0.38,
+        "ny": 0.72,
+        "notes": "やや硬・もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "あきたこまち",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.22,
+        "ny": 0.32,
+        "notes": "左下・あっさりしっかり"
+      },
+      {
+        "map": 2,
+        "nx": 0.22,
+        "ny": 0.35,
+        "notes": "左下"
+      },
+      {
+        "map": 3,
+        "nx": 0.85,
+        "ny": 0.82,
+        "notes": "秋田・右上甘もち（属性図と大差）"
+      },
+      {
+        "map": 4,
+        "nx": 0.45,
+        "ny": 0.42,
+        "notes": "中央・中粘り"
+      },
+      {
+        "map": 5,
+        "nx": 0.85,
+        "ny": 0.82,
+        "notes": "秋田・右上"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "sweetness 2-4; hardness 2-4; stickiness 2-4"
+  },
+  {
+    "name": "新之助",
+    "aliases": [
+      "しんのすけ"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.65,
+        "ny": 0.88,
+        "notes": "右上高甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.68,
+        "ny": 0.9,
+        "notes": "右上"
+      },
+      {
+        "map": 3,
+        "nx": 0.18,
+        "ny": 0.7,
+        "notes": "新潟・左上しっかり甘"
+      },
+      {
+        "map": 4,
+        "nx": 0.3,
+        "ny": 0.72,
+        "notes": "硬め・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.18,
+        "ny": 0.7,
+        "notes": "新潟"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "sweetness 3-5; hardness 2-4; stickiness 2-4"
+  },
+  {
+    "name": "いちほまれ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.22,
+        "ny": 0.72,
+        "notes": "左上・甘しっかり"
+      },
+      {
+        "map": 2,
+        "nx": 0.22,
+        "ny": 0.72,
+        "notes": "左上"
+      },
+      {
+        "map": 3,
+        "nx": 0.72,
+        "ny": 0.82,
+        "notes": "福井・右上甘もち（属性図と差）"
+      },
+      {
+        "map": 4,
+        "nx": 0.48,
+        "ny": 0.85,
+        "notes": "中央上・高もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.72,
+        "ny": 0.82,
+        "notes": "福井"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "hardness 2-4; stickiness 2-4"
+  },
+  {
+    "name": "富富富",
+    "aliases": [
+      "ふふふ"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.38,
+        "ny": 0.78,
+        "notes": "中央左・高甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.4,
+        "ny": 0.82,
+        "notes": "中央左上"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.12,
+        "notes": "富山・下あっさり（属性図と大差）"
+      },
+      {
+        "map": 4,
+        "nx": 0.58,
+        "ny": 0.68,
+        "notes": "やや柔・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.12,
+        "notes": "富山"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "sweetness 1-4; stickiness 2-4"
+  },
+  {
+    "name": "ひとめぼれ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.4,
+        "ny": 0.72,
+        "notes": "中央左・甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.4,
+        "ny": 0.75,
+        "notes": "中央左上"
+      },
+      {
+        "map": 3,
+        "nx": 0.55,
+        "ny": 0.3,
+        "notes": "沖縄・下寄りあっさり"
+      },
+      {
+        "map": 4,
+        "nx": 0.72,
+        "ny": 0.55,
+        "notes": "柔・中もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.55,
+        "ny": 0.3,
+        "notes": "沖縄"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": "sweetness 2-4"
+  },
+  {
+    "name": "雪若丸",
+    "aliases": [
+      "ゆきわかまる"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.12,
+        "ny": 0.52,
+        "notes": "左端・軸上しっかり"
+      },
+      {
+        "map": 2,
+        "nx": 0.12,
+        "ny": 0.52,
+        "notes": "左端"
+      },
+      {
+        "map": 3,
+        "nx": 0.08,
+        "ny": 0.48,
+        "notes": "山形・左端"
+      },
+      {
+        "map": 4,
+        "nx": 0.22,
+        "ny": 0.7,
+        "notes": "硬・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.08,
+        "ny": 0.48,
+        "notes": "山形"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 5,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": "stickiness 1-4"
+  },
+  {
+    "name": "星空舞",
+    "aliases": [
+      "ほしぞらまい"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.2,
+        "ny": 0.62,
+        "notes": "左上"
+      },
+      {
+        "map": 2,
+        "nx": 0.25,
+        "ny": 0.6,
+        "notes": "左上"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.45,
+        "notes": "鳥取・中軸"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.45,
+        "notes": "鳥取"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "さがびより",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.35,
+        "ny": 0.48,
+        "notes": "中央左・やや甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.32,
+        "ny": 0.5,
+        "notes": "中央左"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.68,
+        "notes": "佐賀・上"
+      },
+      {
+        "map": 4,
+        "nx": 0.38,
+        "ny": 0.65,
+        "notes": "やや硬・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.68,
+        "notes": "佐賀"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": "stickiness 2-4"
+  },
+  {
+    "name": "あきほなみ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.32,
+        "ny": 0.55,
+        "notes": "中央左"
+      },
+      {
+        "map": 2,
+        "nx": 0.35,
+        "ny": 0.58,
+        "notes": "中央左"
+      },
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.45,
+        "notes": "鹿児島"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.45,
+        "notes": "鹿児島"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "青天の霹靂",
+    "aliases": [
+      "せいてんのへきれき"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.58,
+        "ny": 0.7,
+        "notes": "中央右・甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.32,
+        "ny": 0.55,
+        "notes": "中央左（map1と差）"
+      },
+      {
+        "map": 3,
+        "nx": 0.42,
+        "ny": 0.12,
+        "notes": "青森・下あっさり（大差）"
+      },
+      {
+        "map": 4,
+        "nx": 0.52,
+        "ny": 0.52,
+        "notes": "中央"
+      },
+      {
+        "map": 5,
+        "nx": 0.42,
+        "ny": 0.12,
+        "notes": "青森"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": "sweetness 1-4"
+  },
+  {
+    "name": "だて正夢",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.88,
+        "ny": 0.52,
+        "notes": "右端・もちもち"
+      },
+      {
+        "map": 2,
+        "nx": 0.88,
+        "ny": 0.5,
+        "notes": "右端"
+      },
+      {
+        "map": 3,
+        "nx": 0.85,
+        "ny": 0.72,
+        "notes": "宮城・右上"
+      },
+      {
+        "map": 4,
+        "nx": 0.85,
+        "ny": 0.65,
+        "notes": "柔・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.85,
+        "ny": 0.72,
+        "notes": "宮城"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "ミルキークイーン",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.9,
+        "ny": 0.7,
+        "notes": "右端高粘甘"
+      },
+      {
+        "map": 2,
+        "nx": 0.9,
+        "ny": 0.68,
+        "notes": "右端"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 1,
+      "stickiness": 5
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "いのちの壱",
+    "aliases": [
+      "龍の瞳"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.82,
+        "ny": 0.78,
+        "notes": "右上"
+      },
+      {
+        "map": 2,
+        "nx": 0.85,
+        "ny": 0.8,
+        "notes": "右上"
+      },
+      {
+        "map": 4,
+        "nx": 0.55,
+        "ny": 0.82,
+        "notes": "龍の瞳として中央上もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "仁多米",
+    "aliases": [
+      "にたまい"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.68,
+        "ny": 0.75,
+        "notes": "右上"
+      },
+      {
+        "map": 2,
+        "nx": 0.78,
+        "ny": 0.88,
+        "notes": "右上高甘"
+      }
+    ],
+    "proposed": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "にこまる",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.75,
+        "ny": 0.62,
+        "notes": "右・甘もち"
+      },
+      {
+        "map": 2,
+        "nx": 0.72,
+        "ny": 0.78,
+        "notes": "右上"
+      },
+      {
+        "map": 4,
+        "nx": 0.6,
+        "ny": 0.62,
+        "notes": "やや柔・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.55,
+        "ny": 0.48,
+        "notes": "愛媛"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "金色の風",
+    "aliases": [
+      "こんじきのかぜ"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.82,
+        "ny": 0.58,
+        "notes": "右"
+      },
+      {
+        "map": 2,
+        "nx": 0.82,
+        "ny": 0.55,
+        "notes": "右"
+      },
+      {
+        "map": 4,
+        "nx": 0.72,
+        "ny": 0.58,
+        "notes": "柔・もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "くまさんの輝き",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.78,
+        "ny": 0.52,
+        "notes": "右・軸上"
+      },
+      {
+        "map": 2,
+        "nx": 0.78,
+        "ny": 0.5,
+        "notes": "右"
+      },
+      {
+        "map": 3,
+        "nx": 0.85,
+        "ny": 0.62,
+        "notes": "熊本"
+      },
+      {
+        "map": 5,
+        "nx": 0.85,
+        "ny": 0.62,
+        "notes": "熊本"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "キヌヒカリ",
+    "aliases": [
+      "きぬひかり"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.62,
+        "ny": 0.62,
+        "notes": "中央右"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.52,
+        "notes": "中央右"
+      },
+      {
+        "map": 3,
+        "nx": 0.62,
+        "ny": 0.28,
+        "notes": "東京・下寄り"
+      },
+      {
+        "map": 5,
+        "nx": 0.62,
+        "ny": 0.28,
+        "notes": "東京"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "おいでまい",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.52,
+        "ny": 0.62,
+        "notes": "中央やや上"
+      },
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.4,
+        "notes": "中央やや下"
+      },
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.5,
+        "notes": "香川"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.5,
+        "notes": "香川"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "ふっくりんこ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.52,
+        "ny": 0.58,
+        "notes": "中央"
+      },
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.58,
+        "notes": "中央"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "つぶぞろい",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.52,
+        "ny": 0.54,
+        "notes": "中央"
+      },
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.55,
+        "notes": "中央"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "まなむすめ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.52,
+        "ny": 0.5,
+        "notes": "中央・軸付近"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "秋のきらめき",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.52,
+        "ny": 0.46,
+        "notes": "中央軸下"
+      },
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.48,
+        "notes": "中央"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "はえぬき",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.78,
+        "ny": 0.38,
+        "notes": "右下・もちあっさり寄り"
+      },
+      {
+        "map": 2,
+        "nx": 0.35,
+        "ny": 0.7,
+        "notes": "左上・甘しっかり（map1と大差）"
+      },
+      {
+        "map": 4,
+        "nx": 0.18,
+        "ny": 0.55,
+        "notes": "硬・中もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "hardness 2-4; stickiness 2-4"
+  },
+  {
+    "name": "ヒノヒカリ",
+    "aliases": [
+      "ひのひかり"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.55,
+        "ny": 0.4,
+        "notes": "中央右やや下"
+      },
+      {
+        "map": 2,
+        "nx": 0.65,
+        "ny": 0.62,
+        "notes": "右寄り甘"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.5,
+        "notes": "奈良"
+      },
+      {
+        "map": 3,
+        "nx": 0.62,
+        "ny": 0.62,
+        "notes": "大阪"
+      },
+      {
+        "map": 3,
+        "nx": 0.58,
+        "ny": 0.55,
+        "notes": "兵庫"
+      },
+      {
+        "map": 3,
+        "nx": 0.55,
+        "ny": 0.48,
+        "notes": "宮崎"
+      },
+      {
+        "map": 3,
+        "nx": 0.58,
+        "ny": 0.35,
+        "notes": "大分"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.5,
+        "notes": "奈良"
+      },
+      {
+        "map": 5,
+        "nx": 0.62,
+        "ny": 0.62,
+        "notes": "大阪"
+      },
+      {
+        "map": 5,
+        "nx": 0.58,
+        "ny": 0.55,
+        "notes": "兵庫"
+      },
+      {
+        "map": 5,
+        "nx": 0.55,
+        "ny": 0.48,
+        "notes": "宮崎"
+      },
+      {
+        "map": 5,
+        "nx": 0.58,
+        "ny": 0.35,
+        "notes": "大分"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": "hardness 2-4; stickiness 2-4"
+  },
+  {
+    "name": "森のくまさん",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.68,
+        "ny": 0.42,
+        "notes": "右中"
+      },
+      {
+        "map": 2,
+        "nx": 0.72,
+        "ny": 0.4,
+        "notes": "右中"
+      },
+      {
+        "map": 4,
+        "nx": 0.2,
+        "ny": 0.48,
+        "notes": "硬寄り"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": "hardness 2-4"
+  },
+  {
+    "name": "くまさんの力",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.72,
+        "ny": 0.38,
+        "notes": "右中下"
+      },
+      {
+        "map": 2,
+        "nx": 0.48,
+        "ny": 0.32,
+        "notes": "中央下"
+      },
+      {
+        "map": 4,
+        "nx": 0.48,
+        "ny": 0.35,
+        "notes": "中央やや下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": "stickiness 2-4"
+  },
+  {
+    "name": "銀河のしずく",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.58,
+        "ny": 0.32,
+        "notes": "中央右下"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.32,
+        "notes": "中央右下"
+      },
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.62,
+        "notes": "岩手・上"
+      },
+      {
+        "map": 4,
+        "nx": 0.48,
+        "ny": 0.6,
+        "notes": "中央・もっちり"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.62,
+        "notes": "岩手"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "なすひかり",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.72,
+        "ny": 0.32,
+        "notes": "右下"
+      },
+      {
+        "map": 2,
+        "nx": 0.75,
+        "ny": 0.3,
+        "notes": "右下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "みずかがみ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.58,
+        "ny": 0.28,
+        "notes": "中央右下"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.28,
+        "notes": "中央右下"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.55,
+        "notes": "滋賀"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.55,
+        "notes": "滋賀"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "あきさかり",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.58,
+        "ny": 0.22,
+        "notes": "中央右下"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.22,
+        "notes": "右下"
+      },
+      {
+        "map": 3,
+        "nx": 0.92,
+        "ny": 0.6,
+        "notes": "徳島・右"
+      },
+      {
+        "map": 5,
+        "nx": 0.92,
+        "ny": 0.6,
+        "notes": "徳島"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "low",
+    "conflict": "hardness 1-3; stickiness 3-5"
+  },
+  {
+    "name": "夢つくし",
+    "aliases": [
+      "ゆめつくし"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.55,
+        "ny": 0.15,
+        "notes": "中央下あっさり"
+      },
+      {
+        "map": 2,
+        "nx": 0.58,
+        "ny": 0.18,
+        "notes": "中央下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ななつぼし",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.28,
+        "ny": 0.42,
+        "notes": "左中"
+      },
+      {
+        "map": 2,
+        "nx": 0.28,
+        "ny": 0.42,
+        "notes": "左中"
+      },
+      {
+        "map": 4,
+        "nx": 0.35,
+        "ny": 0.45,
+        "notes": "やや硬・中粘"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "夢しずく",
+    "aliases": [
+      "ゆめしずく"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.22,
+        "ny": 0.42,
+        "notes": "左中"
+      },
+      {
+        "map": 2,
+        "nx": 0.45,
+        "ny": 0.4,
+        "notes": "中央"
+      },
+      {
+        "map": 4,
+        "nx": 0.58,
+        "ny": 0.58,
+        "notes": "やや柔・もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "てんたかく",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.25,
+        "ny": 0.38,
+        "notes": "左中下"
+      },
+      {
+        "map": 2,
+        "nx": 0.28,
+        "ny": 0.38,
+        "notes": "左中"
+      },
+      {
+        "map": 4,
+        "nx": 0.22,
+        "ny": 0.35,
+        "notes": "硬・低粘寄り"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "ひゃくまん穀",
+    "aliases": [
+      "ひゃくまんごく"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.32,
+        "ny": 0.35,
+        "notes": "左中下"
+      },
+      {
+        "map": 2,
+        "nx": 0.35,
+        "ny": 0.32,
+        "notes": "左中下"
+      },
+      {
+        "map": 3,
+        "nx": 0.18,
+        "ny": 0.65,
+        "notes": "石川・上"
+      },
+      {
+        "map": 5,
+        "nx": 0.18,
+        "ny": 0.65,
+        "notes": "石川"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": "sweetness 2-4"
+  },
+  {
+    "name": "あさひの夢",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.22,
+        "ny": 0.28,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.22,
+        "ny": 0.3,
+        "notes": "左下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "天のつぶ",
+    "aliases": [
+      "てんのつぶ"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.25,
+        "ny": 0.25,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.25,
+        "ny": 0.25,
+        "notes": "左下"
+      },
+      {
+        "map": 4,
+        "nx": 0.15,
+        "ny": 0.58,
+        "notes": "硬・もっちり寄り"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "きらら397",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.05,
+        "ny": 0.35,
+        "notes": "左端しっかり"
+      },
+      {
+        "map": 2,
+        "nx": 0.05,
+        "ny": 0.35,
+        "notes": "左端"
+      },
+      {
+        "map": 4,
+        "nx": 0.12,
+        "ny": 0.12,
+        "notes": "硬・あっさり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 5,
+      "stickiness": 1
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "秋の詩",
+    "aliases": [
+      "あきのうた"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.15,
+        "ny": 0.32,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.15,
+        "ny": 0.3,
+        "notes": "左下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "つがるロマン",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.05,
+        "ny": 0.18,
+        "notes": "左下端"
+      },
+      {
+        "map": 2,
+        "nx": 0.05,
+        "ny": 0.18,
+        "notes": "左下端"
+      },
+      {
+        "map": 4,
+        "nx": 0.48,
+        "ny": 0.12,
+        "notes": "中央下あっさり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 1
+    },
+    "confidence": "medium",
+    "conflict": "hardness 3-5"
+  },
+  {
+    "name": "ハツシモ",
+    "aliases": [
+      "はつしも",
+      "美濃ハツシモ"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.15,
+        "ny": 0.2,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.18,
+        "ny": 0.2,
+        "notes": "左下"
+      },
+      {
+        "map": 3,
+        "nx": 0.28,
+        "ny": 0.22,
+        "notes": "岐阜美濃ハツシモ"
+      },
+      {
+        "map": 4,
+        "nx": 0.32,
+        "ny": 0.15,
+        "notes": "硬寄りあっさり"
+      },
+      {
+        "map": 5,
+        "nx": 0.28,
+        "ny": 0.22,
+        "notes": "岐阜"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "あいちのかおり",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.25,
+        "ny": 0.18,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.28,
+        "ny": 0.15,
+        "notes": "左下"
+      },
+      {
+        "map": 4,
+        "nx": 0.3,
+        "ny": 0.22,
+        "notes": "硬寄りあっさり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "ハナエチゼン",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.28,
+        "ny": 0.18,
+        "notes": "左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.28,
+        "ny": 0.2,
+        "notes": "左下"
+      },
+      {
+        "map": 4,
+        "nx": 0.32,
+        "ny": 0.48,
+        "notes": "やや硬・中粘"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "まっしぐら",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.18,
+        "ny": 0.12,
+        "notes": "左下あっさり"
+      },
+      {
+        "map": 2,
+        "nx": 0.18,
+        "ny": 0.1,
+        "notes": "左下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 1,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ふさこがね",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.18,
+        "ny": 0.08,
+        "notes": "左下端"
+      },
+      {
+        "map": 2,
+        "nx": 0.18,
+        "ny": 0.07,
+        "notes": "左下端"
+      }
+    ],
+    "proposed": {
+      "sweetness": 1,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "まいひかり",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.18,
+        "ny": 0.05,
+        "notes": "左下端"
+      },
+      {
+        "map": 2,
+        "nx": 0.18,
+        "ny": 0.04,
+        "notes": "左下端"
+      }
+    ],
+    "proposed": {
+      "sweetness": 1,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "彩のきずな",
+    "aliases": [
+      "さいのきずな"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.38,
+        "ny": 0.42,
+        "notes": "中央左"
+      },
+      {
+        "map": 2,
+        "nx": 0.38,
+        "ny": 0.42,
+        "notes": "中央左"
+      },
+      {
+        "map": 3,
+        "nx": 0.45,
+        "ny": 0.35,
+        "notes": "埼玉"
+      },
+      {
+        "map": 5,
+        "nx": 0.45,
+        "ny": 0.35,
+        "notes": "埼玉"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "元気つくし",
+    "aliases": [
+      "めし丸元気つくし",
+      "めし丸"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.4,
+        "ny": 0.4,
+        "notes": "中央"
+      },
+      {
+        "map": 2,
+        "nx": 0.4,
+        "ny": 0.38,
+        "notes": "中央"
+      },
+      {
+        "map": 3,
+        "nx": 0.78,
+        "ny": 0.55,
+        "notes": "福岡めし丸"
+      },
+      {
+        "map": 5,
+        "nx": 0.78,
+        "ny": 0.55,
+        "notes": "福岡"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "こしいぶき",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.38,
+        "ny": 0.35,
+        "notes": "中央左下"
+      },
+      {
+        "map": 2,
+        "nx": 0.38,
+        "ny": 0.35,
+        "notes": "中央左下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ささ結",
+    "aliases": [
+      "ささゆい"
+    ],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.42,
+        "ny": 0.32,
+        "notes": "中央下"
+      },
+      {
+        "map": 2,
+        "nx": 0.42,
+        "ny": 0.3,
+        "notes": "中央下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ササニシキ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.35,
+        "ny": 0.25,
+        "notes": "左下中央"
+      },
+      {
+        "map": 2,
+        "nx": 0.35,
+        "ny": 0.25,
+        "notes": "左下中央"
+      },
+      {
+        "map": 4,
+        "nx": 0.85,
+        "ny": 0.28,
+        "notes": "柔・あっさり寄り"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": "hardness 2-4"
+  },
+  {
+    "name": "ゴロピカリ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.35,
+        "ny": 0.15,
+        "notes": "中央下あっさり"
+      },
+      {
+        "map": 2,
+        "nx": 0.38,
+        "ny": 0.12,
+        "notes": "中央下"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "とちぎの星",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 1,
+        "nx": 0.4,
+        "ny": 0.15,
+        "notes": "中央下"
+      },
+      {
+        "map": 2,
+        "nx": 0.48,
+        "ny": 0.38,
+        "notes": "中央"
+      },
+      {
+        "map": 3,
+        "nx": 0.32,
+        "ny": 0.78,
+        "notes": "栃木・上甘"
+      },
+      {
+        "map": 5,
+        "nx": 0.32,
+        "ny": 0.78,
+        "notes": "栃木"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": "sweetness 2-4"
+  },
+  {
+    "name": "きぬむすめ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.38,
+        "notes": "中央右下"
+      },
+      {
+        "map": 3,
+        "nx": 0.35,
+        "ny": 0.72,
+        "notes": "岡山"
+      },
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.55,
+        "notes": "島根"
+      },
+      {
+        "map": 3,
+        "nx": 0.32,
+        "ny": 0.38,
+        "notes": "和歌山"
+      },
+      {
+        "map": 4,
+        "nx": 0.32,
+        "ny": 0.28,
+        "notes": "硬寄りあっさり"
+      },
+      {
+        "map": 5,
+        "nx": 0.35,
+        "ny": 0.72,
+        "notes": "岡山"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.55,
+        "notes": "島根"
+      },
+      {
+        "map": 5,
+        "nx": 0.32,
+        "ny": 0.38,
+        "notes": "和歌山"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "風さやか",
+    "aliases": [
+      "かぜさやか"
+    ],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.38,
+        "ny": 0.52,
+        "notes": "中央左"
+      },
+      {
+        "map": 3,
+        "nx": 0.72,
+        "ny": 0.22,
+        "notes": "長野・右下"
+      },
+      {
+        "map": 5,
+        "nx": 0.72,
+        "ny": 0.22,
+        "notes": "長野"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "ひめの凜",
+    "aliases": [
+      "ひめのりん"
+    ],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.55,
+        "ny": 0.65,
+        "notes": "中央右上"
+      },
+      {
+        "map": 3,
+        "nx": 0.58,
+        "ny": 0.68,
+        "notes": "愛媛"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "福、笑い",
+    "aliases": [
+      "ふく笑い",
+      "福笑い"
+    ],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.72,
+        "ny": 0.68,
+        "notes": "右上"
+      },
+      {
+        "map": 3,
+        "nx": 0.9,
+        "ny": 0.88,
+        "notes": "福島・右上端"
+      },
+      {
+        "map": 5,
+        "nx": 0.9,
+        "ny": 0.88,
+        "notes": "福島"
+      }
+    ],
+    "proposed": {
+      "sweetness": 5,
+      "hardness": 1,
+      "stickiness": 5
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "あきろまん",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.65,
+        "ny": 0.4,
+        "notes": "右中"
+      },
+      {
+        "map": 3,
+        "nx": 0.68,
+        "ny": 0.35,
+        "notes": "広島"
+      },
+      {
+        "map": 5,
+        "nx": 0.68,
+        "ny": 0.35,
+        "notes": "広島"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "high",
+    "conflict": null
+  },
+  {
+    "name": "愛ひとつぶ",
+    "aliases": [
+      "あいひとつぶ"
+    ],
+    "observations": [
+      {
+        "map": 2,
+        "nx": 0.72,
+        "ny": 0.35,
+        "notes": "右中下"
+      },
+      {
+        "map": 3,
+        "nx": 0.75,
+        "ny": 0.65,
+        "notes": "愛知"
+      },
+      {
+        "map": 5,
+        "nx": 0.75,
+        "ny": 0.65,
+        "notes": "愛知"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": "sweetness 2-4"
+  },
+  {
+    "name": "よさ恋美人",
+    "aliases": [
+      "よさこいびじん"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.82,
+        "ny": 0.88,
+        "notes": "高知・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.82,
+        "ny": 0.88,
+        "notes": "高知"
+      }
+    ],
+    "proposed": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "静岡そだち",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.88,
+        "ny": 0.7,
+        "notes": "静岡・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.88,
+        "ny": 0.7,
+        "notes": "静岡"
+      }
+    ],
+    "proposed": {
+      "sweetness": 4,
+      "hardness": 1,
+      "stickiness": 5
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "はるみ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.78,
+        "ny": 0.62,
+        "notes": "神奈川・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.78,
+        "ny": 0.62,
+        "notes": "神奈川"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "なつほのか",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.68,
+        "ny": 0.55,
+        "notes": "長崎・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.68,
+        "ny": 0.55,
+        "notes": "長崎"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "京式部",
+    "aliases": [
+      "きょうしきぶ"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.42,
+        "ny": 0.42,
+        "notes": "京都・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.42,
+        "ny": 0.42,
+        "notes": "京都"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "粒すけ",
+    "aliases": [
+      "つぶすけ"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.52,
+        "ny": 0.42,
+        "notes": "千葉・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.52,
+        "ny": 0.42,
+        "notes": "千葉"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "利根きらり",
+    "aliases": [
+      "とねきらり"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.32,
+        "notes": "群馬・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.32,
+        "notes": "群馬"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "結びの神",
+    "aliases": [
+      "むすびのかみ"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.38,
+        "ny": 0.2,
+        "notes": "三重・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.38,
+        "ny": 0.2,
+        "notes": "三重"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ふくまる",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.22,
+        "ny": 0.18,
+        "notes": "茨城・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.22,
+        "ny": 0.18,
+        "notes": "茨城"
+      }
+    ],
+    "proposed": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "恋の予感",
+    "aliases": [
+      "こいのよかん"
+    ],
+    "observations": [
+      {
+        "map": 3,
+        "nx": 0.12,
+        "ny": 0.12,
+        "notes": "山口・sole 3/5"
+      },
+      {
+        "map": 5,
+        "nx": 0.12,
+        "ny": 0.12,
+        "notes": "山口"
+      }
+    ],
+    "proposed": {
+      "sweetness": 1,
+      "hardness": 5,
+      "stickiness": 1
+    },
+    "confidence": "medium",
+    "conflict": null
+  },
+  {
+    "name": "ミネアサヒ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.25,
+        "ny": 0.62,
+        "notes": "sole map4・硬もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "一番星",
+    "aliases": [
+      "いちばんぼし"
+    ],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.38,
+        "ny": 0.28,
+        "notes": "sole map4"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 2
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "ふさおとめ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.42,
+        "ny": 0.22,
+        "notes": "sole map4"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 2
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "むつほまれ",
+    "aliases": [],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.22,
+        "ny": 0.08,
+        "notes": "sole map4・硬あっさり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 1
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "花キラリ",
+    "aliases": [
+      "はなきらり"
+    ],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.68,
+        "ny": 0.25,
+        "notes": "sole map4・柔あっさり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 2
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "女神のほほえみ",
+    "aliases": [
+      "めがみのほほえみ"
+    ],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.62,
+        "ny": 0.78,
+        "notes": "sole map4・もっちり"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4
+    },
+    "confidence": "low",
+    "conflict": null
+  },
+  {
+    "name": "田原米",
+    "aliases": [
+      "たわら米"
+    ],
+    "observations": [
+      {
+        "map": 4,
+        "nx": 0.65,
+        "ny": 0.72,
+        "notes": "sole map4"
+      }
+    ],
+    "proposed": {
+      "sweetness": 3,
+      "hardness": 2,
+      "stickiness": 4
+    },
+    "confidence": "low",
+    "conflict": null
+  }
+]

@@ -7,9 +7,9 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "ふくまる",
     prefecture: "茨城県",
     region: "関東・甲信越",
-    sweetness: 3,
-    hardness: 3,
-    stickiness: 4,
+    sweetness: 2,
+    hardness: 4,
+    stickiness: 2,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -24,7 +24,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "大粒でふくらみのある、茨城の食べ応え。",
+    short_: "茨城の銘柄。粒立ち寄りであっさり。",
     description:
       "粒の大きさが目に分かる茨城の品種。ふっくらと炊き上がり、噛み応えがあります。丼ものや炊き込みご飯のように、粒の存在感を活かしたい献立に向きます。",
     sommelier_note:
@@ -40,7 +40,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     region: "関東・甲信越",
     sweetness: 3,
     hardness: 3,
-    stickiness: 3,
+    stickiness: 2,
     aroma: 2,
     umami: 3,
     aftertaste: 2,
@@ -55,7 +55,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["塩だけの握り"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "粘り控えめで、冷めても粒がしっかり残る。",
+    short_: "粘り控えめで、冷めても粒が残りやすい。",
     description:
       "粘りが控えめであっさりした茨城の品種。冷めても粒の輪郭が保たれるため、お弁当や炒飯に向きます。カレーのようにルーを絡めても、べたつかず食べ進められます。",
     sommelier_note:
@@ -100,7 +100,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "なすひかり",
     prefecture: "栃木県",
     region: "関東・甲信越",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 4,
     aroma: 3,
@@ -117,7 +117,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "那須の水が育てた、穏やかな甘み。",
+    short_: "コシヒカリの系統を引く、白くまとまりやすい栃木米。",
     description:
       "那須野の水で育った栃木の品種。甘みと粘りが穏やかに調和し、和食のおかずに自然に寄り添います。冷めても甘みが落ちにくいため、おにぎりにしても味わいが保たれます。",
     sommelier_note:
@@ -131,7 +131,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "とちぎの星",
     prefecture: "栃木県",
     region: "関東・甲信越",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 4,
     stickiness: 3,
     aroma: 3,
@@ -224,8 +224,8 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "ゴロピカリ",
     prefecture: "群馬県",
     region: "関東・甲信越",
-    sweetness: 3,
-    hardness: 3,
+    sweetness: 2,
+    hardness: 4,
     stickiness: 3,
     aroma: 3,
     umami: 3,
@@ -241,7 +241,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["重たいクリームソース"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール"],
-    short_: "群馬の日常を支える、素直な味わい。",
+    short_: "群馬の日常を支える、素直であっさり寄り。",
     description:
       "雷の多い群馬の気候にちなむ名を持つ品種。甘みと粘りが穏やかで、和食のおかずを選びません。すき焼きのような群馬の食文化にも自然に収まります。",
     sommelier_note:
@@ -287,8 +287,8 @@ export const kantoKoshinetsu: RiceSource[] = [
     prefecture: "埼玉県",
     region: "関東・甲信越",
     sweetness: 2,
-    hardness: 2,
-    stickiness: 4,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 4,
     aftertaste: 3,
@@ -303,7 +303,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "淡麗な吟醸"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "ややあっさり、粘りがある埼玉の主力。",
+    short_: "埼玉の銘柄。あっさり寄りで扱いやすい。",
     description:
       "高温に強い埼玉の主力品種。甘みは穏やかで、粘りがあり口当たりはやわらかめ。冷めても食感が保たれるため、弁当や握りに向きます。彩のかがやきより粘りが残ります。",
     sommelier_note:
@@ -381,7 +381,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     region: "関東・甲信越",
     sweetness: 3,
     hardness: 3,
-    stickiness: 3,
+    stickiness: 2,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -410,9 +410,9 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "ふさこがね",
     prefecture: "千葉県",
     region: "関東・甲信越",
-    sweetness: 3,
-    hardness: 3,
-    stickiness: 3,
+    sweetness: 2,
+    hardness: 4,
+    stickiness: 2,
     aroma: 3,
     umami: 4,
     aftertaste: 3,
@@ -427,7 +427,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["淡い吸い物だけの献立"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
-    short_: "大粒でもっちり、冷めても甘みが残る。",
+    short_: "大粒でふっくら、冷めても持ち味が残りやすい千葉米。",
     description:
       "粒が大きく、もっちりとした食感を持つ千葉の品種。冷めても甘みと粘りが落ちにくいため、おにぎりやお弁当にすると持ち味が生きます。噛み応えのある食べ応えです。",
     sommelier_note:
@@ -441,9 +441,9 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "粒すけ",
     prefecture: "千葉県",
     region: "関東・甲信越",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
-    stickiness: 4,
+    stickiness: 3,
     aroma: 3,
     umami: 4,
     aftertaste: 4,
@@ -458,7 +458,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["繊細な白身の刺身"],
     sake_pairings: ["旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "大粒で弾力があり、タレによく合う。",
+    short_: "千葉の銘柄。バランスのよい日常米。",
     description:
       "千葉が新たに育てた大粒の品種。しっかりした粒感と弾力があり、噛むほどに旨みが出ます。タレの絡んだ丼ものや焼肉と合わせても、米の側の存在感が残ります。",
     sommelier_note:
@@ -489,7 +489,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "香りと甘みの均衡がとれた、上品な食味。",
+    short_: "ふっくらまとまる、コンテスト受賞歴もある実力派。",
     description:
       "コシヒカリの系統から生まれた品種で、香りと甘みの均衡がよく整っています。粒のツヤが美しく、上品な後味が残ります。相模湾の魚を使った和食と静かに重なります。",
     sommelier_note:
@@ -504,8 +504,8 @@ export const kantoKoshinetsu: RiceSource[] = [
     prefecture: "新潟県",
     region: "関東・甲信越",
     sweetness: 4,
-    hardness: 5,
-    stickiness: 3,
+    hardness: 4,
+    stickiness: 4,
     aroma: 4,
     umami: 4,
     aftertaste: 4,
@@ -520,7 +520,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["旨口の純米", "純米大吟醸"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "大粒で粒が立つ、甘みとコクのある新潟米。",
+    short_: "大粒で表層はやや硬め。粒感と粘り、噛むほど広がる甘み。",
     description:
       "新潟がコシヒカリとは別に育てた大粒品種。表面はしっかり、中はもっちりで、噛むほどにコクが出る。甘みはあるが、粘りで押すタイプではない。すき焼きや肉料理と釣り合う。",
     sommelier_note:
@@ -551,7 +551,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "淡麗辛口"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "芳醇な香りと強い旨み、均衡のとれた粘り。",
+    short_: "魚沼の気候が育てた、香りと甘みの厚いコシヒカリ。",
     description:
       "日本の米の基準とされてきた銘柄。芳醇な香りと、ひとくち目から伝わる旨み、均衡のとれた粘りが同居しています。塩だけで味わいたい完成度があり、刺身や旬の野菜など、和食の食卓を格調高く整えます。",
     sommelier_note:
@@ -596,9 +596,9 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "こしいぶき",
     prefecture: "新潟県",
     region: "関東・甲信越",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
-    stickiness: 4,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -659,7 +659,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     prefecture: "新潟県",
     region: "関東・甲信越",
     sweetness: 4,
-    hardness: 3,
+    hardness: 2,
     stickiness: 4,
     aroma: 4,
     umami: 4,
@@ -675,7 +675,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "淡麗辛口"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "病害に強く育つ、新潟コシヒカリの主流。",
+    short_: "甘みと粘りの均衡がとれた、全国の基準となる銘柄。",
     description:
       "いもち病への抵抗性を備えた新潟コシヒカリの系統で、現在の県産コシヒカリの主流です。香りと甘み、粘りの均衡は従来の食味を受け継いでいます。和食の食卓に静かに寄り添います。",
     sommelier_note:
@@ -751,9 +751,9 @@ export const kantoKoshinetsu: RiceSource[] = [
     name: "農林48号",
     prefecture: "山梨県",
     region: "関東・甲信越",
-    sweetness: 5,
+    sweetness: 4,
     hardness: 2,
-    stickiness: 5,
+    stickiness: 4,
     aroma: 5,
     umami: 5,
     aftertaste: 4,
@@ -768,7 +768,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "作付けの少ない稀少種。香りと旨みが際立つ。",
+    short_: "山梨の銘柄として知られる、甘みと粘りの厚い米。",
     description:
       "作付けが限られ、地元でわずかに流通する山梨の稀少種。香りの立ち方と旨みの厚みが際立ち、和食の職人から求められてきました。米そのものを味わう食べ方が似合います。",
     sommelier_note:
@@ -814,8 +814,8 @@ export const kantoKoshinetsu: RiceSource[] = [
     prefecture: "長野県",
     region: "関東・甲信越",
     sweetness: 2,
-    hardness: 2,
-    stickiness: 4,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 2,
@@ -830,7 +830,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["濃厚なクリーム煮"],
     sake_pairings: ["淡麗な吟醸", "冷酒"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "あっさりした甘みと、やわらかな粘り。",
+    short_: "透明感と粒立ちが美しい長野米。",
     description:
       "甘みは控えめで後味が軽い長野の品種。粘りがあり口当たりはやわらかめなので、山菜やきのこなど信州の食材と合わせても米が主張しすぎません。そばとの定食でご飯を添える場面にも向きます。",
     sommelier_note:

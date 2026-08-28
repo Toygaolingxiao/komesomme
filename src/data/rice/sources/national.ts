@@ -24,7 +24,7 @@ export const national: RiceSource[] = [
     avoid_pairings: ["カレーライス", "繊細な白身の刺身"],
     sake_pairings: ["旨口の純米", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
-    short_: "もち米に近いやわらかさと、時間に強い食感。",
+    short_: "低アミロースのもちもち感と強い甘み。冷めても硬くなりにくい。",
     description:
       "コシヒカリから生まれた低アミロース米。もち米に近いやわらかさと強い粘りが持ち味で、冷めても硬くなりにくい性質があります。おにぎりやお弁当にすると、時間が経っても口当たりが変わりません。",
     sommelier_note:
@@ -69,9 +69,9 @@ export const national: RiceSource[] = [
     name: "きぬむすめ",
     prefecture: "全国",
     region: "全国銘柄",
-    sweetness: 2,
-    hardness: 2,
-    stickiness: 4,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -86,7 +86,7 @@ export const national: RiceSource[] = [
     avoid_pairings: ["こってりしたクリーム煮"],
     sake_pairings: ["淡麗な吟醸", "冷やした純米"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "絹のような口当たりで、あっさりまとまる。",
+    short_: "西日本の定番。やわらかくまとまりやすい。",
     description:
       "絹のようななめらかな口当たりと、澄んだ白さが持ち味。粘りはありながら味わいはあっさりまとまるため、繊細な和食に静かに寄り添います。冷奴やおひたしのような軽い献立に向きます。",
     sommelier_note:
@@ -100,9 +100,9 @@ export const national: RiceSource[] = [
     name: "キヌヒカリ",
     prefecture: "全国",
     region: "全国銘柄",
-    sweetness: 2,
-    hardness: 2,
-    stickiness: 4,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 2,
     umami: 3,
     aftertaste: 2,
@@ -117,7 +117,7 @@ export const national: RiceSource[] = [
     avoid_pairings: ["こってりしたグラタン"],
     sake_pairings: ["淡麗辛口"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "やわらかく粘りがある、西日本の定番。",
+    short_: "絹のような白さと穏やかな甘み。関西圏の定番。",
     description:
       "光沢のある白さと、やわらかな粘りが持ち味。甘みは穏やかで後味は軽いため、天ぷらや焼き魚と合わせても口の中が重くなりません。弁当にしても口当たりが残りやすい。",
     sommelier_note:
@@ -131,7 +131,7 @@ export const national: RiceSource[] = [
     name: "ヒノヒカリ",
     prefecture: "全国",
     region: "全国銘柄",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 3,
     aroma: 3,
@@ -148,7 +148,7 @@ export const national: RiceSource[] = [
     avoid_pairings: ["濃厚なデミグラスソース"],
     sake_pairings: ["純米酒", "淡麗な吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "ハイボール"],
-    short_: "西日本の定番。小粒でも味わいがしっかり。",
+    short_: "西日本の定番。主張しすぎず、おかずを引き立てる。",
     description:
       "西日本で広く作付けされる銘柄。粒はやや小ぶりながら味わいはしっかりしていて、甘みと粘りの均衡が整っています。和食の煮物やお弁当に自然に収まり、日常のご飯として続けやすいお米です。",
     sommelier_note:
@@ -163,7 +163,7 @@ export const national: RiceSource[] = [
     prefecture: "全国",
     region: "全国銘柄",
     sweetness: 3,
-    hardness: 4,
+    hardness: 3,
     stickiness: 3,
     aroma: 3,
     umami: 3,
@@ -179,7 +179,7 @@ export const national: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["辛口の純米"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "大粒で暑さに強く、汁気に負けない多収種。",
+    short_: "大粒で暑さに強く、汁気の多い料理にも向きやすい。",
     description:
       "高温にも強く収量の多い品種。粒が大きく粘りが控えめで、汁気を含んでも形が残ります。カレーや丼もののように、ご飯が汁を受け止める献立に向きます。",
     sommelier_note:

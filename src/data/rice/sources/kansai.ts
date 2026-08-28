@@ -7,9 +7,9 @@ export const kansai: RiceSource[] = [
     name: "みずかがみ",
     prefecture: "滋賀県",
     region: "近畿",
-    sweetness: 4,
-    hardness: 2,
-    stickiness: 4,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 4,
     aftertaste: 4,
@@ -24,7 +24,7 @@ export const kansai: RiceSource[] = [
     avoid_pairings: ["濃厚なクリーム煮"],
     sake_pairings: ["純米酒", "淡麗な吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "ハイボール"],
-    short_: "環境に配慮した栽培で育つ、冷めても甘い一膳。",
+    short_: "澄んだ口当たり。出汁や薄味のおかずを引き立てる。",
     description:
       "環境に配慮した栽培で育てられる滋賀の品種。粒がしっかりしていて、冷めても甘みや食感が落ちにくい性質があります。お弁当やおにぎりに向き、素材の味を邪魔しない穏やかな味わいです。",
     sommelier_note:
@@ -69,7 +69,7 @@ export const kansai: RiceSource[] = [
     name: "京式部",
     prefecture: "京都府",
     region: "近畿",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 3,
     aroma: 4,
@@ -86,7 +86,7 @@ export const kansai: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "京の食文化に沿う、上品な旨み。",
+    short_: "京の食卓に沿う、上品で穏やかな味わい。",
     description:
       "京都が育てたブランド米。旨みに厚みがありながら後味は上品にまとまり、おばんざいや湯豆腐のような繊細な献立と静かに重なります。粒のツヤが器の上で映えます。",
     sommelier_note:

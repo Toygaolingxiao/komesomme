@@ -1,0 +1,380 @@
+{
+  "applied": [
+    {
+      "id": "yumepirika",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "akitakomachi",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "shinnosuke",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "seiten-no-hekireki",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "yukiwakamaru",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "koshihikari-bl",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "koshihikari-uonuma",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "milky-queen",
+      "file": "national.ts",
+      "ok": true
+    },
+    {
+      "id": "sasanishiki",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "tsuyahime",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "nanatsuboshi",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "hitomebore",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "haenuki",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "fufufu",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "ichihomare",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "hinohikari",
+      "file": "national.ts",
+      "ok": true
+    },
+    {
+      "id": "mori-no-kumasan",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "sagabiyori",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "nikomaru",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "date-masayume",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "kirara397",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "hatsushimo",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "inochi-no-ichi",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "ryu-no-hitomi",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "nitamai",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "fuku-warai",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "oborozuki",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "fukkurinko",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "ginga-no-shizuku",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "konjiki-no-kaze",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "mizukagami",
+      "file": "kansai.ts",
+      "ok": true
+    },
+    {
+      "id": "kinumusume",
+      "file": "national.ts",
+      "ok": true
+    },
+    {
+      "id": "kinuhikari",
+      "file": "national.ts",
+      "ok": true
+    },
+    {
+      "id": "nasuhikari",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "yume-tsukushi",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "genki-tsukushi",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "hoshizoramai",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "tsugaru-roman",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "fusakogane",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "koshiibuki",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "hyakumangoku",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "ai-hitotsubu",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "tochigi-no-hoshi",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "kumasan-no-kagayaki",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "kumasan-no-chikara",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "akisakari",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "akihonami",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "oidemai",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "tentakaku",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "masshigura",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "hanaechizen",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "aichi-no-kaori",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "sai-no-kizuna",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "tsubusuke",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "kyoshikibu",
+      "file": "kansai.ts",
+      "ok": true
+    },
+    {
+      "id": "musubi-no-kami",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "koi-no-yokan",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "kazesayaka",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "harumi",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "yosakoi-bijin",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "norin48",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "himenorin",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "akiroman",
+      "file": "chugokuShikoku.ts",
+      "ok": true
+    },
+    {
+      "id": "ten-no-tsubu",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "fukumaru",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "mineasahi",
+      "file": "tokaiHokuriku.ts",
+      "ok": true
+    },
+    {
+      "id": "natsuhonoka",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "yume-shizuku",
+      "file": "kyushuOkinawa.ts",
+      "ok": true
+    },
+    {
+      "id": "tsubuzoroi",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "manamusume",
+      "file": "hokkaidoTohoku.ts",
+      "ok": true
+    },
+    {
+      "id": "nijinokirameki",
+      "file": "national.ts",
+      "ok": true
+    },
+    {
+      "id": "asahi-no-yume",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "goropikari",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "ichibanboshi",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    },
+    {
+      "id": "fusaotome",
+      "file": "kantoKoshinetsu.ts",
+      "ok": true
+    }
+  ],
+  "missing": []
+}

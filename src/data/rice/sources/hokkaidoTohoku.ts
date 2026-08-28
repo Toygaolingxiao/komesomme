@@ -8,7 +8,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     prefecture: "北海道",
     region: "北海道・東北",
     sweetness: 5,
-    hardness: 2,
+    hardness: 1,
     stickiness: 5,
     aroma: 4,
     umami: 5,
@@ -24,7 +24,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["繊細な白身の刺身", "淡い出汁の吸い物"],
     sake_pairings: ["純米酒の熱燗", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "甘みのあるハイボール"],
-    short_: "ふくよかな甘みと強い粘りが揃う、北海道の主役級。",
+    short_: "低アミロース由来の強い粘りとふくよかな甘み。北海道の上級銘柄。",
     description:
       "北海道が育てた甘みの豊かなブランド。もっちりとした粘りと炊き上がりのツヤが際立ち、冷めてもやわらかさが残ります。タレの絡んだ焼肉やハンバーグなど、味の濃いおかずにも負けずに食卓の中心を担います。",
     sommelier_note:
@@ -38,7 +38,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "ななつぼし",
     prefecture: "北海道",
     region: "北海道・東北",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 3,
     aroma: 3,
@@ -55,7 +55,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["こってりしたクリーム煮"],
     sake_pairings: ["淡麗な吟醸", "冷やした純米"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "甘みがあり、粒が保たれる北海道の定番。",
+    short_: "バランス型の北海道定番。おかずを選ばず毎日向き。",
     description:
       "甘みがしっかり乗り、硬さと粘りは中庸な北海道の代表格。冷めても粒の輪郭が保たれるため、お弁当や酢飯にすると持ち味が生きます。毎日の食卓の基準にしやすい一膳です。",
     sommelier_note:
@@ -86,7 +86,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["水分の多い丼もの"],
     sake_pairings: ["やわらかな純米", "ぬる燗"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "ふっくらとやわらかく、出汁をよく含む。",
+    short_: "大粒でふっくら。甘みと粘りのバランスがよい。",
     description:
       "名前のとおりふっくらとした炊き上がりが持ち味。和食の現場から指名されることも多く、優しい口当たりと奥行きのある甘みを備えています。炊き込みご飯にすると出汁を含んで、ふんわりと仕上がります。",
     sommelier_note:
@@ -117,7 +117,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["白米だけで味わう食べ方"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "汁気を吸っても崩れない、洋食向きの淡麗。",
+    short_: "粒立ちがよくあっさり。炒めものやカレー向きの北海道米。",
     description:
       "北海道米の評価を押し上げた立役者。汁気を含んでも粒がへたらず、口の中でほどける食感が洋食や中華の土台として重宝されます。スープカレーや、粒を残したい炒飯で本領を発揮します。",
     sommelier_note:
@@ -148,7 +148,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["カレーライス"],
     sake_pairings: ["旨口の純米", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
-    short_: "低アミロースのやわらかさで、冷めても硬くならない。",
+    short_: "低アミロースのやわらかさ。冷めても硬くなりにくい。",
     description:
       "低アミロース系のやわらかさを備えた北海道米。粘りが強く、冷めても硬くなりにくいため、おにぎりや朝食のご飯に向きます。噛むほどにやわらかな甘みが続きます。",
     sommelier_note:
@@ -286,9 +286,9 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "青天の霹靂",
     prefecture: "青森県",
     region: "北海道・東北",
-    sweetness: 2,
-    hardness: 4,
-    stickiness: 2,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 4,
     umami: 3,
     aftertaste: 3,
@@ -303,7 +303,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["甘いタレの重ね使い"],
     sake_pairings: ["冷やした吟醸", "淡麗辛口"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "粒立ちがよく、あっさりした後味。",
+    short_: "粘りとキレの均衡。上品な甘みの残るさっぱりした味わい。",
     description:
       "粒立ちのよさと控えめな甘さが持ち味の青森米。口の中でほろりと解ける食感で、重たさが残りません。海鮮丼やカレーなど汁気のある料理と相性がよく、食材の旨みを静かに引き立てます。",
     sommelier_note:
@@ -334,7 +334,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["繊細な出汁の茶漬け"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "汁気を吸ってもべたつかない、丼もの向き。",
+    short_: "粘り控えめで粒が立つ、青森の業務・家庭両用。",
     description:
       "粘りが少なく、汁を含んでもべたつかない青森の品種。さっぱりした味わいと適度な硬さが、料理の汁気を受け止めます。カレーや牛丼、中華丼のようにタレを絡めて食べる献立で持ち味が出ます。",
     sommelier_note:
@@ -348,9 +348,9 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "つがるロマン",
     prefecture: "青森県",
     region: "北海道・東北",
-    sweetness: 3,
-    hardness: 3,
-    stickiness: 3,
+    sweetness: 2,
+    hardness: 4,
+    stickiness: 2,
     aroma: 4,
     umami: 4,
     aftertaste: 4,
@@ -365,7 +365,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["極端に油の多いソース"],
     sake_pairings: ["淡麗辛口", "純米酒"],
     whisky_pairings: ["ハイボール"],
-    short_: "ふっくらとした甘みで、毎日の食卓に収まる青森米。",
+    short_: "ふっくらしつつ粒が立つ、青森の日常米。",
     description:
       "津軽平野で長く作られてきた青森の品種。コシヒカリの系統を引き、粘りと甘みの均衡がよく、主張しすぎません。焼き魚や汁物など、日常の和食に静かに寄り添います。",
     sommelier_note:
@@ -396,7 +396,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["濃厚な洋風ソース"],
     sake_pairings: ["淡麗な吟醸", "冷酒"],
     whisky_pairings: ["ジャパニーズウイスキー", "スモーキーウイスキー"],
-    short_: "白さと透明感のある、軽やかな岩手米。",
+    short_: "白く軽やか。岩手の上品な日常〜贈答米。",
     description:
       "際立つ白さと透き通るようなツヤを備えた岩手の品種。軽やかな食感と程よい粒感があり、噛むほどに爽やかな甘みが滲みます。朝食の焼き魚やおひたしに静かに寄り添います。",
     sommelier_note:
@@ -411,7 +411,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     prefecture: "岩手県",
     region: "北海道・東北",
     sweetness: 4,
-    hardness: 3,
+    hardness: 2,
     stickiness: 4,
     aroma: 4,
     umami: 5,
@@ -427,7 +427,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["旨口の純米", "純米大吟醸"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "岩手の上級銘柄。豊かな甘みとやわらかな粒感。",
+    short_: "ふんわりした口当たりと豊かな甘み。",
     description:
       "岩手が上級銘柄として育てた品種。ふくよかな甘みとやわらかな粒感が同居し、噛むと旨みが長く残ります。上質な肉料理と並べても、米の側から食卓を支えます。",
     sommelier_note:
@@ -489,7 +489,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["甘辛いタレの丼もの"],
     sake_pairings: ["大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "スモーキーウイスキー"],
-    short_: "粘り控えめで口どけがよい、寿司向きの名脇役。",
+    short_: "粘り控えめで口当たりさっぱり。寿司や繊細な和食向き。",
     description:
       "粘りが少なく口どけのよい、あっさり系の代表格。米自体の主張が控えめなため、寿司のシャリとして長く愛されてきました。酢との馴染みのよさと、口の中でほどける食感が繊細な和食を引き立てます。",
     sommelier_note:
@@ -520,7 +520,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["淡白な白身の刺身"],
     sake_pairings: ["旨口の純米", "熱燗"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "もっちり感と甘みがはっきりした宮城の品種。",
+    short_: "低アミロース寄りのやわらかさと強い粘り。",
     description:
       "はっきりしたもっちり感と甘みを備えた宮城の新しい品種。ササニシキとは対になる性格で、粘りの強さが持ち味です。角煮や濃厚なシチューのような、どっしりした味付けを受け止めます。",
     sommelier_note:
@@ -551,7 +551,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "ふんわりやわらかく、和洋どちらにも合う万能型。",
+    short_: "やわらかめの口当たりと穏やかな甘み。献立を選ばない。",
     description:
       "コシヒカリの系統を引くふんわりとしたやわらかさと、程よい粘りが持ち味。多くの人が食べやすいと感じる均衡のよさがあります。焼肉からハンバーグまで、和洋を問わず料理を穏やかに包みます。",
     sommelier_note:
@@ -613,7 +613,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["重たいクリーム煮"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "穏やかな甘みで、和食の定食に収まりがよい。",
+    short_: "穏やかな甘みで、和食の定食に収まりやすい。",
     description:
       "ササニシキの系統を受け継ぐ宮城の品種で、味わいは穏やか。粘りが強すぎず、和食の定食に自然に収まります。冷めても食感が落ちにくいため、おにぎりにも向きます。",
     sommelier_note:
@@ -627,9 +627,9 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "あきたこまち",
     prefecture: "秋田県",
     region: "北海道・東北",
-    sweetness: 4,
-    hardness: 2,
-    stickiness: 4,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 4,
     umami: 3,
     aftertaste: 3,
@@ -644,7 +644,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["重たいクリームソース"],
     sake_pairings: ["淡麗な吟醸", "純米酒"],
     whisky_pairings: ["ジャパニーズウイスキー", "ハイボール"],
-    short_: "甘みと粘りが乗る、秋田の標準。",
+    short_: "粒立ちがよく口当たりはあっさり。冷めても崩れにくい定番。",
     description:
       "透明感のある光沢と香りの良さが際立つ銘柄。甘みと粘りがあり、口当たりはやわらかめ。納豆から刺身、きりたんぽ鍋の締めまで幅広く寄り添います。",
     sommelier_note:
@@ -721,7 +721,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     prefecture: "秋田県",
     region: "北海道・東北",
     sweetness: 3,
-    hardness: 4,
+    hardness: 3,
     stickiness: 3,
     aroma: 3,
     umami: 4,
@@ -737,7 +737,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["純米酒", "辛口の吟醸"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "名前のとおり粒が揃い、噛み応えがある。",
+    short_: "粒が揃い、噛み応えのある秋田米。",
     description:
       "粒が大きく揃った秋田の品種。しっかりした噛み応えがあり、噛むごとに旨みが出てきます。丼ものやお弁当のように、粒の存在感を活かしたい献立に向きます。",
     sommelier_note:
@@ -784,7 +784,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     region: "北海道・東北",
     sweetness: 2,
     hardness: 4,
-    stickiness: 2,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -799,7 +799,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["やわらかさを求める粥"],
     sake_pairings: ["辛口の吟醸"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "弾けるような粒感の、かため好き向け。",
+    short_: "大粒で粒立ちがよい。粘りは控えめ、弾力のある新食感。",
     description:
       "雪のような白さと、弾けるような粒感が持ち味。かためのご飯を好む方に向く、すっきり系の食味です。粒が崩れにくいため、強火の炒飯やシャリの輪郭が要る寿司、カレーとの相性がよく出ます。",
     sommelier_note:
@@ -830,7 +830,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "旨みが豊かで、炊き上がりのツヤが際立つ。",
+    short_: "白いつやと上品な甘み。粒揃いのよい山形の上級銘柄。",
     description:
       "炊き上がりの輝きが目を引く山形の銘柄。旨み成分が豊富で、ひとくちで上品な甘みが広がります。粒の形が美しく、素材を大切にする和食や焼き魚の定食をひとつ上の御膳に押し上げます。",
     sommelier_note:
@@ -861,7 +861,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["粘りを楽しむおこわ風の食べ方"],
     sake_pairings: ["淡麗辛口", "純米酒"],
     whisky_pairings: ["ハイボール"],
-    short_: "あっさりした粒立ち。山形の業務用定番。",
+    short_: "粒が立ち、冷めても食感が落ちにくい業務・弁当向き。",
     description:
       "あきたこまちと庄内29号の交配から生まれた山形の主力。全国作付けでも上位に入る。粘りは控えめで粒が立ち、冷めても食味が落ちにくいため、弁当やおにぎり、外食のご飯に広く使われます。",
     sommelier_note:
@@ -875,7 +875,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "天のつぶ",
     prefecture: "福島県",
     region: "北海道・東北",
-    sweetness: 3,
+    sweetness: 2,
     hardness: 4,
     stickiness: 2,
     aroma: 3,
@@ -892,7 +892,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["淡い吸い物だけの献立"],
     sake_pairings: ["辛口の純米"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "粒が揃い、揚げ物に負けない噛み応え。",
+    short_: "粒が立ち、あっさりした後味の福島米。",
     description:
       "粒が揃って美しく、しっかりした噛み応えを持つ福島の品種。噛むたびに粒感を感じられ、油の多いおかずと合わせても口の中が重くなりません。とんかつや唐揚げの相棒に向きます。",
     sommelier_note:
@@ -937,8 +937,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     name: "福、笑い",
     prefecture: "福島県",
     region: "北海道・東北",
-    sweetness: 4,
-    hardness: 3,
+    sweetness: 5,
+    hardness: 2,
     stickiness: 4,
     aroma: 5,
     umami: 5,
@@ -954,7 +954,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "香りと甘みが長く残る、福島の上級銘柄。",
+    short_: "福島の新しい上級銘柄。甘みとやわらかさが目立つ。",
     description:
       "福島が上級銘柄として育てた品種。炊きたての香りが豊かに立ち、甘みと旨みの余韻が長く残ります。おかずを控えて米そのものを味わう食べ方が似合う一膳です。",
     sommelier_note:

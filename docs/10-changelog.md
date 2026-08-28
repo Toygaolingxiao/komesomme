@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### データ
+
+- 外部食味図 5 枚＋都道府県 / JA / Wikipedia 等の公開記述を突き合わせ、図上銘柄の `sweetness` / `hardness` / `stickiness` と `short_` を再校正（軸は従来の甘み×粒立ちのまま）
+- 正本: `scripts/data/taste-consensus-overrides.json`、適用: `scripts/apply-taste-consensus.ts`
+- **本番 DB は `npm run seed:rice` の再実行が必要**（座標は seed 後の catalog / embedding と揃える）
+
 ### Mobile UX
 
 - 地図の強調点を Top 8 → Top 4（推薦レールと同じ）に統一

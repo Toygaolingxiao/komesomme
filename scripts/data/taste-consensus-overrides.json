@@ -1,0 +1,530 @@
+{
+  "_comment": "Weighted finals: official/prefecture/JA/Wikipedia traits × map consensus × current. Axes stay sweetness×hardness; stickiness separate. Cap large jumps unless sources agree.",
+  "overrides": {
+    "yumepirika": {
+      "sweetness": 5,
+      "hardness": 1,
+      "stickiness": 5,
+      "short_": "低アミロース由来の強い粘りとふくよかな甘み。北海道の上級銘柄。",
+      "reason": "ホクレン/道産公式: 甘み・粘り・やわらかさ。図も右上甘もち。Sは公式優先で5維持、Hのみ柔らか側へ。"
+    },
+    "akitakomachi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "粒立ちがよく口当たりはあっさり。冷めても崩れにくい定番。",
+      "reason": "秋田県・Wikipedia系: コシヒカリよりあっさり・粒立つ・粘り中。図も左下寄り。旧4/2/4は甘・柔に寄りすぎ。"
+    },
+    "shinnosuke": {
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 4,
+      "short_": "大粒で表層はやや硬め。粒感と粘り、噛むほど広がる甘み。",
+      "reason": "新潟県公式/JA: 表層硬め＋粘り両立・甘みコク。旧H=5は過大、図のH=3は過小→4。"
+    },
+    "seiten-no-hekireki": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "粘りとキレの均衡。上品な甘みの残るさっぱりした味わい。",
+      "reason": "青森産技/県公式: さっぱり＋上品甘み＋適度なかたさ。旧2/4/2はやや硬淡寄り→中庸へ。"
+    },
+    "yukiwakamaru": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 3,
+      "short_": "大粒で粒立ちがよい。粘りは控えめ、弾力のある新食感。",
+      "reason": "山形公式系: しっかり粒感＋適度粘り＋あっさり。Kのみ2→3。"
+    },
+    "koshihikari-bl": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "甘みと粘りの均衡がとれた、全国の基準となる銘柄。",
+      "reason": "図・通説とも甘もち寄り。Hを3→2でやわらか側へ。"
+    },
+    "koshihikari-uonuma": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "魚沼の気候が育てた、香りと甘みの厚いコシヒカリ。",
+      "reason": "図でも最上段付近。現状維持。"
+    },
+    "milky-queen": {
+      "sweetness": 5,
+      "hardness": 1,
+      "stickiness": 5,
+      "short_": "低アミロースのもちもち感と強い甘み。冷めても硬くなりにくい。",
+      "reason": "低アミロース代表。図でも右端。現状維持寄り。"
+    },
+    "sasanishiki": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 1,
+      "short_": "粘り控えめで口当たりさっぱり。寿司や繊細な和食向き。",
+      "reason": "通説・図ともあっさり低粘り。現状に近い。"
+    },
+    "tsuyahime": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 4,
+      "short_": "白いつやと上品な甘み。粒揃いのよい山形の上級銘柄。",
+      "reason": "図は上寄り甘。粘りはコシ並み維持。"
+    },
+    "nanatsuboshi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "バランス型の北海道定番。おかずを選ばず毎日向き。",
+      "reason": "アミロース中・粘り中。図は中央左下寄り→中庸。"
+    },
+    "hitomebore": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4,
+      "short_": "やわらかめの口当たりと穏やかな甘み。献立を選ばない。",
+      "reason": "図は甘寄り中庸。粘りはやや強め維持。"
+    },
+    "haenuki": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "粒が立ち、冷めても食感が落ちにくい業務・弁当向き。",
+      "reason": "図・通説ともしっかりあっさり。"
+    },
+    "fufufu": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "粒立ちとやさしい甘みの均衡。富山の日常から贈答まで。",
+      "reason": "図間で甘み差大。公式はバランス型→中庸へ寄せる。"
+    },
+    "ichihomare": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "絹のような白さと上品な甘み。福井のフラッグシップ。",
+      "reason": "図は上寄り。硬・粘は過大変化を避け中庸寄り。"
+    },
+    "hinohikari": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "西日本の定番。主張しすぎず、おかずを引き立てる。",
+      "reason": "図は中央帯。旧4はやや甘め→3。"
+    },
+    "mori-no-kumasan": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 4,
+      "short_": "もっちりした甘みと粘り。熊本の人気銘柄。",
+      "reason": "図はやや右。Hのみ2→3で極端な柔を緩和。"
+    },
+    "sagabiyori": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "甘みと粒感の両立。西日本のご馳走米として知られる。",
+      "reason": "図は中上。旧H=4をやや柔側へ。"
+    },
+    "nikomaru": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "大粒でもっちり。温暖地向きの良食味。",
+      "reason": "図は右上寄り甘もち。"
+    },
+    "date-masayume": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 5,
+      "short_": "低アミロース寄りのやわらかさと強い粘り。",
+      "reason": "図は右端寄り。現状に近い。"
+    },
+    "kirara397": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "粒立ちがよくあっさり。炒めものやカレー向きの北海道米。",
+      "reason": "図は左端下。現状維持。"
+    },
+    "hatsushimo": {
+      "sweetness": 2,
+      "hardness": 5,
+      "stickiness": 2,
+      "short_": "大粒で崩れにくい。美濃の晩生として知られる。",
+      "reason": "図は左下。現状維持。"
+    },
+    "inochi-no-ichi": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "通常より大きな粒。香りと甘みが広がる上級銘柄。",
+      "reason": "図は右上。現状維持。"
+    },
+    "ryu-no-hitomi": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "いのちの壱系の大粒。つやと甘みが強い。",
+      "reason": "図の龍の瞳位置に合わせ現状維持寄り。"
+    },
+    "nitamai": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "奥出雲の水が育てた、粘りと甘みの厚いコシヒカリ。",
+      "reason": "図は右上。現状維持。"
+    },
+    "fuku-warai": {
+      "sweetness": 5,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "福島の新しい上級銘柄。甘みとやわらかさが目立つ。",
+      "reason": "図は最上段右。旧H=3→2。図のH=1は公式裏付け不足で止める。"
+    },
+    "oborozuki": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 5,
+      "short_": "低アミロースのやわらかさ。冷めても硬くなりにくい。",
+      "reason": "北海道低アミロース。現状維持。"
+    },
+    "fukkurinko": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "大粒でふっくら。甘みと粘りのバランスがよい。",
+      "reason": "図は中央やや甘。現状維持。"
+    },
+    "ginga-no-shizuku": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "白く軽やか。岩手の上品な日常〜贈答米。",
+      "reason": "図は中央帯。現状維持。"
+    },
+    "konjiki-no-kaze": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "ふんわりした口当たりと豊かな甘み。",
+      "reason": "図は右寄り。Hをやや柔側へ。"
+    },
+    "mizukagami": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "澄んだ口当たり。出汁や薄味のおかずを引き立てる。",
+      "reason": "図は下寄りあっさり。旧4/2/4は甘柔すぎ→中庸。"
+    },
+    "kinumusume": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "西日本の定番。やわらかくまとまりやすい。",
+      "reason": "図は中央右下。過大ジャンプを避け中庸。"
+    },
+    "kinuhikari": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "絹のような白さと穏やかな甘み。関西圏の定番。",
+      "reason": "図は中央右。旧2/2/4からバランスへ。"
+    },
+    "nasuhikari": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4,
+      "short_": "コシヒカリの系統を引く、白くまとまりやすい栃木米。",
+      "reason": "図は右下寄り。甘みは4→3に抑え粘りは維持。"
+    },
+    "yume-tsukushi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "ふっくら柔らかく、毎日の食卓に収まる福岡米。",
+      "reason": "図は下寄り。旧4/2/4から中庸へ。"
+    },
+    "genki-tsukushi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "暑さに強く、冷めてもおいしさが続きやすい。",
+      "reason": "図は中央。旧4をやや抑える。"
+    },
+    "hoshizoramai": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "つゆや出汁を受け止める、粒立ちのよい鳥取米。",
+      "reason": "図は左中。旧4はやや甘→3。"
+    },
+    "tsugaru-roman": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "ふっくらしつつ粒が立つ、青森の日常米。",
+      "reason": "図は左下。公式もあっさり寄り。"
+    },
+    "fusakogane": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "大粒でふっくら、冷めても持ち味が残りやすい千葉米。",
+      "reason": "図は左下。甘みは控えめ側へ。"
+    },
+    "koshiibuki": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "コシヒカリの系統を引く、扱いやすい早生。",
+      "reason": "図は中央下。旧4/3/4から中庸へ。"
+    },
+    "hyakumangoku": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "大粒で噛み応えのある、石川の食卓向き。",
+      "reason": "図は左寄り。甘みを4→3。"
+    },
+    "ai-hitotsubu": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 4,
+      "short_": "大粒で香り立ちがよく、丼ものに強い愛知米。",
+      "reason": "図間差あり。中庸甘み＋粘り寄り。"
+    },
+    "tochigi-no-hoshi": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3,
+      "short_": "大粒で噛み応えのある、栃木の上級銘柄。",
+      "reason": "図は下寄り。甘みを抑える。"
+    },
+    "kumasan-no-kagayaki": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "つやとうまみが立つ、熊本の新しい主力。",
+      "reason": "図は右寄り甘もち。"
+    },
+    "kumasan-no-chikara": {
+      "sweetness": 3,
+      "hardness": 4,
+      "stickiness": 3,
+      "short_": "大粒で食べごたえがあり、濃いおかずにも負けにくい。",
+      "reason": "図は中央右下。粘り過大変化を避ける。"
+    },
+    "akisakari": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "白く美しい外観と、しっかりした粒感の福井米。",
+      "reason": "図間差あり→中庸。"
+    },
+    "akihonami": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "暑さに強く粒立ちと旨みが安定する鹿児島米。",
+      "reason": "図は中央左上寄り。中庸。"
+    },
+    "oidemai": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "香川のブランド米。穏やかな甘みで日常から贈答まで。",
+      "reason": "図は中央上寄り。"
+    },
+    "tentakaku": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "あっさりした後味の、富山の早生。",
+      "reason": "図は左下。"
+    },
+    "masshigura": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "粘り控えめで粒が立つ、青森の業務・家庭両用。",
+      "reason": "図は左下。現状維持。"
+    },
+    "hanaechizen": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "北陸の早生。さっぱり爽やかな口当たり。",
+      "reason": "図は左下。"
+    },
+    "aichi-no-kaori": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "ほのかな甘みとやわらかさより粒立ち側。中山間の愛知米。",
+      "reason": "図は左下。旧は硬寄り維持、甘み控えめ。"
+    },
+    "sai-no-kizuna": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "埼玉の銘柄。あっさり寄りで扱いやすい。",
+      "reason": "図は中央下。"
+    },
+    "tsubusuke": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "千葉の銘柄。バランスのよい日常米。",
+      "reason": "図は中央。"
+    },
+    "kyoshikibu": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "京の食卓に沿う、上品で穏やかな味わい。",
+      "reason": "図は中央。"
+    },
+    "musubi-no-kami": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "三重の銘柄。主張しすぎないバランス型。",
+      "reason": "図は下寄り。旧4/4/3から中庸へ。"
+    },
+    "koi-no-yokan": {
+      "sweetness": 2,
+      "hardness": 5,
+      "stickiness": 2,
+      "short_": "しっかりした粒感と豊かな旨みの広島米。",
+      "reason": "図は左下端。現状維持。"
+    },
+    "kazesayaka": {
+      "sweetness": 2,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "透明感と粒立ちが美しい長野米。",
+      "reason": "図は右下寄りあっさり。"
+    },
+    "harumi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "ふっくらまとまる、コンテスト受賞歴もある実力派。",
+      "reason": "図は右寄り中央。short_ は禁止語ヒット回避のため県名漢字を避ける。"
+    },
+    "yosakoi-bijin": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "甘みとうまみが立つ高知の銘柄。",
+      "reason": "図は右上。"
+    },
+    "norin48": {
+      "sweetness": 4,
+      "hardness": 2,
+      "stickiness": 4,
+      "short_": "山梨の銘柄として知られる、甘みと粘りの厚い米。",
+      "reason": "図の梨北米こしひかり近傍。甘もち寄り。"
+    },
+    "himenorin": {
+      "sweetness": 4,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "愛媛の銘柄。甘みと粒感のバランスがよい。",
+      "reason": "図は上寄り。"
+    },
+    "akiroman": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "広島の銘柄。日常のおかずを選ばない。",
+      "reason": "図は右寄り中央。"
+    },
+    "ten-no-tsubu": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "粒が立ち、あっさりした後味の福島米。",
+      "reason": "図は左下。"
+    },
+    "fukumaru": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "茨城の銘柄。粒立ち寄りであっさり。",
+      "reason": "図は左下。"
+    },
+    "mineasahi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "愛知の銘柄。やわらかさと粘りの均衡。",
+      "reason": "図間差あり→中庸。"
+    },
+    "natsuhonoka": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "南九州の太陽が育てた、粒立ちと旨みの新品種。",
+      "reason": "図は中央右。中庸。"
+    },
+    "yume-shizuku": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "佐賀の銘柄。やわらかくまとまりやすい。",
+      "reason": "図は左寄り中央。"
+    },
+    "tsubuzoroi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "粒が揃い、噛み応えのある秋田米。",
+      "reason": "図は中央。旧H=4をやや柔側へ。"
+    },
+    "manamusume": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "穏やかな甘みで、和食の定食に収まりやすい。",
+      "reason": "図1のみ・中央。現状維持。"
+    },
+    "nijinokirameki": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 3,
+      "short_": "大粒で暑さに強く、汁気の多い料理にも向きやすい。",
+      "reason": "図の秋のきらめきは中央帯。旧H=4→3。"
+    },
+    "asahi-no-yume": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 2,
+      "short_": "あっさりした業務用向きの淡麗。",
+      "reason": "図は左下。現状維持。"
+    },
+    "goropikari": {
+      "sweetness": 2,
+      "hardness": 4,
+      "stickiness": 3,
+      "short_": "群馬の日常を支える、素直であっさり寄り。",
+      "reason": "図は中央下あっさり。"
+    },
+    "ichibanboshi": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 2,
+      "short_": "粘り控えめで、冷めても粒が残りやすい。",
+      "reason": "図4のみ。粘りをやや抑える。"
+    },
+    "fusaotome": {
+      "sweetness": 3,
+      "hardness": 3,
+      "stickiness": 2,
+      "short_": "軽やかで澄んだ味わいの千葉の早生。",
+      "reason": "図4のみ。粘り控えめ側へ。"
+    }
+  }
+}

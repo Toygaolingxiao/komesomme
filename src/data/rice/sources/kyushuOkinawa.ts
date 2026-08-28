@@ -7,7 +7,7 @@ export const kyushuOkinawa: RiceSource[] = [
     name: "元気つくし",
     prefecture: "福岡県",
     region: "九州・沖縄",
-    sweetness: 4,
+    sweetness: 3,
     hardness: 3,
     stickiness: 3,
     aroma: 3,
@@ -24,7 +24,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["純米酒", "辛口の吟醸"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "しっかりした粒感で、九州の濃い味に合う。",
+    short_: "暑さに強く、冷めてもおいしさが続きやすい。",
     description:
       "暑さに強く、しっかりした食感を保つ福岡の品種。粒がやや大きくて食べ応えがあり、濃い味付けの九州料理にも釣り合います。もつ鍋の締めや、タレの絡んだ焼き鳥と合わせると持ち味が出ます。",
     sommelier_note:
@@ -38,9 +38,9 @@ export const kyushuOkinawa: RiceSource[] = [
     name: "夢つくし",
     prefecture: "福岡県",
     region: "九州・沖縄",
-    sweetness: 4,
-    hardness: 2,
-    stickiness: 4,
+    sweetness: 3,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 4,
     aftertaste: 3,
@@ -55,7 +55,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
-    short_: "やわらかく粘りがあり、煮物によく合う。",
+    short_: "ふっくら柔らかく、毎日の食卓に収まる福岡米。",
     description:
       "コシヒカリとキヌヒカリの系統から生まれた福岡の品種。やわらかく粘りのある食感で、がめ煮のような煮物の汁をよく含みます。甘みは穏やかで、和食の献立に自然に収まります。",
     sommelier_note:
@@ -101,7 +101,7 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "佐賀県",
     region: "九州・沖縄",
     sweetness: 4,
-    hardness: 4,
+    hardness: 3,
     stickiness: 3,
     aroma: 3,
     umami: 4,
@@ -117,7 +117,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["純米酒", "旨口の純米"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "大粒で弾力があり、丼ものに強い。",
+    short_: "甘みと粒感の両立。西日本のご馳走米として知られる。",
     description:
       "粒が大きく、噛んだときの弾力が持ち味。米自体の甘みや旨みがしっかり感じられます。汁気を吸っても崩れにくいため、丼ものや煮物とよく調和します。冷めても味わいが落ちにくい性質があります。",
     sommelier_note:
@@ -132,8 +132,8 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "佐賀県",
     region: "九州・沖縄",
     sweetness: 3,
-    hardness: 2,
-    stickiness: 4,
+    hardness: 3,
+    stickiness: 3,
     aroma: 3,
     umami: 3,
     aftertaste: 3,
@@ -148,7 +148,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["重たいクリーム煮"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール"],
-    short_: "あっさりした食味で、毎日続けやすい。",
+    short_: "佐賀の銘柄。やわらかくまとまりやすい。",
     description:
       "佐賀の日常を支える品種で、あっさりした食味と穏やかな粘りが持ち味。癖がないため和食のおかずを選びません。冷めても食感が落ちにくく、お弁当にも向きます。",
     sommelier_note:
@@ -163,7 +163,7 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "長崎県",
     region: "九州・沖縄",
     sweetness: 4,
-    hardness: 3,
+    hardness: 2,
     stickiness: 4,
     aroma: 3,
     umami: 4,
@@ -179,7 +179,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー", "ハイボール"],
-    short_: "大粒でツヤがあり、あんかけによく合う。",
+    short_: "大粒でもっちり。温暖地向きの良食味。",
     description:
       "粒が大きくツヤがあり、もっちりとした食感を持つ長崎の品種。九州の高温にも強く、粒の形が保たれます。皿うどんのあんや、とろみのある料理と合わせると持ち味が出ます。",
     sommelier_note:
@@ -194,7 +194,7 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "熊本県",
     region: "九州・沖縄",
     sweetness: 4,
-    hardness: 2,
+    hardness: 3,
     stickiness: 4,
     aroma: 4,
     umami: 4,
@@ -210,7 +210,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["重たいクリームソース"],
     sake_pairings: ["純米酒", "淡麗な吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "香りと粘りの均衡がとれた、上品な熊本米。",
+    short_: "もっちりした甘みと粘り。熊本の人気銘柄。",
     description:
       "ヒノヒカリとコシヒカリの系統から生まれた熊本の品種。香りのよさと粘り、甘みが均衡よく整い、上品な味わいにまとまります。馬刺しやからし蓮根といった地元の献立にも自然に収まります。",
     sommelier_note:
@@ -225,7 +225,7 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "熊本県",
     region: "九州・沖縄",
     sweetness: 4,
-    hardness: 3,
+    hardness: 2,
     stickiness: 4,
     aroma: 3,
     umami: 4,
@@ -241,7 +241,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["繊細な白身の刺身"],
     sake_pairings: ["旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "ツヤと粘りが強く、タレによく合う。",
+    short_: "つやとうまみが立つ、熊本の新しい主力。",
     description:
       "炊き上がりのツヤと粘りが際立つ熊本の品種。旨みに厚みがあり、タレの絡んだ丼ものや焼肉と合わせても米の側が残ります。九州の高温でも品質が落ちにくい性質があります。",
     sommelier_note:
@@ -272,7 +272,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["塩だけの握り"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "大粒で粘り控えめ、洋食や中華の土台に。",
+    short_: "大粒で食べごたえがあり、濃いおかずにも負けにくい。",
     description:
       "粒が大きく粘りが控えめな熊本の品種。汁気を含んでも形が残るため、カレーや炒飯のように粒を立てたい料理に向きます。噛むと穀物らしい香りが立ちます。",
     sommelier_note:
@@ -287,7 +287,7 @@ export const kyushuOkinawa: RiceSource[] = [
     prefecture: "鹿児島県",
     region: "九州・沖縄",
     sweetness: 3,
-    hardness: 4,
+    hardness: 3,
     stickiness: 3,
     aroma: 3,
     umami: 3,
@@ -303,7 +303,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["濃厚なクリーム煮"],
     sake_pairings: ["淡麗な吟醸"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "暑さに強く、澄んだ味わいで冷めても崩れない。",
+    short_: "南九州の太陽が育てた、粒立ちと旨みの新品種。",
     description:
       "暑い気候でも品質を保つ鹿児島の品種。澄んだ味わいと程よい粒感があり、後味が軽く残りません。奄美の鶏飯のように出汁をかけて食べる料理や、お弁当に向きます。",
     sommelier_note:
@@ -334,7 +334,7 @@ export const kyushuOkinawa: RiceSource[] = [
     avoid_pairings: ["繊細な白身の刺身"],
     sake_pairings: ["旨口の純米", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
-    short_: "甘みに厚みがあり、鹿児島の甘い醤油に合う。",
+    short_: "暑さに強く粒立ちと旨みが安定する鹿児島米。",
     description:
       "甘みと旨みに厚みのある鹿児島の品種。粘りがあり、黒糖を使った甘い醤油や黒豚の角煮のような濃い味付けを受け止めます。噛むほどに味わいが広がります。",
     sommelier_note:
