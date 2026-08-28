@@ -42,7 +42,9 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong className="text-[var(--km-ink)]">利用状況:</strong>
-            地図操作・購入リンククリック等のイベント（分析タグ導入後）。個人を特定しない形で集計します。
+            ページ閲覧、地図操作、相談送信、購入リンククリック等のイベント。個人を特定しないセッション ID
+            と経路・イベント名を、当サービスのデータベースおよび（導入時）Google タグマネージャ /
+            Google アナリティクスへ記録・集計します。
           </li>
         </ul>
         <p>会員登録・氏名・住所・決済情報は、現時点では取得しません。</p>
@@ -69,7 +71,8 @@ export default function PrivacyPage() {
           <li>ホスティング（例: Vercel）</li>
           <li>データベース（例: Supabase）</li>
           <li>埋め込み・文章生成 API（例: Google Gemini / OpenAI）</li>
-          <li>アクセス解析（導入時に本ページへ追記）</li>
+          <li>アクセス解析（Google タグマネージャ / Google アナリティクス。設定時）</li>
+          <li>利用イベントの保管（Supabase 上の access_events。匿名）</li>
           <li>アフィリエイト計測（各 EC・ASP）</li>
         </ul>
         <p>

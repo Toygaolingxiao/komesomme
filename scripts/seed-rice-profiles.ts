@@ -37,6 +37,9 @@ loadEnv();
 
 /** Spacing between brands so the embedding API is not hit concurrently. */
 const REQUEST_INTERVAL_MS = 1_000;
+const DB_RETRIES = 5;
+const DB_RETRY_BASE_MS = 1_000;
+const DB_RETRY_MAX_MS = 15_000;
 
 function requireEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -48,6 +51,65 @@ function requireEnv(name: string): string {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function errorText(error: unknown): string {
+  if (!(error instanceof Error)) return String(error);
+  const cause = (error as Error & { cause?: unknown }).cause;
+  if (!cause) return error.message;
+  if (cause instanceof Error) {
+    return `${error.message} ← ${cause.message}`;
+  }
+  return `${error.message} ← ${String(cause)}`;
+}
+
+function isTransientNetworkError(error: unknown): boolean {
+  const text = errorText(error).toLowerCase();
+  return (
+    text.includes("fetch failed") ||
+    text.includes("timeout") ||
+    text.includes("econnreset") ||
+    text.includes("etimedout") ||
+    text.includes("enotfound") ||
+    text.includes("socket") ||
+    text.includes("network") ||
+    text.includes("429") ||
+    text.includes("502") ||
+    text.includes("503") ||
+    text.includes("504")
+  );
+}
+
+async function withDbRetry<T>(
+  label: string,
+  run: () => Promise<T>,
+  onRetry: (message: string) => void
+): Promise<T> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= DB_RETRIES; attempt += 1) {
+    try {
+      return await run();
+    } catch (error) {
+      lastError = error;
+      if (attempt === DB_RETRIES || !isTransientNetworkError(error)) {
+        throw error;
+      }
+      const backoffMs = Math.min(DB_RETRY_BASE_MS * 2 ** (attempt - 1), DB_RETRY_MAX_MS);
+      const waitMs = backoffMs + Math.floor(Math.random() * DB_RETRY_BASE_MS);
+      onRetry(`${label} retry ${attempt}/${DB_RETRIES}: ${errorText(error)} (${waitMs}ms)`);
+      await sleep(waitMs);
+    }
+  }
+
+  throw lastError;
+}
+
+type DbError = { code?: string; message: string };
+
+function dbErrorMessage(prefix: string, error: DbError): string {
+  const code = error.code?.trim() || "db";
+  return `[${prefix} ${code}] ${error.message}`;
 }
 
 function brandRow(rice: RiceProfileV2) {
@@ -129,19 +191,28 @@ async function main(): Promise<void> {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { error: regionError } = await supabase.from("rice_regions").upsert(
-    RICE_REGIONS.map((region) => ({
-      id: region.id,
-      name: region.name,
-      color: region.color,
-      sort_order: region.sort_order,
-    })),
-    { onConflict: "id" }
-  );
-
-  if (regionError) {
+  try {
+    await withDbRetry(
+      "rice_regions",
+      async () => {
+        const { error: regionError } = await supabase.from("rice_regions").upsert(
+          RICE_REGIONS.map((region) => ({
+            id: region.id,
+            name: region.name,
+            color: region.color,
+            sort_order: region.sort_order,
+          })),
+          { onConflict: "id" }
+        );
+        if (regionError) {
+          throw new Error(dbErrorMessage("rice_regions", regionError));
+        }
+      },
+      (message) => console.warn(`  ⚠ ${message}`)
+    );
+  } catch (error) {
     throw new Error(
-      `rice_regions upsert failed ([${regionError.code ?? "db"}] ${regionError.message}). ` +
+      `rice_regions upsert failed (${errorText(error)}). ` +
         "Run supabase/migrations/0003_normalize_rice_catalog.sql first."
     );
   }
@@ -160,13 +231,18 @@ async function main(): Promise<void> {
     }
 
     try {
-      const { error: brandError } = await supabase
-        .from("rice_brands")
-        .upsert(brandRow(rice), { onConflict: "id" });
-
-      if (brandError) {
-        throw new Error(`[brand ${brandError.code ?? "db"}] ${brandError.message}`);
-      }
+      await withDbRetry(
+        `brand ${rice.name}`,
+        async () => {
+          const { error: brandError } = await supabase
+            .from("rice_brands")
+            .upsert(brandRow(rice), { onConflict: "id" });
+          if (brandError) {
+            throw new Error(dbErrorMessage("brand", brandError));
+          }
+        },
+        (message) => console.warn(`  ⚠ ${message}`)
+      );
 
       const searchText = buildRiceSearchText(rice);
       const embedding = await createEmbeddingWithRetry(
@@ -176,22 +252,27 @@ async function main(): Promise<void> {
         (message) => console.warn(`  ⚠ ${message}`)
       );
 
-      const { error: detailsError } = await supabase
-        .from("rice_profile_details")
-        .upsert(detailsRow(rice, searchText, embedding, embeddingModel), {
-          onConflict: "brand_id",
-        });
-
-      if (detailsError) {
-        throw new Error(`[details ${detailsError.code ?? "db"}] ${detailsError.message}`);
-      }
+      await withDbRetry(
+        `details ${rice.name}`,
+        async () => {
+          const { error: detailsError } = await supabase
+            .from("rice_profile_details")
+            .upsert(detailsRow(rice, searchText, embedding, embeddingModel), {
+              onConflict: "brand_id",
+            });
+          if (detailsError) {
+            throw new Error(dbErrorMessage("details", detailsError));
+          }
+        },
+        (message) => console.warn(`  ⚠ ${message}`)
+      );
 
       ok += 1;
       console.log(
         `${progress} ✓ ${rice.name} (${rice.prefecture} / ${regionByName(rice.region).id})`
       );
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = errorText(error);
       failures.push(`${rice.name}: ${message}`);
       console.error(`${progress} ✗ ${rice.name}: ${message}`);
     }

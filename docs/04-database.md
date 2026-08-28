@@ -104,5 +104,20 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 
 **0004 以降:** `rice_profile_details`（embedding / search_text）への SELECT と `match_rice_profiles` の EXECUTE は anon から剥奪する。意味検索は Next.js の service role のみ。実測手順は [rls-verify.md](./rls-verify.md)。
 
-**適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004。  
-**既存 0003 済み:** 0004 だけ追加実行。
+## `access_events`（匿名アクセス / UI イベント）
+
+Migration [`0005_access_events.sql`](../supabase/migrations/0005_access_events.sql)。
+
+| カラム | 型 | 用途 |
+| --- | --- | --- |
+| `id` | uuid PK | |
+| `created_at` | timestamptz | |
+| `event` | text | `page_view` / `track()` 名 |
+| `path` | text | パス（クエリなし） |
+| `session_id` | text | ブラウザ sessionStorage の匿名 ID |
+| `meta` | jsonb | 短い属性（銘柄 id 等） |
+
+anon / authenticated は権限なし。INSERT は Next.js `POST /api/analytics/event` が service role で行う。
+
+**適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004 → 0005。  
+**既存 0003 / 0004 済み:** 0005 だけ追加実行。

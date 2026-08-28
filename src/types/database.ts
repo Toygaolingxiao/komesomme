@@ -114,9 +114,31 @@ type LegacyRiceProfileRow = RiceCatalogRow & {
   embedding_model: string | null;
 };
 
+export type AccessEventRow = {
+  id: string;
+  created_at: string;
+  event: string;
+  path: string | null;
+  session_id: string | null;
+  meta: Json;
+};
+
 export interface Database {
   public: {
     Tables: {
+      access_events: {
+        Row: AccessEventRow;
+        Insert: {
+          id?: string;
+          created_at?: string;
+          event: string;
+          path?: string | null;
+          session_id?: string | null;
+          meta?: Json;
+        };
+        Update: Partial<AccessEventRow>;
+        Relationships: [];
+      };
       rice_regions: {
         Row: RiceRegionRow;
         Insert: Partial<RiceRegionRow> & Pick<RiceRegionRow, "id" | "name" | "color">;

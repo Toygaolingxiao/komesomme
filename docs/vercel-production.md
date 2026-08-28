@@ -18,6 +18,8 @@ Vercel → Project → **Settings → Environment Variables**。
 | `SEMANTIC_RECOMMEND_ENABLED` | `true` | `true` | 異常時は `false` で相談だけ止める |
 | `SEMANTIC_RATE_LIMIT_PER_MIN` | `8`（目安） | 同左 | |
 | `SEMANTIC_RATE_LIMIT_PER_DAY` | `80`（目安） | 同左 | |
+| `NEXT_PUBLIC_GTM_ID` | `GTM-…`（任意） | 任意 | 未設定なら GTM スクリプトを出さない。GA4 は GTM 内で接続 |
+| `ACCESS_LOG_ENABLED` | `true` | `true` | `false` で Supabase `access_events` 書き込みを止める |
 
 アフィリエイト用（週末以降）:
 

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { GtmSnippet } from "@/components/analytics/GtmSnippet";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
@@ -56,7 +58,10 @@ export default function RootLayout({
       lang="ja"
       className={`${geist.variable} ${geistMono.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <GtmSnippet />
+        <AnalyticsProvider>{children}</AnalyticsProvider>
+      </body>
     </html>
   );
 }

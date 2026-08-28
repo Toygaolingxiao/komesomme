@@ -101,7 +101,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | `layout.tsx`、タグマネ |
+| P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | **コード済** `GtmSnippet` + `track()`。本番は `NEXT_PUBLIC_GTM_ID` を入れ GTM 内で GA4 接続 |
 | P1-2b | 必須イベントのダッシュボード: map / slider / detail / purchase_* / language_search | 初週の CVR 概算が取れる | `src/lib/analytics.ts` のイベント一覧 |
 | P1-2c | 本番では `console.debug` に依存しない | ユーザー向けコンソールが静か | analytics.ts |
 
@@ -176,7 +176,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 ### Sprint C — 収益と観測（1.0 同梱推奨）
 
 - [ ] P1-1a〜d Affiliate タグ + 突合手順
-- [ ] P1-2a〜c 分析接続
+- [x] P1-2a GTM 埋込 + Supabase `access_events`（GA4 は GTM 側設定が人手）
+- [ ] P1-2b〜c ダッシュボード確認・本番 console 静音確認
 - [ ] P1-3a〜b Sentry
 - [x] P1-4a〜b SEO/OG/sitemap（銘柄 OG の SNS 人手確認はスモーク時）
 - [x] P1-5a〜b env 検証・ヘッダ

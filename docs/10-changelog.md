@@ -4,11 +4,18 @@
 
 ## Unreleased
 
+### 分析
+
+- GTM 任意埋込（`NEXT_PUBLIC_GTM_ID`）+ 既存 `track()` → `dataLayer`
+- Supabase `access_events`（migration `0005`）と `POST /api/analytics/event` で匿名 page_view / UI イベントを保管
+- プライバシーポリシーに解析・access 記録を追記
+
 ### データ
 
 - 外部食味図 5 枚＋都道府県 / JA / Wikipedia 等の公開記述を突き合わせ、図上銘柄の `sweetness` / `hardness` / `stickiness` と `short_` を再校正（軸は従来の甘み×粒立ちのまま）
-- 正本: `scripts/data/taste-consensus-overrides.json`、適用: `scripts/apply-taste-consensus.ts`
+- 正本アーカイブ: `scripts/data/`（README あり）。適用: `scripts/apply-taste-consensus.ts`
 - **本番 DB は `npm run seed:rice` の再実行が必要**（座標は seed 後の catalog / embedding と揃える）
+- `access_events` は SQL Editor で `0005_access_events.sql` を適用
 
 ### Mobile UX
 

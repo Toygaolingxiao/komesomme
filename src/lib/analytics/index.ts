@@ -1,4 +1,7 @@
+import { recordAccess } from "@/lib/analytics/accessClient";
+
 export type AnalyticsEvent =
+  | "page_view"
   | "map_marker_click"
   | "slider_change"
   | "recommendation_detail_click"
@@ -21,13 +24,23 @@ declare global {
   }
 }
 
-/** Lightweight event bus. Pushes to dataLayer when present; never blocks UI. */
+/**
+ * Lightweight event bus.
+ * - Pushes to dataLayer for GTM/GA4 when present
+ * - Mirrors to Supabase access_events via /api/analytics/event
+ * Never blocks UI.
+ */
 export function track(event: AnalyticsEvent, payload: AnalyticsPayload = {}) {
   if (typeof window === "undefined") return;
 
   const entry = { event, ...payload, ts: Date.now() };
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(entry);
+
+  // Skip high-frequency slider noise; page_view is recorded by AnalyticsProvider.
+  if (event !== "page_view" && event !== "slider_change") {
+    recordAccess(event, payload);
+  }
 
   if (process.env.NODE_ENV !== "production") {
     console.debug("[km]", event, payload);

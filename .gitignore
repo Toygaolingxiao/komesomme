@@ -22,6 +22,8 @@
 .DS_Store
 *.pem
 Thumbs.db
+tmp-taste-map-*.json
+tmp-*.json
 
 # debug
 npm-debug.log*
