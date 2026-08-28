@@ -19,6 +19,13 @@ export type RiceCatalog = {
   regions: RiceRegionRecord[];
 };
 
+function hasSupabaseBrowserEnv(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+  );
+}
+
 function mapRegions(rows: Array<Record<string, unknown>> | null): RiceRegionRecord[] {
   if (!rows || rows.length === 0) return RICE_REGIONS;
 
@@ -84,9 +91,18 @@ function hydrateFromLocal(row: RiceProfileV2): RiceProfileV2 {
  * Loads the catalogue and region colours from the normalized tables.
  *
  * Falls back to the legacy wide `rice_profiles` table if `rice_catalog` is not
- * available yet (0003 not applied).
+ * available yet (0003 not applied). Without browser Supabase env, uses the
+ * local derived catalogue so layout work can run offline.
  */
 export async function fetchRiceCatalog(): Promise<RiceCatalog> {
+  if (!hasSupabaseBrowserEnv()) {
+    const { riceProfiles } = await import("@/data/riceProfilesV2");
+    return {
+      profiles: dedupeRiceCatalogue(riceProfiles),
+      regions: RICE_REGIONS,
+    };
+  }
+
   const supabase = createBrowserClient();
 
   const [catalogResult, regionResult] = await Promise.all([

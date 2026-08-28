@@ -6,6 +6,7 @@ import type { RiceProfileV2 } from "@/types/rice";
 import {
   FOCUS,
   ICON_WEIGHT,
+  affinityDisplay,
   affinityLabel,
   appetiteLine,
   dishTags,
@@ -25,15 +26,16 @@ export function MobileTodayCard({
 }) {
   if (loading) {
     return (
-      <div className="h-[7.5rem] animate-pulse rounded-2xl bg-[var(--km-surface-warm)]" />
+      <div className="h-[9rem] animate-pulse rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)]" />
     );
   }
 
   if (!match) return null;
 
   const fill = match.rice.region_color ?? regionColor(match.rice.region);
-  const dishes = dishTags(match.rice).slice(0, 2);
+  const dishes = dishTags(match.rice).slice(0, 3);
   const label = affinityLabel(match.score);
+  const intro = match.reason?.trim() || appetiteLine(match.rice);
 
   return (
     <button
@@ -42,7 +44,7 @@ export function MobileTodayCard({
         track("recommendation_detail_click", { id: match.rice.id });
         onOpen(match.rice.id);
       }}
-      className={`w-full rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3.5 text-left shadow-[0_10px_24px_-18px_rgba(112,69,34,0.35)] ${FOCUS}`}
+      className={`w-full rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] ${FOCUS}`}
     >
       <span className="flex items-start justify-between gap-3">
         <span className="min-w-0">
@@ -50,36 +52,55 @@ export function MobileTodayCard({
             <Sparkle size={12} weight="fill" />
             今日の一膳
           </span>
-          <span className="mt-1 block font-serif text-[18px] font-semibold leading-tight text-[var(--km-ink)]">
+          <span className="mt-1.5 block font-serif text-[1.25rem] font-semibold leading-snug text-[var(--km-ink)]">
             {match.rice.name}
           </span>
-          <span className="mt-1 flex items-center gap-1 text-[11px] text-[var(--km-muted)]">
-            <MapPin size={12} weight={ICON_WEIGHT} />
-            {match.rice.prefecture}産
-            <span className="text-[var(--km-brown)]">・{label}</span>
+          <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-[var(--km-muted)]">
+            <MapPin size={12} weight={ICON_WEIGHT} className="shrink-0" />
+            <span>
+              {match.rice.prefecture}産
+              <span className="text-[var(--km-brown)]">・{label}</span>
+            </span>
           </span>
         </span>
+        {match.score > 0 ? (
+          <span
+            aria-label={`${label}、味わい相性 ${affinityDisplay(match.score)}`}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)] text-center"
+          >
+            <span>
+              <span className="block text-[8px] leading-tight text-[var(--km-muted)]">
+                {label}
+              </span>
+              <span className="mt-0.5 block font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
+                {affinityDisplay(match.score)}
+              </span>
+            </span>
+          </span>
+        ) : null}
       </span>
-      <span className="mt-2 line-clamp-2 block break-keep text-[12px] leading-relaxed text-[var(--km-ink)]">
-        {match.reason?.trim() || appetiteLine(match.rice)}
+
+      <span className="mt-3 block break-keep text-[13px] leading-[1.7] text-[var(--km-ink)]">
+        {intro}
       </span>
+
       {dishes.length > 0 ? (
-        <span className="mt-2 flex flex-wrap gap-1">
+        <span className="mt-3 flex flex-wrap gap-1.5">
           {dishes.map((dish) => (
             <span
               key={dish}
-              className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] text-[var(--km-brown)]"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--km-brown)]"
               style={{ background: `${fill}22` }}
             >
-              <BowlFood size={10} weight={ICON_WEIGHT} />
+              <BowlFood size={11} weight={ICON_WEIGHT} />
               {dish}
             </span>
           ))}
         </span>
       ) : null}
-      <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] text-[var(--km-accent)]">
+      <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent)]">
         相性・購入候補を見る
-        <ArrowRight size={12} weight={ICON_WEIGHT} />
+        <ArrowRight size={13} weight={ICON_WEIGHT} />
       </span>
     </button>
   );
@@ -108,10 +129,10 @@ export function MobileSelectedCard({
         <p className="text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
           {isBestMatch ? "いちばん近い一膳" : "選んだ銘柄"}
         </p>
-        <p className="truncate font-serif text-[16px] font-semibold leading-tight text-[var(--km-ink)]">
+        <p className="font-serif text-[16px] font-semibold leading-snug text-[var(--km-ink)]">
           {rice.name}
         </p>
-        <p className="mt-0.5 truncate text-[11px] text-[var(--km-muted)]">{rice.prefecture}</p>
+        <p className="mt-0.5 text-[11px] text-[var(--km-muted)]">{rice.prefecture}</p>
         {tags.length > 0 ? (
           <p className="mt-1 flex flex-wrap gap-1">
             {tags.map((tag) => (
@@ -144,7 +165,7 @@ export function OpenMapButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 text-sm text-[var(--km-ink)] ${FOCUS}`}
+      className={`inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-4 py-3 text-sm text-[var(--km-ink)] ${FOCUS}`}
     >
       <ArrowUpRight size={16} weight={ICON_WEIGHT} />
       地図を大きく見る

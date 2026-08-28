@@ -4,17 +4,11 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  BeerBottle,
   BowlFood,
   CaretDown,
   Fish,
-  Flame,
-  Flower,
-  Leaf,
   MapPin,
-  Snowflake,
   Sparkle,
-  Wine,
   X,
 } from "@phosphor-icons/react";
 import { motion } from "motion/react";
@@ -29,7 +23,6 @@ import {
   affinityLabel,
   appetiteLine,
   coreTasteMetrics,
-  drinkStyleLabels,
   extraTasteMetrics,
   regionColor,
   shortTasteTags,
@@ -40,16 +33,6 @@ import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
-
-const SEASON_TONE: Record<
-  string,
-  { bg: string; border: string; text: string; icon: typeof Leaf }
-> = {
-  春: { bg: "#fdf0f3", border: "#c85a72", text: "#6b2a3a", icon: Flower },
-  夏: { bg: "#eef6f1", border: "#4c9b72", text: "#1f4d38", icon: Leaf },
-  秋: { bg: "#fff6e5", border: "#d49a2a", text: "#704522", icon: Flame },
-  冬: { bg: "#eef5f7", border: "#3f8fa3", text: "#245a68", icon: Snowflake },
-};
 
 function PairingChip({
   item,
@@ -159,45 +142,6 @@ function TodayEat({ rice, appetite }: { rice: RiceProfileV2; appetite: string })
   );
 }
 
-function DrinkPairings({ rice }: { rice: RiceProfileV2 }) {
-  const groups: Array<[string, string[], typeof Wine]> = [
-    ["日本酒", rice.sake_pairings, Wine],
-    ["ビール", rice.beer_pairings, BeerBottle],
-    ["ワイン", rice.wine_pairings, Wine],
-    ["ウイスキー", rice.whisky_pairings, Wine],
-    ["お茶", rice.tea_pairings, Leaf],
-  ];
-
-  const visible = groups
-    .map(([drink, items, Icon]) => [drink, drinkStyleLabels(items), Icon] as const)
-    .filter(([, styles]) => styles.length > 0);
-  if (visible.length === 0) return null;
-
-  return (
-    <div className="mt-8">
-      <p className="text-[11px] tracking-[0.08em] text-[var(--km-muted)]">
-        お酒・お茶との相性
-      </p>
-      <p className="mt-1 text-[10px] text-[var(--km-muted)]">
-        米ソムリエの編集による目安です。酒そのものの公式評価ではありません。
-      </p>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        {visible.map(([drink, styles, Icon]) => (
-          <article key={drink} className="rounded-xl bg-[var(--km-surface-warm)]/70 px-3 py-2.5">
-            <p className="flex items-center gap-1.5 text-xs text-[var(--km-ink)]">
-              <Icon size={13} weight={ICON_WEIGHT} />
-              {drink}
-            </p>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
-              {styles.join("、")}
-            </p>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function SoftMetrics({
   title,
   items,
@@ -273,13 +217,6 @@ export function BrandDetailPanel({
       window.removeEventListener("keydown", onKey);
     };
   }, [onClose]);
-
-  const seasons: Array<[string, string[]]> = [
-    ["春", rice.spring_pairings],
-    ["夏", rice.summer_pairings],
-    ["秋", rice.autumn_pairings],
-    ["冬", rice.winter_pairings],
-  ];
 
   return (
     <div className="fixed inset-0" style={{ zIndex: LAYER.overlay }}>
@@ -445,52 +382,19 @@ export function BrandDetailPanel({
                 </details>
               </div>
 
-              <div className="mt-8">
-                <p className="text-[11px] tracking-[0.08em] text-[var(--km-muted)]">
-                  季節の相性
-                </p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  {seasons.map(([season, items]) => {
-                    if (items.length === 0) return null;
-                    const tone = SEASON_TONE[season];
-                    const Icon = tone.icon;
-                    return (
-                      <div
-                        key={season}
-                        className="rounded-2xl px-3 py-2.5"
-                        style={{ background: tone.bg, border: `1px solid ${tone.border}` }}
-                      >
-                        <p
-                          className="flex items-center gap-1.5 text-xs font-semibold"
-                          style={{ color: tone.text }}
-                        >
-                          <Icon size={13} weight={ICON_WEIGHT} />
-                          {season}
-                        </p>
-                        <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
-                          {items.join(" / ")}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <DrinkPairings rice={rice} />
-
               {neighbours.length > 0 ? (
                 <div className="mt-8">
                   <SimilarRiceCards neighbours={neighbours} onSelect={onSelect} />
                 </div>
               ) : null}
 
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="mt-8 flex flex-col gap-3 border-t border-[var(--km-border)] pt-6">
                 <PurchaseLinks rice={rice} />
                 <Link
                   href={`/${rice.id}`}
-                  className={`inline-flex w-fit items-center gap-1 text-[11px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
+                  className={`inline-flex w-fit items-center gap-1 text-[12px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
                 >
-                  銘柄ページを見る
+                  季節・お酒・お茶の相性など、詳しく見る
                   <ArrowUpRight size={12} weight={ICON_WEIGHT} />
                 </Link>
               </div>
