@@ -48,8 +48,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-3a | GitHub Actions: `npm ci` → `lint` → `typecheck` → `build` | `main` / PR で必須チェックが緑 | `.github/workflows/ci.yml` |
-| P0-3b | CI 失敗時は merge / 本番デプロイしない運用 | branch protection またはチーム合意を文書化 | GitHub settings + 本ファイル |
+| P0-3a | GitHub Actions: `npm ci` → `lint` → `typecheck` → `build` | `main` / PR で必須チェックが緑 | **完了** `.github/workflows/ci.yml`（+ `validate:rice`） |
+| P0-3b | CI 失敗時は merge / 本番デプロイしない運用 | branch protection またはチーム合意を文書化 | **要手動** GitHub → Settings → Branches で `main` に status check を必須化 |
 
 ### P0-4. 法務ページ（収益サイト最低限）
 
@@ -156,7 +156,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [x] P0-1a レート制限（best-effort / isolate 単位）
 - [x] P0-1b 日次上限 + kill switch（プロバイダ予算アラートは別途）
 - [ ] P0-2a〜d RLS・seed・anon 実測
-- [ ] P0-3a CI workflow
+- [x] P0-3a CI workflow
+- [ ] P0-3b branch protection（GitHub で status check 必須化）
 - [ ] P0-6a〜e 本番 env・ドメイン・ロールバック
 - [ ] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` 等を設定
 

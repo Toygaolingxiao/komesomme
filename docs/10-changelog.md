@@ -9,6 +9,7 @@
 - 相談 API: `SEMANTIC_RECOMMEND_ENABLED` kill switch、IP あたり分次・日次レート制限
 - 法務草案: `/privacy` `/terms` `/tokushoho`、ヘッダー法務ナビ、アフィリエイト表記
 - 特商法の事業者欄はプレースホルダ（公開前に記入）
+- CI: GitHub Actions で lint / typecheck / validate:rice / build
 
 ### ドキュメント
 

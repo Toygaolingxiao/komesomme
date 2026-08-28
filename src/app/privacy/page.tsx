@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalShell } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
@@ -17,9 +18,12 @@ export default function PrivacyPage() {
         </h2>
         <p>
           本ポリシーは KomeSomme（以下「当サービス」）に適用されます。事業者の詳細は
-          <a className="text-[var(--km-gold)] underline-offset-2 hover:underline" href="/tokushoho">
+          <Link
+            className="text-[var(--km-gold)] underline-offset-2 hover:underline"
+            href="/tokushoho"
+          >
             特定商取引法に基づく表記
-          </a>
+          </Link>
           をご覧ください。
         </p>
       </section>

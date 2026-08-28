@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint · typecheck · validate · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Validate rice catalogue
+        run: npm run validate:rice
+
+      - name: Build
+        run: npm run build
+        env:
+          # Build uses static catalogue; placeholders keep any accidental env reads quiet.
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-anon-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: ci-service-placeholder
+          EMBEDDING_PROVIDER: gemini
+          GEMINI_API_KEY: ci-gemini-placeholder
+          SEMANTIC_RECOMMEND_ENABLED: "false"
