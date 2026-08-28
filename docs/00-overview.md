@@ -17,14 +17,15 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 - ウイスキーや日本酒と合わせるご飯を探したい人
 - ブランド米やふるさと納税返礼品を比較したい人
 
-## 現行 MVP（v0.3.0）
+## 現行 MVP
 
-約 106 銘柄の座標推薦、意味検索 Top 4、銘柄詳細、購入導線（楽天 / Yahoo / Amazon / ふるさと納税）を提供する。味わいスコアは公開食味図と県・JA 資料で再校正済み。匿名の利用イベントは `access_events` に保管する（GTM は env 設定時）。
+番号は [`VERSION`](../VERSION)。約 106 銘柄の座標推薦、意味検索 Top 4、銘柄詳細、購入導線（楽天 / Yahoo / Amazon / ふるさと納税）。味わいスコアは公開食味図と県・JA 資料で再校正済み。匿名の利用イベントは `access_events` に保管する（GTM は env 設定時）。
 
-楽天 Affiliate タグと成果計測の本番運用、特商法の事業者記入は 1.0.0 前の残り。詳細は [06-requirements.md](./06-requirements.md)。収益化本番までのタスクは [11-launch-checklist.md](./11-launch-checklist.md)。
+楽天 Affiliate タグと成果計測の本番運用、特商法の事業者記入は 1.0.0 前の残り。詳細は [06-requirements.md](./06-requirements.md)。収益化本番までのタスクは [11-launch-checklist.md](./11-launch-checklist.md)。構想からの経緯は [12-product-journey.md](./12-product-journey.md)。
 
 ## 関連文書
 
+- 構想からの経緯: [12-product-journey.md](./12-product-journey.md)
 - 技術振り返り: [02-tech-retrospective.md](./02-tech-retrospective.md)
 - 体験・画面: [08-ui-design.md](./08-ui-design.md)
 - 技術構成: [03-system-design.md](./03-system-design.md)

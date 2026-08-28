@@ -1,8 +1,13 @@
 # 変更履歴
 
-[Semantic Versioning](./01-versioning.md) に従う。現在: **0.3.0**（[`VERSION`](../VERSION)）。
+[Semantic Versioning](./01-versioning.md) に従う。現在の番号は [`VERSION`](../VERSION)。
 
 ## Unreleased
+
+### ドキュメント
+
+- 現在バージョンの正本を `VERSION` / `package.json` に限定。他 md は番号を手書きしない。`package-lock.json` は `npm install` で同期し、手で編集しない
+- [12-product-journey.md](./12-product-journey.md): 構想から現行までの振り返り（中国語）
 
 ## 0.3.0 — 2026-08
 

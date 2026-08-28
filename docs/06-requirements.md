@@ -50,17 +50,19 @@
 - Desktop / Mobile の UI は [08-ui-design.md](./08-ui-design.md) を正本とする
 - `npm run validate:rice` が 80 件以上・スコア範囲・必須配列・禁止語を検証する
 
-## 3. 将来要件（未実装）
+## 3. 将来要件と実装状況
 
+[11-launch-checklist.md](./11-launch-checklist.md) が実行リスト。ここに「将来」と書いてあっても、チェックリスト側が新しい。
+
+**1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel）、RLS 0004、匿名 `access_events`、GTM 埋め込み（コンテナ ID は未設定）、法務草案ページ。
+
+**まだ残り:**
+
+- 特商法の事業者情報、Affiliate タグと成果突合、GA4 ダッシュボード、Sentry
 - 単体・統合・E2E・アクセシビリティ試験
-- Rate limit、構造化ログ、監視
-- 本番デプロイ、独自ドメイン、分析
-- 本番 RLS と seed 済みデータの確認
-- Rakuten Affiliate API、deep link、成果計測
-- お気に入り、履歴、個人化
-- Auth
+- 独自ドメイン
+- Rakuten Affiliate API / deep link（検索 CTA のタグ付けは P1、商品 API は P2）
+- お気に入り、履歴、個人化、Auth
 - grounded LLM 推薦文と炊飯アドバイス
-
-収益化を伴う正式公開の分割タスク・完了条件は [11-launch-checklist.md](./11-launch-checklist.md)（P0 ブロッカー / P1 収益・観測 / P2 成長）。
 
 将来要件を現行機能として README や UI に記載しない。

@@ -1,11 +1,11 @@
 # UX 改善ロードマップ
 
-2026-08 時点の評価と画面改善の正本。デザイン正本は [08-ui-design.md](./08-ui-design.md)。
+2026-08 時点の **UX Phase 1–6 の完了記録**。未完了の本番タスクは [11-launch-checklist.md](./11-launch-checklist.md)。デザイン正本は [08-ui-design.md](./08-ui-design.md)。
 
 ## 変えないもの
 
 - 推薦式・座標式
-- 銘柄打分の正本（`src/data/rice/sources/`）
+- 銘柄打分は合意プロセスなしに変えない（再校正は `scripts/data/` の正本経由）
 - mock データ、勝手な seed
 
 案内役は「米ソムリエ」。禁止語: 最強 / 圧倒的 / 究極 / 唯一無二 / 爆発 / 神 / 無敵。

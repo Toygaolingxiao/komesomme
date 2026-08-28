@@ -27,8 +27,8 @@
 
 1. `riceProfiles` を走査する
 2. `buildRiceSearchText` で本文を作る
-3. `createEmbeddingWithRetry`（指数バックオフ + jitter、最大5回）
-4. `rice_regions` を upsert したあと、銘柄ごとに `rice_brands` と `rice_profile_details` を upsert する
+3. `createEmbeddingWithRetry`（指数バックオフ + jitter、最大 5 回）
+4. `rice_regions` を upsert したあと、銘柄ごとに `rice_brands` と `rice_profile_details` を upsert する（一時的な `fetch failed` も再試行）
 5. 銘柄間は 1 秒間隔
 
 ## 4. 検索時
@@ -65,7 +65,7 @@
 ## 6. エラーと秘密情報
 
 - 鍵はサーバー環境変数のみ
-- 空 query は 400、embedding / RPC 失敗は 502、設定不足は 500
+- 空 query は 400、レート制限超過は 429、kill switch 時は 503、embedding / RPC 失敗は 502、設定不足は 500
 - 内部例外をレスポンスへ出さない
 - Browser から embedding プロバイダを直接呼ばない
 

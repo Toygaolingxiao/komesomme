@@ -5,15 +5,19 @@ alwaysApply: true
 
 # VERSION / SemVer
 
-正本是仓库根目录 [`VERSION`](../../VERSION)。必须与 `package.json` 的 `version` 一致。政策细节见 [`docs/01-versioning.md`](../../docs/01-versioning.md)。
+正本只有两处：根目录 [`VERSION`](../../VERSION) 与 `package.json` 的 `version`。政策见 [`docs/01-versioning.md`](../../docs/01-versioning.md)。
+
+**不要**在 README / overview / checklist / changelog 文首再手写「当前是 0.x.y」。那些文件只链到 `VERSION`。
+
+`package-lock.json` 不是正本。升号后跑 `npm install`（不必加新包），让 lock 根字段自己对齐。**不要手改 lock。**
 
 ## 何时升号（同一 commit）
 
-往 `main` 提交且**用户或运维能感知**时，在**同一个 commit** 里升号，不要留到下次：
+往 `main` 提交且用户或运维能感知时，同一 commit 里升号：
 
-- 功能、公开页、分析 / 安全、catalog 坐标或文案校正、灌库脚本行为、API 行为
+- 功能、公开页、分析 / 安全、catalog 坐标或文案校正、灌库脚本行为、API
 
-**不升号：** 仅 Cursor rule / skill、纯注释、与运行时无关的内部整理。changelog 可只写在 `## Unreleased`。
+**不升号：** 仅 Cursor rule、纯注释、文档整理、与运行时无关的内部整理。changelog 只写 `## Unreleased`。
 
 用户明确说发版 / bump / `1.0.0` 时，按用户指定升。
 
@@ -21,19 +25,18 @@ alwaysApply: true
 
 | 情况 | 动作 |
 | --- | --- |
-| 修 bug、文案、样式、瞬时失败重试 | Patch（`0.2.1` → `0.2.2`） |
-| 新能力、数据语义变化（分析、SEO、坐标重校） | Minor（`0.2.1` → `0.3.0`） |
-| `1.0.0` | **禁止**夹在普通功能里。仅当 launch checklist 的 P0 + 已约定 P1 完成，且用户明确要求 |
+| 修 bug、文案、样式、瞬时失败重试 | Patch |
+| 新能力、数据语义变化 | Minor |
+| `1.0.0` | 禁止夹在普通功能里。checklist 的 P0 + 已约定 P1 完成，且用户明确要求 |
 | 推荐公式 / 坐标轴含义变更 | 破坏性。1.0 前用 Minor 且必须用户同意；1.0 后 Major |
 
-先读当前 `VERSION`，默认只加一档，不跳号（用户指定除外）。不要用 hook / CI 自动改 VERSION。
+先读 `VERSION`，默认只加一档。不要用 hook / CI 自动改号。
 
-## 同一 commit 要改的文件
+## 同一 commit 只改这些
 
 1. `VERSION`
-2. `package.json` 的 `version`（不要为了版本去改 lock 的无关部分）
-3. `docs/10-changelog.md`：把本次及该版本该收的 Unreleased 条目移到 `## X.Y.Z — YYYY-MM`，文首「現在」同步；Unreleased 留空或只留下一版本的
-4. `docs/01-versioning.md`：現在のバージョン + 履歴表一行
-5. `docs/README.md` 若写了当前版本号则同步
+2. `package.json` 的 `version`
+3. `docs/10-changelog.md`：Unreleased → `## X.Y.Z — YYYY-MM`
+4. 跑 `npm install`，把 lock 根 `version` 带上（仍不要手改 lock 正文）
 
-不要为了 patch / minor 去改 `docs/11-launch-checklist.md` 的「現状 0.2.1」快照；升到 `1.0.0` 时再改。
+`docs/01-versioning.md` 的履歴表、overview 的能力描述、checklist 快照：**不必**为了 patch/minor 去改数字。1.0.0 时再改 overview / checklist。
