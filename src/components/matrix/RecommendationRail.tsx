@@ -85,7 +85,7 @@ function BestMatchCard({
         <span className="mt-1 block font-serif text-[19px] font-semibold leading-tight tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
           {match.rice.name}
         </span>
-        <span className="mt-1.5 line-clamp-2 block break-keep text-[12px] leading-relaxed text-[var(--km-ink)]">
+        <span className="mt-1.5 line-clamp-2 block break-words text-[12px] leading-relaxed text-[var(--km-ink)] [overflow-wrap:anywhere]">
           {benefit}
         </span>
       </span>

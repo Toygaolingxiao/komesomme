@@ -140,8 +140,9 @@ export function BrandLockup({
           KomeSomme
         </span>
         {subtitle ? (
-          <span className={`mt-0.5 block truncate text-[10px] leading-snug ${muted}`}>
-            {subtitle}
+          <span className={`mt-0.5 block text-[10px] leading-snug ${muted}`}>
+            <span className="sm:hidden">米ソムリエ</span>
+            <span className="hidden truncate sm:block">{subtitle}</span>
           </span>
         ) : null}
       </span>

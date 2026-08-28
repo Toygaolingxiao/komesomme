@@ -336,7 +336,9 @@ export function TasteMap({
                   showTooltip={showTooltip}
                   touchFriendly={touchFriendly}
                   isBestMatch={rice.id === bestMatchId}
-                  isRunnerUp={runnerUpIds.has(rice.id)}
+                  isRunnerUp={
+                    runnerUpIds.has(rice.id) && rice.id !== bestMatchId
+                  }
                   isSelected={rice.id === selectedId}
                   isHighlighted={rice.id === highlightId}
                   onSelect={() => onSelect(rice.id)}

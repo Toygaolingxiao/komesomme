@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalShell } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "利用規約 | KomeSomme",
+  title: "利用規約",
   description: "KomeSomme の利用条件について。",
 };
 

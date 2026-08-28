@@ -33,7 +33,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | --- | --- | --- | --- |
 | P0-1a | `POST /api/rice/semantic-recommend` にレート制限（IP または匿名トークン） | 閾値超過で 429。正常クエリは通る | **一部完了** `src/lib/security/semanticGuard.ts`（isolate 単位の best-effort。Upstash は後続） |
 | P0-1b | 日次 / 月次の呼び出し上限またはプロバイダ予算アラート | 上限到達時に相談を安全に劣化（Top4 なし or 固定メッセージ）。課金爆発しない | **一部完了** 日次 IP 上限 + `SEMANTIC_RECOMMEND_ENABLED` kill switch。プロバイダ側予算アラートは手動設定 |
-| P0-1c | エラー時に内部例外を返さないことを再確認 | 本番相当で 4xx/5xx ボディに stack / 鍵が出ない | **継続** 既存どおり日本語メッセージのみ（要スポット確認） |
+| P0-1c | エラー時に内部例外を返さないことを再確認 | 本番相当で 4xx/5xx ボディに stack / 鍵が出ない | **確認済** JSON は日本語 `message` のみ。詳細は `console.error` |
 
 ### P0-2. 本番 Supabase RLS / 権限の実測
 
@@ -42,7 +42,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P0-2a | 本番（または本番同等）プロジェクトで 0003 適用 + `seed:rice` | VIEW `rice_catalog` が読める。銘柄数が validate と一致 | **実測済**（2026-08、catalog / regions 応答確認） |
 | P0-2b | **anon key** で `rice_catalog` SELECT ができることを確認 | 地図が本番 URL で表示される | **実測済** + サイト地図・相談 OK |
 | P0-2c | anon が `embedding` / `search_text` を直接読めないことを確認 | details 直 SELECT が失敗 | **実測済** `42501 permission denied` |
-| P0-2d | service role は Vercel サーバー env のみ。Browser バンドルに含まれない | クライアント JS に service role 文字列が無い | **手順:** [vercel-production.md](./vercel-production.md) §3（Redeploy 後に確認） |
+| P0-2d | service role は Vercel サーバー env のみ。Browser バンドルに含まれない | クライアント JS に service role 文字列が無い | **CI スキャン済** `assert:client-bundle`。anon JWT が service_role なら起動失敗。本番 Network は Redeploy 後に人手 |
 
 ### P0-3. CI（最低ゲート）
 
@@ -65,7 +65,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | README「手元での確認」を本番版に拡張 |
+| P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | **手順書:** [smoke-test.md](./smoke-test.md)（実施記録は人手） |
 | P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | `/api/rice/semantic-recommend` |
 | P0-5c | `/[brand]` と品鑑パネル: 横溢れなし、購入 1 列（スマホ） | 390px 幅で横スクロール無し | PurchaseLinks、brand page |
 | P0-5d | 購入 6 リンクが各 EC / ふるさと検索へ開く | 全ボタン 200 系で検索結果が出る | shared URL helpers |
@@ -116,17 +116,17 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-4a | `metadataBase` + Open Graph / Twitter | SNS 貼り付けでタイトル・説明・（可能なら）画像 | `src/app/layout.tsx`、`[brand]/page.tsx` |
-| P1-4b | `app/robots.ts` + `app/sitemap.ts` | 本番ホストで sitemap に銘柄 URL が並ぶ | App Router 規約 |
-| P1-4c | 銘柄ページの description / OG を銘柄ごとに妥当化 | 主要銘柄を数件人手確認 | generateMetadata |
+| P1-4a | `metadataBase` + Open Graph / Twitter | SNS 貼り付けでタイトル・説明・（可能なら）画像 | **完了** `layout.tsx` + `opengraph-image.tsx`。`NEXT_PUBLIC_SITE_URL` 推奨 |
+| P1-4b | `app/robots.ts` + `app/sitemap.ts` | 本番ホストで sitemap に銘柄 URL が並ぶ | **完了** `src/app/robots.ts` / `sitemap.ts` |
+| P1-4c | 銘柄ページの description / OG を銘柄ごとに妥当化 | 主要銘柄を数件人手確認 | **コード済** `generateMetadata`。SNS プレビューの人手確認はスモーク時 |
 
 ### P1-5. ハードニング
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-5a | 起動時 env 検証（不足なら fail-fast） | 必須鍵欠落でデプロイ失敗 or 明確な起動エラー | `src/lib/supabase/env.ts` 等 |
+| P1-5a | 起動時 env 検証（不足なら fail-fast） | 必須鍵欠落でデプロイ失敗 or 明確な起動エラー | **完了** `src/instrumentation.ts`（Production）。anon に service_role JWT なら起動失敗 |
 | P1-5b | 基本セキュリティヘッダ（少なくとも `X-Frame-Options` / `Referrer-Policy`、CSP は段階的） | レスポンスヘッダで確認 | **完了（CSP 以外）** `next.config.ts`。CSP は GTM/Sentry 導入時 |
-| P1-5c | 公開前の依存関係監査（`npm audit` 方針） | Critical の扱いを決めて記録 | package-lock |
+| P1-5c | 公開前の依存関係監査（`npm audit` 方針） | Critical の扱いを決めて記録 | **方針記録済（2026-08）** Critical は公開ブロック。現状 `next` 同梱 postcss が High。`audit fix --force` は Next 16 破壊的アップのため見送り |
 
 **P1 出口基準:** クリックが収益計測に繋がり、障害と導線が数字で見える。
 
@@ -156,20 +156,21 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [x] P0-1a レート制限（best-effort / isolate 単位）
 - [x] P0-1b 日次上限 + kill switch（プロバイダ予算アラートは別途）
 - [x] P0-2a/b/c anon 実測完了（0004 + 地図・相談 OK）
-- [ ] P0-2d Vercel で service_role が Client に出ていないことを確認
+- [x] P0-2d CI で client bundle をスキャン（本番 Network は Redeploy 後）
 - [x] P0-3a CI workflow
 - [ ] P0-3b branch protection（GitHub で status check 必須化）
 - [x] P0-6 手順書 + ロールバック文書（[vercel-production.md](./vercel-production.md)）
-- [ ] P0-6a/b Dashboard で env を Production に投入・突合
+- [ ] P0-6a/b Dashboard で env を Production に投入・突合（`NEXT_PUBLIC_SITE_URL` 含む）
 - [ ] P0-6d 独自ドメイン（任意）
-- [x] P1-5b 基本セキュリティヘッダ
-- [ ] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` 等を設定
+- [x] P1-5a/b env fail-fast + 基本セキュリティヘッダ
+- [ ] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` / `NEXT_PUBLIC_SITE_URL` を設定
 
 ### Sprint B — 法務と品質ゲート
 
 - [x] P0-4a〜c,e 法務草案 + アフィ表記 + DISCLAIMER
 - [ ] P0-4d 特商法の事業者情報を確定して記入
-- [ ] P0-5a〜d スモーク（記録付き）
+- [x] P0-5a 手順書（[smoke-test.md](./smoke-test.md)）
+- [ ] P0-5b〜d スモーク実施と記録（人手）
 - [ ] P0-5e 最低限の自動テスト（推奨）
 
 ### Sprint C — 収益と観測（1.0 同梱推奨）
@@ -177,8 +178,9 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [ ] P1-1a〜d Affiliate タグ + 突合手順
 - [ ] P1-2a〜c 分析接続
 - [ ] P1-3a〜b Sentry
-- [ ] P1-4a〜c SEO/OG/sitemap
-- [ ] P1-5a〜c env 検証・ヘッダ・audit
+- [x] P1-4a〜b SEO/OG/sitemap（銘柄 OG の SNS 人手確認はスモーク時）
+- [x] P1-5a〜b env 検証・ヘッダ
+- [x] P1-5c `npm audit` 方針記録（Critical なし。next 同梱 postcss High は Next 16 強制アップを見送り）
 
 ### リリース作業
 
@@ -214,6 +216,9 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | [01-versioning.md](./01-versioning.md) | 1.0.0 の意味 |
 | [03-system-design.md](./03-system-design.md) | env・データフロー |
 | ルート [README.md](../README.md) | ローカル起動・seed |
+| [vercel-production.md](./vercel-production.md) | Vercel env・ロールバック |
+| [smoke-test.md](./smoke-test.md) | 本番スモーク手順 |
+| [rls-verify.md](./rls-verify.md) | RLS / anon 実測 |
 
 ---
 
@@ -224,5 +229,6 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | 味わい地図・座標推薦・意味検索・銘柄詳細・購入 CTA UI | 実装済み |
 | Mobile 横溢れ・購入 1 列・探針ランダム・プレビュー拡大 | 0.2.1 済み |
 | `track()` イベント配線 | 済み（受け皿未接続） |
-| Rate limit / CI / 法務ページ / Affiliate タグ / Sentry / OG・sitemap | **未着手** |
+| Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap | 実装済み（特商法欄・Affiliate タグは未） |
+| Affiliate タグ / GTM・GA4 / Sentry | **未着手**（週末以降 + P1-2/3） |
 | Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |

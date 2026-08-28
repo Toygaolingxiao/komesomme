@@ -36,6 +36,7 @@ npm run dev
 
 `.env.local` に必要なもの:
 
+- `NEXT_PUBLIC_SITE_URL`（任意。本番の canonical / OG / sitemap 用）
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`（seed と意味検索）
@@ -57,5 +58,7 @@ http://localhost:3000 で:
 - 探針やスライダーを動かすと、No.1 が常に最近傍
 - 「ハイボールと唐揚げに合う米」で Top 4 が返る
 - 銘柄詳細と `/[brand]` から楽天 / Amazon / ふるさと納税が開く
+
+本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
 画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。

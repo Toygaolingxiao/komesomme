@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
+import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
@@ -17,13 +18,31 @@ const notoSerifJp = Noto_Serif_JP({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "日本のブランド米を味わいの地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。";
+
 export const metadata: Metadata = {
-  title: "KomeSomme | 米ソムリエ",
-  description:
-    "日本のブランド米を味わいの地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。",
+  metadataBase: siteMetadataBase(),
+  title: {
+    default: "KomeSomme | 米ソムリエ",
+    template: "%s | KomeSomme",
+  },
+  description: SITE_DESCRIPTION,
   icons: {
     icon: [{ url: "/icon", type: "image/png" }],
     apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    siteName: "KomeSomme",
+    title: "KomeSomme | 米ソムリエ",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KomeSomme | 米ソムリエ",
+    description: SITE_DESCRIPTION,
   },
 };
 

@@ -70,7 +70,7 @@ export function ConsultForm({
                 ? "例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい"
                 : "例：刺身に合う、冷めても美味しい"
           }
-          className={`h-11 w-full min-w-0 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 py-2 text-sm text-[var(--km-ink)] placeholder:truncate placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:bg-[var(--km-surface)] focus:outline-none ${
+          className={`h-11 w-full min-w-0 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 py-2 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:bg-[var(--km-surface)] focus:outline-none ${
             hasQuery ? "px-3 pr-9" : "px-3"
           }`}
         />

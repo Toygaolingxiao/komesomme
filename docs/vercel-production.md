@@ -8,6 +8,7 @@ Vercel → Project → **Settings → Environment Variables**。
 
 | 変数 | Production | Preview | 注意 |
 | --- | --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | 本番オリジン（末尾スラッシュ無し） | Preview は Vercel 既定で可 | sitemap / OG の canonical。独自ドメイン後は必ず更新 |
 | `NEXT_PUBLIC_SUPABASE_URL` | 本番プロジェクト | 本番 or 別検証用 | `NEXT_PUBLIC_` のみブラウザに出る |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon | anon | **service_role をここに置かない** |
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role | 必要なら | Server only。名前に `NEXT_PUBLIC_` を付けない |
@@ -38,6 +39,8 @@ Vercel → Project → **Settings → Environment Variables**。
 3. DevTools → Network → 任意 HTML の Response Headers に  
    `X-Frame-Options: SAMEORIGIN`、`X-Content-Type-Options: nosniff` がある  
 4. クライアント JS や Network に `service_role` 文字列が **無い**
+5. `/sitemap.xml` と `/robots.txt` が開ける
+6. 詳細手順は [smoke-test.md](./smoke-test.md)
 
 ## 4. ロールバック
 

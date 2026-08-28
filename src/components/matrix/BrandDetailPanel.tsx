@@ -311,7 +311,7 @@ export function BrandDetailPanel({
 
               <p
                 id="km-detail-summary"
-                className="mt-5 max-w-[46ch] break-keep font-serif text-[17px] leading-[1.85] text-[var(--km-ink)]"
+                className="mt-5 max-w-[46ch] break-words font-serif text-[17px] leading-[1.85] text-[var(--km-ink)] [overflow-wrap:anywhere]"
               >
                 {appetite}
               </p>

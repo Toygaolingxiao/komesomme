@@ -32,7 +32,6 @@ export type MapDensity = "full" | "sparse" | "focus";
 
 export const MATCH_LIMIT = 4;
 export const NEIGHBOUR_LIMIT = 3;
-export const PREVIEW_MATCH_LIMIT = 8;
 
 export const ICON_WEIGHT = "bold" as const;
 export const ACCENT = "#e56b3f";

@@ -51,7 +51,7 @@ POST /rest/v1/rpc/match_rice_profiles
 
 ## 完了条件
 
-[11-launch-checklist.md](./11-launch-checklist.md) の P0-2b〜d を `[x]` にする。
+[11-launch-checklist.md](./11-launch-checklist.md) の P0-2b〜c は実測済み。P0-2d は CI `assert:client-bundle` + 起動時 JWT 検査。本番 Network の目視は Redeploy 後。
 
 ## 実測メモ
 

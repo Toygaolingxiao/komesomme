@@ -42,9 +42,15 @@ jobs:
         run: npm run build
         env:
           # Build uses static catalogue; placeholders keep any accidental env reads quiet.
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-anon-placeholder
           SUPABASE_SERVICE_ROLE_KEY: ci-service-placeholder
           EMBEDDING_PROVIDER: gemini
           GEMINI_API_KEY: ci-gemini-placeholder
           SEMANTIC_RECOMMEND_ENABLED: "false"
+
+      - name: Client bundle has no service_role
+        run: npm run assert:client-bundle
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ci-service-placeholder

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LegalShell } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "プライバシーポリシー | KomeSomme",
+  title: "プライバシーポリシー",
   description: "KomeSomme における個人情報・通信データの取扱いについて。",
 };
 

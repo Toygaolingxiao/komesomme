@@ -35,13 +35,33 @@ export async function generateMetadata({
   const { brand } = await params;
   const rice = findRiceProfile(brand);
   if (!rice) {
-    return { title: "銘柄が見つかりません | KomeSomme" };
+    return { title: "銘柄が見つかりません" };
   }
 
+  const description = brandMetaDescription(rice.short_ || rice.description);
+  const title = `${rice.prefecture} ${rice.name}`;
+
   return {
-    title: `${rice.name} | KomeSomme`,
-    description: rice.short_ || rice.description.slice(0, 120),
+    title: rice.name,
+    description,
+    openGraph: {
+      title,
+      description,
+      locale: "ja_JP",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
+}
+
+function brandMetaDescription(text: string, max = 120): string {
+  const compact = text.replace(/\s+/g, " ").trim();
+  if (compact.length <= max) return compact;
+  return `${compact.slice(0, max - 1)}…`;
 }
 
 function TagList({ label, items }: { label: string; items: string[] }) {
@@ -129,7 +149,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           {rice.prefecture}産 ・ {rice.texture_label}／{rice.sweetness_label}
         </p>
 
-        <p className="mt-8 max-w-[52ch] break-keep font-serif text-xl leading-[1.9] text-[var(--km-ink)]">
+        <p className="mt-8 max-w-[52ch] break-words font-serif text-xl leading-[1.9] text-[var(--km-ink)] [overflow-wrap:anywhere]">
           {appetite}
         </p>
         {technical ? (

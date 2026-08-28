@@ -80,7 +80,7 @@ export function MobileTodayCard({
         ) : null}
       </span>
 
-      <span className="mt-3 block break-keep text-[13px] leading-[1.7] text-[var(--km-ink)]">
+      <span className="mt-3 block break-words text-[13px] leading-[1.7] text-[var(--km-ink)] [overflow-wrap:anywhere]">
         {intro}
       </span>
 

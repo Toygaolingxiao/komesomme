@@ -43,7 +43,6 @@ import {
   LAYER,
   MATCH_LIMIT,
   NEIGHBOUR_LIMIT,
-  PREVIEW_MATCH_LIMIT,
   type RailMatch,
 } from "./matrix/shared";
 import { ErrorPanel } from "./matrix/states";
@@ -216,12 +215,13 @@ export function FlavorMatrix() {
     [railMatches]
   );
 
+  /** Same Top 4 as the recommendation rail — mobile used to emphasize 8 and looked crowded. */
   const previewIds = useMemo(() => {
     if (recommendationMode === "semantic") {
       return new Set(railMatches.map((match) => match.rice.id));
     }
     return new Set(
-      calculateTopCoordinateMatches(points, coordinate, PREVIEW_MATCH_LIMIT).map(
+      calculateTopCoordinateMatches(points, coordinate, MATCH_LIMIT).map(
         (match) => match.rice.id
       )
     );
@@ -435,7 +435,7 @@ export function FlavorMatrix() {
   );
 
   return (
-    <section className="w-full min-w-0 lg:h-full lg:min-h-0">
+    <section className="w-full min-w-0 overflow-x-clip lg:h-full lg:min-h-0">
       {isLg ? (
         <div className="mx-auto grid h-full min-h-0 w-full max-w-[1440px] grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-3 px-4 py-2 sm:px-5">
           <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
@@ -489,14 +489,14 @@ export function FlavorMatrix() {
           <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2rem))] pt-3">
+        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3">
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}
             onOpen={openDetail}
           />
 
-          <div className="flex min-w-0 flex-col gap-3 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+          <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             <div>
               <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
                 色の点は銘柄。触ると今日の一膳が変わります。
@@ -506,7 +506,7 @@ export function FlavorMatrix() {
             {loadState === "error" ? (
               <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
             ) : mapOpen ? null : (
-              <div className="-mx-2 h-[min(42svh,280px)] min-h-[200px] w-[calc(100%+1rem)]">
+              <div className="h-[min(42svh,280px)] min-h-[200px] w-full min-w-0">
                 <TasteMap
                   {...mapShared}
                   variant="preview"

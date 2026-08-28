@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Mobile UX
+
+- 地図の強調点を Top 8 → Top 4（推薦レールと同じ）に統一
+- `break-keep` による文末クリップを解消（品鑑・今日の一膳）
+- プレビュー地図の負マージン横溢れを抑制、ヘッダー法務リンクを短縮、下部余白を拡大
+
 ### セキュリティ / コンプライアンス（段階リリース）
 
 - 相談 API: `SEMANTIC_RECOMMEND_ENABLED` kill switch、IP あたり分次・日次レート制限
@@ -13,6 +19,11 @@
 - DB: `0004_restrict_embedding_access.sql` — anon から embedding / search_text 直読みと RPC を遮断（本番で実測済み）
 - `next.config.ts`: X-Frame-Options / nosniff / Referrer-Policy 等
 - [vercel-production.md](./vercel-production.md): Vercel env・Redeploy・ロールバック手順
+- SEO: `metadataBase`、OG/Twitter、`robots.ts`、`sitemap.ts`、OG 画像
+- 起動時 env 検証（Production fail-fast）。anon に service_role JWT があれば起動しない
+- CI: クライアント bundle に service_role が混入していないことを検査
+- `npm audit --omit=dev`: Critical なし。`next` 同梱 postcss の High は Next 16 への強制アップが必要なため見送り
+- [smoke-test.md](./smoke-test.md): 本番スモーク手順書
 
 ### ドキュメント
 
