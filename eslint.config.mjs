@@ -18,7 +18,6 @@ const eslintConfig = [
       "build/**",
       "coverage/**",
       ".cursor/**",
-      "src/lib/data/riceHandArchive.ts",
     ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),

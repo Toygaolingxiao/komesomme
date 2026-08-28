@@ -38,7 +38,7 @@
 
 - マップは Supabase `rice_catalog` と `rice_regions` から取得する（embedding 列は送らない）
 - 点色は地域マスタの `color`（`region_color`）を使う
-- 手書きソースは `src/data/rice/*.ts`、派生は `deriveRiceProfile`
+- 手書きソースは `src/data/rice/sources/`、派生は `deriveRiceProfile`
 - Loading / Empty / Error / 意味検索中を日本語で表示する
 - 鍵を Browser に公開しない
 
@@ -47,7 +47,7 @@
 - TypeScript で API と DB の境界を型付けする
 - embedding 次元は DB / seed / API で 1536 に統一する
 - query は 500 文字に制限する
-- Desktop / Mobile の UI は [ui_design.md](./ui_design.md) を正本とする
+- Desktop / Mobile の UI は [08-ui-design.md](./08-ui-design.md) を正本とする
 - `npm run validate:rice` が 80 件以上・スコア範囲・必須配列・禁止語を検証する
 
 ## 3. 将来要件（未実装）

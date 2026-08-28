@@ -1,4 +1,4 @@
-import { riceProfiles } from "../src/data/riceProfilesV2";
+import { riceProfiles } from "../src/data/rice/catalog";
 import { buildRiceSearchText } from "../src/lib/rice/buildRiceSearchText";
 import type { RiceProfileV2 } from "../src/types/rice";
 
@@ -62,7 +62,7 @@ const REQUIRED_TEXTS: Array<keyof RiceProfileV2> = [
   "rakuten_search_keyword",
 ];
 
-/** Marketing superlatives banned by the editorial guidelines (docs/ui_design.md). */
+/** Marketing superlatives banned by the editorial guidelines (docs/08-ui-design.md). */
 const BANNED_WORDS = [
   "最強",
   "圧倒的",

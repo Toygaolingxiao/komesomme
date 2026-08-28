@@ -1,6 +1,6 @@
 # KomeSomme システム設計書
 
-本書はリポジトリの現行実装を説明する。UI 正本は [ui_design.md](./ui_design.md)、未実装は [requirements.md](./requirements.md) の「将来要件」を参照する。
+本書はリポジトリの現行実装を説明する。UI 正本は [08-ui-design.md](./08-ui-design.md)、未実装は [06-requirements.md](./06-requirements.md) の「将来要件」を参照する。全体像は [02-tech-retrospective.md](./02-tech-retrospective.md)。
 
 ## 1. 技術スタック
 
@@ -28,11 +28,14 @@ src/
 │   ├── FlavorMatrix.tsx              # オーケストレーション
 │   └── matrix/                       # マップ、点、レール、相談、詳細、購入リンク、モバイルカード
 ├── data/
-│   ├── rice/*.ts                     # 地域別 RiceSource
-│   └── riceProfilesV2.ts             # derive 済みカタログ
+│   ├── README.md                     # 銘柄データの構造
+│   ├── riceProfilesV2.ts             # 互換 shim → rice/catalog
+│   └── rice/
+│       ├── sources/*.ts              # 地域別 RiceSource
+│       ├── overlay.ts                # 残余商標・編集行
+│       └── catalog.ts                # derive 済みカタログ
 ├── lib/
 │   ├── rice/                         # matrix / derive / dedup / search_text / bridge / fetch / regions
-│   ├── data/                         # curated overlay + backup archive
 │   ├── embedding/                    # Gemini / OpenAI
 │   ├── supabase/
 │   └── rakuten/

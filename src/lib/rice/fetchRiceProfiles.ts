@@ -96,7 +96,7 @@ function hydrateFromLocal(row: RiceProfileV2): RiceProfileV2 {
  */
 export async function fetchRiceCatalog(): Promise<RiceCatalog> {
   if (!hasSupabaseBrowserEnv()) {
-    const { riceProfiles } = await import("@/data/riceProfilesV2");
+    const { riceProfiles } = await import("@/data/rice/catalog");
     return {
       profiles: dedupeRiceCatalogue(riceProfiles),
       regions: RICE_REGIONS,

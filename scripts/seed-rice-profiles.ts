@@ -22,7 +22,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { config as loadEnv } from "dotenv";
 import path from "node:path";
-import { riceProfiles } from "../src/data/riceProfilesV2";
+import { riceProfiles } from "../src/data/rice/catalog";
 import {
   createEmbeddingWithRetry,
   getEmbeddingModel,

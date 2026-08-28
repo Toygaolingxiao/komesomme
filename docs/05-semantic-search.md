@@ -1,6 +1,6 @@
 # Embedding・意味検索設計
 
-現行の「米ソムリエに相談」は、自然言語を embedding して Top 4 を返す意味検索である。理由文は Flavor Bridge。Top 4 が揃ったあと、Gemini が 2 文の返事を書く。返事は候補銘柄以外の名前を創作しない。
+現行の「米ソムリエに相談」は、自然言語を embedding して Top 4 を返す意味検索である。設計思想と RAG としての位置づけは [02-tech-retrospective.md](./02-tech-retrospective.md) §4。理由文は Flavor Bridge。Top 4 が揃ったあと、Gemini が 2 文の返事を書く。返事は候補銘柄以外の名前を創作しない。
 
 ## 1. search_text
 

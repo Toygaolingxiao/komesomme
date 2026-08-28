@@ -58,4 +58,4 @@ http://localhost:3000 で:
 - 「ハイボールと唐揚げに合う米」で Top 4 が返る
 - 銘柄詳細と `/[brand]` から楽天 / Amazon / ふるさと納税が開く
 
-画面の約束は [docs/ui_design.md](./docs/ui_design.md)、データは [docs/database_schema.md](./docs/database_schema.md)、文書一覧は [docs/README.md](./docs/README.md) です。原典 `docs/kome-somme-rice-v2-implementation.md` は編集しません。
+画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。

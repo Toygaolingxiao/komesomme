@@ -7,7 +7,7 @@ import { TasteContour } from "@/components/matrix/TasteContour";
 import { FOCUS } from "@/components/matrix/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { findRiceProfile, riceProfiles } from "@/data/riceProfilesV2";
+import { findRiceProfile, riceProfiles } from "@/data/rice/catalog";
 import { calculateTasteNeighbours } from "@/lib/rice/matrix";
 import {
   DISCLAIMER,

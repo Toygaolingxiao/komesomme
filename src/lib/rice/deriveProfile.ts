@@ -14,7 +14,7 @@ import {
  * follow from the twelve taste values, which keeps ~90 brands consistent and
  * maintainable. Anything a rule gets wrong is fixed per brand via `overrides`.
  *
- * Wording stays inside the restrained vocabulary defined in docs/ui_design.md.
+ * Wording stays inside the restrained vocabulary defined in docs/08-ui-design.md.
  */
 
 type Rule = [active: boolean, value: string];
