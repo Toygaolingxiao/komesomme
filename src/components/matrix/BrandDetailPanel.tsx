@@ -89,9 +89,9 @@ function CoreTaste({ rice }: { rice: RiceProfileV2 }) {
   return (
     <section>
       <h4 className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">主要な味わい</h4>
-      <dl className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5 sm:gap-2">
+      <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 sm:gap-2">
         {core.map(([label, value]) => (
-          <div key={label}>
+          <div key={label} className="min-w-0">
             <dt className="text-[10px] text-[var(--km-muted)]">{label}</dt>
             <dd className="mt-1 font-serif text-xl leading-none text-[var(--km-brown)] sm:text-2xl">
               {value}
@@ -241,14 +241,14 @@ export function BrandDetailPanel({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.99 }}
           transition={{ type: "spring", stiffness: 260, damping: 28 }}
-          className="pointer-events-auto flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[1.6rem] border border-[var(--km-border)] bg-[var(--km-surface)] text-[var(--km-ink)] shadow-[0_24px_60px_-24px_rgba(112,69,34,0.45)] md:max-h-[86vh] md:w-[min(92vw,900px)] md:rounded-[1.5rem]"
+          className="pointer-events-auto flex max-h-[88dvh] w-full min-w-0 max-w-full flex-col overflow-hidden rounded-t-[1.6rem] border border-[var(--km-border)] bg-[var(--km-surface)] text-[var(--km-ink)] shadow-[0_24px_60px_-24px_rgba(112,69,34,0.45)] md:max-h-[86vh] md:w-[min(92vw,900px)] md:rounded-[1.5rem]"
         >
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-[var(--km-ink)]/15 md:hidden" />
 
-          <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
+          <div ref={scrollRef} className="min-h-0 min-w-0 flex-1 overflow-x-clip overflow-y-auto">
             <DetailScrollTracker root={scrollRef} />
             <div
-              className="relative px-5 pb-5 pt-4 sm:px-8 sm:pb-6 sm:pt-6"
+              className="relative min-w-0 px-5 pb-5 pt-4 sm:px-8 sm:pb-6 sm:pt-6"
               style={{
                 background: `linear-gradient(180deg, ${fill}26 0%, transparent 78%)`,
               }}
@@ -325,7 +325,7 @@ export function BrandDetailPanel({
               </div>
             </div>
 
-            <div className="px-5 pb-6 sm:px-8 sm:pb-8">
+            <div className="min-w-0 px-5 pb-6 sm:px-8 sm:pb-8">
               <ForYou rice={rice} />
 
               <div className="mt-8 flex flex-col gap-5">

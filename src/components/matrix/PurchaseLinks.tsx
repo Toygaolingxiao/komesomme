@@ -16,12 +16,11 @@ import {
   yahooShoppingUrl,
 } from "./shared";
 
-const LINK_CLASS = `inline-flex min-w-0 items-center justify-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-1.5 py-2 text-center text-[10px] leading-tight text-[var(--km-muted)] transition hover:border-[var(--km-gold)]/40 hover:text-[var(--km-ink)] sm:px-3 sm:text-[11px] ${FOCUS}`;
+const LINK_CLASS = `inline-flex min-w-0 w-full items-center justify-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-3 py-2.5 text-center text-[12px] leading-tight text-[var(--km-muted)] transition hover:border-[var(--km-gold)]/40 hover:text-[var(--km-ink)] sm:px-2 sm:py-2 sm:text-[11px] ${FOCUS}`;
 const CTA_CLASS = `inline-flex items-center justify-center rounded-full px-4 py-2.5 text-[12px] font-semibold transition ${FOCUS}`;
 
 type ShopLink = {
   href: string;
-  short: string;
   full: string;
   event: AnalyticsEvent;
 };
@@ -30,29 +29,25 @@ function shopLinks(rice: RiceProfileV2): ShopLink[] {
   const shop = shopKeyword(rice);
   const furusato = furusatoKeyword(rice);
   return [
-    { href: rakutenUrl(shop), short: "楽天", full: "楽天市場", event: "rakuten_click" },
+    { href: rakutenUrl(shop), full: "楽天市場", event: "rakuten_click" },
     {
       href: yahooShoppingUrl(shop),
-      short: "Yahoo",
       full: "Yahoo!ショッピング",
       event: "yahoo_click",
     },
-    { href: amazonUrl(shop), short: "Amazon", full: "Amazon", event: "amazon_click" },
+    { href: amazonUrl(shop), full: "Amazon", event: "amazon_click" },
     {
       href: rakutenFurusatoUrl(furusato),
-      short: "楽天ふるさと",
       full: "楽天ふるさと",
       event: "furusato_click",
     },
     {
       href: yahooFurusatoUrl(furusato),
-      short: "Yahooふるさと",
       full: "Yahoo!ふるさと",
       event: "furusato_click",
     },
     {
       href: furusatoUrl(furusato),
-      short: "ふるさと",
       full: "ふるさと納税",
       event: "furusato_click",
     },
@@ -72,7 +67,7 @@ function ProviderRow({
     <div>
       <p className="text-[11px] font-medium text-[var(--km-ink)]">{title}</p>
       <p className="mt-0.5 text-[10px] text-[var(--km-muted)]">{hint}</p>
-      <div className="mt-2 grid grid-cols-3 gap-1.5 sm:gap-2">
+      <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2">
         {links.map((link) => (
           <a
             key={link.full}
@@ -82,8 +77,7 @@ function ProviderRow({
             className={LINK_CLASS}
             onClick={() => track(link.event, { label: link.full })}
           >
-            <span className="sm:hidden">{link.short}</span>
-            <span className="hidden sm:inline">{link.full}</span>
+            <span className="min-w-0 break-words sm:truncate">{link.full}</span>
           </a>
         ))}
       </div>
@@ -128,7 +122,7 @@ export function PurchaseLead({ rice }: { rice: RiceProfileV2 }) {
 
 /**
  * Quiet commerce search links. Keywords only, not product pages.
- * Layout is always 2 rows × 3 columns — never a 2-column wrap.
+ * Mobile stacks one button per row; sm+ keeps 2 rows × 3 columns.
  */
 export function PurchaseLinks({ rice }: { rice: RiceProfileV2 }) {
   const links = shopLinks(rice);

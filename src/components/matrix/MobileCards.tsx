@@ -165,10 +165,15 @@ export function OpenMapButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-4 py-3 text-sm text-[var(--km-ink)] ${FOCUS}`}
+      className={`inline-flex w-full flex-col items-center justify-center gap-0.5 rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-4 py-3 text-[var(--km-ink)] ${FOCUS}`}
     >
-      <ArrowUpRight size={16} weight={ICON_WEIGHT} />
-      地図を大きく見る
+      <span className="inline-flex items-center gap-2 text-sm">
+        <ArrowUpRight size={16} weight={ICON_WEIGHT} />
+        地図を大きく見る
+      </span>
+      <span className="text-[10px] text-[var(--km-muted)]">
+        ほかの銘柄も探せます
+      </span>
     </button>
   );
 }

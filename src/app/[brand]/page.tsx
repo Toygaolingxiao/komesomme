@@ -96,21 +96,21 @@ export default async function BrandPage({ params }: BrandPageProps) {
   ].filter(([, items]) => items.length > 0) as Array<[string, string[]]>;
 
   return (
-    <main className="min-h-[100dvh] w-full text-[var(--km-ink)]">
+    <main className="min-h-[100dvh] w-full min-w-0 overflow-x-clip text-[var(--km-ink)]">
       <DetailScrollTracker />
-      <header className="mx-auto flex h-16 max-w-[960px] items-center justify-between border-b border-[var(--km-border)] px-4 md:px-8 lg:h-[72px]">
-        <Link href="/" className={`min-w-0 ${FOCUS}`}>
+      <header className="mx-auto flex h-16 max-w-[960px] min-w-0 items-center justify-between gap-3 border-b border-[var(--km-border)] px-4 md:px-8 lg:h-[72px]">
+        <Link href="/" className={`min-w-0 shrink ${FOCUS}`}>
           <BrandLockup />
         </Link>
         <Link
           href="/#matrix"
-          className="text-sm text-[var(--km-muted)] transition hover:text-[var(--km-gold)]"
+          className="shrink-0 text-right text-sm leading-snug text-[var(--km-muted)] transition hover:text-[var(--km-gold)]"
         >
           味わいの地図へ戻る
         </Link>
       </header>
 
-      <article className="mx-auto max-w-[960px] px-4 py-10 md:px-8 md:py-14">
+      <article className="mx-auto max-w-[960px] min-w-0 px-4 py-10 md:px-8 md:py-14">
         <p className="flex items-center gap-2 text-xs text-[var(--km-muted)]">
           <span
             aria-hidden
@@ -200,9 +200,9 @@ export default async function BrandPage({ params }: BrandPageProps) {
           <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
             主要な味わい
           </h2>
-          <dl className="mt-4 grid grid-cols-3 gap-3 border-y border-[var(--km-border)] py-6 sm:grid-cols-5">
+          <dl className="mt-4 grid grid-cols-2 gap-3 border-y border-[var(--km-border)] py-6 sm:grid-cols-3 md:grid-cols-5">
             {core.map(([label, value]) => (
-              <div key={label}>
+              <div key={label} className="min-w-0">
                 <dt className="text-[11px] text-[var(--km-muted)]">{label}</dt>
                 <dd className="mt-1 font-serif text-2xl leading-none text-[var(--km-brown)]">
                   {value}
@@ -235,11 +235,11 @@ export default async function BrandPage({ params }: BrandPageProps) {
             <dl className="mt-4 divide-y divide-[var(--km-border)]">
               {seasons.map(([season, items]) =>
                 items.length > 0 ? (
-                  <div key={season} className="flex gap-6 py-3">
+                  <div key={season} className="flex min-w-0 gap-4 py-3 sm:gap-6">
                     <dt className="w-8 shrink-0 text-sm text-[var(--km-gold)]">
                       {season}
                     </dt>
-                    <dd className="text-sm leading-relaxed text-[var(--km-ink-soft)]">
+                    <dd className="min-w-0 break-words text-sm leading-relaxed text-[var(--km-ink-soft)]">
                       {items.join("、")}
                     </dd>
                   </div>
@@ -255,11 +255,11 @@ export default async function BrandPage({ params }: BrandPageProps) {
             </h2>
             <dl className="mt-4 divide-y divide-[var(--km-border)]">
               {drinks.map(([drink, items]) => (
-                  <div key={drink} className="flex gap-6 py-3">
-                    <dt className="w-24 shrink-0 text-sm text-[var(--km-ink)]">
+                  <div key={drink} className="flex min-w-0 gap-3 py-3 sm:gap-6">
+                    <dt className="w-16 shrink-0 text-sm text-[var(--km-ink)] sm:w-24">
                       {drink}
                     </dt>
-                    <dd className="text-sm leading-relaxed text-[var(--km-ink-soft)]">
+                    <dd className="min-w-0 break-words text-sm leading-relaxed text-[var(--km-ink-soft)]">
                       {items.join("、")}
                     </dd>
                   </div>

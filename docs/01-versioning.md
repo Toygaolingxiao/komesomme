@@ -4,7 +4,7 @@ KomeSomme は [Semantic Versioning 2.0.0](https://semver.org/lang/ja/)（`X.Y.Z`
 
 ## 現在のバージョン
 
-**0.2.0** — 正本はリポジトリ直下の [`VERSION`](../VERSION)。`package.json` の `version` も同期する。
+**0.2.1** — 正本はリポジトリ直下の [`VERSION`](../VERSION)。`package.json` の `version` も同期する。
 
 ## 番号の意味
 
@@ -28,5 +28,6 @@ KomeSomme は [Semantic Versioning 2.0.0](https://semver.org/lang/ja/)（`X.Y.Z`
 | --- | --- | --- |
 | 0.1.0 | 2026-08 前半 | MVP 初版。味わいマップ、意味検索、Supabase カタログ、derive パイプライン |
 | 0.2.0 | 2026-08 後半 | UX Phase 1–6、データ / ドキュメント整理、番号付き docs、技術振り返り文書 |
+| 0.2.1 | 2026-08 後半 | Mobile 横溢れ修正、購入 1 列、探針ランダム、プレビュー地図拡大 |
 
 詳細は [10-changelog.md](./10-changelog.md)。

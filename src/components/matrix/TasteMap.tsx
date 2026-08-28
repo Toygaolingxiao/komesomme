@@ -241,7 +241,7 @@ export function TasteMap({
   const shortSide = Math.min(plot.w, plot.h);
   const density: MapDensity =
     variant === "preview"
-      ? "focus"
+      ? "sparse"
       : variant === "fullscreen"
         ? "full"
         : shortSide > 0 && shortSide < FOCUS_MIN

@@ -54,6 +54,18 @@ type SemanticState = "idle" | "pending" | "error";
 
 const INITIAL_COORDINATE: TasteCoordinate = { hardness: 3, sweetness: 3 };
 const HINT_KEY = "km-map-hint-seen";
+const AXIS_PICK = [2, 3, 4] as const;
+
+/** Session-level start away from the exact center (avoids a dull default). */
+function randomInitialCoordinate(): TasteCoordinate {
+  let hardness = 3;
+  let sweetness = 3;
+  do {
+    hardness = AXIS_PICK[Math.floor(Math.random() * AXIS_PICK.length)];
+    sweetness = AXIS_PICK[Math.floor(Math.random() * AXIS_PICK.length)];
+  } while (hardness === 3 && sweetness === 3);
+  return { hardness, sweetness };
+}
 
 function MapFirstHint({
   visible,
@@ -66,7 +78,7 @@ function MapFirstHint({
 
   return (
     <p className="mt-1.5 flex items-start justify-between gap-2 rounded-lg bg-[var(--km-surface-warm)] px-2.5 py-1.5 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
-      気になる点を押して、米の性格を見てみましょう。
+      色の点は銘柄です。触ると今日の一膳が変わります。
       <button
         type="button"
         onClick={onDismiss}
@@ -143,6 +155,10 @@ export function FlavorMatrix() {
   useEffect(() => {
     void loadProfiles();
   }, [loadProfiles]);
+
+  useEffect(() => {
+    setCoordinate(randomInitialCoordinate());
+  }, []);
 
   useEffect(() => {
     try {
@@ -474,10 +490,16 @@ export function FlavorMatrix() {
           />
 
           <div className="flex min-w-0 flex-col gap-3 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+            <div>
+              <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
+                色の点は銘柄。触ると今日の一膳が変わります。
+              </p>
+              <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
+            </div>
             {loadState === "error" ? (
               <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
             ) : mapOpen ? null : (
-              <div className="-mx-2 h-[min(30svh,200px)] min-h-[140px] w-[calc(100%+1rem)]">
+              <div className="-mx-2 h-[min(42svh,280px)] min-h-[200px] w-[calc(100%+1rem)]">
                 <TasteMap
                   {...mapShared}
                   variant="preview"
@@ -523,6 +545,7 @@ export function FlavorMatrix() {
               <p className="mt-1 max-w-[36ch] text-[11px] leading-relaxed text-[var(--km-muted)]">
                 点を選ぶと銘柄を表示。スライダーを動かすと、近い一膳が変わります。
               </p>
+              <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             </div>
             <button
               type="button"
