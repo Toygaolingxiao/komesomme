@@ -52,3 +52,7 @@ POST /rest/v1/rpc/match_rice_profiles
 ## 完了条件
 
 [11-launch-checklist.md](./11-launch-checklist.md) の P0-2b〜d を `[x]` にする。
+
+## 実測メモ
+
+- 2026-08: A（details → 42501）、B（catalog / regions OK）、C（地図・相談 OK）を確認済み。

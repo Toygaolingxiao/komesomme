@@ -39,10 +39,10 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-2a | 本番（または本番同等）プロジェクトで 0003 適用 + `seed:rice` | VIEW `rice_catalog` が読める。銘柄数が validate と一致 | [04-database.md](./04-database.md)、`scripts/seed-rice-profiles.ts` |
-| P0-2b | **anon key** で `rice_catalog` SELECT ができることを確認 | 地図が本番 URL で表示される | **手順:** [rls-verify.md](./rls-verify.md) |
-| P0-2c | anon が `embedding` / `search_text` を直接読めないことを確認 | details 直 SELECT が失敗。RPC も anon 不可 | **コード完了** `0004_restrict_embedding_access.sql`（**適用と実測は人手**） |
-| P0-2d | service role は Vercel サーバー env のみ。Browser バンドルに含まれない | クライアント JS に service role 文字列が無い | Vercel env、ビルド成果物 grep |
+| P0-2a | 本番（または本番同等）プロジェクトで 0003 適用 + `seed:rice` | VIEW `rice_catalog` が読める。銘柄数が validate と一致 | **実測済**（2026-08、catalog / regions 応答確認） |
+| P0-2b | **anon key** で `rice_catalog` SELECT ができることを確認 | 地図が本番 URL で表示される | **実測済** + サイト地図・相談 OK |
+| P0-2c | anon が `embedding` / `search_text` を直接読めないことを確認 | details 直 SELECT が失敗 | **実測済** `42501 permission denied` |
+| P0-2d | service role は Vercel サーバー env のみ。Browser バンドルに含まれない | クライアント JS に service role 文字列が無い | **手順:** [vercel-production.md](./vercel-production.md) §3（Redeploy 後に確認） |
 
 ### P0-3. CI（最低ゲート）
 
@@ -75,11 +75,11 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-6a | Vercel Production と Preview の env 分離 | Production のみ本番 Supabase / 本番鍵 | Vercel Dashboard |
-| P0-6b | `.env.example` と本番必須変数の突合 | 欠落で起動失敗または明確な 500 | `.env.example`、[03-system-design.md](./03-system-design.md) |
-| P0-6c | `EMBEDDING_PROVIDER` と DB の `embedding_model` 一致 | 相談が Top4 を返す。混在モデルで 0 件にならない | seed 再実行の有無を記録 |
-| P0-6d | 独自ドメイン接続 + HTTPS | 本番ホストで証明書エラー無し | DNS / Vercel |
-| P0-6e | 障害時ロールバック手順（直前デプロイへ戻す） | 1 ページの runbook | 本ファイル末尾「運用」 |
+| P0-6a | Vercel Production と Preview の env 分離 | Production のみ本番 Supabase / 本番鍵 | **手順書:** [vercel-production.md](./vercel-production.md)（Dashboard 作業は人手） |
+| P0-6b | `.env.example` と本番必須変数の突合 | 欠落で起動失敗または明確な 500 | **手順書あり** `.env.example` + vercel-production |
+| P0-6c | `EMBEDDING_PROVIDER` と DB の `embedding_model` 一致 | 相談が Top4 を返す。混在モデルで 0 件にならない | 相談が既に通っていれば実質 OK。切替時は再 seed |
+| P0-6d | 独自ドメイン接続 + HTTPS | 本番ホストで証明書エラー無し | DNS / Vercel（任意のタイミング） |
+| P0-6e | 障害時ロールバック手順（直前デプロイへ戻す） | 1 ページの runbook | **文書化済** vercel-production §4 + 本ファイル「運用」 |
 
 **P0 出口基準:** 上記すべて `[x]`。公開 URL で「選ぶ → 相談 → 詳細 → 外部 EC」が安全に一周できる。
 
@@ -125,7 +125,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P1-5a | 起動時 env 検証（不足なら fail-fast） | 必須鍵欠落でデプロイ失敗 or 明確な起動エラー | `src/lib/supabase/env.ts` 等 |
-| P1-5b | 基本セキュリティヘッダ（少なくとも `X-Frame-Options` / `Referrer-Policy`、CSP は段階的） | レスポンスヘッダで確認 | `next.config.ts` |
+| P1-5b | 基本セキュリティヘッダ（少なくとも `X-Frame-Options` / `Referrer-Policy`、CSP は段階的） | レスポンスヘッダで確認 | **完了（CSP 以外）** `next.config.ts`。CSP は GTM/Sentry 導入時 |
 | P1-5c | 公開前の依存関係監査（`npm audit` 方針） | Critical の扱いを決めて記録 | package-lock |
 
 **P1 出口基準:** クリックが収益計測に繋がり、障害と導線が数字で見える。
@@ -155,11 +155,14 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 - [x] P0-1a レート制限（best-effort / isolate 単位）
 - [x] P0-1b 日次上限 + kill switch（プロバイダ予算アラートは別途）
-- [x] P0-2c migration 0004（embedding 直読み遮断）— **Supabase で SQL 実行 + [rls-verify.md](./rls-verify.md) 実測が残作業**
-- [ ] P0-2a/b/d 本番 seed・anon 実測・service role 露出チェック
+- [x] P0-2a/b/c anon 実測完了（0004 + 地図・相談 OK）
+- [ ] P0-2d Vercel で service_role が Client に出ていないことを確認
 - [x] P0-3a CI workflow
 - [ ] P0-3b branch protection（GitHub で status check 必須化）
-- [ ] P0-6a〜e 本番 env・ドメイン・ロールバック
+- [x] P0-6 手順書 + ロールバック文書（[vercel-production.md](./vercel-production.md)）
+- [ ] P0-6a/b Dashboard で env を Production に投入・突合
+- [ ] P0-6d 独自ドメイン（任意）
+- [x] P1-5b 基本セキュリティヘッダ
 - [ ] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` 等を設定
 
 ### Sprint B — 法務と品質ゲート

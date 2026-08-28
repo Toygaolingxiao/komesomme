@@ -28,6 +28,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 10 | [10-changelog.md](./10-changelog.md) | 変更履歴 |
 | 11 | [11-launch-checklist.md](./11-launch-checklist.md) | 収益化本番リリースの実行タスク（P0/P1/P2） |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
+| — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・Redeploy・ロールバック |
 
 ## 読み分け
 

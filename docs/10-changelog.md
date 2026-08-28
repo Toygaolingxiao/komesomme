@@ -10,7 +10,9 @@
 - 法務草案: `/privacy` `/terms` `/tokushoho`、ヘッダー法務ナビ、アフィリエイト表記
 - 特商法の事業者欄はプレースホルダ（公開前に記入）
 - CI: GitHub Actions で lint / typecheck / validate:rice / build
-- DB: `0004_restrict_embedding_access.sql` — anon から embedding / search_text 直読みと RPC を遮断
+- DB: `0004_restrict_embedding_access.sql` — anon から embedding / search_text 直読みと RPC を遮断（本番で実測済み）
+- `next.config.ts`: X-Frame-Options / nosniff / Referrer-Policy 等
+- [vercel-production.md](./vercel-production.md): Vercel env・Redeploy・ロールバック手順
 
 ### ドキュメント
 
