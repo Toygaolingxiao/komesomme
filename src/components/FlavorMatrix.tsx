@@ -355,7 +355,14 @@ export function FlavorMatrix() {
       };
 
       if (!response.ok) {
-        throw new Error(body.message ?? "semantic recommend failed");
+        setSemanticMatches([]);
+        setSemanticReply(
+          typeof body.message === "string" && body.message.trim()
+            ? body.message.trim()
+            : "相談に失敗しました。味わいの地図から銘柄を探してみてください。"
+        );
+        setSemanticState("error");
+        return;
       }
 
       const matches: RailMatch[] = (body.matches ?? [])

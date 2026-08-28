@@ -101,7 +101,7 @@ export function furusatoUrl(keyword: string): string {
 }
 
 export const PURCHASE_NOTE =
-  "購入時は産地・年産・精米時期・内容量をご確認ください。KomeSommeでは銘柄名で購入候補を検索します。";
+  "購入時は産地・年産・精米時期・内容量をご確認ください。KomeSommeでは銘柄名で購入候補を検索します。外部リンクにはアフィリエイト広告を含む場合があります。";
 
 export function shortTasteTags(rice: RiceProfileV2): string[] {
   const tags = [rice.texture_label, rice.sweetness_label];

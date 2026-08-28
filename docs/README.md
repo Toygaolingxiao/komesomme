@@ -26,6 +26,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 08 | [08-ui-design.md](./08-ui-design.md) | UI デザイン正本 |
 | 09 | [09-brand-icon.md](./09-brand-icon.md) | アイコン（参考図: [grain-probe-brand-board.png](./grain-probe-brand-board.png)） |
 | 10 | [10-changelog.md](./10-changelog.md) | 変更履歴 |
+| 11 | [11-launch-checklist.md](./11-launch-checklist.md) | 収益化本番リリースの実行タスク（P0/P1/P2） |
 
 ## 読み分け
 
@@ -36,3 +37,5 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | コードの置き場所 | 03 |
 | 画面を直す | 08 |
 | バージョンを上げる | 01 → 10 |
+| 本番公開までにやること | 11 |
+| プライバシー / 利用規約 | `/privacy` `/terms` `/tokushoho` |

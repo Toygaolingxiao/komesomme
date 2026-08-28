@@ -2,6 +2,18 @@
 
 [Semantic Versioning](./01-versioning.md) に従う。現在: **0.2.1**（[`VERSION`](../VERSION)）。
 
+## Unreleased
+
+### セキュリティ / コンプライアンス（段階リリース）
+
+- 相談 API: `SEMANTIC_RECOMMEND_ENABLED` kill switch、IP あたり分次・日次レート制限
+- 法務草案: `/privacy` `/terms` `/tokushoho`、ヘッダー法務ナビ、アフィリエイト表記
+- 特商法の事業者欄はプレースホルダ（公開前に記入）
+
+### ドキュメント
+
+- [11-launch-checklist.md](./11-launch-checklist.md): 収益化正式サイト向け本番チェックリスト（P0/P1/P2・実行バックログ）
+
 ## 0.2.1 — 2026-08
 
 ### Mobile UX

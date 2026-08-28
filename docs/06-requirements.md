@@ -61,4 +61,6 @@
 - Auth
 - grounded LLM 推薦文と炊飯アドバイス
 
+収益化を伴う正式公開の分割タスク・完了条件は [11-launch-checklist.md](./11-launch-checklist.md)（P0 ブロッカー / P1 収益・観測 / P2 成長）。
+
 将来要件を現行機能として README や UI に記載しない。

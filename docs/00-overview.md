@@ -21,7 +21,7 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 
 約 106 銘柄の座標推薦、意味検索 Top 4、銘柄詳細、購入導線（楽天 / Yahoo / Amazon / ふるさと納税、2 行 × 3 列）を提供する。
 
-楽天 Affiliate API と成果計測の本番運用は将来要件。詳細は [06-requirements.md](./06-requirements.md)。
+楽天 Affiliate API と成果計測の本番運用は将来要件。詳細は [06-requirements.md](./06-requirements.md)。収益化本番までのタスクは [11-launch-checklist.md](./11-launch-checklist.md)。
 
 ## 関連文書
 

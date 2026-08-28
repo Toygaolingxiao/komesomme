@@ -81,6 +81,9 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 | `EMBEDDING_PROVIDER` | `gemini`（既定）または `openai` |
 | `GEMINI_API_KEY` | Gemini embedding と短い返事 |
 | `OPENAI_API_KEY` | OpenAI embedding。Gemini 返事が使えないときの控え |
+| `SEMANTIC_RECOMMEND_ENABLED` | `false` で相談 API を停止（課金防護の kill switch） |
+| `SEMANTIC_RATE_LIMIT_PER_MIN` | 相談 API の IP あたり毎分上限（既定 8） |
+| `SEMANTIC_RATE_LIMIT_PER_DAY` | 相談 API の IP あたり日次上限（既定 80） |
 
 ## 5. データ境界と安全性
 
@@ -89,3 +92,4 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 - 地図の点色は `rice_regions.color`（VIEW の `region_color`）
 - 通常クエリは `embedding` / `search_text` を取得しない
 - ベクトル比較は必ず `embedding_model` で絞る
+- 公開 URL の相談 API は `guardSemanticRecommend`（kill switch + レート制限）。詳細は [11-launch-checklist.md](./11-launch-checklist.md)

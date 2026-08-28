@@ -68,5 +68,6 @@ Hero → 上部 CTA（最大 2）→ この米はこんな人に → 米ソム�
 - CTA 文言・購入位置の A/B（設計のみ。`sm+` の購買グリッドは 2 列に戻さない）
 - 初見スコアの再評価（地図操作率・購入クリック率）
 - [06-requirements.md](./06-requirements.md) の将来要件（Affiliate API、Auth、個人化）
+- 収益化本番の実行リスト: [11-launch-checklist.md](./11-launch-checklist.md)
 
 変更履歴は [10-changelog.md](./10-changelog.md)。

@@ -14,7 +14,7 @@ KomeSomme は [Semantic Versioning 2.0.0](https://semver.org/lang/ja/)（`X.Y.Z`
 | **Y**（Minor） | 後方互換の機能追加・データ拡張 | 銘柄追加、新導線、計測イベント追加 |
 | **Z**（Patch） | バグ修正・文案・ドキュメントのみ | 購入 URL 修正、禁止語の除去 |
 
-`0.x.y` は MVP 期間。`1.0.0` は本番公開（独自ドメイン、監視、RLS 確認、Affiliate 計測など [06-requirements.md](./06-requirements.md) の将来要件を満たした時点）を想定する。
+`0.x.y` は MVP 期間。`1.0.0` は本番公開（独自ドメイン、監視、RLS 確認、Affiliate 計測など [06-requirements.md](./06-requirements.md) の将来要件を満たした時点）を想定する。実行タスクは [11-launch-checklist.md](./11-launch-checklist.md)。
 
 ## 更新手順
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BrandLockup } from "@/components/brand/BrandMark";
+import { SiteFooter } from "@/components/SiteFooter";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { DetailScrollTracker } from "@/components/matrix/DetailScrollTracker";
 import { PurchaseLead, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
@@ -285,6 +286,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           {DISCLAIMER}
         </p>
       </article>
+      <SiteFooter />
     </main>
   );
 }

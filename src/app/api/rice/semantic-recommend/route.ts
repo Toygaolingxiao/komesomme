@@ -5,6 +5,7 @@ import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow
 import { buildSemanticReason } from "@/lib/rice/flavorBridge";
 import { nameMatch, semanticDisplayScore, brandCoreQuery } from "@/lib/rice/semanticScore";
 import { generateSommelierReply } from "@/lib/rice/sommelierReply";
+import { guardSemanticRecommend } from "@/lib/security/semanticGuard";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { RiceProfileV2 } from "@/types/rice";
 
@@ -21,8 +22,12 @@ const MATCH_THRESHOLD = 0.1;
  *
  * Only free-text consultation reaches this route; the map and sliders rank locally.
  * The embedding stays server-side so the provider key is never exposed.
+ * Public Vercel URLs are rate-limited and can be disabled via env kill switch.
  */
 export async function POST(request: Request) {
+  const blocked = guardSemanticRecommend(request);
+  if (blocked) return blocked;
+
   let query: string;
   let matchCount = DEFAULT_MATCH_COUNT;
 
