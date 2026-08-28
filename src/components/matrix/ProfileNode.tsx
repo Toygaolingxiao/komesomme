@@ -49,6 +49,7 @@ export function ProfileNode({
   showTooltip = true,
   touchFriendly = false,
   onSelect,
+  onHover,
 }: {
   rice: RiceDisplayPoint;
   isBestMatch: boolean;
@@ -62,6 +63,7 @@ export function ProfileNode({
   showTooltip?: boolean;
   touchFriendly?: boolean;
   onSelect: () => void;
+  onHover?: (id: string | null) => void;
 }) {
   const featured = isBestMatch || isSelected;
   const connected = featured || isRunnerUp || isHighlighted;
@@ -91,6 +93,10 @@ export function ProfileNode({
       type="button"
       onPointerDown={(event) => event.stopPropagation()}
       onClick={onSelect}
+      onMouseEnter={() => onHover?.(rice.id)}
+      onMouseLeave={() => onHover?.(null)}
+      onFocus={() => onHover?.(rice.id)}
+      onBlur={() => onHover?.(null)}
       aria-label={`${rice.name}、${rice.prefecture}、味わいを見る`}
       aria-current={isSelected || isBestMatch ? "true" : undefined}
       initial={reduceMotion ? false : { opacity: 0, scale: 0.72 }}
@@ -131,7 +137,9 @@ export function ProfileNode({
           background: `radial-gradient(circle at 28% 24%, rgba(255,253,247,0.42) 0 16%, ${fill} 34%)`,
           boxShadow: featured
             ? `0 0 12px ${fill}, 0 0 26px color-mix(in srgb, ${fill} 55%, transparent)`
-            : "0 0 0 1px rgba(48,40,32,0.2), 0 1px 3px rgba(112,69,34,0.18)",
+            : isRunnerUp
+              ? `0 0 0 1.5px ${fill}, 0 0 10px color-mix(in srgb, ${fill} 35%, transparent)`
+              : "0 0 0 1px rgba(48,40,32,0.2), 0 1px 3px rgba(112,69,34,0.18)",
         }}
       />
 

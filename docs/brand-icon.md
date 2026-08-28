@@ -4,7 +4,7 @@
 
 ## 推奨方向
 
-**Grain + Tasting Probe**。縦の米粒（上部に浅い胚の切れ込み）、粒内右下の等深線、金の今日の一点、珊瑚の探針、細い軌道。
+**Grain + Tasting Probe**。縦の米粒（上部に浅い胚の切れ込み）、粒内右下の等深線、金の今日の一点、珊瑚の探針、細い軌道。ボード全体は [references/grain-probe-brand-board.png](./references/grain-probe-brand-board.png)。
 
 - 金点: 今日の一膳
 - 珊瑚の点と線: 味わいを探す探針

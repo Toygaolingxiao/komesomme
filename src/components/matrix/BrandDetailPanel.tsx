@@ -28,14 +28,18 @@ import {
   affinityDisplay,
   affinityLabel,
   appetiteLine,
-  contrastLine,
+  coreTasteMetrics,
   drinkStyleLabels,
+  extraTasteMetrics,
   regionColor,
   shortTasteTags,
   technicalLine,
   todayServeLine,
 } from "./shared";
-import { PurchaseLinks } from "./PurchaseLinks";
+import { ForYou, SimilarRiceCards } from "./CompareSection";
+import { DetailScrollTracker } from "./DetailScrollTracker";
+import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
+import { TasteContour } from "./TasteContour";
 
 const SEASON_TONE: Record<
   string,
@@ -97,13 +101,7 @@ function TagList({
 }
 
 function CoreTaste({ rice }: { rice: RiceProfileV2 }) {
-  const core: Array<[string, number]> = [
-    ["粒感", rice.hardness],
-    ["甘み", rice.sweetness],
-    ["粘り", rice.stickiness],
-    ["旨み", rice.umami],
-    ["タレ相性", rice.sauce_absorption],
-  ];
+  const core = coreTasteMetrics(rice);
 
   return (
     <section>
@@ -254,6 +252,7 @@ export function BrandDetailPanel({
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const fill = rice.region_color ?? regionColor(rice.region);
   const tags = shortTasteTags(rice);
   const appetite = appetiteLine(rice);
@@ -309,7 +308,8 @@ export function BrandDetailPanel({
         >
           <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-[var(--km-ink)]/15 md:hidden" />
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
+            <DetailScrollTracker root={scrollRef} />
             <div
               className="relative px-5 pb-5 pt-4 sm:px-8 sm:pb-6 sm:pt-6"
               style={{
@@ -383,57 +383,13 @@ export function BrandDetailPanel({
                   {technical}
                 </p>
               ) : null}
+              <div className="mt-5">
+                <PurchaseLead rice={rice} />
+              </div>
             </div>
 
             <div className="px-5 pb-6 sm:px-8 sm:pb-8">
-              <TodayEat rice={rice} appetite={appetite} />
-
-              {rice.sommelier_note ? (
-                <blockquote className="mt-8 border-l-2 border-[var(--km-brown)]/35 bg-[var(--km-surface-warm)]/70 px-4 py-3">
-                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
-                    <Sparkle size={12} weight={ICON_WEIGHT} />
-                    米ソムリエメモ
-                  </span>
-                  <p className="font-serif text-[13px] leading-[1.9] text-[var(--km-ink-soft)]">
-                    {rice.sommelier_note}
-                  </p>
-                </blockquote>
-              ) : null}
-
-              <div className="mt-8 flex flex-col gap-4">
-                <CoreTaste rice={rice} />
-                <details className="group">
-                  <summary
-                    className={`flex cursor-pointer list-none items-center gap-1.5 text-[12px] text-[var(--km-muted)] marker:content-none [&::-webkit-details-marker]:hidden ${FOCUS}`}
-                  >
-                    <CaretDown
-                      size={12}
-                      weight={ICON_WEIGHT}
-                      className="transition group-open:rotate-180"
-                    />
-                    詳しい味わいを見る
-                  </summary>
-                  <div className="mt-4 flex flex-col gap-5">
-                    <SoftMetrics
-                      title="食事での相性"
-                      items={[
-                        ["冷めても", rice.cold_rice_quality],
-                        ["油相性", rice.oil_compatibility],
-                        ["余韻", rice.aftertaste],
-                        ["淡麗さ", rice.clarity],
-                        ["香り", rice.aroma],
-                      ]}
-                    />
-                    <SoftMetrics
-                      title="粒の姿"
-                      items={[
-                        ["粒の大きさ", rice.grain_size],
-                        ["コク", rice.richness],
-                      ]}
-                    />
-                  </div>
-                </details>
-              </div>
+              <ForYou rice={rice} />
 
               <div className="mt-8 flex flex-col gap-5">
                 <TagList
@@ -448,6 +404,45 @@ export function BrandDetailPanel({
                     控えたい組み合わせ：{rice.avoid_pairings.join("、")}
                   </p>
                 ) : null}
+              </div>
+
+              <div className="mt-8">
+                <TodayEat rice={rice} appetite={appetite} />
+              </div>
+
+              {rice.sommelier_note ? (
+                <blockquote className="mt-8 border-l-2 border-[var(--km-brown)]/35 bg-[var(--km-surface-warm)]/70 px-4 py-3">
+                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
+                    <Sparkle size={12} weight={ICON_WEIGHT} />
+                    米ソムリエメモ
+                  </span>
+                  <p className="font-serif text-[13px] leading-[1.9] text-[var(--km-ink-soft)]">
+                    {rice.sommelier_note}
+                  </p>
+                </blockquote>
+              ) : null}
+
+              <div className="mt-8">
+                <TasteContour rice={rice} compact />
+              </div>
+
+              <div className="mt-8 flex flex-col gap-4">
+                <CoreTaste rice={rice} />
+                <details className="group">
+                  <summary
+                    className={`flex cursor-pointer list-none items-center gap-1.5 text-[12px] text-[var(--km-muted)] marker:content-none [&::-webkit-details-marker]:hidden ${FOCUS}`}
+                  >
+                    <CaretDown
+                      size={12}
+                      weight={ICON_WEIGHT}
+                      className="transition group-open:rotate-180"
+                    />
+                    詳しい味わいを見る
+                  </summary>
+                  <div className="mt-4">
+                    <SoftMetrics title="詳しい味わい" items={extraTasteMetrics(rice)} />
+                  </div>
+                </details>
               </div>
 
               <div className="mt-8">
@@ -485,41 +480,7 @@ export function BrandDetailPanel({
 
               {neighbours.length > 0 ? (
                 <div className="mt-8">
-                  <p className="text-[11px] tracking-[0.08em] text-[var(--km-muted)]">
-                    似ている銘柄
-                  </p>
-                  <ul className="mt-2 flex flex-col gap-1">
-                    {neighbours.map((neighbour) => (
-                      <li key={neighbour.rice.id}>
-                        <button
-                          type="button"
-                          onClick={() => onSelect(neighbour.rice.id)}
-                          className={`group flex w-full items-baseline justify-between gap-4 rounded-lg px-1 py-1.5 text-left ${FOCUS}`}
-                        >
-                          <span className="min-w-0">
-                            <span className="block truncate text-sm text-[var(--km-ink-soft)] transition-colors group-hover:text-[var(--km-accent)]">
-                              {neighbour.rice.name}
-                            </span>
-                            <span className="mt-0.5 block truncate text-[11px] text-[var(--km-muted)]">
-                              {neighbour.rice.prefecture}
-                            </span>
-                            <span className="mt-0.5 block text-[11px] leading-snug text-[var(--km-ink-soft)]">
-                              {contrastLine(rice, neighbour.rice)}
-                            </span>
-                          </span>
-                          <span className="inline-flex shrink-0 flex-col items-end font-serif text-xs text-[var(--km-brown)]">
-                            <span className="text-[9px] font-sans text-[var(--km-muted)]">
-                              {affinityLabel(neighbour.score)}
-                            </span>
-                            <span className="inline-flex items-center gap-1">
-                              {affinityDisplay(neighbour.score)}
-                              <ArrowUpRight size={12} weight={ICON_WEIGHT} />
-                            </span>
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  <SimilarRiceCards neighbours={neighbours} onSelect={onSelect} />
                 </div>
               ) : null}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { BeerBottle, Flame, Heart, Snowflake, Sparkle, Warning, X } from "@phosphor-icons/react";
+import { track } from "@/lib/analytics";
 import { FOCUS, ICON_WEIGHT, TAG_TONES } from "./shared";
 
 const EXAMPLES: Array<{ text: string; Icon: typeof Sparkle }> = [
@@ -44,7 +45,9 @@ export function ConsultForm({
         言葉でえらぶ、今日の一膳
       </h3>
       <p className="mt-0.5 text-[11px] leading-snug text-[var(--km-muted)]">
-        {reply ? "言葉を変えて、続けて聞けます。" : "料理・お酒・気分を一言で。"}
+        {reply
+          ? "言葉を変えて、続けて聞けます。"
+          : "料理名や気分を入れるだけで、相性のよい銘柄を探せます。"}
       </p>
     </div>
   );
@@ -132,7 +135,10 @@ export function ConsultForm({
               <li key={text}>
                 <button
                   type="button"
-                  onClick={() => onQueryChange(text)}
+                  onClick={() => {
+                    track("suggestion_chip_click", { text });
+                    onQueryChange(text);
+                  }}
                   className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] leading-snug transition hover:-translate-y-px active:translate-y-0 ${FOCUS}`}
                   style={{
                     background: tone.bg,
@@ -168,6 +174,7 @@ export function ConsultForm({
         }
         onSubmit={(event) => {
           event.preventDefault();
+          track("language_search_submit");
           onSubmit();
         }}
       >

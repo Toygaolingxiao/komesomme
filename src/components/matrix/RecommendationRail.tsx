@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, BowlFood, MapPin, Sparkle } from "@phosphor-icons/react";
+import { track } from "@/lib/analytics";
 import type { RecommendationMode } from "@/types/rice";
 import {
   FOCUS,
@@ -9,9 +10,9 @@ import {
   affinityDisplay,
   affinityLabel,
   appetiteLine,
-  contrastLine,
   dishTags,
   regionColor,
+  suitabilityLine,
   type RailMatch,
 } from "./shared";
 import { RailSkeleton, SemanticReading } from "./states";
@@ -40,13 +41,17 @@ function AffinitySeal({ score }: { score: number }) {
 function BestMatchCard({
   match,
   active,
+  highlighted,
   semantic,
   onSelect,
+  onHover,
 }: {
   match: RailMatch;
   active: boolean;
+  highlighted: boolean;
   semantic: boolean;
   onSelect: () => void;
+  onHover?: (id: string | null) => void;
 }) {
   const fill = match.rice.region_color ?? regionColor(match.rice.region);
   const dishes = dishTags(match.rice);
@@ -56,8 +61,12 @@ function BestMatchCard({
     <button
       type="button"
       onClick={onSelect}
+      onMouseEnter={() => onHover?.(match.rice.id)}
+      onMouseLeave={() => onHover?.(null)}
+      onFocus={() => onHover?.(match.rice.id)}
+      onBlur={() => onHover?.(null)}
       className={`group relative w-full overflow-hidden rounded-2xl border p-3 text-left transition duration-300 active:scale-[0.99] ${FOCUS} ${
-        active
+        active || highlighted
           ? "border-[var(--km-brown)]/25 bg-[var(--km-surface)]"
           : "border-[var(--km-border)] bg-[var(--km-surface)] hover:border-[var(--km-gold)]/35"
       }`}
@@ -109,7 +118,7 @@ function BestMatchCard({
       )}
 
       <span className="relative mt-2 inline-flex items-center gap-1 pl-2 text-[11px] text-[var(--km-accent)]">
-        詳しく見る
+        相性・購入候補を見る
         <ArrowRight size={12} weight={ICON_WEIGHT} />
       </span>
     </button>
@@ -118,16 +127,16 @@ function BestMatchCard({
 
 function RunnerUpList({
   matches,
-  reference,
   activeId,
+  highlightId,
   reduceMotion,
   semantic,
   onSelect,
   onHover,
 }: {
   matches: RailMatch[];
-  reference: RailMatch["rice"];
   activeId: string | null;
+  highlightId?: string | null;
   reduceMotion: boolean;
   semantic: boolean;
   onSelect: (id: string) => void;
@@ -153,7 +162,9 @@ function RunnerUpList({
                 type="button"
                 onClick={() => onSelect(match.rice.id)}
                 className={`group grid w-full grid-cols-[1.4rem_minmax(0,1fr)_auto] items-center gap-2 rounded-xl border border-transparent px-2 py-1.5 text-left transition hover:-translate-y-px hover:border-[var(--km-border)] hover:bg-[var(--km-surface)] hover:shadow-[0_6px_14px_rgba(112,69,34,0.08)] ${FOCUS} ${
-                  activeId === match.rice.id ? "border-[var(--km-border)] bg-[var(--km-surface)]" : ""
+                  activeId === match.rice.id || highlightId === match.rice.id
+                    ? "border-[var(--km-border)] bg-[var(--km-surface)]"
+                    : ""
                 }`}
                 onMouseEnter={() => onHover?.(match.rice.id)}
                 onMouseLeave={() => onHover?.(null)}
@@ -182,7 +193,9 @@ function RunnerUpList({
                     {match.rice.prefecture}
                   </span>
                   <span className="mt-0.5 line-clamp-1 block text-[10px] leading-snug text-[var(--km-ink-soft)]">
-                    {semantic ? match.reason : contrastLine(reference, match.rice)}
+                    {semantic
+                      ? match.reason
+                      : suitabilityLine(match.rice)}
                   </span>
                 </span>
                 <span className="text-right">
@@ -214,6 +227,7 @@ export function RecommendationRail({
   loading,
   pending,
   selectedId,
+  highlightId = null,
   reduceMotion,
   onSelect,
   onHover,
@@ -223,12 +237,18 @@ export function RecommendationRail({
   loading: boolean;
   pending: boolean;
   selectedId: string | null;
+  highlightId?: string | null;
   reduceMotion: boolean;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
   const primary = matches[0] ?? null;
   const runnerUps = matches.slice(1);
+
+  const open = (id: string) => {
+    track("recommendation_detail_click", { id });
+    onSelect(id);
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -254,17 +274,19 @@ export function RecommendationRail({
                   <BestMatchCard
                     match={primary}
                     active={primary.rice.id === selectedId}
+                    highlighted={primary.rice.id === highlightId}
                     semantic={mode === "semantic"}
-                    onSelect={() => onSelect(primary.rice.id)}
+                    onSelect={() => open(primary.rice.id)}
+                    onHover={onHover}
                   />
                   {runnerUps.length > 0 ? (
                     <RunnerUpList
                       matches={runnerUps}
-                      reference={primary.rice}
                       activeId={selectedId}
+                      highlightId={highlightId}
                       reduceMotion={reduceMotion}
                       semantic={mode === "semantic"}
-                      onSelect={onSelect}
+                      onSelect={open}
                       onHover={onHover}
                     />
                   ) : null}

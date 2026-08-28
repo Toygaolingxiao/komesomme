@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import { BrandLockup } from "@/components/brand/BrandMark";
+import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
+import { DetailScrollTracker } from "@/components/matrix/DetailScrollTracker";
+import { PurchaseLead, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { TasteContour } from "@/components/matrix/TasteContour";
 import { FOCUS } from "@/components/matrix/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findRiceProfile, riceProfiles } from "@/data/riceProfilesV2";
-import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { calculateTasteNeighbours } from "@/lib/rice/matrix";
 import {
   DISCLAIMER,
   appetiteLine,
+  coreTasteMetrics,
   drinkStyleLabels,
+  extraTasteMetrics,
   regionColor,
   technicalLine,
   todayServeLine,
@@ -70,24 +76,9 @@ export default async function BrandPage({ params }: BrandPageProps) {
   const days = [...rice.mood_pairings, ...rice.occasion_pairings]
     .filter(Boolean)
     .slice(0, 2);
-
-  const core: Array<[string, number]> = [
-    ["粒感", rice.hardness],
-    ["甘み", rice.sweetness],
-    ["粘り", rice.stickiness],
-    ["旨み", rice.umami],
-    ["タレ相性", rice.sauce_absorption],
-  ];
-
-  const extra: Array<[string, number]> = [
-    ["冷めても", rice.cold_rice_quality],
-    ["油相性", rice.oil_compatibility],
-    ["余韻", rice.aftertaste],
-    ["淡麗さ", rice.clarity],
-    ["香り", rice.aroma],
-    ["粒の大きさ", rice.grain_size],
-    ["コク", rice.richness],
-  ];
+  const neighbours = calculateTasteNeighbours(riceProfiles, rice, 3);
+  const core = coreTasteMetrics(rice);
+  const extra = extraTasteMetrics(rice);
 
   const seasons: Array<[string, string[]]> = [
     ["春", rice.spring_pairings],
@@ -106,6 +97,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
   return (
     <main className="min-h-[100dvh] w-full text-[var(--km-ink)]">
+      <DetailScrollTracker />
       <header className="mx-auto flex h-16 max-w-[960px] items-center justify-between border-b border-[var(--km-border)] px-4 md:px-8 lg:h-[72px]">
         <Link href="/" className={`min-w-0 ${FOCUS}`}>
           <BrandLockup />
@@ -145,6 +137,29 @@ export default async function BrandPage({ params }: BrandPageProps) {
           </p>
         ) : null}
 
+        <div className="mt-6">
+          <PurchaseLead rice={rice} />
+        </div>
+
+        <div className="mt-10">
+          <ForYou rice={rice} />
+        </div>
+
+        <div className="mt-10 flex flex-col gap-8">
+          <TagList label="相性の良い料理" items={rice.best_match_dishes} />
+          <TagList label="相性のよい食材" items={rice.good_with} />
+          {rice.avoid_pairings.length > 0 ? (
+            <section>
+              <h2 className="text-xs tracking-[0.12em] text-[var(--km-muted)]">
+                控えたい組み合わせ
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--km-ink-soft)]">
+                {rice.avoid_pairings.join("、")}
+              </p>
+            </section>
+          ) : null}
+        </div>
+
         {serve || showReason || days.length > 0 ? (
           <section className="mt-10 max-w-[52ch]">
             <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -176,6 +191,10 @@ export default async function BrandPage({ params }: BrandPageProps) {
             {rice.sommelier_note}
           </blockquote>
         ) : null}
+
+        <div className="mt-10">
+          <TasteContour rice={rice} />
+        </div>
 
         <section className="mt-10">
           <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -209,19 +228,6 @@ export default async function BrandPage({ params }: BrandPageProps) {
         </section>
 
         <div className="mt-10 flex flex-col gap-8">
-          <TagList label="相性の良い料理" items={rice.best_match_dishes} />
-          <TagList label="相性のよい食材" items={rice.good_with} />
-          {rice.avoid_pairings.length > 0 ? (
-            <section>
-              <h2 className="text-xs tracking-[0.12em] text-[var(--km-muted)]">
-                控えたい組み合わせ
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--km-ink-soft)]">
-                {rice.avoid_pairings.join("、")}
-              </p>
-            </section>
-          ) : null}
-
           <section>
             <h2 className="text-xs tracking-[0.12em] text-[var(--km-muted)]">
               季節の相性
@@ -264,6 +270,12 @@ export default async function BrandPage({ params }: BrandPageProps) {
 
           <TagList label="暮らしのシーン" items={rice.lifestyle_scenes} />
         </div>
+
+        {neighbours.length > 0 ? (
+          <div className="mt-12">
+            <SimilarRiceCards neighbours={neighbours} />
+          </div>
+        ) : null}
 
         <div className="mt-12">
           <PurchaseLinks rice={rice} />

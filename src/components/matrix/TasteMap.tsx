@@ -167,6 +167,7 @@ export function TasteMap({
   variant = "desktop",
   onProbeMove,
   onSelect,
+  onHover,
 }: {
   points: RiceDisplayPoint[];
   regions: RiceRegionRecord[];
@@ -184,6 +185,7 @@ export function TasteMap({
   variant?: TasteMapVariant;
   onProbeMove: (hardness: number, sweetness: number) => void;
   onSelect: (id: string) => void;
+  onHover?: (id: string | null) => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -338,6 +340,7 @@ export function TasteMap({
                   isSelected={rice.id === selectedId}
                   isHighlighted={rice.id === highlightId}
                   onSelect={() => onSelect(rice.id)}
+                  onHover={onHover}
                 />
               ))}
 

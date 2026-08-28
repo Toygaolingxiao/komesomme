@@ -8,7 +8,7 @@ import type { RiceProfileV2 } from "@/types/rice";
  * 2. Premium GI / 特A keep: 魚沼・佐渡・仁多 (and 龍の瞳 as the branded いのちの壱)
  *    keep independent IDs so they do not fight the generic parent in ranking.
  *
- * `backup_riceP.ts` is the hand archive; this module is what the running
+ * `riceHandArchive.ts` is the hand archive; this module is what the running
  * catalogue and `seed:rice` actually consume.
  */
 

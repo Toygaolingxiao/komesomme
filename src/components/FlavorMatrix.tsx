@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, useMotionValue, useReducedMotion } from "motion/react";
+import { track } from "@/lib/analytics";
 import { fetchRiceCatalog } from "@/lib/rice/fetchRiceProfiles";
 import { RICE_REGIONS, type RiceRegionRecord } from "@/lib/rice/regions";
 import {
@@ -52,6 +53,30 @@ type LoadState = "loading" | "ready" | "error";
 type SemanticState = "idle" | "pending" | "error";
 
 const INITIAL_COORDINATE: TasteCoordinate = { hardness: 3, sweetness: 3 };
+const HINT_KEY = "km-map-hint-seen";
+
+function MapFirstHint({
+  visible,
+  onDismiss,
+}: {
+  visible: boolean;
+  onDismiss: () => void;
+}) {
+  if (!visible) return null;
+
+  return (
+    <p className="mt-1.5 flex items-start justify-between gap-2 rounded-lg bg-[var(--km-surface-warm)] px-2.5 py-1.5 text-[11px] leading-relaxed text-[var(--km-ink-soft)]">
+      気になる点を押して、米の性格を見てみましょう。
+      <button
+        type="button"
+        onClick={onDismiss}
+        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] text-[var(--km-muted)] hover:text-[var(--km-ink)] ${FOCUS}`}
+      >
+        閉じる
+      </button>
+    </p>
+  );
+}
 
 function useLgUp() {
   const [lg, setLg] = useState(false);
@@ -90,6 +115,7 @@ export function FlavorMatrix() {
   const [mapOpen, setMapOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [showMapHint, setShowMapHint] = useState(false);
 
   const [recommendationMode, setRecommendationMode] =
     useState<RecommendationMode>("coordinate");
@@ -117,6 +143,14 @@ export function FlavorMatrix() {
   useEffect(() => {
     void loadProfiles();
   }, [loadProfiles]);
+
+  useEffect(() => {
+    try {
+      setShowMapHint(window.localStorage.getItem(HINT_KEY) !== "1");
+    } catch {
+      setShowMapHint(true);
+    }
+  }, []);
 
   useEffect(() => {
     probeLeft.set(probeLeftOf(coordinate));
@@ -177,6 +211,15 @@ export function FlavorMatrix() {
     );
   }, [recommendationMode, railMatches, points, coordinate]);
 
+  const dismissMapHint = useCallback(() => {
+    setShowMapHint(false);
+    try {
+      window.localStorage.setItem(HINT_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const openDetail = useCallback((id: string) => {
     setSelectedId(id);
     setDetailOpen(true);
@@ -225,6 +268,7 @@ export function FlavorMatrix() {
 
   const inspectOnMap = useCallback(
     (id: string) => {
+      dismissMapHint();
       setSelectedId(id);
       const placed = points.find((point) => point.id === id);
       if (!placed) return;
@@ -233,7 +277,15 @@ export function FlavorMatrix() {
       probeTop.set(probeTopOf(next));
       commitCoordinate(next);
     },
-    [points, commitCoordinate, probeLeft, probeTop]
+    [points, commitCoordinate, probeLeft, probeTop, dismissMapHint]
+  );
+
+  const tapOnMap = useCallback(
+    (id: string) => {
+      track("map_marker_click", { id });
+      inspectOnMap(id);
+    },
+    [inspectOnMap]
   );
 
   const pickOnMap = useCallback(
@@ -252,6 +304,7 @@ export function FlavorMatrix() {
         probeTop.set(probeTopOf(next));
         return next;
       });
+      track("slider_change", { axis, value });
       if (recommendationMode === "semantic") resetSemantic();
     },
     [probeLeft, probeTop, recommendationMode, resetSemantic]
@@ -342,6 +395,7 @@ export function FlavorMatrix() {
     loading: loadState === "loading",
     reduceMotion,
     onProbeMove: moveProbe,
+    onHover: setHoveredId,
   };
 
   const consult = (
@@ -367,8 +421,9 @@ export function FlavorMatrix() {
                 味わいの地図
               </h2>
               <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--km-muted)]">
-                地図を選ぶ / 好みを動かす / 一膳を見る
+                点を選ぶと銘柄を表示。スライダーを動かすと、今日の一膳が変わります。
               </p>
+              <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             </div>
 
             {loadState === "error" ? (
@@ -398,8 +453,12 @@ export function FlavorMatrix() {
               loading={loadState === "loading"}
               pending={semanticState === "pending"}
               selectedId={selectedId}
+              highlightId={hoveredId}
               reduceMotion={reduceMotion}
-              onSelect={openDetail}
+              onSelect={(id) => {
+                if (recommendationMode === "coordinate") inspectOnMap(id);
+                openDetail(id);
+              }}
               onHover={setHoveredId}
             />
           </aside>
@@ -423,7 +482,7 @@ export function FlavorMatrix() {
                 {...mapShared}
                 variant="preview"
                 runnerUpIds={previewIds}
-                onSelect={inspectOnMap}
+                onSelect={tapOnMap}
               />
             </div>
           )}
@@ -459,7 +518,7 @@ export function FlavorMatrix() {
                 味わいの地図
               </h2>
               <p className="mt-1 max-w-[36ch] text-[11px] leading-relaxed text-[var(--km-muted)]">
-                探針を置くと、味わいの近い銘柄がふわりと浮かび上がります。
+                点を選ぶと銘柄を表示。スライダーを動かすと、近い一膳が変わります。
               </p>
             </div>
             <button
@@ -477,7 +536,7 @@ export function FlavorMatrix() {
               {...mapShared}
               variant="fullscreen"
               runnerUpIds={previewIds}
-              onSelect={inspectOnMap}
+              onSelect={tapOnMap}
             />
           </div>
 

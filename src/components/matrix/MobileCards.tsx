@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, ArrowUpRight, BowlFood, MapPin, Sparkle } from "@phosphor-icons/react";
+import { track } from "@/lib/analytics";
 import type { RiceProfileV2 } from "@/types/rice";
 import {
   FOCUS,
@@ -37,7 +38,10 @@ export function MobileTodayCard({
   return (
     <button
       type="button"
-      onClick={() => onOpen(match.rice.id)}
+      onClick={() => {
+        track("recommendation_detail_click", { id: match.rice.id });
+        onOpen(match.rice.id);
+      }}
       className={`w-full rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3.5 text-left shadow-[0_10px_24px_-18px_rgba(112,69,34,0.35)] ${FOCUS}`}
     >
       <span className="flex items-start justify-between gap-3">
@@ -74,7 +78,7 @@ export function MobileTodayCard({
         </span>
       ) : null}
       <span className="mt-2.5 inline-flex items-center gap-1 text-[11px] text-[var(--km-accent)]">
-        詳しく見る
+        相性・購入候補を見る
         <ArrowRight size={12} weight={ICON_WEIGHT} />
       </span>
     </button>
@@ -123,10 +127,13 @@ export function MobileSelectedCard({
       </div>
       <button
         type="button"
-        onClick={onOpen}
+        onClick={() => {
+          track("recommendation_detail_click", { id: rice.id });
+          onOpen();
+        }}
         className={`shrink-0 rounded-full border border-[var(--km-border)] px-3 py-2 text-[11px] text-[var(--km-accent)] ${FOCUS}`}
       >
-        詳しく見る
+        相性を見る
       </button>
     </div>
   );

@@ -64,6 +64,18 @@ export type RailMatch = {
   reason: string;
 };
 
+export function shopKeyword(rice: RiceProfileV2): string {
+  return (
+    rice.rakuten_search_keyword?.trim() ||
+    rice.amazon_search_keyword?.trim() ||
+    `${rice.name} 白米 5kg`
+  );
+}
+
+export function furusatoKeyword(rice: RiceProfileV2): string {
+  return rice.furusato_keywords?.[0]?.trim() || `${rice.prefecture} ${rice.name}`;
+}
+
 export function rakutenUrl(keyword: string): string {
   return `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
 }
@@ -72,9 +84,24 @@ export function amazonUrl(keyword: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}`;
 }
 
+export function yahooShoppingUrl(keyword: string): string {
+  return `https://shopping.yahoo.co.jp/search?p=${encodeURIComponent(keyword)}`;
+}
+
+export function rakutenFurusatoUrl(keyword: string): string {
+  return `https://www.rakuten.co.jp/furusato/search/?sitem=${encodeURIComponent(keyword)}`;
+}
+
+export function yahooFurusatoUrl(keyword: string): string {
+  return `https://furusato.yahoo.co.jp/search?keyword=${encodeURIComponent(keyword)}`;
+}
+
 export function furusatoUrl(keyword: string): string {
   return `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(keyword)}`;
 }
+
+export const PURCHASE_NOTE =
+  "購入時は産地・年産・精米時期・内容量をご確認ください。KomeSommeでは銘柄名で購入候補を検索します。";
 
 export function shortTasteTags(rice: RiceProfileV2): string[] {
   const tags = [rice.texture_label, rice.sweetness_label];
@@ -123,52 +150,57 @@ export function appetiteLine(rice: RiceProfileV2): string {
   const delicate = dish ? DELICATE_DISH.test(dish) : false;
   const candidates: Array<{ weight: number; text: string }> = [];
 
+  const grain =
+    rice.hardness >= 4 ? "しっかりした粒感" : rice.hardness <= 2 ? "やわらかい口当たり" : "ほどよい粒感";
+  const sweet =
+    rice.sweetness >= 4 ? "ふくよかな甘み" : rice.sweetness <= 2 ? "すっきりした後味" : "穏やかな甘み";
+
   if (dish && saucy && rice.sauce_absorption >= 4) {
     candidates.push({
       weight: rice.sauce_absorption + 1,
-      text: `${dish}の旨みをふっくら受け止める。日々の食卓に頼れる。`,
+      text: `${grain}と${sweet}が、${dish}や煮物の濃い旨みをふっくら受け止めます。`,
     });
   }
   if (dish && delicate && rice.clarity >= 4) {
     candidates.push({
       weight: rice.clarity,
-      text: `${dish}の味を立てる、すっきり軽い口当たり。`,
+      text: `${grain}と${sweet}が、${dish}の味をすっきり立てます。`,
     });
   }
   if (dish && rice.sweetness >= 4) {
     candidates.push({
       weight: rice.sweetness,
-      text: `甘みがふくよか。${dish}にも、白ごはんにも向く。`,
+      text: `${grain}とふくよかな甘みが、${dish}にも白ごはんにも向きます。`,
     });
   }
   if (dish && rice.hardness >= 4) {
     candidates.push({
       weight: rice.hardness,
-      text: `粒がしっかり立つ。${dish}に食べごたえを添える。`,
+      text: `しっかりした粒感が、${dish}に食べごたえを添えます。`,
     });
   }
   if (dish && rice.hardness <= 2) {
     candidates.push({
       weight: 6 - rice.hardness,
-      text: `やわらかくほどける。${dish}に寄り添う。`,
+      text: `やわらかくほどける口当たりが、${dish}に寄り添います。`,
     });
   }
   if (dish && rice.cold_rice_quality >= 4) {
     candidates.push({
       weight: rice.cold_rice_quality,
-      text: `冷めてもおいしい。${dish}や弁当の日向き。`,
+      text: `${grain}が冷めても続き、${dish}や弁当の日に向きます。`,
     });
   }
   if (dish && rice.stickiness >= 4) {
     candidates.push({
       weight: rice.stickiness,
-      text: `もちっとまとまる。${dish}にも弁当にも向く。`,
+      text: `もちっとまとまる粘りが、${dish}にも弁当にも向きます。`,
     });
   }
   if (dish && rice.sauce_absorption >= 4 && !saucy) {
     candidates.push({
       weight: rice.sauce_absorption,
-      text: `${dish}に寄り添い、煮汁やタレもよく含む。`,
+      text: `${grain}が${dish}に寄り添い、煮汁やタレもよく含みます。`,
     });
   }
 
@@ -259,6 +291,85 @@ export function drinkStyleLabels(items: string[]): string[] {
 
 export const DISCLAIMER =
   "味わい評価はKomeSomme独自基準による目安です。公的な認定・等級を示すものではありません。";
+
+export function coreTasteMetrics(rice: RiceProfileV2): Array<[string, number]> {
+  return [
+    ["粒感", rice.hardness],
+    ["甘み", rice.sweetness],
+    ["旨み", rice.umami],
+    ["粘り", rice.stickiness],
+    ["冷めても", rice.cold_rice_quality],
+  ];
+}
+
+export function extraTasteMetrics(rice: RiceProfileV2): Array<[string, number]> {
+  return [
+    ["香り", rice.aroma],
+    ["余韻", rice.aftertaste],
+    ["コク", rice.richness],
+    ["タレ相性", rice.sauce_absorption],
+    ["油相性", rice.oil_compatibility],
+    ["淡麗さ", rice.clarity],
+    ["粒の大きさ", rice.grain_size],
+  ];
+}
+
+export function forYouLines(rice: RiceProfileV2): string[] {
+  const lines: string[] = [];
+  if (rice.sauce_absorption >= 4) lines.push("煮物やタレ料理に合う米を探している");
+  if (rice.hardness >= 4) lines.push("粒立ちのある食べごたえがほしい");
+  else if (rice.hardness <= 2) lines.push("やわらかく、口当たりのやさしい米が好き");
+  if (rice.sweetness >= 4) lines.push("ふくよかな甘みの米が好き");
+  else if (rice.sweetness >= 3 && rice.hardness >= 2.5 && rice.hardness <= 3.5) {
+    lines.push("ほどよい甘みと粒感が好き");
+  }
+  if (rice.cold_rice_quality >= 4) lines.push("弁当やおにぎりにも使いやすい米がほしい");
+  if (rice.clarity >= 4 && lines.length < 3) lines.push("和食の輪郭を立てたい");
+  if (lines.length < 3) lines.push("毎日の食卓にも使いやすい米がほしい");
+  return Array.from(new Set(lines)).slice(0, 3);
+}
+
+/** Short “who / which day” line for comparing nearby brands. */
+export function suitabilityLine(rice: RiceProfileV2): string {
+  if (rice.sauce_absorption >= 4 && rice.hardness >= 3.4) return "煮物や肉料理に";
+  if (rice.hardness >= 4) return "丼もの・定食向き";
+  if (rice.hardness <= 2.2) return "軽く食べたい日に";
+  if (rice.cold_rice_quality >= 4) return "弁当の日に";
+  if (rice.sweetness >= 4) return "白ごはんで味わいたい日に";
+  if (rice.clarity >= 4) return "和食を引き立てたい日に";
+  const dish = rice.best_match_dishes.find(Boolean);
+  return dish ? `${dish}の日に` : "日常の食卓に";
+}
+
+export type ContourAxis = { label: string; value: number };
+
+export function contourAxes(rice: RiceProfileV2): ContourAxis[] {
+  const fallback = (value: number | undefined, alt: number) =>
+    typeof value === "number" && Number.isFinite(value) && value > 0 ? value : alt;
+
+  return [
+    { label: "甘み", value: fallback(rice.sweetness, 3) },
+    { label: "粒感", value: fallback(rice.hardness, 3) },
+    { label: "粘り", value: fallback(rice.stickiness, 3) },
+    { label: "旨み", value: fallback(rice.umami, 3) },
+    { label: "香り", value: fallback(rice.aroma, rice.aftertaste) },
+    { label: "冷めても", value: fallback(rice.cold_rice_quality, rice.stickiness) },
+  ];
+}
+
+export function contourSummary(rice: RiceProfileV2): string {
+  const ranked = [...contourAxes(rice)].sort((a, b) => b.value - a.value);
+  const top = ranked[0];
+  const second = ranked[1];
+  if (!top) return "味わいの輪郭は、品鑑の目安です。";
+  if (top.label === "冷めても" || second?.label === "冷めても") {
+    return `${top.label}と${second?.label ?? "粒感"}の傾向があり、弁当や煮物にも合わせやすい味わいです。`;
+  }
+  if (top.label === "旨み" || rice.sauce_absorption >= 4) {
+    return `${top.label}と${second?.label ?? "甘み"}が立ち、煮物やタレ料理に寄せやすい味わいです。`;
+  }
+  return `${top.label}と${second?.label ?? "粒感"}が際立ち、日々の食卓に合わせやすい味わいです。`;
+}
 
 /**
  * One contrast line vs the current recommendation, from existing scores only.
