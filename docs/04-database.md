@@ -100,4 +100,9 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 - 0003 は V1 `rice_brands`（`region_id` なし）を検出して自動 drop する
 - 地域色の更新は 0003 の upsert、または `npm run seed:rice`（`rice_regions` を上書きする）
 
-書き込みは service role。anon / authenticated は SELECT のみ。
+書き込みは service role。anon / authenticated は `rice_regions` / `rice_brands` / VIEW `rice_catalog` の SELECT のみ。
+
+**0004 以降:** `rice_profile_details`（embedding / search_text）への SELECT と `match_rice_profiles` の EXECUTE は anon から剥奪する。意味検索は Next.js の service role のみ。実測手順は [rls-verify.md](./rls-verify.md)。
+
+**適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004。  
+**既存 0003 済み:** 0004 だけ追加実行。

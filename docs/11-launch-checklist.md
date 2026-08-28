@@ -40,8 +40,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P0-2a | 本番（または本番同等）プロジェクトで 0003 適用 + `seed:rice` | VIEW `rice_catalog` が読める。銘柄数が validate と一致 | [04-database.md](./04-database.md)、`scripts/seed-rice-profiles.ts` |
-| P0-2b | **anon key** で `rice_catalog` SELECT ができることを確認 | 地図が本番 URL で表示される | Supabase SQL / ブラウザ Network |
-| P0-2c | anon が `embedding` / `search_text` を直接読めない（またはポリシーで遮断）ことを確認 | 直接 `select embedding from rice_profile_details` が失敗 or 空。クライアント応答に embedding が無い | マイグレーション見直し可 |
+| P0-2b | **anon key** で `rice_catalog` SELECT ができることを確認 | 地図が本番 URL で表示される | **手順:** [rls-verify.md](./rls-verify.md) |
+| P0-2c | anon が `embedding` / `search_text` を直接読めないことを確認 | details 直 SELECT が失敗。RPC も anon 不可 | **コード完了** `0004_restrict_embedding_access.sql`（**適用と実測は人手**） |
 | P0-2d | service role は Vercel サーバー env のみ。Browser バンドルに含まれない | クライアント JS に service role 文字列が無い | Vercel env、ビルド成果物 grep |
 
 ### P0-3. CI（最低ゲート）
@@ -155,7 +155,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 - [x] P0-1a レート制限（best-effort / isolate 単位）
 - [x] P0-1b 日次上限 + kill switch（プロバイダ予算アラートは別途）
-- [ ] P0-2a〜d RLS・seed・anon 実測
+- [x] P0-2c migration 0004（embedding 直読み遮断）— **Supabase で SQL 実行 + [rls-verify.md](./rls-verify.md) 実測が残作業**
+- [ ] P0-2a/b/d 本番 seed・anon 実測・service role 露出チェック
 - [x] P0-3a CI workflow
 - [ ] P0-3b branch protection（GitHub で status check 必須化）
 - [ ] P0-6a〜e 本番 env・ドメイン・ロールバック

@@ -27,6 +27,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 09 | [09-brand-icon.md](./09-brand-icon.md) | アイコン（参考図: [grain-probe-brand-board.png](./grain-probe-brand-board.png)） |
 | 10 | [10-changelog.md](./10-changelog.md) | 変更履歴 |
 | 11 | [11-launch-checklist.md](./11-launch-checklist.md) | 収益化本番リリースの実行タスク（P0/P1/P2） |
+| — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 
 ## 読み分け
 
