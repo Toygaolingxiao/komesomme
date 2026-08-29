@@ -27,6 +27,7 @@ import type {
   RiceProfileV2,
   TasteCoordinate,
 } from "@/types/rice";
+import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
@@ -469,7 +470,7 @@ export function FlavorMatrix() {
             </div>
           </div>
 
-          <aside className="h-full min-h-0 min-w-0 overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
+          <aside className="h-full min-h-0 min-w-0 overflow-y-auto overflow-x-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
             <RecommendationRail
               matches={railMatches}
               mode={recommendationMode}
@@ -495,6 +496,15 @@ export function FlavorMatrix() {
             loading={loadState === "loading" || semanticState === "pending"}
             onOpen={openDetail}
           />
+          {railMatches[0] && loadState !== "loading" && semanticState !== "pending" ? (
+            <ShopLinksStrip
+              rice={railMatches[0].rice}
+              variant="compact"
+              title="取扱オンラインショップ"
+              disclosure="pr"
+              className="rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]"
+            />
+          ) : null}
 
           <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             <div>

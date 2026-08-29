@@ -76,7 +76,7 @@ API 拿到的商品信息只用于当场导流，不进公开 catalog、不写�
 
 - 乐天 href：`/api/rice/shop-links` → Item Search 成功则商品 URL（アフィ包装），失败则搜索アフィ
 - **不展示** API 的商品名、价格、店铺、缩略图（第 8 条 4 项：API 字段未进入与他店并排的 DOM）
-- クレジットは公式テキストスニペットを改変せず `AffiliateDisclosure` に置く
+- クレジットは公式テキストスニペットを改変せず、購入カード／`SiteFooter` の `AffiliateDisclosure variant="full"` に置く。ホーム右レールは `variant="pr"`（※PR）のみ——生活 UI に定型文と Developers クレジットを堆めない
 - 若以后要在卡上画出乐天商品名・价格，必须先拆成 §4 的独立 `.km-rakuten` 区块
 
 ---

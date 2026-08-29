@@ -15,6 +15,7 @@ import {
   suitabilityLine,
   type RailMatch,
 } from "./shared";
+import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { RailSkeleton, SemanticReading } from "./states";
 
 function AffinitySeal({ score }: { score: number }) {
@@ -118,7 +119,7 @@ function BestMatchCard({
       )}
 
       <span className="relative mt-2 inline-flex items-center gap-1 pl-2 text-[11px] text-[var(--km-accent)]">
-        相性・購入候補を見る
+        くわしく見る
         <ArrowRight size={12} weight={ICON_WEIGHT} />
       </span>
     </button>
@@ -278,6 +279,13 @@ export function RecommendationRail({
                     semantic={mode === "semantic"}
                     onSelect={() => open(primary.rice.id)}
                     onHover={onHover}
+                  />
+                  <ShopLinksStrip
+                    rice={primary.rice}
+                    variant="compact"
+                    title="取扱オンラインショップ"
+                    disclosure="pr"
+                    className="mt-2.5 rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3"
                   />
                   {runnerUps.length > 0 ? (
                     <RunnerUpList

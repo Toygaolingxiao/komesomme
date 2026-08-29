@@ -99,7 +99,7 @@ export function MobileTodayCard({
         </span>
       ) : null}
       <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent)]">
-        相性・購入候補を見る
+        くわしく見る
         <ArrowRight size={13} weight={ICON_WEIGHT} />
       </span>
     </button>
