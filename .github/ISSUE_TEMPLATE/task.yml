@@ -1,0 +1,53 @@
+name: Task
+description: 合规、运维、文档、脚本、checklist 执行项
+title: "[task] "
+labels: ["type:task"]
+body:
+  - type: input
+    id: wbs
+    attributes:
+      label: WBS / Checklist ID
+      description: 强烈建议填写，例如 P0-3b、P0-6a
+      placeholder: P0-3b
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      options:
+        - P0
+        - P1
+        - P2
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 领域
+      options:
+        - ui
+        - api
+        - data
+        - legal
+        - infra
+        - docs
+        - ops
+      default: 6
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done 条件
+      description: 对照 11-launch-checklist 的 Done 列来写
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 完成后证据放哪
+      placeholder: PR 链接 / smoke-test 记录日期 / 截图路径
+    validations:
+      required: false

@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+### 運営
+
+- GitHub Issue テンプレ（bug / feature / task）と PR テンプレ
+- Cursor rule `project-workflow.mdc`：本仓工作流；PMO 交付工具迁出独立仓 `pmo-kit`
+
 ## 0.4.1 — 2026-08
 
 ### UX

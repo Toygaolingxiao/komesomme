@@ -23,6 +23,7 @@
 *.pem
 Thumbs.db
 tmp-*.json
+.vscode/
 
 # debug
 npm-debug.log*

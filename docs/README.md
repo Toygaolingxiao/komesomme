@@ -48,3 +48,5 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 本番公開までにやること | 11 |
 | アフィリエイト各社の規約・転鎖 | 14（楽天隔離は 13） |
 | プライバシー / 利用規約 | `/privacy` `/terms` `/tokushoho` |
+
+作業リズム（Issue / DoD / Go-live）は Cursor rule `.cursor/rules/project-workflow.mdc`。コンサル向け WBS/甘特ツールは別リポジトリ `pmo-kit`。

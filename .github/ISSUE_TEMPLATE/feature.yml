@@ -1,0 +1,59 @@
+name: Feature
+description: 用户可感知的新能力或体验变更
+title: "[feature] "
+labels: ["type:feature"]
+body:
+  - type: input
+    id: wbs
+    attributes:
+      label: WBS / Checklist ID（可选）
+      description: 挂到 P1/P2 或注明新 OPS 项
+      placeholder: P1-2a
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      options:
+        - P0
+        - P1
+        - P2
+      default: 2
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 用户问题 / 动机
+      description: 为什么现在要做（不是实现细节）
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准（可测）
+      placeholder: |
+        - [ ] …
+        - [ ] …
+    validations:
+      required: true
+  - type: dropdown
+    id: semver
+    attributes:
+      label: 预期 SemVer 影响
+      options:
+        - patch（文案/样式/修缺陷级）
+        - minor（新能力或数据语义）
+        - 需产品确认（可能破坏性）
+        - 不升号（仅内部/文档）
+      default: 0
+    validations:
+      required: true
+  - type: checkboxes
+    id: p0_gate
+    attributes:
+      label: P0 门禁确认
+      options:
+        - label: 未完成的 P0 不因此被推迟（或本 Issue 本身就是 P0）
+          required: true
