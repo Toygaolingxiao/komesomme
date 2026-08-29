@@ -4,10 +4,19 @@
 
 ## Unreleased
 
+## 0.4.0 — 2026-08
+
+### 購入
+
+- 推薦カード `RiceProductCard`：Amazon / 楽天 / Yahoo! / さとふるの 4 CTA。Amazon は Associate Tag、楽天・Yahoo は API があれば商品 URL、なければ検索。さとふるは VC 自由転鎖を予約
+- Amazon 運営規約第 5 条の定型文をカードとフッターに常時表示。景表法・VC 向けに「アフィリエイト広告」と明示。楽天 API 利用に公式クレジット（HTML 未改変）。外链 `rel="noopener noreferrer nofollow"`
+- 楽天 API の商品名・価格はカードに出さない（href のみ）。手順は [13-affiliate-compliance.md](./13-affiliate-compliance.md)
+- 楽天アフィ包装と ValueCommerce 転鎖は登録済み Production のみ（Preview は素の検索 URL）
+
 ### ドキュメント
 
-- 現在バージョンの正本を `VERSION` / `package.json` に限定。他 md は番号を手書きしない。`package-lock.json` は `npm install` で同期し、手で編集しない
-- [12-product-journey.md](./12-product-journey.md): 構想から現行までの振り返り（中国語）
+- [14-affiliate-programs.md](./14-affiliate-programs.md): Amazon / 楽天ウェブサービス / パートナー規約・ガイドライン / ValueCommerce / ポイントクラブ
+- [13-affiliate-compliance.md](./13-affiliate-compliance.md): 楽天 API と他モール共存の隔離設計
 
 ## 0.3.0 — 2026-08
 

@@ -20,8 +20,16 @@ Vercel → Project → **Settings → Environment Variables**。
 | `SEMANTIC_RATE_LIMIT_PER_DAY` | `80`（目安） | 同左 | |
 | `NEXT_PUBLIC_GTM_ID` | `GTM-…`（任意） | 任意 | 未設定なら GTM スクリプトを出さない。GA4 は GTM 内で接続 |
 | `ACCESS_LOG_ENABLED` | `true` | `true` | `false` で Supabase `access_events` 書き込みを止める |
-
-アフィリエイト用 env はタグ実装時に追加する（いまコードは未参照）。
+| `RAKUTEN_APPLICATION_ID` | 楽天アプリ ID | 同左 | Item Search 用。未設定ならキーワード検索にフォールバック |
+| `RAKUTEN_ACCESS_KEY` | 楽天 accessKey | 同左 | **Server only**。2026-07-01 API 必須 |
+| `RAKUTEN_AFFILIATE_ID` | アフィリエイト ID | 同左 | API 応答の `affiliateUrl` 用。未設定なら `NEXT_PUBLIC_` 側を使う |
+| `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID` | アフィリエイト ID | **置かない** | リンクに出る公開情報。未登録 Preview への掲載はガイドライン違反になりうる。Production のみ `rakutenAffiliateWrapEnabled` が包む |
+| `NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG` | Amazon アソシエイト tag | 同左 | 検索 URL の `tag=`。未設定なら tag なし |
+| `YAHOO_CLIENT_ID` | Yahoo ショッピング appid | 同左 | **Server only**。未設定なら検索 URL |
+| `YAHOO_VC_SID` / `YAHOO_VC_PID` | ValueCommerce | **置かない** | 広告主提携承認後。Preview に置くと第14条（登録メディア以外への掲載）に抵触しうる |
+| `SATOFULL_SEARCH_BASE_URL` | さとふる検索ベース | 同左 | 未設定時は公式 list.php |
+| `SATOFULL_VC_SID` / `SATOFULL_VC_PID` | ValueCommerce MyLink | **置かない** | Yahoo と別 PID。Preview 禁止は同上 |
+| `VALUE_COMMERCE_WRAP` | 省略可（Production は自動 on） | `0` または未設定 | `1` は登録済み URL での手動テスト専用 |
 
 変更後は **Redeploy** する。
 

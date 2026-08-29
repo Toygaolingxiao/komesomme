@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <LegalShell title="プライバシーポリシー">
-      <p>最終更新: 2026年8月28日</p>
+      <p>最終更新: 2026年8月29日</p>
 
       <section className="space-y-2">
         <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -73,7 +73,19 @@ export default function PrivacyPage() {
           <li>埋め込み・文章生成 API（例: Google Gemini / OpenAI）</li>
           <li>アクセス解析（Google タグマネージャ / Google アナリティクス。設定時）</li>
           <li>利用イベントの保管（Supabase 上の access_events。匿名）</li>
-          <li>アフィリエイト計測（各 EC・ASP）</li>
+          <li>
+            アフィリエイト計測（Amazon アソシエイト、楽天、バリューコマース等）。特別リンクのクリックにより各社が参照元を記録することがあります。Amazon
+            の取扱いは
+            <a
+              className="text-[var(--km-gold)] underline-offset-2 hover:underline"
+              href="https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909010"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Amazon.co.jpプライバシー規約
+            </a>
+            も参照してください。
+          </li>
         </ul>
         <p>
           相談文は推薦処理のため上記 API 提供者へ送信される場合があります。各社のプライバシーポリシーもご確認ください。

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <LegalShell title="利用規約">
-      <p>最終更新: 2026年8月28日</p>
+      <p>最終更新: 2026年8月29日</p>
 
       <section className="space-y-2">
         <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -44,7 +44,10 @@ export default function TermsPage() {
           4. 外部リンク・アフィリエイト
         </h2>
         <p>
-          購入候補へのリンクは各事業者が運営するサイトへ遷移します。商品・価格・在庫・返礼品の内容・契約は各サイトの条件に従います。当サイトのリンクにはアフィリエイト広告が含まれる場合があります。
+          購入候補へのリンクは各事業者が運営するサイトへ遷移します。商品・価格・在庫・返礼品の内容・契約は各サイトの条件に従います。当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、バリューコマース経由のYahoo!ショッピング・さとふる等）。Amazonのアソシエイトとして、KomeSommeは適格販売により収入を得ています。Amazon
+          の顧客対応・注文条件は amazon.co.jp に従い、当サイトは Amazon
+          の後援・提携を示すものではありません。楽天ウェブサービス（商品検索 API）を利用する場合があり、クレジット表示は楽天の指定方法に従います。当サービスは KomeSomme
+          が制作・運営するものであり、楽天グループの運営するサイトではありません。バリューコマースの成果計測は同社のトラッキングに従い、広告主サイトの注文条件は各広告主に帰属します。
         </p>
       </section>
 

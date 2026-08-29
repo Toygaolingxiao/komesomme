@@ -1,92 +1,17 @@
 "use client";
 
-import type { AnalyticsEvent } from "@/lib/analytics";
+import { RiceProductCard } from "@/components/RiceProductCard";
 import { track } from "@/lib/analytics";
+import { wrapSatofullSearchUrl, furusatoQuery } from "@/lib/affiliate";
 import type { RiceProfileV2 } from "@/types/rice";
-import {
-  FOCUS,
-  PURCHASE_NOTE,
-  amazonUrl,
-  furusatoKeyword,
-  furusatoUrl,
-  rakutenFurusatoUrl,
-  rakutenUrl,
-  shopKeyword,
-  yahooFurusatoUrl,
-  yahooShoppingUrl,
-} from "./shared";
+import { FOCUS, furusatoKeyword } from "./shared";
 
-const LINK_CLASS = `inline-flex min-w-0 w-full items-center justify-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-3 py-2.5 text-center text-[12px] leading-tight text-[var(--km-muted)] transition hover:border-[var(--km-gold)]/40 hover:text-[var(--km-ink)] sm:px-2 sm:py-2 sm:text-[11px] ${FOCUS}`;
 const CTA_CLASS = `inline-flex items-center justify-center rounded-full px-4 py-2.5 text-[12px] font-semibold transition ${FOCUS}`;
 
-type ShopLink = {
-  href: string;
-  full: string;
-  event: AnalyticsEvent;
-};
-
-function shopLinks(rice: RiceProfileV2): ShopLink[] {
-  const shop = shopKeyword(rice);
-  const furusato = furusatoKeyword(rice);
-  return [
-    { href: rakutenUrl(shop), full: "楽天市場", event: "rakuten_click" },
-    {
-      href: yahooShoppingUrl(shop),
-      full: "Yahoo!ショッピング",
-      event: "yahoo_click",
-    },
-    { href: amazonUrl(shop), full: "Amazon", event: "amazon_click" },
-    {
-      href: rakutenFurusatoUrl(furusato),
-      full: "楽天ふるさと",
-      event: "furusato_click",
-    },
-    {
-      href: yahooFurusatoUrl(furusato),
-      full: "Yahoo!ふるさと",
-      event: "furusato_click",
-    },
-    {
-      href: furusatoUrl(furusato),
-      full: "ふるさと納税",
-      event: "furusato_click",
-    },
-  ];
-}
-
-function ProviderRow({
-  title,
-  hint,
-  links,
-}: {
-  title: string;
-  hint: string;
-  links: ShopLink[];
-}) {
-  return (
-    <div>
-      <p className="text-[11px] font-medium text-[var(--km-ink)]">{title}</p>
-      <p className="mt-0.5 text-[10px] text-[var(--km-muted)]">{hint}</p>
-      <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2">
-        {links.map((link) => (
-          <a
-            key={link.full}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={LINK_CLASS}
-            onClick={() => track(link.event, { label: link.full })}
-          >
-            <span className="min-w-0 break-words sm:truncate">{link.full}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function PurchaseLead({ rice }: { rice: RiceProfileV2 }) {
-  const furusato = furusatoUrl(furusatoKeyword(rice));
+  const furusato = wrapSatofullSearchUrl(
+    furusatoKeyword(rice) || furusatoQuery({ prefecture: rice.prefecture, brand: rice.name })
+  );
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -107,7 +32,7 @@ export function PurchaseLead({ rice }: { rice: RiceProfileV2 }) {
       <a
         href={furusato}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer nofollow"
         className={`${CTA_CLASS} border border-[var(--km-border)] text-[var(--km-muted)] hover:border-[var(--km-gold)]/40 hover:text-[var(--km-ink)]`}
         onClick={() => {
           track("purchase_cta_click", { target: "furusato" });
@@ -120,35 +45,13 @@ export function PurchaseLead({ rice }: { rice: RiceProfileV2 }) {
   );
 }
 
-/**
- * Quiet commerce search links. Keywords only, not product pages.
- * Mobile stacks one button per row; sm+ keeps 2 rows × 3 columns.
- */
 export function PurchaseLinks({ rice }: { rice: RiceProfileV2 }) {
-  const links = shopLinks(rice);
-  const shop = links.slice(0, 3);
-  const furusato = links.slice(3);
-
   return (
     <div id="km-purchase">
-      <p className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">
-        この銘柄を探す
-      </p>
-      <div className="mt-3 flex flex-col gap-4">
-        <ProviderRow
-          title="通常購入"
-          hint="価格や容量を比べたい方に"
-          links={shop}
-        />
-        <ProviderRow
-          title="ふるさと納税"
-          hint="産地を応援しながら返礼品を探したい方に"
-          links={furusato}
-        />
+      <p className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">この銘柄を探す</p>
+      <div className="mt-3">
+        <RiceProductCard rice={rice} />
       </div>
-      <p className="mt-3 text-[10px] leading-relaxed text-[var(--km-muted)]">
-        {PURCHASE_NOTE}
-      </p>
     </div>
   );
 }

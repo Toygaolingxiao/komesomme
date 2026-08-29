@@ -57,7 +57,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | --- | --- | --- | --- |
 | P0-4a | プライバシーポリシー（取得データ、相談 API、Cookie/分析、第三者） | `/privacy` が公開されフッターから辿れる | **完了（草案）** `src/app/privacy/page.tsx` + ヘッダー法務ナビ |
 | P0-4b | 利用規約（編集評価である旨、外部 EC は各社責任、免責） | `/terms` 公開、フッターリンク | **完了（草案）** `src/app/terms/page.tsx` |
-| P0-4c | アフィリエイト・広告表記（「広告を含む」等） | 購入導線付近またはフッターに常時表示 | **完了** `PURCHASE_NOTE` + SiteFooter |
+| P0-4c | アフィリエイト・広告表記（Amazon 第 5 条 + 景表法 PR） | 購入導線付近およびフッターに常時表示 | **完了** `AffiliateDisclosure` + SiteFooter。要点は [14-affiliate-programs.md](./14-affiliate-programs.md) |
 | P0-4d | 特定商取引法に基づく表記（必要な場合） | `/tokushoho` または同等。事業者情報が揃う | **枠のみ** `/tokushoho`。事業者名等は公開前に埋める |
 | P0-4e | 既存 DISCLAIMER（編集評価≠公的測定）を全導線で一貫 | 詳細・銘柄ページ・法務ページで矛盾なし | **完了寄り** 規約・購入注記と整合 |
 
@@ -91,11 +91,11 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-1a | 楽天アフィリエイト: 検索 URL にアフィパラメータ | 管理画面でクリックまたは遷移が確認できる | `shared.ts` の `rakutenUrl` / ふるさと系、env |
-| P1-1b | Amazon アソシエイト（該当する場合） | タグ付き URL。未契約なら UI から Amazon を外すか「準備中」 | `amazonUrl` |
-| P1-1c | Yahoo! / ふるさと納税の提携状況を確定し URL を合わせる | 契約済みチャネルのみタグ付き。未契約は表記のみ or 非表示 | PurchaseLinks |
+| P1-1a | 楽天アフィリエイト: 検索 URL にアフィパラメータ | 管理画面でクリックまたは遷移が確認できる | **コード済** `wrapRakutenAffiliateUrl` + `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID` |
+| P1-1b | Amazon アソシエイト | タグ付き検索 URL + 第 5 条定型文。未契約なら UI から外す | **コード済** `amazonSearchUrl` + `AMAZON_ASSOCIATE_DISCLOSURE` |
+| P1-1c | Yahoo! / さとふるの ValueCommerce | 本番メディア登録 + 広告主提携承認後、Production のみ SID。Preview はプレーン検索 | **予約済** `valueCommerceWrapEnabled`。規約要約は [14-affiliate-programs.md](./14-affiliate-programs.md) |
 | P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | [07-roadmap.md](./07-roadmap.md) 計測節を更新可 |
-| P1-1e | （任意）楽天アフィ URL ヘルパー | プレースホルダではなく本番 URL 生成に使われる | 実装時に `src/lib/rakuten/` を追加 |
+| P1-1e | 楽天 Item Search + クレジット | href のみ（商品名・価格は出さない）。公式クレジット表示 | **コード済** `shop-links` + `src/lib/rakuten/credit.ts`。隔離の次段は [13](./13-affiliate-compliance.md) §4 |
 
 ### P1-2. 分析の本番接続
 

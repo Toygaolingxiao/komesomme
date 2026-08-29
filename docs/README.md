@@ -7,8 +7,8 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | ルール | 例 |
 | --- | --- |
 | `docs/` 直下にフラット配置 | サブフォルダは使わない |
-| 先頭 `00`〜`12` + kebab-case | `03-system-design.md` |
-| 本文は日本語。**12 のみ中国語**（構想から現行までの振り返り） | — |
+| 先頭 `00`〜`14` + kebab-case | `03-system-design.md` |
+| 本文は日本語。**12・13 は中国語** | — |
 | この README が唯一の索引 | — |
 
 ## 文書一覧
@@ -28,6 +28,8 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 10 | [10-changelog.md](./10-changelog.md) | 変更履歴 |
 | 11 | [11-launch-checklist.md](./11-launch-checklist.md) | 収益化本番リリースの実行タスク（P0/P1/P2） |
 | 12 | [12-product-journey.md](./12-product-journey.md) | 構想〜現行の開発者 / コンサル振り返り（**中国語**） |
+| 13 | [13-affiliate-compliance.md](./13-affiliate-compliance.md) | 楽天 API と他モール共存の隔離設計（**中国語**） |
+| 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo・さとふる VC の規約リンクと実装メモ |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・Redeploy・ロールバック |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
@@ -44,4 +46,5 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | バージョンを上げる | 01 → 10（番号の正本は `VERSION`） |
 | 構想から今までの経緯 | 12（中国語） |
 | 本番公開までにやること | 11 |
+| アフィリエイト各社の規約・転鎖 | 14（楽天隔離は 13） |
 | プライバシー / 利用規約 | `/privacy` `/terms` `/tokushoho` |

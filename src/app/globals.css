@@ -135,6 +135,13 @@ body {
   );
 }
 
+/* Rakuten credit snippet must stay unmodified; style only the wrapper. */
+.rakuten-ws-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .km-slider-sweet {
   --km-track: linear-gradient(
     90deg,

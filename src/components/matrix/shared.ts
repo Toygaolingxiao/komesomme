@@ -1,3 +1,6 @@
+import { amazonSearchUrl, wrapSatofullSearchUrl, yahooShoppingSearchUrl } from "@/lib/affiliate";
+import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
+import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import { RICE_REGIONS, regionColor as colorForRegion } from "@/lib/rice/regions";
 import type { RiceProfileV2, RiceRegion } from "@/types/rice";
 
@@ -64,11 +67,7 @@ export type RailMatch = {
 };
 
 export function shopKeyword(rice: RiceProfileV2): string {
-  return (
-    rice.rakuten_search_keyword?.trim() ||
-    rice.amazon_search_keyword?.trim() ||
-    `${rice.name} 白米 5kg`
-  );
+  return riceRakutenKeyword(rice);
 }
 
 export function furusatoKeyword(rice: RiceProfileV2): string {
@@ -76,15 +75,15 @@ export function furusatoKeyword(rice: RiceProfileV2): string {
 }
 
 export function rakutenUrl(keyword: string): string {
-  return `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
+  return wrapRakutenAffiliateUrl(rakutenSearchUrl(keyword));
 }
 
 export function amazonUrl(keyword: string): string {
-  return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}`;
+  return amazonSearchUrl(keyword);
 }
 
 export function yahooShoppingUrl(keyword: string): string {
-  return `https://shopping.yahoo.co.jp/search?p=${encodeURIComponent(keyword)}`;
+  return yahooShoppingSearchUrl(keyword);
 }
 
 export function rakutenFurusatoUrl(keyword: string): string {
@@ -96,11 +95,11 @@ export function yahooFurusatoUrl(keyword: string): string {
 }
 
 export function furusatoUrl(keyword: string): string {
-  return `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(keyword)}`;
+  return wrapSatofullSearchUrl(keyword);
 }
 
 export const PURCHASE_NOTE =
-  "購入時は産地・年産・精米時期・内容量をご確認ください。KomeSommeでは銘柄名で購入候補を検索します。外部リンクにはアフィリエイト広告を含む場合があります。";
+  "Amazonのアソシエイトとして、KomeSommeは適格販売により収入を得ています。購入時は産地・年産・精米時期・内容量をご確認ください。";
 
 export function shortTasteTags(rice: RiceProfileV2): string[] {
   const tags = [rice.texture_label, rice.sweetness_label];

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { FOCUS } from "@/components/matrix/shared";
 
 const LINKS = [
@@ -35,10 +36,8 @@ export function SiteFooter() {
     <footer className="mt-10 border-t border-[var(--km-border)] px-4 py-8 md:px-8">
       <div className="mx-auto flex max-w-[960px] flex-col gap-3 text-[11px] leading-relaxed text-[var(--km-muted)]">
         <SiteLegalNav />
-        <p>
-          当サイトの外部リンクにはアフィリエイト広告を含む場合があります。味わい評価は
-          KomeSomme 独自基準による目安です。
-        </p>
+        <AffiliateDisclosure />
+        <p>味わい評価は KomeSomme 独自基準による目安です。</p>
         <p>© {new Date().getFullYear()} KomeSomme</p>
       </div>
     </footer>
