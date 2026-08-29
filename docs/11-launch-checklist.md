@@ -69,7 +69,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | `/api/rice/semantic-recommend` |
 | P0-5c | `/[brand]` と品鑑パネル: 横溢れなし、購入 1 列（スマホ） | 390px 幅で横スクロール無し | PurchaseLinks、brand page |
 | P0-5d | 購入 6 リンクが各 EC / ふるさと検索へ開く | 全ボタン 200 系で検索結果が出る | shared URL helpers |
-| P0-5e | （推奨）Playwright 等で P0-5b〜d の最低 3 本を CI または手動ランナー化 | 失敗が検知できる | `e2e/` 等 |
+| P0-5e | Playwright 等で P0-5b〜d の最低 3 本を CI または手動ランナー化 | 失敗が検知できる | **完了** `e2e/` + Vitest + CI。式样 [test-specification.md](./test-specification.md) |
 
 ### P0-6. 本番環境・デプロイ checklist
 
@@ -171,7 +171,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [x] P0-4d 特商法の事業者情報を確定して記入
 - [x] P0-5a 手順書（[smoke-test.md](./smoke-test.md)）
 - [ ] P0-5b〜d スモーク実施と記録（人手）
-- [ ] P0-5e 最低限の自動テスト（推奨）
+- [x] P0-5e 最低限の自動テスト（推奨）
 
 ### Sprint C — 収益と観測（1.0 同梱推奨）
 

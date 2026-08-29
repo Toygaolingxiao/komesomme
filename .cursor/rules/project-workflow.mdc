@@ -24,10 +24,17 @@ alwaysApply: true
 - PR 用 `.github/pull_request_template.md`：写清验证步骤与 SemVer 意图。
 - **P0 未清时不要开 P2 花活**（Auth / PWA / 多轮咨询等）。
 
+## 测试
+
+- 式样正本: [`docs/test-specification.md`](../../docs/test-specification.md)
+- 本地: `npm run test:unit` · 先 `npm run build` 再 `npm run test:e2e` · 或 `npm run test`
+- CI 已含 unit + Playwright（咨询 API 默认 kill-switch）
+- 结果: `docs/test-results.md`（`npm run test:report`）
+
 ## Definition of Done（可合 / 可推 main）
 
 - [ ] 验收可测；相关路径自测或依赖 CI
-- [ ] CI 绿（lint / typecheck / validate:rice / build / client-bundle）
+- [ ] CI 绿（lint / typecheck / validate:rice / **unit** / build / client-bundle / **e2e**）
 - [ ] 用户可感知变更 → 同一 commit 升 `VERSION`（见 `semver.mdc`）
 - [ ] 涉及联盟/法务/权限 → 对照 smoke / checklist 更新勾选或记录
 - [ ] **每次 Production 部署后**填 `docs/smoke-test.md` 记录栏

@@ -149,7 +149,8 @@ export function ConsultForm({
       {failed ? (
         <p className="flex min-w-0 items-start gap-2 text-[11px] leading-relaxed text-[#a33b2a]">
           <Warning size={13} weight={ICON_WEIGHT} className="mt-0.5 shrink-0" />
-          うまく読み取れませんでした。言葉を変えて、もう一度どうぞ。
+          {reply?.trim() ||
+            "うまく読み取れませんでした。言葉を変えて、もう一度どうぞ。"}
         </p>
       ) : reply ? (
         <div

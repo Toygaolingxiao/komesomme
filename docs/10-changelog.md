@@ -4,6 +4,17 @@
 
 ## Unreleased
 
+## 0.4.2 — 2026-08
+
+### 試験
+
+- 試験式样书 `docs/test-specification.md`（TS-*）
+- Vitest 単体 + Playwright E2E（Desktop/Mobile）+ CI ゲート + `docs/test-results.md` 生成
+
+### UX
+
+- 相談失敗時、API の日本語 `message`（kill-switch の一時停止文を含む）をフォームに出す
+
 ### 運営
 
 - GitHub Issue テンプレ（bug / feature / task）と PR テンプレ

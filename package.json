@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
@@ -11,7 +11,12 @@
     "validate:rice": "node --import tsx scripts/validate-rice-profiles.ts",
     "assert:client-bundle": "node --import tsx scripts/assert-client-bundle.ts",
     "seed:rice": "node --use-system-ca --import tsx scripts/seed-rice-profiles.ts",
-    "rakuten:item": "node --use-system-ca --import tsx scripts/resolve-rakuten-items.ts"
+    "rakuten:item": "node --use-system-ca --import tsx scripts/resolve-rakuten-items.ts",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:report": "node --import tsx scripts/write-test-report.ts",
+    "test": "npm run test:unit && npm run test:e2e && npm run test:report"
   },
   "dependencies": {
     "@google/genai": "^2.19.0",
@@ -26,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.1.7",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.4",
@@ -34,6 +40,7 @@
     "eslint-config-next": "^15.3.2",
     "tailwindcss": "^4.1.7",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.11"
   }
 }

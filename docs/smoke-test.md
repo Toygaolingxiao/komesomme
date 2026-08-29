@@ -54,4 +54,4 @@
 | --- | --- | --- | --- |
 | | | | |
 
-関連: [vercel-production.md](./vercel-production.md)、[11-launch-checklist.md](./11-launch-checklist.md)
+関連: [vercel-production.md](./vercel-production.md)、[11-launch-checklist.md](./11-launch-checklist.md)、自動試験式样 [test-specification.md](./test-specification.md)、直近結果 [test-results.md](./test-results.md)

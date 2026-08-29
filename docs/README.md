@@ -33,6 +33,8 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・Redeploy・ロールバック |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
+| — | [test-specification.md](./test-specification.md) | 試験式样书（TS-*）· 自動テスト正本 |
+| — | [test-results.md](./test-results.md) | 直近の自動試験結果レポート（生成物） |
 | — | [scripts/data/README.md](../scripts/data/README.md) | 味わい再校正アーカイブと灌庫メモ |
 
 ## 読み分け
