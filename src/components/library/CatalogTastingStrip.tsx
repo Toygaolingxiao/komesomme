@@ -58,7 +58,7 @@ export function CatalogTastingStrip({ rice }: { rice: RiceProfileV2 }) {
         href={`/${rice.id}`}
         className={`mt-4 inline-flex text-[12px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
       >
-        品鑑ページで相性・季節・酒を見る
+        品鑑ページで味わいと料理相性を見る
       </Link>
     </section>
   );

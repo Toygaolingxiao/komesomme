@@ -12,16 +12,17 @@ test.describe("TS-LIBRARY", () => {
     await page.goto("/library/yumepirika");
     await expect(page.getByRole("heading", { name: "ゆめぴりか" })).toBeVisible();
     await expect(page.getByText("米ソムリエの品鑑")).toBeVisible();
-    await expect(page.getByRole("link", { name: /品鑑ページで相性/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: /品鑑ページで味わいと料理相性/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "由来と背景" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "季節と飲み物との相性" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "美味しく炊くためのコツ" })).toBeVisible();
   });
 
-  test("TS-LIBRARY-03 brand page cites cooking from library", async ({ page }) => {
+  test("TS-LIBRARY-03 brand page links to library dossier", async ({ page }) => {
     await page.goto("/yumepirika");
-    await expect(page.getByRole("heading", { name: "美味しく炊く" })).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /由来・特徴・購入の目安をライブラリで読む/ }),
-    ).toBeVisible();
+    await expect(page.getByText("銘柄品鑑")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ゆめぴりか" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /銘柄ライブラリ/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "季節の相性" })).toHaveCount(0);
   });
 });

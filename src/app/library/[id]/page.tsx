@@ -5,6 +5,7 @@ import { BrandLockup } from "@/components/brand/BrandMark";
 import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { SiteFooter, SiteLegalNav } from "@/components/SiteFooter";
 import { FOCUS, regionColor } from "@/components/matrix/shared";
+import { CatalogPairingGuide } from "@/components/library/CatalogPairingGuide";
 import { CatalogTastingStrip } from "@/components/library/CatalogTastingStrip";
 import { findRiceProfile, riceProfiles } from "@/data/rice/catalog";
 import {
@@ -118,6 +119,8 @@ export default async function LibraryArticlePage({ params }: PageProps) {
             ))}
           </ul>
         </section>
+
+        <CatalogPairingGuide rice={rice} />
 
         {article.cookingTips.length > 0 ? (
           <section className="mt-5 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-5 py-6 sm:px-7">

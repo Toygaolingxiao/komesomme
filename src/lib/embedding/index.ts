@@ -21,10 +21,6 @@ const MAX_RETRIES = 5;
 const BASE_RETRY_MS = 1_000;
 const MAX_RETRY_MS = 30_000;
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 /**
  * Resolves the active provider.
  *
