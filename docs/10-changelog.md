@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### 運営
+
+- `npm run inventory:audit`：全銘柄の楽天 / Yahoo 公式 API 在庫監査。詳細 JSON は gitignore、ギャップ表のみ `scripts/data/shop-inventory-gaps.md`（商品ペイロード非公開）
+
 ## 0.4.4 — 2026-08
 
 ### UX

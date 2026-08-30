@@ -27,9 +27,18 @@ function firstHitUrl(xml: string): string | null {
   return url || null;
 }
 
-export async function yahooShoppingItemUrl(query: string): Promise<string> {
+export type YahooRecommend = {
+  url: string;
+  source: "item" | "search";
+};
+
+/** Resolve one in-stock Yahoo hit when possible; otherwise affiliate/plain search. */
+export async function recommendYahooItem(query: string): Promise<YahooRecommend> {
   const { clientId, sid, pid } = yahooEnv();
-  const fallback = wrapYahooSearchUrl(query, sid, pid);
+  const fallback: YahooRecommend = {
+    url: wrapYahooSearchUrl(query, sid, pid),
+    source: "search",
+  };
 
   if (!clientId || !query.trim()) return fallback;
 
@@ -54,9 +63,18 @@ export async function yahooShoppingItemUrl(query: string): Promise<string> {
     }
     const xml = await response.text();
     const url = firstHitUrl(xml);
-    return url ? wrapValueCommerceIfReady(url, sid, pid) : fallback;
+    if (!url) return fallback;
+    return {
+      url: wrapValueCommerceIfReady(url, sid, pid),
+      source: "item",
+    };
   } catch (cause) {
-    console.error("yahooShoppingItemUrl:", cause);
+    console.error("recommendYahooItem:", cause);
     return fallback;
   }
+}
+
+export async function yahooShoppingItemUrl(query: string): Promise<string> {
+  const result = await recommendYahooItem(query);
+  return result.url;
 }

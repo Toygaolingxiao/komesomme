@@ -60,6 +60,8 @@ KomeSomme 定位是米ソムリエ / 风味匹配，不抓取海量 SKU 做比�
 
 API 拿到的商品信息只用于当场导流，不进公开 catalog、不写进 `src/data/rice`、不当作长期公开资料库。短时服务端缓存（例如数小时、按 keyword 键）可以，缓存内容不要出现在前端 HTML 以外的公开文件里。
 
+**在库审计（运维）：** 用 `npm run inventory:audit` 走乐天 Ichiba / Yahoo ItemSearch 官方 API，**禁止**爬 Amazon / 楽天 / Yahoo 商品页 HTML。完整结果写在 gitignore 的 `scripts/data/shop-inventory/`；可提交的只有无商品名/价/URL 的 `shop-inventory-gaps.md`。
+
 ### 2.6 第 13 条 + クレジットガイド
 
 [クレジット表示方法と注意](https://webservice.rakuten.co.jp/guide/credit) 写明：使用 API 的应用必须展示官方徽章三选一，**不得改 HTML / 图**。已用文本版 `Supported by Rakuten Developers`。若改为展示 API 商品名/价格，再在 `.km-rakuten` 内加「商品情報は楽天ウェブサービスにより提供」类说明。

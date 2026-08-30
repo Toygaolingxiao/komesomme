@@ -9,6 +9,25 @@
 | `taste-map-extract.json` | 5 枚の外部食味図から読んだ銘柄位置 → 仮スコア |
 | `taste-consensus-overrides.json` | **適用正本**。図合意 × 公開資料（県 / JA / Wikipedia 等）× 旧値。`reason` に判断メモ |
 | `taste-consensus-apply-report.json` | `apply-taste-consensus.ts` の適用結果 |
+| `shop-inventory-gaps.md` | 購入 API 監査の**公開セーフ**ギャップ表（id / クラスのみ） |
+| `shop-inventory/`（gitignore） | 楽天・Yahoo の item URL 等を含む非公開 JSON |
+
+## 購入在庫監査（公式 API のみ）
+
+Amazon / 楽天 / Yahoo の**商品ページ HTML スクレイピングはしない**（規約・安定性）。  
+楽天 Ichiba・Yahoo ItemSearch で全銘柄を監査し、item ヒット有無を見る。
+
+```bash
+npm run inventory:audit
+npm run inventory:audit -- --limit=10
+npm run inventory:audit -- --id=koshihikari
+```
+
+- 詳細 JSON → `shop-inventory/latest.json`（**Git に入れない**）
+- ギャップ表 → `shop-inventory-gaps.md`（商品名・価格・商品 URL なし）
+- 規約: [docs/13-affiliate-compliance.md](../../docs/13-affiliate-compliance.md)
+
+Amazon / さとふるは現状検索 URL のみ（PA-API 未接続）。百科 enrich（県・JA・Wikipedia）は味わい校正と同系統の**人手レビュー**前提で別作業。
 
 再適用:
 

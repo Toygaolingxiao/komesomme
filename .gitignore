@@ -29,6 +29,9 @@ Thumbs.db
 tmp-*.json
 .vscode/
 
+# Private mall API inventory payloads (do not commit item URLs / prices)
+/scripts/data/shop-inventory/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

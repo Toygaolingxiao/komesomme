@@ -12,6 +12,7 @@
     "assert:client-bundle": "node --import tsx scripts/assert-client-bundle.ts",
     "seed:rice": "node --use-system-ca --import tsx scripts/seed-rice-profiles.ts",
     "rakuten:item": "node --use-system-ca --import tsx scripts/resolve-rakuten-items.ts",
+    "inventory:audit": "node --use-system-ca --import tsx scripts/audit-shop-inventory.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
