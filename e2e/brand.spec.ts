@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { STABLE_BRAND_ID, noHorizontalOverflow } from "./helpers";
 
 test.describe("TS-BRAND / TS-BUY", () => {
-  test("TS-BRAND-01 brand page renders", async ({ page }) => {
-    const response = await page.goto(`/${STABLE_BRAND_ID}`);
+  test("TS-BRAND-01 brand dossier renders via library", async ({ page }) => {
+    const response = await page.goto(`/library/${STABLE_BRAND_ID}`);
     expect(response?.ok()).toBeTruthy();
     await expect(page.getByRole("heading", { level: 1 }).or(page.locator("h1, h2").first())).toBeVisible();
     await expect(page.locator("body")).toContainText("ゆめぴりか");
@@ -11,7 +11,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
   });
 
   test("TS-BRAND-02 / TS-BUY purchase card and disclosures", async ({ page }) => {
-    await page.goto(`/${STABLE_BRAND_ID}`);
+    await page.goto(`/library/${STABLE_BRAND_ID}`);
     const purchase = page.locator("#km-purchase");
     await expect(purchase).toBeVisible();
     await expect(purchase.getByRole("link", { name: /Amazon/ })).toBeVisible();
@@ -24,7 +24,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
   });
 
   test("TS-BUY-01..04 href shapes and rel", async ({ page }) => {
-    await page.goto(`/${STABLE_BRAND_ID}`);
+    await page.goto(`/library/${STABLE_BRAND_ID}`);
     const purchase = page.locator("#km-purchase");
     const amazon = purchase.getByRole("link", { name: /Amazon/ });
     const rakuten = purchase.getByRole("link", { name: /楽天/ });
@@ -45,7 +45,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
 
   test("TS-BRAND-04 mobile no horizontal overflow", async ({ page, isMobile }) => {
     test.skip(!isMobile, "mobile project");
-    await page.goto(`/${STABLE_BRAND_ID}`);
+    await page.goto(`/library/${STABLE_BRAND_ID}`);
     await page.waitForLoadState("networkidle");
     await noHorizontalOverflow(page);
   });

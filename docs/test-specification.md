@@ -133,13 +133,13 @@
 - **期待:** 「銘柄ライブラリ」見出し、または記事未生成時の準備中  
 - **自動:** `e2e/library.spec.ts`
 
-#### TS-LIBRARY-02 事典が catalog 品鑑を引用する
+#### TS-LIBRARY-02 統合事典が品鑑＋百科を一ページに出す
 - **手順:** `/library/yumepirika`  
-- **期待:** 「米ソムリエの品鑑」、品鑑ページへのリンク、由来・炊飯セクション。hero は encyclopedia headline のみ（catalog `description` を再掲しない）
+- **期待:** 米ソムリエメモ、由来、季節と飲み物、炊飯。catalog `description` を origin に再掲しない
 
-#### TS-LIBRARY-03 品鑑ページがライブラリへ誘導
+#### TS-LIBRARY-03 旧 `/{id}` がライブラリへリダイレクト
 - **手順:** `/yumepirika`  
-- **期待:** 「銘柄品鑑」見出し、ライブラリへのリンク。季節・酒の長文セクションは品鑑页に無くライブラリ側
+- **期待:** URL が `/library/yumepirika` になり、銘柄見出しが表示される
 
 ---
 

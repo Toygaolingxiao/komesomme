@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { riceProfiles } from "@/data/rice/catalog";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { getSiteUrl } from "@/lib/site";
 
@@ -20,19 +19,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: path === "" ? 1 : path === "/library" ? 0.8 : 0.3,
   }));
 
-  const brands: MetadataRoute.Sitemap = riceProfiles.map((rice) => ({
-    url: `${origin}/${encodeURIComponent(rice.id)}`,
+  /** Canonical brand URLs live under /library/[id]. Legacy /{id} redirects permanently. */
+  const libraryArticles: MetadataRoute.Sitemap = encyclopediaManifest().map((entry) => ({
+    url: `${origin}/library/${encodeURIComponent(entry.id)}`,
     lastModified,
     changeFrequency: "monthly",
     priority: 0.7,
   }));
 
-  const libraryArticles: MetadataRoute.Sitemap = encyclopediaManifest().map((entry) => ({
-    url: `${origin}/library/${encodeURIComponent(entry.id)}`,
-    lastModified,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
-
-  return [...staticRoutes, ...brands, ...libraryArticles];
+  return [...staticRoutes, ...libraryArticles];
 }

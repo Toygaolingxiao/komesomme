@@ -33,8 +33,6 @@ import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
-import { LibraryDossierLink } from "@/components/library/LibraryDossierLink";
-
 function PairingChip({
   item,
   index,
@@ -360,10 +358,6 @@ export function BrandDetailPanel({
                 </blockquote>
               ) : null}
 
-              <p className="mt-4">
-                <LibraryDossierLink riceId={rice.id} />
-              </p>
-
               <div className="mt-8">
                 <TasteContour rice={rice} compact />
               </div>
@@ -393,18 +387,15 @@ export function BrandDetailPanel({
                 </div>
               ) : null}
 
-              <div className="mt-8 flex flex-col gap-2.5 border-t border-[var(--km-border)] pt-6">
+              <div className="mt-8 flex flex-col gap-3 border-t border-[var(--km-border)] pt-6">
                 <PurchaseLinks rice={rice} />
                 <Link
-                  href={`/${rice.id}`}
+                  href={`/library/${rice.id}`}
                   className={`inline-flex w-fit items-center gap-1 text-[12px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
                 >
-                  銘柄ページで詳しく見る
+                  由来・季節・炊き方まで、ライブラリで読む
                   <ArrowUpRight size={12} weight={ICON_WEIGHT} />
                 </Link>
-                <LibraryDossierLink riceId={rice.id}>
-                  季節・お酒・由来・炊き方（ライブラリ）
-                </LibraryDossierLink>
               </div>
 
               <p className="mt-6 text-[10px] leading-relaxed text-[var(--km-muted)]">

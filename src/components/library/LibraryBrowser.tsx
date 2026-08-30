@@ -59,17 +59,14 @@ export function LibraryBrowser({
   }, [entries, query, region]);
 
   return (
-    <div className="mx-auto w-full max-w-[1100px] px-4 pb-16 pt-6 sm:px-6">
+    <div className="mx-auto w-full max-w-[1100px] px-4 pb-16 pt-6 sm:px-5">
       <header className="max-w-2xl">
-        <p className="text-[11px] tracking-[0.16em] text-[var(--km-accent)]">
-          RICE LIBRARY
-        </p>
-        <h1 className="mt-2 font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
+        <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
           銘柄ライブラリ
         </h1>
         <p className="mt-3 text-[13px] leading-relaxed text-[var(--km-muted)]">
           約 {entries.length}{" "}
-          銘柄の由来・特徴・炊飯のコツを、編集評価と公開情報をもとに整理した事典です。味わい数値は公的測定ではありません。
+          銘柄の味わい・相性・由来・炊き方を、一冊の事典にまとめています。味わい数値は編集評価であり、公的測定ではありません。
         </p>
       </header>
 

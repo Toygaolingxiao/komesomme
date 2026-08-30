@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { STABLE_BRAND_ID } from "./helpers";
 
-test("TS-SEO-01 sitemap lists home and brand", async ({ request }) => {
+test("TS-SEO-01 sitemap lists home and library brand", async ({ request }) => {
   const response = await request.get("/sitemap.xml");
   expect(response.ok()).toBeTruthy();
   const xml = await response.text();
   expect(xml).toContain("<url>");
-  expect(xml).toMatch(/yumepirika|\/yumepirika/);
+  expect(xml).toMatch(/\/library\/yumepirika/);
 });
 
 test("TS-SEO-02 robots points to sitemap and blocks api", async ({ request }) => {
@@ -27,7 +27,7 @@ test("TS-SEC-01 security headers on document", async ({ request }) => {
 
 test("TS-SEC-02 HTML does not embed service_role", async ({ request }) => {
   const home = await (await request.get("/")).text();
-  const brand = await (await request.get(`/${STABLE_BRAND_ID}`)).text();
+  const brand = await (await request.get(`/library/${STABLE_BRAND_ID}`)).text();
   expect(home).not.toContain("service_role");
   expect(brand).not.toContain("service_role");
 });

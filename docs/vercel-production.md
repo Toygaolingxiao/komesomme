@@ -102,7 +102,7 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 - `NEXT_PUBLIC_SITE_URL=https://komesomme.jp` → `robots.txt` / `sitemap.xml` / OG の URL が `.jp` になる
 - `robots.txt` は `Allow: /`（`/api/` のみ Disallow）
-- `sitemap.xml` に `/`、銘柄 `/[id]`、`/library`、事典 `/library/[id]` を含める
+- `sitemap.xml` に `/`、`/library`、事典 `/library/[id]` を含める（旧 `/{id}` はリダイレクトのみ）
 
 #### 待ち時間の目安
 

@@ -81,7 +81,7 @@ export function SimilarRiceCards({
                 </button>
               ) : (
                 <a
-                  href={`/${neighbour.rice.id}`}
+                  href={`/library/${neighbour.rice.id}`}
                   onClick={() => track("similar_rice_click", { id: neighbour.rice.id })}
                   className={`block rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-3 py-2.5 transition hover:border-[var(--km-gold)]/40 ${FOCUS}`}
                 >

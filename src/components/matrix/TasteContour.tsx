@@ -51,12 +51,19 @@ export function TasteContour({
       >
         味わいの輪郭
       </Heading>
-      <div className="mt-3 flex flex-col items-center sm:flex-row sm:items-start sm:gap-6">
+      {/* compact: always stack — row layout in a narrow column squeezes summary into 1-glyph lines */}
+      <div
+        className={
+          compact
+            ? "mt-3 flex flex-col items-center gap-3"
+            : "mt-3 flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-6"
+        }
+      >
         <svg
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           role="img"
           aria-label={summary}
-          className="h-auto w-full max-w-[280px] shrink-0"
+          className="mx-auto h-auto w-full max-w-[240px] shrink-0 sm:max-w-[280px]"
         >
           {LEVELS.map((level) => (
             <polygon
@@ -107,7 +114,13 @@ export function TasteContour({
             strokeLinejoin="round"
           />
         </svg>
-        <p className="mt-3 max-w-[36ch] text-[13px] leading-relaxed text-[var(--km-ink-soft)] sm:mt-6">
+        <p
+          className={
+            compact
+              ? "w-full max-w-[36ch] text-center text-[13px] leading-relaxed text-[var(--km-ink-soft)]"
+              : "mt-0 max-w-[36ch] text-[13px] leading-relaxed text-[var(--km-ink-soft)] sm:mt-6 sm:text-left"
+          }
+        >
           {summary}
         </p>
       </div>

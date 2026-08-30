@@ -50,7 +50,7 @@ http://localhost:3000 で:
 - Desktop でページ全体のスクロールが出ない。マップが左ペインいっぱいに広がる
 - 探針やスライダーを動かすと、No.1 が常に最近傍
 - 「ハイボールと唐揚げに合う米」で Top 4 が返る
-- 銘柄詳細と `/[brand]` から楽天 / Amazon / ふるさと納税が開く
+- 銘柄事典 `/library/[id]` から楽天 / Amazon / ふるさと納税が開く（旧 `/{id}` はリダイレクト）
 
 本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
