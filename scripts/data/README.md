@@ -18,12 +18,13 @@
 npm run encyclopedia:generate -- --mode=template   # catalog 根拠の全文（API 不要）
 npm run encyclopedia:generate -- --mode=gemini     # Gemini で上書き（要 GEMINI_API_KEY）
 npm run encyclopedia:generate                      # auto: 不足を template → 可能なら Gemini
+npm run encyclopedia:audit                         # catalog スコア・禁止語・相性との衝突検査
 ```
 
 出力: `src/data/rice/encyclopedia/articles/*.json` + `manifest.json`  
 閲覧: `/library`
 
-Gemini 無料枠が尽きた日は template で完走し、翌日 `--mode=gemini` で上書きできる。
+既定モデルは `gemini-3.5-flash-lite`（無料枠はモデル別にカウント）。`3.6-flash` / `3.5-flash` は約 20 回/日、Lite は別枠で残りを完走できる。`ENCYCLOPEDIA_GEMINI_MODEL` で上書き可。枠切れ時は template で完走し、翌日 `--mode=gemini` で上書きできる。
 
 ## 購入在庫監査（公式 API のみ）
 

@@ -26,8 +26,42 @@ import type {
 
 loadEnv({ path: ".env.local" });
 
-/** Matches app chat model; override with ENCYCLOPEDIA_GEMINI_MODEL when quota allows. */
-const MODEL = process.env.ENCYCLOPEDIA_GEMINI_MODEL?.trim() || "gemini-3.6-flash";
+/**
+ * Encyclopedia batch prefers Flash-Lite: free-tier RPD is per model.
+ * `gemini-3.6-flash` and `gemini-3.5-flash` are ~20/day; Lite has a separate, larger pool.
+ * 2.5 / 2.0 Flash return 404 for new keys. Override with ENCYCLOPEDIA_GEMINI_MODEL.
+ */
+const DEFAULT_MODEL_CHAIN = [
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash",
+] as const;
+
+/** New API keys get 404 on these; keep out of the chain even if env still names them. */
+const RETIRED_MODELS = new Set([
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
+]);
+
+function resolveModelChain(): string[] {
+  const override = process.env.ENCYCLOPEDIA_GEMINI_MODEL?.trim();
+  const chain = override
+    ? [override, ...DEFAULT_MODEL_CHAIN.filter((model) => model !== override)]
+    : [...DEFAULT_MODEL_CHAIN];
+  const usable = chain.filter((model) => !RETIRED_MODELS.has(model));
+  if (usable.length === 0) return [...DEFAULT_MODEL_CHAIN];
+  if (override && RETIRED_MODELS.has(override)) {
+    console.warn(
+      `ENCYCLOPEDIA_GEMINI_MODEL=${override} is retired for new keys; using ${usable.join(" → ")}`,
+    );
+  }
+  return usable;
+}
+
+const MODEL_CHAIN = resolveModelChain();
+const exhaustedModels = new Set<string>();
 const ARTICLES_DIR = path.join(process.cwd(), "src/data/rice/encyclopedia/articles");
 const MANIFEST_PATH = path.join(process.cwd(), "src/data/rice/encyclopedia/manifest.json");
 
@@ -140,6 +174,7 @@ function parseArticle(
   rice: RiceProfileV2,
   raw: string,
   generatedAt: string,
+  model: string,
 ): RiceEncyclopediaArticle {
   const json = JSON.parse(stripCodeFence(raw)) as Record<string, unknown>;
 
@@ -200,7 +235,7 @@ function parseArticle(
     ),
     confidence,
     generatedAt,
-    model: MODEL,
+    model,
   };
 }
 
@@ -302,36 +337,72 @@ function buildTemplateArticle(rice: RiceProfileV2, generatedAt: string): RiceEnc
   };
 }
 
-async function generateWithGemini(prompt: string): Promise<string> {
+function isDailyQuotaError(message: string): boolean {
+  return (
+    message.includes("GenerateRequestsPerDay") ||
+    message.includes("generate_content_free_tier_requests")
+  );
+}
+
+function isRetryableQuotaError(message: string): boolean {
+  return message.includes("429") || message.includes("RESOURCE_EXHAUSTED");
+}
+
+async function generateWithGemini(prompt: string): Promise<{ text: string; model: string }> {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.");
 
   const ai = new GoogleGenAI({ apiKey });
-  const maxAttempts = 5;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      const response = await ai.models.generateContent({
-        model: MODEL,
-        contents: prompt,
-        config: { temperature: 0.55, maxOutputTokens: 4096 },
-      });
-      return extractGeminiText(response);
-    } catch (cause) {
-      const message = cause instanceof Error ? cause.message : String(cause);
-      const retryMatch = message.match(/retry in ([\d.]+)s/i);
-      const is429 = message.includes("429") || message.includes("RESOURCE_EXHAUSTED");
-      if (is429 && attempt < maxAttempts) {
-        const waitMs = retryMatch
-          ? Math.ceil(Number(retryMatch[1]) * 1000) + 1500
-          : attempt * 40_000;
-        console.warn(`Rate limited (${MODEL}). Waiting ${Math.round(waitMs / 1000)}s…`);
-        await sleep(waitMs);
-        continue;
+  let lastError: unknown;
+
+  for (const model of MODEL_CHAIN) {
+    if (exhaustedModels.has(model)) continue;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: { temperature: 0.55, maxOutputTokens: 8192 },
+        });
+        const text = extractGeminiText(response);
+        if (!text) {
+          console.warn(`Empty response (${model}), trying next…`);
+          break;
+        }
+        return { text, model };
+      } catch (cause) {
+        lastError = cause;
+        const message = cause instanceof Error ? cause.message : String(cause);
+        const is404 = message.includes("404") || message.includes("NOT_FOUND");
+        if (is404) {
+          console.warn(`Model unavailable (${model}), trying next…`);
+          break;
+        }
+        if (isDailyQuotaError(message)) {
+          exhaustedModels.add(model);
+          console.warn(`Daily quota exhausted (${model}), trying next model…`);
+          break;
+        }
+        if (isRetryableQuotaError(message) && attempt < 3) {
+          const retryMatch = message.match(/retry in ([\d.]+)s/i);
+          const waitMs = retryMatch
+            ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 1500, 45_000)
+            : attempt * 8_000;
+          console.warn(`Rate limited (${model}). Waiting ${Math.round(waitMs / 1000)}s…`);
+          await sleep(waitMs);
+          continue;
+        }
+        if (isRetryableQuotaError(message)) {
+          exhaustedModels.add(model);
+          console.warn(`Quota still exhausted (${model}), trying next model…`);
+          break;
+        }
+        throw cause;
       }
-      throw cause;
     }
   }
-  throw new Error("Gemini retries exhausted");
+
+  throw lastError instanceof Error ? lastError : new Error("Gemini retries exhausted");
 }
 
 function writeManifest() {
@@ -436,8 +507,8 @@ async function main() {
       }
       process.stderr.write(`[${index + 1}/${targets.length}] gemini ${rice.id}…\n`);
       try {
-        const raw = await generateWithGemini(buildPrompt(rice));
-        const article = parseArticle(rice, raw, new Date().toISOString());
+        const { text: raw, model } = await generateWithGemini(buildPrompt(rice));
+        const article = parseArticle(rice, raw, new Date().toISOString(), model);
         writeFileSync(out, JSON.stringify(article, null, 2), "utf8");
         written += 1;
         geminiWritten += 1;
@@ -476,7 +547,7 @@ async function main() {
   writeManifest();
   console.log(
     JSON.stringify(
-      { mode, written, skipped, failed, templated, geminiWritten, model: MODEL },
+      { mode, written, skipped, failed, templated, geminiWritten, models: MODEL_CHAIN },
       null,
       2,
     ),

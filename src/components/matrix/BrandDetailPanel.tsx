@@ -33,6 +33,7 @@ import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
+import { LibraryDossierLink } from "@/components/library/LibraryDossierLink";
 
 function PairingChip({
   item,
@@ -358,6 +359,10 @@ export function BrandDetailPanel({
                   </p>
                 </blockquote>
               ) : null}
+
+              <p className="mt-4">
+                <LibraryDossierLink riceId={rice.id} />
+              </p>
 
               <div className="mt-8">
                 <TasteContour rice={rice} compact />

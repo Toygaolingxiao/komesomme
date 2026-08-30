@@ -5,6 +5,7 @@ import { BrandLockup } from "@/components/brand/BrandMark";
 import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { SiteFooter, SiteLegalNav } from "@/components/SiteFooter";
 import { FOCUS, regionColor } from "@/components/matrix/shared";
+import { CatalogTastingStrip } from "@/components/library/CatalogTastingStrip";
 import { findRiceProfile, riceProfiles } from "@/data/rice/catalog";
 import {
   encyclopediaManifest,
@@ -92,6 +93,8 @@ export default async function LibraryArticlePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        <CatalogTastingStrip rice={rice} />
 
         <section className="mt-8 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-5 py-6 sm:px-7">
           <h2 className="font-serif text-[1.15rem] font-semibold">由来と背景</h2>

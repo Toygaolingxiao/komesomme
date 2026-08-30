@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-30T05:06:59.198Z",
+  "generatedAt": "2026-08-30T05:44:50.142Z",
   "count": 106,
   "entries": [
     {
@@ -113,11 +113,11 @@
     {
       "id": "iwatekko",
       "name": "いわてっこ",
-      "reading": "",
+      "reading": "いわてっこ",
       "prefecture": "岩手県",
       "region": "北海道・東北",
-      "headline": "岩手県の「いわてっこ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、日常の和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "素直な味わいと優れた冷めても落ちにくい食感で、毎日の食卓やおかずを引き立てる岩手県生まれの品種です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -137,11 +137,11 @@
     {
       "id": "oidemai",
       "name": "おいでまい",
-      "reading": "",
+      "reading": "おいでまい",
       "prefecture": "香川県",
       "region": "中国・四国",
-      "headline": "香川県の「おいでまい」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、うどんとの定食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "香川県で生まれた「おいでまい」は、澄んだ甘みと程よい粘りがあり、讃岐うどんのいりこ出汁をはじめとする和食の風味を引き立てる、日常から贈答まで幅広く親しまれるお米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -149,11 +149,11 @@
     {
       "id": "oborozuki",
       "name": "おぼろづき",
-      "reading": "",
+      "reading": "おぼろづき",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「おぼろづき」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「おぼろづき」は、豊かな甘みと強い粘りを持ち、冷めても硬くなりにくい優れた特徴を備えた北海道産の低アミロース米であり、おにぎりや日々のお弁当作りに最適な銘柄として親しまれています。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 5
@@ -173,11 +173,11 @@
     {
       "id": "kinuhikari",
       "name": "キヌヒカリ",
-      "reading": "",
+      "reading": "きぬひかり",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「キヌヒカリ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、天ぷらなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "絹のような美しい白さと、穏やかで上品な甘みが特徴の「キヌヒカリ」は、特に関西圏で根強い人気を誇る定番銘柄です。主張しすぎない軽やかな味わいで、毎日の食卓やお弁当を優しく引き立てます。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -185,11 +185,11 @@
     {
       "id": "kinumusume",
       "name": "きぬむすめ",
-      "reading": "",
+      "reading": "きぬむすめ",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「きぬむすめ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、おひたしなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "絹のようになめらかな口当たりと美しい白さを持ち、西日本を中心に広く愛される定番品種で、あっさりとした味わいが繊細な和食の風味を静かに引き立てます。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -197,11 +197,11 @@
     {
       "id": "kirara397",
       "name": "きらら397",
-      "reading": "",
+      "reading": "きららさんきゅうなな",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「きらら397」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、スープカレーなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "北海道米の評価を大きく高めた立役者であり、しっかりとした硬さと優れた汁吸い性が特徴です。粒立ちがよくあっさりとした味わいで、スープカレーや炒飯など、汁気や油分と合わせる料理で真価を発揮します。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -209,11 +209,11 @@
     {
       "id": "kumasan-no-kagayaki",
       "name": "くまさんの輝き",
-      "reading": "",
+      "reading": "くまさんのかがやき",
       "prefecture": "熊本県",
       "region": "九州・沖縄",
-      "headline": "熊本県の「くまさんの輝き」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「くまさんの輝き」は、炊き上がりの美しいツヤと豊かな粘りが特徴の熊本県産米で、しっかりとした旨みとタレの絡みやすさを持ち、丼ものや肉料理の味わいを引き立てる熊本の新しい主力品種です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -221,11 +221,11 @@
     {
       "id": "kumasan-no-chikara",
       "name": "くまさんの力",
-      "reading": "",
+      "reading": "くまさんのちから",
       "prefecture": "熊本県",
       "region": "九州・沖縄",
-      "headline": "熊本県の「くまさんの力」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「くまさんの力」は大粒でしっかりとした食感が特徴の熊本県産米です。粘りが控えめで汁気を吸っても形が崩れにくいため、カレーや炒飯、丼ものなど、濃いめのおかずや味付けを合わせる料理で真価を発揮します。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 3
@@ -233,11 +233,11 @@
     {
       "id": "koshiibuki",
       "name": "こしいぶき",
-      "reading": "",
+      "reading": "こしいぶき",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「こしいぶき」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、日常の和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "コシヒカリの系統を受け継ぐ新潟県産の早生品種であり、軽やかな味わいと冷めても損なわれない食感から、毎日の食卓やお弁当に最適な扱いやすいお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -245,11 +245,11 @@
     {
       "id": "koshihikari-bl",
       "name": "コシヒカリ",
-      "reading": "",
+      "reading": "こしひかり",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「コシヒカリ」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、和食全般などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "甘みと粘りのバランスに優れ、日本の食卓の基準として親しまれる新潟県産のコシヒカリ。和食の繊細な味わいに静かに寄り添い、毎日の食事を豊かに彩る定番の銘柄です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -257,11 +257,11 @@
     {
       "id": "koshihikari-uonuma",
       "name": "コシヒカリ（魚沼産）",
-      "reading": "",
+      "reading": "こしひかり うおぬまさん",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「コシヒカリ（魚沼産）」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、お刺身などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "魚沼の豊かな自然が育んだ、芳醇な香りと厚みのある甘みが特徴のコシヒカリ。ひとくち目から広がる豊かな旨みと心地よい粘りは、日本の食卓の基準として長く愛され続けています。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 2,
       "stickiness": 4
@@ -269,11 +269,11 @@
     {
       "id": "koshihikari-sado",
       "name": "コシヒカリ（佐渡産）",
-      "reading": "",
+      "reading": "こしひかり（さどさん）",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「コシヒカリ（佐渡産）」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、お刺身などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "佐渡の豊かな海風と棚田の昼夜の寒暖差が育んだコシヒカリ。魚沼産とは一線を画す、澄んだ香りと輪郭の際立つ粒立ち、すっきりとした後味が特徴で、素材本来の味わいを引き立てる一膳です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 4
@@ -281,11 +281,11 @@
     {
       "id": "goropikari",
       "name": "ゴロピカリ",
-      "reading": "",
+      "reading": "ごろぴかり",
       "prefecture": "群馬県",
       "region": "関東・甲信越",
-      "headline": "群馬県の「ゴロピカリ」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、すき焼きなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ゴロピカリは、雷の多い群馬県の気候にちなんで名付けられたお米です。甘みと粘りが穏やかであっさりとした味わいを持ち、しっかりとした粒感があるため、日常の和食やおかずの味を引き立てます。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 3
@@ -293,11 +293,11 @@
     {
       "id": "sagabiyori",
       "name": "さがびより",
-      "reading": "",
+      "reading": "さがびより",
       "prefecture": "佐賀県",
       "region": "九州・沖縄",
-      "headline": "佐賀県の「さがびより」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「さがびより」は、佐賀県で育まれた大粒でしっかりとした弾力が特徴のお米です。豊かな甘みと旨みを持ちながら、汁気を吸っても崩れにくいため、丼ものや日々の和食のおかずと素晴らしい相性を見せます。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -305,11 +305,11 @@
     {
       "id": "sakihokore",
       "name": "サキホコレ",
-      "reading": "",
+      "reading": "さきほこれ",
       "prefecture": "秋田県",
       "region": "北海道・東北",
-      "headline": "秋田県の「サキホコレ」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、焼き魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "あきたこまちの系譜を継ぐ秋田県の新たなフラッグシップであり、粒立ちの良さと噛むほどに広がる豊かな甘み、そして炊きたての華やかな香りが特徴の上級銘柄です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 4
@@ -317,11 +317,11 @@
     {
       "id": "sasanishiki",
       "name": "ササニシキ",
-      "reading": "",
+      "reading": "ささにしき",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「ササニシキ」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、お寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "宮城県を代表するブランド米であり、粘りが少なく口どけが良いあっさり系の代表格。米自体の主張が控えめなため、寿司のシャリや繊細な和食の味わいを引き立てるお米として長く愛されています。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 1
@@ -329,11 +329,11 @@
     {
       "id": "date-masayume",
       "name": "だて正夢",
-      "reading": "",
+      "reading": "だてまさゆめ",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「だて正夢」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、豚の角煮などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "はっきりとしたもっちり感と豊かな甘みが際立つ宮城の新しい品種で、どっしりとした濃い味付けの料理を受け止める粘りの強さが持ち味です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 5
@@ -341,11 +341,11 @@
     {
       "id": "tsugaru-roman",
       "name": "つがるロマン",
-      "reading": "",
+      "reading": "つがるろまん",
       "prefecture": "青森県",
       "region": "北海道・東北",
-      "headline": "青森県の「つがるロマン」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、焼き魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ふっくらしつつ粒が立つ青森の日常米で、コシヒカリの系統を引きながらも主張しすぎない上品な甘みと適度な粘りのバランスが良く、焼き魚や汁物といった毎日の和食に静かに寄り添う味わいが魅力です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -353,11 +353,11 @@
     {
       "id": "tsukiakari",
       "name": "つきあかり",
-      "reading": "",
+      "reading": "つきあかり",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「つきあかり」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "早生品種でありながら大粒でやわらかく炊き上がり、優れた吸水性を活かしたタレを含んだ料理と抜群の相性を見せる新潟県産の銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -365,11 +365,11 @@
     {
       "id": "tsubuzoroi",
       "name": "つぶぞろい",
-      "reading": "",
+      "reading": "つぶぞろい",
       "prefecture": "秋田県",
       "region": "北海道・東北",
-      "headline": "秋田県の「つぶぞろい」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「つぶぞろい」は、秋田県で開発された大粒で粒立ちが良く、しっかりとした噛み応えと噛むほどに広がる旨みが特徴の、お弁当や丼ものに最適なブランド米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -377,11 +377,11 @@
     {
       "id": "tsuyahime",
       "name": "つや姫",
-      "reading": "",
+      "reading": "つやひめ",
       "prefecture": "山形県",
       "region": "北海道・東北",
-      "headline": "山形県の「つや姫」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、焼き魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "炊き上がりの際立つ白さと輝き、そして噛むほどに広がる上品な甘みが特徴の、山形県が誇る上級ブランド米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 4
@@ -389,11 +389,11 @@
     {
       "id": "tenkomori",
       "name": "てんこもり",
-      "reading": "",
+      "reading": "てんこもり",
       "prefecture": "富山県",
       "region": "東海・北陸",
-      "headline": "富山県の「てんこもり」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、日常の和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "甘みと旨みがしっかりと乗る富山県育成の中生品種で、炊き上がりの美しいツヤとバランスの良い食感が日常の食卓を豊かに彩ります。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -401,11 +401,11 @@
     {
       "id": "tentakaku",
       "name": "てんたかく",
-      "reading": "",
+      "reading": "てんたかく",
       "prefecture": "富山県",
       "region": "東海・北陸",
-      "headline": "富山県の「てんたかく」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、お寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "立山連峰の名にちなみ富山県で生まれた早生品種「てんたかく」は、あっさりした後味と程よい粒感が特徴の一膳です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -413,11 +413,11 @@
     {
       "id": "tochigi-no-hoshi",
       "name": "とちぎの星",
-      "reading": "",
+      "reading": "とちぎのほし",
       "prefecture": "栃木県",
       "region": "関東・甲信越",
-      "headline": "栃木県の「とちぎの星」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「とちぎの星」は、栃木県が誇る大粒でしっかりとした噛み応えが特徴のブランド米で、豊かな旨みとタレや油に負けない存在感を持ち、日常の食卓から特別なもてなしの席まで幅広く活躍する上級銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 3
@@ -425,11 +425,11 @@
     {
       "id": "nasuhikari",
       "name": "なすひかり",
-      "reading": "",
+      "reading": "なすひかり",
       "prefecture": "栃木県",
       "region": "関東・甲信越",
-      "headline": "栃木県の「なすひかり」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、煮物などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "コシヒカリの系譜を受け継ぎ、豊かな水と大地で育まれた栃木県オリジナル品種。穏やかな甘みと優れた粘りが特徴で、毎日の食卓に自然に寄り添うお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 4
@@ -437,11 +437,11 @@
     {
       "id": "natsuhonoka",
       "name": "なつほのか",
-      "reading": "",
+      "reading": "なつほのか",
       "prefecture": "鹿児島県",
       "region": "九州・沖縄",
-      "headline": "鹿児島県の「なつほのか」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、鶏飯などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "南九州の豊かな太陽を浴びて育った「なつほのか」は、暑さに強い鹿児島の新品種であり、澄んだ味わいとしっかりとした粒立ち、そして冷めても美味しさが長持ちする高い品質を兼ね備えたお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -449,11 +449,11 @@
     {
       "id": "nanatsuboshi",
       "name": "ななつぼし",
-      "reading": "",
+      "reading": "ななつぼし",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「ななつぼし」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、お寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "甘み、硬さ、粘りのバランスが非常に優れた北海道の代表格であり、冷めても粒の輪郭がしっかり保たれるためお弁当や酢飯などのシーンで頼もしい実力を発揮します。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -461,11 +461,11 @@
     {
       "id": "nikomaru",
       "name": "にこまる",
-      "reading": "",
+      "reading": "にこまる",
       "prefecture": "長崎県",
       "region": "九州・沖縄",
-      "headline": "長崎県の「にこまる」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、長崎ちゃんぽんなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で強いツヤともっちりとした食感を誇り、九州の温暖な気候のもとで育つことで優れた良食味を発揮する長崎県産の品種です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -473,11 +473,11 @@
     {
       "id": "nijinokirameki",
       "name": "にじのきらめき",
-      "reading": "",
+      "reading": "にじのきらめき",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「にじのきらめき」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "にじのきらめきは、地球温暖化に対応した大粒の品種であり、汁気のある料理に合わせても形が崩れにくく、お弁当や丼もの、カレーなどに最適な全国展開のブランド米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -485,11 +485,11 @@
     {
       "id": "haenuki",
       "name": "はえぬき",
-      "reading": "",
+      "reading": "はえぬき",
       "prefecture": "山形県",
       "region": "北海道・東北",
-      "headline": "山形県の「はえぬき」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "一粒一粒がしっかりと立ち上がり、冷めても美味しさが長持ちするため、お弁当やおにぎり、外食産業など幅広いシーンで重宝されている山形県の主力銘柄です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -497,11 +497,11 @@
     {
       "id": "hatsushimo",
       "name": "ハツシモ",
-      "reading": "",
+      "reading": "はつしも",
       "prefecture": "岐阜県",
       "region": "東海・北陸",
-      "headline": "岐阜県の「ハツシモ」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、高級寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で崩れにくい特徴を持ち、美濃の晩生品種として寿司職人を中心に長く求められてきた岐阜県を代表するお米です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 5,
       "stickiness": 2
@@ -509,11 +509,11 @@
     {
       "id": "hanaechizen",
       "name": "ハナエチゼン",
-      "reading": "",
+      "reading": "はなえちぜん",
       "prefecture": "福井県",
       "region": "東海・北陸",
-      "headline": "福井県の「ハナエチゼン」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、お弁当などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "コシヒカリよりも早く実る北陸の早生品種であり、さっぱりとした爽やかな口当たりとしっかりした粒感が魅力の銘柄です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -521,11 +521,11 @@
     {
       "id": "harumi",
       "name": "はるみ",
-      "reading": "",
+      "reading": "はるみ",
       "prefecture": "神奈川県",
       "region": "関東・甲信越",
-      "headline": "特長ある奈川県の「はるみ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、焼き魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "特長ある奈川県の風土が生んだ、ふっくらまとまる美しい炊き上がりと上品な香りが特徴の実力派品種です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -533,11 +533,11 @@
     {
       "id": "pikamaru",
       "name": "ぴかまる",
-      "reading": "",
+      "reading": "ぴかまる",
       "prefecture": "福岡県",
       "region": "九州・沖縄",
-      "headline": "福岡県の「ぴかまる」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "低アミロース系ならではの強い粘りとふくよかな甘みが特徴の福岡県産米。冷めても硬くなりにくい優れた性質を持ち、おにぎりや作り置きの食卓でその持ち味が存分に発揮されます。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 1,
       "stickiness": 5
@@ -545,10 +545,10 @@
     {
       "id": "hikari-shinseiki",
       "name": "ヒカリ新世紀",
-      "reading": "",
+      "reading": "ひかりしんせいき",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「ヒカリ新世紀」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、和食全般などに合わせやすい一膳です。",
+      "headline": "ヒノヒカリの系譜を受け継ぎ、粒揃いの安定感と優れた調和性を誇る実力派の銘柄です。",
       "confidence": "medium",
       "sweetness": 4,
       "hardness": 3,
@@ -557,11 +557,11 @@
     {
       "id": "hitomebore",
       "name": "ひとめぼれ",
-      "reading": "",
+      "reading": "ひとめぼれ",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「ひとめぼれ」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、焼肉などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "コシヒカリの系統を受け継ぐふんわりとしたやわらかさと程よい粘りを持ち、和洋を問わず毎日の献立を穏やかに引き立てるお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 4
@@ -569,11 +569,11 @@
     {
       "id": "hinohikari",
       "name": "ヒノヒカリ",
-      "reading": "",
+      "reading": "ひのひかり",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「ヒノヒカリ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、和食全般などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "西日本の食卓を支える定番銘柄であり、主張しすぎず様々なおかずの美味しさを引き立てるバランスの取れたお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -581,11 +581,11 @@
     {
       "id": "himenorin",
       "name": "ひめの凜",
-      "reading": "",
+      "reading": "ひめのりん",
       "prefecture": "愛媛県",
       "region": "中国・四国",
-      "headline": "愛媛県の「ひめの凜」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、鯛めしなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "凛とした食感と大粒な存在感が際立つ愛媛県発の品種。すっきりした後味の中に豊かな甘みが広がり、日々の食卓を上品に彩ります。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -593,11 +593,11 @@
     {
       "id": "hyakumangoku",
       "name": "ひゃくまん穀",
-      "reading": "",
+      "reading": "ひゃくまんごく",
       "prefecture": "石川県",
       "region": "東海・北陸",
-      "headline": "石川県の「ひゃくまん穀」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、治部煮などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒でしっかりとした噛み応えと豊かな旨みを持ち、石川の豊かな食文化を支える頼もしい存在です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 2
@@ -605,11 +605,11 @@
     {
       "id": "fukuhibiki",
       "name": "ふくひびき",
-      "reading": "",
+      "reading": "ふくひびき",
       "prefecture": "福島県",
       "region": "北海道・東北",
-      "headline": "福島県の「ふくひびき」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、加工用ごはんなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "多収性を持つ掛米として育成されたふくひびきは、粒が大きくしっかりとした食感を持ち、福島県を中心に業務や加工の現場で重宝されている品種です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -617,11 +617,11 @@
     {
       "id": "fukumaru",
       "name": "ふくまる",
-      "reading": "",
+      "reading": "ふくまる",
       "prefecture": "茨城県",
       "region": "関東・甲信越",
-      "headline": "茨城県の「ふくまる」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "茨城県が生んだ大粒の新品種。ふっくらとした炊き上がりとしっかりとした噛み応えが特徴で、粒の存在感を活かした献立に寄り添うお米です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -629,11 +629,11 @@
     {
       "id": "fusaotome",
       "name": "ふさおとめ",
-      "reading": "",
+      "reading": "ふさおとめ",
       "prefecture": "千葉県",
       "region": "関東・甲信越",
-      "headline": "千葉県の「ふさおとめ」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、お寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "軽やかで澄んだ味わいと優れた冷めよさを持ち、房総の豊かな海鮮やお弁当の時間を心地よく引き立てる千葉県の早生品種。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 2
@@ -641,11 +641,11 @@
     {
       "id": "fusakogane",
       "name": "ふさこがね",
-      "reading": "",
+      "reading": "ふさこがね",
       "prefecture": "千葉県",
       "region": "関東・甲信越",
-      "headline": "千葉県の「ふさこがね」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒でふっくらとした食感が特徴の千葉県産米であり、冷めてもその持ち味が長く続くことから、おにぎりやお弁当などに幅広く活用されています。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -653,11 +653,11 @@
     {
       "id": "fukkurinko",
       "name": "ふっくりんこ",
-      "reading": "",
+      "reading": "ふっくりんこ",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「ふっくりんこ」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、和風ハンバーグなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "名前のとおりふっくらとした炊き上がりが持ち味で、優しい口当たりと奥行きのある甘みを備えた北海道のブランド米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -665,11 +665,11 @@
     {
       "id": "hoshijirushi",
       "name": "ほしじるし",
-      "reading": "",
+      "reading": "ほしじるし",
       "prefecture": "茨城県",
       "region": "関東・甲信越",
-      "headline": "茨城県の「ほしじるし」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、日常の和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粒揃いがよく癖のない味わいが特徴の茨城県産米で、毎日の食卓や和食のおかずを引き立てる素直な扱いやすさが魅力です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -677,11 +677,11 @@
     {
       "id": "hoshinoyume",
       "name": "ほしのゆめ",
-      "reading": "",
+      "reading": "ほしのゆめ",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「ほしのゆめ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、おひたしなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "軽やかであっさりとした口当たりが特徴の北海道米で、重たさが残らないため朝の和食や定食の席にそっと寄り添います。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -689,11 +689,11 @@
     {
       "id": "masshigura",
       "name": "まっしぐら",
-      "reading": "",
+      "reading": "まっしぐら",
       "prefecture": "青森県",
       "region": "北海道・東北",
-      "headline": "青森県の「まっしぐら」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粘りが少なく歯ごたえのある青森県産米「まっしぐら」は、豊かな粒立ちと優れた汁気への適応力で、タレを絡める料理や丼もの、お弁当の主役として頼もしい存在感を発揮します。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -701,11 +701,11 @@
     {
       "id": "manamusume",
       "name": "まなむすめ",
-      "reading": "",
+      "reading": "まなむすめ",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「まなむすめ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、煮魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ササニシキの系統を受け継ぐ宮城県の品種であり、穏やかな甘みと主張しすぎないバランスの良い味わいが特徴です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -713,11 +713,11 @@
     {
       "id": "mie-no-yume",
       "name": "みえのゆめ",
-      "reading": "",
+      "reading": "みえのゆめ",
       "prefecture": "三重県",
       "region": "東海・北陸",
-      "headline": "三重県の「みえのゆめ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、てこね寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粒揃いがよく味わいの起伏が穏やかな三重県の品種で、主張しすぎない素直な美味しさが毎日の食卓にそっと寄り添います。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -725,11 +725,11 @@
     {
       "id": "mizukagami",
       "name": "みずかがみ",
-      "reading": "",
+      "reading": "みずかがみ",
       "prefecture": "滋賀県",
       "region": "近畿",
-      "headline": "滋賀県の「みずかがみ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、お弁当などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "琵琶湖の水系で育まれた環境配慮型の滋賀県産米。澄んだ口当たりと冷めても落ちにくい甘みが、日常の食卓やお弁当に優しく寄り添います。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -737,11 +737,11 @@
     {
       "id": "mizuhonokagayaki",
       "name": "みずほの輝き",
-      "reading": "",
+      "reading": "みずほのかがやき",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「みずほの輝き」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒でつややかな炊き上がりと、コシヒカリ譲りの甘みがありながらもすっきりとした粘りが特徴の新潟県産米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -749,11 +749,11 @@
     {
       "id": "mineasahi",
       "name": "ミネアサヒ",
-      "reading": "",
+      "reading": "みねあさひ",
       "prefecture": "愛知県",
       "region": "東海・北陸",
-      "headline": "愛知県の「ミネアサヒ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "愛知県の中山間地が育むミネアサヒは、豊かな自然環境が生み出すほのかな甘みと、やわらかくも心地よい粘りの均衡が魅力の銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -761,11 +761,11 @@
     {
       "id": "milky-queen",
       "name": "ミルキークイーン",
-      "reading": "",
+      "reading": "みるきーくいーん",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「ミルキークイーン」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "コシヒカリの遺伝子を受け継ぎ、低アミロース米ならではのもちもちとした粘りと強い甘みを存分に楽しめる銘柄です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 1,
       "stickiness": 5
@@ -773,11 +773,11 @@
     {
       "id": "milky-princess",
       "name": "ミルキープリンセス",
-      "reading": "",
+      "reading": "みるきーぷりんせす",
       "prefecture": "全国",
       "region": "全国銘柄",
-      "headline": "全国の「ミルキープリンセス」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ミルキークイーンの系統を受け継ぎ、より大粒で強い粘りとやわらかさを誇る低アミロース米。冷めても続く口当たりの良さが魅力です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 1,
       "stickiness": 5
@@ -785,11 +785,11 @@
     {
       "id": "menkoina",
       "name": "めんこいな",
-      "reading": "",
+      "reading": "めんこいな",
       "prefecture": "秋田県",
       "region": "北海道・東北",
-      "headline": "秋田県の「めんこいな」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、お寿司などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "あっさりとした後味と控えめな粘りが特徴の秋田県産米です。酢飯やカレーなど、汁気や酸味を伴う料理と相性が良く、冷めても美味しさが続きます。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -797,11 +797,11 @@
     {
       "id": "yudai21",
       "name": "ゆうだい21",
-      "reading": "",
+      "reading": "ゆうだい21",
       "prefecture": "栃木県",
       "region": "関東・甲信越",
-      "headline": "栃木県の「ゆうだい21」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大学の研究から生まれ、豊かな甘みと強い粘りが特徴の栃木県の銘柄です。噛むほどに旨みが広がり、余韻が長く残るお米として注目を集めています。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 4
@@ -809,11 +809,11 @@
     {
       "id": "yukisayaka",
       "name": "ゆきさやか",
-      "reading": "",
+      "reading": "ゆきさやか",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「ゆきさやか」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、白身魚の刺身などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "低アミロース米ならではの豊かな甘みとやわらかな粘りをもち、冷めても硬くなりにくい特徴から日常の食卓で親しまれている北海道のお米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -821,11 +821,11 @@
     {
       "id": "yukinko-mai",
       "name": "ゆきん子舞",
-      "reading": "",
+      "reading": "ゆきんこまい",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「ゆきん子舞」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、炒飯などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で歯ごたえが良くあっさりとした味わいが特徴の、新潟県でコシヒカリ、こしいぶきに次ぐ作付け規模を誇る早生品種です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 2
@@ -833,11 +833,11 @@
     {
       "id": "yumeobako",
       "name": "ゆめおばこ",
-      "reading": "",
+      "reading": "ゆめおばこ",
       "prefecture": "秋田県",
       "region": "北海道・東北",
-      "headline": "秋田県の「ゆめおばこ」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "あきたこまちの系統を受け継ぎ、ふっくらとした炊き上がりと冷めても硬くなりにくい優れた特性を持つ秋田県の良食味品種です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -845,11 +845,11 @@
     {
       "id": "yumepirika",
       "name": "ゆめぴりか",
-      "reading": "",
+      "reading": "ゆめぴりか",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「ゆめぴりか」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、卵かけご飯などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "低アミロース米ならではの豊かな甘みと強い粘りを持つ、北海道を代表する上級銘柄です。炊き上がりの美しいツヤと冷めても失われないやわらかさは、日々の食卓やお弁当を贅沢に彩ります。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 1,
       "stickiness": 5
@@ -857,11 +857,11 @@
     {
       "id": "yumemizuho",
       "name": "ゆめみづほ",
-      "reading": "",
+      "reading": "ゆめみづほ",
       "prefecture": "石川県",
       "region": "東海・北陸",
-      "headline": "石川県の「ゆめみづほ」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ひとめぼれとコシヒカリの系譜を受け継ぎ、石川県で広く親しまれる早生品種。ほどよい粘りと歯ごたえを備え、日常の食卓をしっかりと支える実力派です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -869,11 +869,11 @@
     {
       "id": "yosakoi-bijin",
       "name": "よさ恋美人",
-      "reading": "",
+      "reading": "よさこいびじん",
       "prefecture": "高知県",
       "region": "中国・四国",
-      "headline": "高知県の「よさ恋美人」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、鰹のたたきなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "高知の大自然と豊かな清流が育んだ「よさ恋美人」は、穏やかな香りと豊かな甘みが調和し、郷土料理の力強い味わいにもしっかりと寄り添う銘柄です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -881,11 +881,11 @@
     {
       "id": "ai-hitotsubu",
       "name": "愛ひとつぶ",
-      "reading": "",
+      "reading": "あいひとつぶ",
       "prefecture": "愛知県",
       "region": "東海・北陸",
-      "headline": "愛知県の「愛ひとつぶ」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、ひつまぶしなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で香り立ちがよく、弾力のあるもっちり感と優れたタレのなじみ深さを持つ、愛知県の風土が育んだ力強い味わいの銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 4
@@ -893,11 +893,11 @@
     {
       "id": "ichibanboshi",
       "name": "一番星",
-      "reading": "",
+      "reading": "いちばんぼし",
       "prefecture": "茨城県",
       "region": "関東・甲信越",
-      "headline": "茨城県の「一番星」は、穏やかな甘みで、日常の食卓に馴染みやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粘りが控えめであっさりとした茨城県産の品種であり、冷めても粒の輪郭がしっかりと保たれるため、お弁当や炒飯、カレーといった幅広い料理に適しています。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 2
@@ -905,11 +905,11 @@
     {
       "id": "kyoshikibu",
       "name": "京式部",
-      "reading": "",
+      "reading": "きょうしきぶ",
       "prefecture": "京都府",
       "region": "近畿",
-      "headline": "京都府の「京式部」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、おばんざいなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "京の食卓に優しく寄り添うように育まれた、旨みの厚みと上品な後味が調和する京都府産のブランド米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -917,11 +917,11 @@
     {
       "id": "kinnoibuki",
       "name": "金のいぶき",
-      "reading": "",
+      "reading": "きんのいぶき",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「金のいぶき」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、玄米ごはんなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "一般的な白米とは一線を画す、宮城県が育成した巨大胚芽と高アミロースがもたらす玄米向けの個性派品種です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 5,
       "stickiness": 2
@@ -929,11 +929,11 @@
     {
       "id": "konjiki-no-kaze",
       "name": "金色の風",
-      "reading": "",
+      "reading": "こんじきのかぜ",
       "prefecture": "岩手県",
       "region": "北海道・東北",
-      "headline": "岩手県の「金色の風」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、ステーキなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "岩手県が総力を挙げて育て上げた、ふんわりとした口当たりと豊かな甘みが心を満たす上質な銘柄です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -941,11 +941,11 @@
     {
       "id": "gin-no-mikazuki",
       "name": "銀の朏",
-      "reading": "",
+      "reading": "ぎんのみかづき",
       "prefecture": "岐阜県",
       "region": "東海・北陸",
-      "headline": "岐阜県の「銀の朏」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "「いのちの壱」から厳選された指定生産者のみが栽培し、大粒な外観と豊かな甘み、芳醇な香りを誇る特別な商標銘柄です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 2,
       "stickiness": 4
@@ -953,11 +953,11 @@
     {
       "id": "ginga-no-shizuku",
       "name": "銀河のしずく",
-      "reading": "",
+      "reading": "ぎんがのしずく",
       "prefecture": "岩手県",
       "region": "北海道・東北",
-      "headline": "岩手県の「銀河のしずく」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、焼き魚などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "際立つ白さと透き通るようなツヤを備えた岩手県の品種。軽やかな食感と程よい粒感が特徴で、朝食の焼き魚やおひたしに静かに寄り添う上品な日常米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 3
@@ -965,11 +965,11 @@
     {
       "id": "musubi-no-kami",
       "name": "結びの神",
-      "reading": "",
+      "reading": "むすびのかみ",
       "prefecture": "三重県",
       "region": "東海・北陸",
-      "headline": "三重県の「結びの特長ある」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、松阪牛のすき焼きなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で旨みに厚みを持つ三重県のブランド米。主張しすぎないバランスの良さが、上質な主菜の味わいを引き立てます。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -977,11 +977,11 @@
     {
       "id": "genki-tsukushi",
       "name": "元気つくし",
-      "reading": "",
+      "reading": "げんきつくし",
       "prefecture": "福岡県",
       "region": "九州・沖縄",
-      "headline": "福岡県の「元気つくし」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、もつ鍋の締めなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "暑さに強くしっかりとした食感を保つ福岡の品種であり、粒がやや大きめで食べ応えがあり、濃い味付けの料理ともよく釣り合います。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -989,11 +989,11 @@
     {
       "id": "sai-no-kagayaki",
       "name": "彩のかがやき",
-      "reading": "",
+      "reading": "さいのかがやき",
       "prefecture": "埼玉県",
       "region": "関東・甲信越",
-      "headline": "埼玉県の「彩のかがやき」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粘りが控えめであっさりとした埼玉県の品種「彩のかがやき」は、汁気を含んでもべたつかず、ルーやタレの味わいをしっかりと受け止めます。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -1001,11 +1001,11 @@
     {
       "id": "sai-no-kizuna",
       "name": "彩のきずな",
-      "reading": "",
+      "reading": "さいのきずな",
       "prefecture": "埼玉県",
       "region": "関東・甲信越",
-      "headline": "埼玉県の「彩のきずな」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、天ぷらなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "高温化する気候の中でも健やかに育つ埼玉の主力品種であり、穏やかな甘みとうま味のバランスに優れ、冷めても食感が持続することから日常使いに優れた実力派のお米です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 3,
       "stickiness": 3
@@ -1013,11 +1013,11 @@
     {
       "id": "shinnosuke",
       "name": "新之助",
-      "reading": "",
+      "reading": "しんのすけ",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「新之助」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、すき焼きなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒でしっかりとした粒感を持ちながら、噛むほどに豊かな甘みとコクが広がる、新潟県が誇るプレミアムなブランド米です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 4,
       "stickiness": 4
@@ -1025,11 +1025,11 @@
     {
       "id": "mori-no-kumasan",
       "name": "森のくまさん",
-      "reading": "",
+      "reading": "もりのくまさん",
       "prefecture": "熊本県",
       "region": "九州・沖縄",
-      "headline": "熊本県の「森のくまさん」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、馬刺しなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ヒノヒカリとコシヒカリの系譜を受け継ぎ、香りのよさと豊かな粘り、上品な甘みが均衡よく整った熊本県を代表する人気銘柄です。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 3,
       "stickiness": 4
@@ -1037,11 +1037,11 @@
     {
       "id": "nitamai",
       "name": "仁多米",
-      "reading": "",
+      "reading": "にたまい",
       "prefecture": "島根県",
       "region": "中国・四国",
-      "headline": "島根県の「仁多米」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "中国山地の豊かな水と深い寒暖差に育まれた奥出雲のコシヒカリは、もっちりとした粘りと噛むほどに広がる豊かな甘みが魅力の一膳です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 2,
       "stickiness": 4
@@ -1049,11 +1049,11 @@
     {
       "id": "hoshizoramai",
       "name": "星空舞",
-      "reading": "",
+      "reading": "ほしぞらまい",
       "prefecture": "鳥取県",
       "region": "中国・四国",
-      "headline": "鳥取県の「星空舞」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "しっかりとした粒立ちと程よい粘りのバランスが特徴の鳥取県産米で、汁気をしっかり受け止めながらもべたつかず、丼ものやカレーと抜群の相性を見せます。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1061,11 +1061,11 @@
     {
       "id": "seiten-no-hekireki",
       "name": "青天の霹靂",
-      "reading": "",
+      "reading": "せいてんのへきれき",
       "prefecture": "青森県",
       "region": "北海道・東北",
-      "headline": "青森県の「青天の霹靂」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、海鮮丼などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粘りとキレの絶妙な均衡が生み出す、上品な甘みが残るさっぱりとした味わいが魅力の青森県産ブランド米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1073,11 +1073,11 @@
     {
       "id": "yukihotaka",
       "name": "雪ほたか",
-      "reading": "",
+      "reading": "ゆきほたか",
       "prefecture": "群馬県",
       "region": "関東・甲信越",
-      "headline": "群馬県の「雪ほたか」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "群馬県川場村の豊かな自然環境の中で育まれる「雪ほたか」は、武尊山の雪解け水と寒暖差を活かして栽培される、深い甘みと粘りが特徴のコシヒカリの産地ブランドです。",
+      "confidence": "high",
       "sweetness": 4,
       "hardness": 2,
       "stickiness": 4
@@ -1085,11 +1085,11 @@
     {
       "id": "yukiwakamaru",
       "name": "雪若丸",
-      "reading": "",
+      "reading": "ゆきわかまる",
       "prefecture": "山形県",
       "region": "北海道・東北",
-      "headline": "山形県の「雪若丸」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、チャーハンなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "雪のような白さと弾けるような粒感を併せ持ち、しっかりとした噛みごたえとすっきりした食味が楽しめる山形県のブランド米です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 3
@@ -1097,11 +1097,11 @@
     {
       "id": "daichi-no-hoshi",
       "name": "大地の星",
-      "reading": "",
+      "reading": "だいちのほし",
       "prefecture": "北海道",
       "region": "北海道・東北",
-      "headline": "北海道の「大地の星」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、カレーライスなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で粘りが控えめな北海道の品種であり、汁気を含んでも形が崩れにくく煮込み系の料理と見事に調和します。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 5,
       "stickiness": 2
@@ -1109,11 +1109,11 @@
     {
       "id": "ten-no-tsubu",
       "name": "天のつぶ",
-      "reading": "",
+      "reading": "てんのつぶ",
       "prefecture": "福島県",
       "region": "北海道・東北",
-      "headline": "福島県の「天のつぶ」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、とんかつなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "一粒一粒がしっかりと立ち上がる美しい粒感と、あっさりとした後味が魅力の福島県が誇る実力派品種です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 4,
       "stickiness": 2
@@ -1121,10 +1121,10 @@
     {
       "id": "norin48",
       "name": "農林48号",
-      "reading": "",
+      "reading": "のうりんよんじゅうはちごう",
       "prefecture": "山梨県",
       "region": "関東・甲信越",
-      "headline": "山梨県の「農林48号」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、お刺身などに合わせやすい一膳です。",
+      "headline": "作付けが限られ、地元でわずかに流通する山梨の稀少種です。豊かな香りと深い旨みが際立ち、和食の職人から求められてきた一膳です。",
       "confidence": "medium",
       "sweetness": 4,
       "hardness": 2,
@@ -1133,11 +1133,11 @@
     {
       "id": "fufufu",
       "name": "富富富",
-      "reading": "",
+      "reading": "ふふふ",
       "prefecture": "富山県",
       "region": "東海・北陸",
-      "headline": "富山県の「富富富」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、白えびの天ぷらなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "富山の自然と情熱から生まれた「富富富」は、粒ぞろいの良さとやさしい甘みの均衡が取れた、日常の食卓から贈答まで幅広く寄り添う銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1145,11 +1145,11 @@
     {
       "id": "kazesayaka",
       "name": "風さやか",
-      "reading": "",
+      "reading": "かぜさやか",
       "prefecture": "長野県",
       "region": "関東・甲信越",
-      "headline": "長野県の「風さやか」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、山菜の天ぷらなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "長野県が生んだ「風さやか」は、透明感のある美しい粒立ちと軽やかな後味が特徴で、信州の豊かな食文化と見事に調和する端正なブランド米です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 3,
       "stickiness": 3
@@ -1157,11 +1157,11 @@
     {
       "id": "fuku-warai",
       "name": "福、笑い",
-      "reading": "",
+      "reading": "ふくわらい",
       "prefecture": "福島県",
       "region": "北海道・東北",
-      "headline": "福島県の「福、笑い」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、塩おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "福島の新しい上級銘柄として誕生した「福、笑い」は、炊きたての豊かな香りと際立つ甘み、そしてやわらかな食感が特徴のお米です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 2,
       "stickiness": 4
@@ -1169,11 +1169,11 @@
     {
       "id": "moeminori",
       "name": "萌えみのり",
-      "reading": "",
+      "reading": "もえみのり",
       "prefecture": "宮城県",
       "region": "北海道・東北",
-      "headline": "宮城県の「萌えみのり」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、お弁当などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "大粒で粘りを抑えたすっきりとした食感が特徴で、冷めても美味しさが長持ちするためお弁当やおうちごはんで頼りになる宮城県の品種です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 3
@@ -1181,11 +1181,11 @@
     {
       "id": "yumegokochi",
       "name": "夢ごこち",
-      "reading": "",
+      "reading": "ゆめごこち",
       "prefecture": "滋賀県",
       "region": "近畿",
-      "headline": "滋賀県の「夢ごこち」は、甘みがふくらみやすく、白ごはんだけでも満足感が出やすい。粘りがしっかりあり、もっちり感を楽しめる銘柄として、おにぎりなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "低アミロース米ならではの豊かな粘りと強い甘みが特徴で、もっちりとした食感と冷めても硬くなりにくい優れた性質を持ち合わせる品種です。",
+      "confidence": "high",
       "sweetness": 5,
       "hardness": 1,
       "stickiness": 5
@@ -1193,11 +1193,11 @@
     {
       "id": "yume-shizuku",
       "name": "夢しずく",
-      "reading": "",
+      "reading": "ゆめしずく",
       "prefecture": "佐賀県",
       "region": "九州・沖縄",
-      "headline": "佐賀県の「夢しずく」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、日常の和食などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "佐賀県が誇る「夢しずく」は、ふっくらとしたやわらかな口あたりと穏やかな粘りが特徴で、毎日の食卓の主役からお弁当まで幅広く寄り添う銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1205,11 +1205,11 @@
     {
       "id": "yume-tsukushi",
       "name": "夢つくし",
-      "reading": "",
+      "reading": "ゆめつくし",
       "prefecture": "福岡県",
       "region": "九州・沖縄",
-      "headline": "福岡県の「夢つくし」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、煮物などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "ふっくらと柔らかく優しい口当たりを持ち、毎日の食卓に自然に寄り添う福岡県の定番銘柄です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1217,11 +1217,11 @@
     {
       "id": "hazuki-minori",
       "name": "葉月みのり",
-      "reading": "",
+      "reading": "はづきみのり",
       "prefecture": "新潟県",
       "region": "関東・甲信越",
-      "headline": "新潟県の「葉月みのり」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、冷やし茶漬けなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "暑さ厳しい季節にいち早く新米の喜びを届ける、軽やかで後味のすっきりとした新潟県産の極早生品種です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 2,
       "stickiness": 3
@@ -1229,11 +1229,11 @@
     {
       "id": "satoyama-no-tsubu",
       "name": "里山のつぶ",
-      "reading": "",
+      "reading": "さとやまのつぶ",
       "prefecture": "福島県",
       "region": "北海道・東北",
-      "headline": "福島県の「里山のつぶ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、煮物などに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "粒が大きくタレや煮汁をたっぷりと抱え込む、福島が育んだ里の滋味深い味わいです。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 4,
       "stickiness": 3
@@ -1241,11 +1241,11 @@
     {
       "id": "tsubusuke",
       "name": "粒すけ",
-      "reading": "",
+      "reading": "つぶすけ",
       "prefecture": "千葉県",
       "region": "関東・甲信越",
-      "headline": "千葉県の「粒すけ」は、穏やかな甘みで、日常の食卓に馴染みやすい。ほどよい粘りで、幅広い料理に合わせやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "千葉県が新たに育て上げた大粒の新品種。しっかりとした粒感と豊かな旨みを持ち、日々の食卓を心地よく彩るバランスの優れたお米です。",
+      "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3
@@ -1265,11 +1265,11 @@
     {
       "id": "koi-no-yokan",
       "name": "恋の予感",
-      "reading": "",
+      "reading": "こいのよかん",
       "prefecture": "山口県",
       "region": "中国・四国",
-      "headline": "山口県の「恋の予感」は、甘みはすっきりめで、濃い味付けのおかずを引き立てやすい。粘りは控えめで、粒立ちを感じやすい銘柄として、丼ものなどに合わせやすい一膳です。",
-      "confidence": "medium",
+      "headline": "しっかりとした粒感と豊かな旨みを持ち、冷めても美味しさが続く山口県生まれの中生品種です。",
+      "confidence": "high",
       "sweetness": 2,
       "hardness": 5,
       "stickiness": 2

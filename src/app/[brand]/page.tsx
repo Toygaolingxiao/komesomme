@@ -5,13 +5,14 @@ import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { DetailScrollTracker } from "@/components/matrix/DetailScrollTracker";
 import { PurchaseLead, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { TasteContour } from "@/components/matrix/TasteContour";
-import { FOCUS } from "@/components/matrix/shared";
+import { LibraryCookingExcerpt } from "@/components/library/LibraryCookingExcerpt";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findRiceProfile, riceProfiles } from "@/data/rice/catalog";
 import { calculateTasteNeighbours } from "@/lib/rice/matrix";
 import {
   DISCLAIMER,
+  FOCUS,
   appetiteLine,
   coreTasteMetrics,
   drinkStyleLabels,
@@ -212,6 +213,8 @@ export default async function BrandPage({ params }: BrandPageProps) {
             {rice.sommelier_note}
           </blockquote>
         ) : null}
+
+        <LibraryCookingExcerpt riceId={rice.id} />
 
         <div className="mt-10">
           <TasteContour rice={rice} />

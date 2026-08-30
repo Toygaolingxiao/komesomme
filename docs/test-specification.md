@@ -38,6 +38,7 @@
 | 相談（live） | TS-CONSULT-03 | P0 | 任意 `@live` | ✓ 本番 |
 | 品鑑オーバーレイ | TS-DETAIL-01〜03 | P0 | ✓ | |
 | 銘柄ページ | TS-BRAND-01〜04 | P0 | ✓ | |
+| 銘柄ライブラリ | TS-LIBRARY-01〜03 | P1 | ✓ | |
 | 購入 4 CTA | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
 | 法務ページ | TS-LEGAL-01〜03 | P0 | ✓ | |
 | SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
@@ -127,6 +128,18 @@
 #### TS-BRAND-04 Mobile 横溢れなし
 - **viewport:** 390×844  
 - **期待:** `document` 横スクロール幅 ≈ innerWidth（許容 1px）
+
+#### TS-LIBRARY-01 `/library` が描画される
+- **期待:** 「銘柄ライブラリ」見出し、または記事未生成時の準備中  
+- **自動:** `e2e/library.spec.ts`
+
+#### TS-LIBRARY-02 事典が catalog 品鑑を引用する
+- **手順:** `/library/yumepirika`  
+- **期待:** 「米ソムリエの品鑑」、品鑑ページへのリンク、由来・炊飯セクション。hero は encyclopedia headline のみ（catalog `description` を再掲しない）
+
+#### TS-LIBRARY-03 品鑑ページが炊飯をライブラリから引用
+- **手順:** `/yumepirika`  
+- **期待:** 「美味しく炊く」とライブラリへのリンク
 
 ---
 
