@@ -12,6 +12,19 @@
 | `shop-inventory-gaps.md` | 購入 API 監査の**公開セーフ**ギャップ表（id / クラスのみ） |
 | `shop-inventory/`（gitignore） | 楽天・Yahoo の item URL 等を含む非公開 JSON |
 
+## 銘柄ライブラリ記事
+
+```bash
+npm run encyclopedia:generate -- --mode=template   # catalog 根拠の全文（API 不要）
+npm run encyclopedia:generate -- --mode=gemini     # Gemini で上書き（要 GEMINI_API_KEY）
+npm run encyclopedia:generate                      # auto: 不足を template → 可能なら Gemini
+```
+
+出力: `src/data/rice/encyclopedia/articles/*.json` + `manifest.json`  
+閲覧: `/library`
+
+Gemini 無料枠が尽きた日は template で完走し、翌日 `--mode=gemini` で上書きできる。
+
 ## 購入在庫監査（公式 API のみ）
 
 Amazon / 楽天 / Yahoo の**商品ページ HTML スクレイピングはしない**（規約・安定性）。  

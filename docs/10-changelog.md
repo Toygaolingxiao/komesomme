@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+## 0.5.0 — 2026-08
+
+### 銘柄ライブラリ
+
+- `/library` 可視化事典（検索・地域フィルタ・カード一覧）と `/library/[id]` 詳細
+- 構造化記事生成 `npm run encyclopedia:generate`（`--mode=template|gemini|auto`。禁止語フィルタ・catalog 根拠・円金額非記載）
+- Gemini 無料枠がある日は上書き生成、枠切れ時は template で 106 銘柄を完走可能
+- ホームヘッダーから「ライブラリ」へ導線
+
 ### 運営
 
 - `npm run inventory:audit`：全銘柄の楽天 / Yahoo 公式 API 在庫監査。詳細 JSON は gitignore、ギャップ表のみ `scripts/data/shop-inventory-gaps.md`（商品ペイロード非公開）

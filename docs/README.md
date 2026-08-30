@@ -35,6 +35,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
 | — | [test-specification.md](./test-specification.md) | 試験式样书（TS-*）· 自動テスト正本 |
 | — | [test-results.md](./test-results.md) | 直近の自動試験結果レポート（生成物） |
+| — | `/library`（アプリ） | 銘柄ライブラリ：検索・地域フィルタ・詳細事典 |
 | — | [scripts/data/README.md](../scripts/data/README.md) | 味わい再校正アーカイブと灌庫メモ |
 
 ## 読み分け

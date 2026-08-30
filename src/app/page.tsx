@@ -11,10 +11,18 @@ export default function HomePage() {
         <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
           <BrandLockup subtitle="米ソムリエが選ぶ、今日の一膳" />
         </Link>
-        <div className="flex max-w-[48%] shrink-0 flex-col items-end gap-0.5">
-          <p className="hidden font-serif text-[12px] tracking-wide text-[var(--km-muted)] sm:block">
-            味わいの地図
-          </p>
+        <div className="flex max-w-[52%] shrink-0 flex-col items-end gap-0.5">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/library"
+              className={`font-serif text-[11px] tracking-wide text-[var(--km-muted)] transition hover:text-[var(--km-gold)] sm:text-[12px] ${FOCUS}`}
+            >
+              ライブラリ
+            </Link>
+            <p className="hidden font-serif text-[12px] tracking-wide text-[var(--km-muted)] sm:block">
+              味わいの地図
+            </p>
+          </div>
           <SiteLegalNav />
         </div>
       </header>
