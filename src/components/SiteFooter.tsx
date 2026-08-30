@@ -38,6 +38,14 @@ export function SiteFooter() {
         <SiteLegalNav />
         <AffiliateDisclosure />
         <p>味わい評価は KomeSomme 独自基準による目安です。</p>
+        <p>
+          <Link
+            href="https://sommeatlas.com"
+            className={`transition hover:text-[var(--km-gold)] ${FOCUS}`}
+          >
+            Somme Atlas プロジェクト
+          </Link>
+        </p>
         <p>© {new Date().getFullYear()} KomeSomme</p>
       </div>
     </footer>

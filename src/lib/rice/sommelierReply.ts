@@ -1,7 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
+import {
+  geminiErrorMessage,
+  isDailyQuotaError,
+  isModelUnavailableError,
+  isRetryableQuotaError,
+  resolveGeminiChatModelChain,
+  sleep,
+} from "@/lib/gemini/modelChain";
 import { nameMatch } from "./semanticScore";
 
-const GEMINI_CHAT_MODEL = "gemini-3.6-flash";
 const OPENAI_CHAT_MODEL = "gpt-4o-mini";
 const MAX_REPLY_CHARS = 180;
 
@@ -58,7 +65,6 @@ function looksBroken(text: string): boolean {
   ) {
     return true;
   }
-  // Guest-facing copy is Japanese. A run of English is almost always a leaked rule.
   const latin = text.match(/[A-Za-z]{2,}/g) ?? [];
   if (latin.length >= 4 || latin.join("").length >= 16) return true;
   const opens = (text.match(/「/g) ?? []).length;
@@ -116,32 +122,84 @@ function extractGeminiText(payload: unknown): string {
   return "";
 }
 
+async function generateOnce(
+  ai: GoogleGenAI,
+  model: string,
+  prompt: string,
+  withThinking: boolean
+): Promise<string> {
+  const base = { temperature: 0.4, maxOutputTokens: 512 };
+  const response = await ai.models.generateContent({
+    model,
+    contents: prompt,
+    config: withThinking
+      ? { ...base, thinkingConfig: { thinkingBudget: 0, includeThoughts: false } }
+      : base,
+  });
+  return extractGeminiText(response);
+}
+
 async function generateWithGemini(prompt: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.");
 
   const ai = new GoogleGenAI({ apiKey });
-  const base = { temperature: 0.4, maxOutputTokens: 512 };
+  const modelChain = resolveGeminiChatModelChain();
+  const exhaustedModels = new Set<string>();
+  let lastError: unknown;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: GEMINI_CHAT_MODEL,
-      contents: prompt,
-      config: {
-        ...base,
-        thinkingConfig: { thinkingBudget: 0, includeThoughts: false },
-      },
-    });
-    return extractGeminiText(response);
-  } catch (cause) {
-    console.warn("Gemini thinkingConfig rejected, retrying without it:", cause);
-    const response = await ai.models.generateContent({
-      model: GEMINI_CHAT_MODEL,
-      contents: prompt,
-      config: base,
-    });
-    return extractGeminiText(response);
+  for (const model of modelChain) {
+    if (exhaustedModels.has(model)) continue;
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        let text = "";
+        try {
+          text = await generateOnce(ai, model, prompt, true);
+        } catch (cause) {
+          console.warn(`Gemini thinkingConfig rejected (${model}), retrying without:`, cause);
+          text = await generateOnce(ai, model, prompt, false);
+        }
+        if (!text.trim()) {
+          console.warn(`Empty sommelier reply (${model}), trying next…`);
+          break;
+        }
+        return text;
+      } catch (cause) {
+        lastError = cause;
+        const message = geminiErrorMessage(cause);
+
+        if (isModelUnavailableError(message)) {
+          console.warn(`Sommelier model unavailable (${model}), trying next…`);
+          break;
+        }
+        if (isDailyQuotaError(message)) {
+          exhaustedModels.add(model);
+          console.warn(`Sommelier daily quota exhausted (${model}), trying next…`);
+          break;
+        }
+        if (isRetryableQuotaError(message) && attempt < 3) {
+          const retryMatch = message.match(/retry in ([\d.]+)s/i);
+          const waitMs = retryMatch
+            ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 500, 12_000)
+            : attempt * 3_000;
+          console.warn(
+            `Sommelier rate limited (${model}). Waiting ${Math.round(waitMs / 1000)}s…`,
+          );
+          await sleep(waitMs);
+          continue;
+        }
+        if (isRetryableQuotaError(message)) {
+          exhaustedModels.add(model);
+          console.warn(`Sommelier quota still exhausted (${model}), trying next…`);
+          break;
+        }
+        throw cause;
+      }
+    }
   }
+
+  throw lastError instanceof Error ? lastError : new Error("Gemini sommelier chain exhausted");
 }
 
 async function generateWithOpenAI(prompt: string): Promise<string> {

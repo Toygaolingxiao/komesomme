@@ -349,11 +349,20 @@ export function FlavorMatrix() {
         body: JSON.stringify({ query: trimmed, matchCount: MATCH_LIMIT }),
       });
 
-      const body = (await response.json()) as {
+      const body = (await response.json().catch(() => null)) as {
         matches?: Array<{ rice?: RiceProfileV2; score?: number; reason?: string }>;
         reply?: string;
         message?: string;
-      };
+      } | null;
+
+      if (!body) {
+        setSemanticMatches([]);
+        setSemanticReply(
+          "相談に失敗しました。しばらくしてから、もう一度お試しください。"
+        );
+        setSemanticState("error");
+        return;
+      }
 
       if (!response.ok) {
         setSemanticMatches([]);

@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { isRetryableQuotaError, sleep } from "@/lib/gemini/modelChain";
 
 /**
  * Provider-agnostic embedding layer (server only).
@@ -124,6 +125,32 @@ export async function createEmbedding(
   }
 
   return provider === "openai" ? embedWithOpenAI(text) : embedWithGemini(text);
+}
+
+/** Live consultation: short backoff on 429. Same model only — DB vectors are model-scoped. */
+export async function createEmbeddingForConsultation(
+  input: string,
+  provider = resolveProvider()
+): Promise<number[]> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await createEmbedding(input, provider);
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (!isRetryableQuotaError(message) || attempt === 3) break;
+
+      const retryMatch = message.match(/retry in ([\d.]+)s/i);
+      const waitMs = retryMatch
+        ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 500, 10_000)
+        : attempt * 2_000;
+      await sleep(waitMs);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Consultation embed failed");
 }
 
 /**

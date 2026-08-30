@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createEmbedding, getEmbeddingModel, resolveProvider } from "@/lib/embedding";
+import { createEmbeddingForConsultation, getEmbeddingModel, resolveProvider } from "@/lib/embedding";
 import { expandConsultationQuery } from "@/lib/rice/consultExpand";
 import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
 import { buildSemanticReason } from "@/lib/rice/flavorBridge";
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
   let embedding: number[];
   try {
-    embedding = await createEmbedding(searchText, provider);
+    embedding = await createEmbeddingForConsultation(searchText, provider);
   } catch (cause) {
     console.error("Failed to embed consultation query:", cause);
     return NextResponse.json(

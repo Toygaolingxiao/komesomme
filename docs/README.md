@@ -31,7 +31,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 13 | [13-affiliate-compliance.md](./13-affiliate-compliance.md) | 楽天 API と他モール共存の隔離設計（**中国語**） |
 | 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo・さとふる VC の規約リンクと実装メモ |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
-| — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・Redeploy・ロールバック |
+| — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・**独自ドメイン・GSC**・Redeploy |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
 | — | [test-specification.md](./test-specification.md) | 試験式样书（TS-*）· 自動テスト正本 |
 | — | [test-results.md](./test-results.md) | 直近の自動試験結果レポート（生成物） |
@@ -49,6 +49,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | バージョンを上げる | 01 → 10（番号の正本は `VERSION`） |
 | 構想から今までの経緯 | 12（中国語） |
 | 本番公開までにやること | 11 |
+| 本番ドメイン・Google 検索登録 | [vercel-production.md](./vercel-production.md) §5–6 |
 | アフィリエイト各社の規約・転鎖 | 14（楽天隔離は 13） |
 | プライバシー / 利用規約 | `/privacy` `/terms` `/tokushoho` |
 

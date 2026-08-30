@@ -37,10 +37,10 @@
 相談フォーム
   → POST /api/rice/semantic-recommend { query, matchCount: 4 }
   → expandConsultationQuery（酒・料理・食味の補助語。画面には出さない）
-  → createEmbedding
+  → createEmbeddingForConsultation（429 時は短いバックオフ。モデルは `gemini-embedding-001` 固定）
   → RPC match_rice_profiles (p_embedding_model, match_count, match_threshold)
   → Flavor Bridge で reason を付与
-  → generateSommelierReply（Gemini `gemini-3.6-flash`。失敗時は OpenAI、それも失敗なら 1 位の reason。Top 4 は返す）
+  → generateSommelierReply（Gemini Flash-Lite 链 → 3.5-flash。枯渇時 OpenAI、それも失敗なら 1 位の reason。Top 4 は返す）
   → JSON { query, reply, embeddingModel, matches }
 ```
 
@@ -72,5 +72,7 @@
 ## 7. 短い返事
 
 `src/lib/rice/sommelierReply.ts`。鍵があるときだけ生成し、失敗しても Top 4 は返す。
+
+Gemini は `gemini-3.5-flash` → Lite チェーン（相談は品質優先。枠切れ時 Lite へ）。`SOMMELIER_GEMINI_MODEL` で先頭を上書き可。`3.6-flash` は日次 ~20 回のためチェーンから除外。
 
 禁止語は UI 正本と同じ（最強、圧倒的、究極、唯一無二、爆発、神、無敵）。

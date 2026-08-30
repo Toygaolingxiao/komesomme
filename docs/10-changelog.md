@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+## 0.5.2 — 2026-08
+
+- 相談返事 Gemini: `3.5-flash` 優先 → Lite フォールバック（品質優先。百科バッチは従来どおり Lite 優先）
+- 相談 embedding 429 短リトライ；CF 質詢で JSON 失敗時の UI メッセージ
+- `sitemap.xml` に `/library` と事典 URL；フッター Somme Atlas リンク
+- `vercel-production.md` §5–7（ドメイン・CF 防御。相談 POST 全量托管质询は非推奨）
+
 ## 0.5.1 — 2026-08
 
 - Gemini 事典を Flash-Lite 起点で 106 銘柄まで充足（無料枠はモデル別。`3.6` / `3.5` Flash 枯渇時は Lite へフォールバック）

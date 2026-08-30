@@ -52,6 +52,6 @@
 
 | 日付 | URL | 結果 | メモ |
 | --- | --- | --- | --- |
-| | | | |
+| 2026-08-30 | https://komesomme.jp | OK（ドメイン・301・GSC 登録） | `.com` / `sommeatlas.com` は CF 301→`.jp`。A〜E 全項目は次回 Desktop/Mobile で再実施推奨 |
 
 関連: [vercel-production.md](./vercel-production.md)、[11-launch-checklist.md](./11-launch-checklist.md)、自動試験式样 [test-specification.md](./test-specification.md)、直近結果 [test-results.md](./test-results.md)
