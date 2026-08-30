@@ -5,8 +5,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
   test("TS-BRAND-01 brand dossier renders via library", async ({ page }) => {
     const response = await page.goto(`/library/${STABLE_BRAND_ID}`);
     expect(response?.ok()).toBeTruthy();
-    await expect(page.getByRole("heading", { level: 1 }).or(page.locator("h1, h2").first())).toBeVisible();
-    await expect(page.locator("body")).toContainText("ゆめぴりか");
+    await expect(page.getByRole("heading", { level: 1, name: "ゆめぴりか" })).toBeVisible();
     await expect(page.locator("body")).toContainText("北海道");
   });
 

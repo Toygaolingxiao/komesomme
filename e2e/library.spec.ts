@@ -10,7 +10,8 @@ test.describe("TS-LIBRARY", () => {
     page,
   }) => {
     await page.goto("/library/yumepirika");
-    await expect(page.getByRole("heading", { name: "ゆめぴりか" })).toBeVisible();
+    // Purchase card also titles the brand; pin the page h1.
+    await expect(page.getByRole("heading", { level: 1, name: "ゆめぴりか" })).toBeVisible();
     await expect(page.getByText("米ソムリエメモ").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "由来と背景" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "季節と飲み物との相性" })).toBeVisible();
@@ -21,6 +22,6 @@ test.describe("TS-LIBRARY", () => {
     const response = await page.goto("/yumepirika");
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/\/library\/yumepirika/);
-    await expect(page.getByRole("heading", { name: "ゆめぴりか" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "ゆめぴりか" })).toBeVisible();
   });
 });
