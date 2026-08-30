@@ -496,15 +496,6 @@ export function FlavorMatrix() {
             loading={loadState === "loading" || semanticState === "pending"}
             onOpen={openDetail}
           />
-          {railMatches[0] && loadState !== "loading" && semanticState !== "pending" ? (
-            <ShopLinksStrip
-              rice={railMatches[0].rice}
-              variant="compact"
-              title="取扱オンラインショップ"
-              disclosure="pr"
-              className="rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]"
-            />
-          ) : null}
 
           <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             <div>
@@ -540,6 +531,17 @@ export function FlavorMatrix() {
           <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             {consult}
           </div>
+
+          {/* Layer 3: explore first, then ask for shops (collapsed until open). */}
+          {railMatches[0] && loadState !== "loading" && semanticState !== "pending" ? (
+            <ShopLinksStrip
+              rice={railMatches[0].rice}
+              variant="compact"
+              expandMode="disclosure"
+              disclosure="pr"
+              className="overflow-visible rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3"
+            />
+          ) : null}
         </div>
       )}
 

@@ -280,13 +280,6 @@ export function RecommendationRail({
                     onSelect={() => open(primary.rice.id)}
                     onHover={onHover}
                   />
-                  <ShopLinksStrip
-                    rice={primary.rice}
-                    variant="compact"
-                    title="取扱オンラインショップ"
-                    disclosure="pr"
-                    className="mt-2.5 rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3"
-                  />
                   {runnerUps.length > 0 ? (
                     <RunnerUpList
                       matches={runnerUps}
@@ -298,6 +291,14 @@ export function RecommendationRail({
                       onHover={onHover}
                     />
                   ) : null}
+                  {/* After discovery: collapsed shop CTA (Sommelier-first). */}
+                  <ShopLinksStrip
+                    rice={primary.rice}
+                    variant="compact"
+                    expandMode="disclosure"
+                    disclosure="pr"
+                    className="mt-3 border-t border-[var(--km-border)]/70 pt-3"
+                  />
                 </>
               ) : null}
             </motion.div>

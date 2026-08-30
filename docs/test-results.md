@@ -1,6 +1,6 @@
 # 試験結果レポート
 
-生成: **2026-08-29T17:09:14.318Z** · 式样: [test-specification.md](./test-specification.md) · 製品: [`VERSION`](../VERSION)
+生成: **2026-08-30T04:15:10.164Z** · 式样: [test-specification.md](./test-specification.md) · 製品: [`VERSION`](../VERSION)
 
 ## 総合判定
 
@@ -8,8 +8,8 @@
 
 | スイート | 結果 | 備考 |
 | --- | --- | --- |
-| Vitest unit | 7/7 passed | — |
-| Playwright E2E | 34 passed / 0 failed / 3 skipped | 12108 ms |
+| Vitest unit | (未実行) | `test-results/unit-results.json` なし |
+| Playwright E2E | 34 passed / 0 failed / 3 skipped | 14724 ms |
 
 ## メモ
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { CaretDown } from "@phosphor-icons/react";
 import type { AnalyticsEvent } from "@/lib/analytics";
 import { track } from "@/lib/analytics";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
@@ -129,7 +130,7 @@ function PlatformButton({
     >
       {badge ? (
         <span
-          className={`absolute font-medium text-[var(--km-brown)] ring-1 ring-[var(--km-border)] ${
+          className={`absolute z-10 font-medium text-[var(--km-brown)] ring-1 ring-[var(--km-border)] ${
             compact
               ? "-top-1.5 right-1 rounded-full bg-[var(--km-surface)] px-1 py-px text-[8px]"
               : "-top-2 right-2 rounded-full bg-[var(--km-surface)] px-1.5 py-0.5 text-[9px]"
@@ -147,10 +148,15 @@ type ShopLinksStripProps = {
   rice: RiceProfileV2;
   /** Compact rail / lead; full uses larger tap targets. */
   variant?: "compact" | "full";
-  /** Heading above the buttons. */
+  /**
+   * `always` — show mall links immediately.
+   * `disclosure` — Sommelier-first: one quiet CTA, expand on demand (home).
+   */
+  expandMode?: "always" | "disclosure";
+  /** Heading above the buttons (always-open surfaces). */
   title?: string;
   /**
-   * `pr` — home rail: ※PR only (no Amazon wall / Rakuten credit).
+   * `pr` — home: ※PR only (no Amazon wall / Rakuten credit).
    * `full` — purchase card / footer surfaces.
    * `none` — disclosure lives elsewhere on the same view.
    */
@@ -158,13 +164,22 @@ type ShopLinksStripProps = {
   className?: string;
 };
 
+const BRAND_STYLES = {
+  amazon: "bg-[#ffd814] text-[#111] hover:bg-[#f7ca00]",
+  rakuten: "bg-[#bf0000] text-white hover:bg-[#a40000]",
+  yahoo: "bg-[#ff0033] text-white hover:bg-[#e0002c]",
+  satofull: "bg-[#1b4332] text-white hover:bg-[#16382a]",
+} as const;
+
 /**
  * Four mall CTAs + optional affiliate disclosure.
- * Compact + `pr` keeps 今日の一膳 free of legal walls of text.
+ * Home uses `expandMode="disclosure"` (progressive reveal) with brand-colored buttons.
+ * Detail / brand page: always open.
  */
 export function ShopLinksStrip({
   rice,
   variant = "full",
+  expandMode = "always",
   title = "取扱オンラインショップ",
   disclosure,
   className = "",
@@ -172,9 +187,103 @@ export function ShopLinksStrip({
   const links = useShopLinks(rice);
   const compact = variant === "compact";
   const mode = disclosure ?? (compact ? "pr" : "full");
+  const panelId = useId();
+  const [open, setOpen] = useState(expandMode === "always");
+
+  useEffect(() => {
+    setOpen(expandMode === "always");
+  }, [rice.id, expandMode]);
+
+  const short = compact || expandMode === "disclosure";
+
+  const mallGrid = (
+    // pt keeps ふるさと納税 badge from clipping at the top edge
+    <div className={`grid grid-cols-2 gap-2 pt-2 ${compact ? "mt-1" : "mt-2"}`}>
+      <PlatformButton
+        href={links.amazon}
+        label={short ? "Amazon" : "Amazon で探す"}
+        event="amazon_click"
+        className={BRAND_STYLES.amazon}
+        compact={compact}
+      />
+      <PlatformButton
+        href={links.rakuten}
+        label={short ? "楽天市場" : "楽天市場で探す"}
+        event="rakuten_click"
+        className={BRAND_STYLES.rakuten}
+        compact={compact}
+      />
+      <PlatformButton
+        href={links.yahoo}
+        label={short ? "Yahoo!" : "Yahoo!で探す"}
+        event="yahoo_click"
+        className={BRAND_STYLES.yahoo}
+        compact={compact}
+      />
+      <PlatformButton
+        href={links.satofull}
+        label={short ? "さとふる" : "さとふるで探す"}
+        badge="ふるさと納税"
+        event="furusato_click"
+        className={BRAND_STYLES.satofull}
+        compact={compact}
+      />
+    </div>
+  );
+
+  if (expandMode === "disclosure") {
+    return (
+      <div
+        className={className}
+        data-shop-strip="disclosure"
+        data-shop-expanded={open ? "true" : "false"}
+      >
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => {
+            setOpen((prev) => {
+              const next = !prev;
+              track("shop_disclosure_toggle", { id: rice.id, open: next });
+              return next;
+            });
+          }}
+          className={`flex w-full items-center justify-between gap-3 rounded-2xl px-1 py-2 text-left transition hover:bg-[var(--km-surface-warm)]/40 ${FOCUS}`}
+        >
+          <span className="min-w-0">
+            <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="font-serif text-[15px] font-semibold tracking-tight text-[var(--km-ink)]">
+                お店で探す
+              </span>
+              {mode === "pr" ? (
+                <span className="text-[10px] text-[var(--km-muted)]">※PR</span>
+              ) : null}
+            </span>
+            <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
+              {open ? "とじる" : `${rice.name}の取扱店`}
+            </span>
+          </span>
+          <CaretDown
+            size={16}
+            weight="bold"
+            className={`shrink-0 text-[var(--km-brown)] transition duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {open ? (
+          <div id={panelId} className="overflow-visible pb-0.5">
+            {mallGrid}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
-    <div className={className}>
+    <div className={className} data-shop-strip="brand">
       {title || mode === "pr" ? (
         <div className="flex items-center justify-between gap-2">
           {title ? (
@@ -194,41 +303,7 @@ export function ShopLinksStrip({
         </div>
       ) : null}
 
-      <div
-        className={`grid grid-cols-2 gap-2 ${
-          title || mode === "pr" ? (compact ? "mt-1.5" : "mt-3") : ""
-        }`}
-      >
-        <PlatformButton
-          href={links.amazon}
-          label={compact ? "Amazon" : "Amazon で探す"}
-          event="amazon_click"
-          className="bg-[#ffd814] text-[#111] hover:bg-[#f7ca00]"
-          compact={compact}
-        />
-        <PlatformButton
-          href={links.rakuten}
-          label={compact ? "楽天市場" : "楽天市場で探す"}
-          event="rakuten_click"
-          className="bg-[#bf0000] text-white hover:bg-[#a40000]"
-          compact={compact}
-        />
-        <PlatformButton
-          href={links.yahoo}
-          label={compact ? "Yahoo!" : "Yahoo!で探す"}
-          event="yahoo_click"
-          className="bg-[#ff0033] text-white hover:bg-[#e0002c]"
-          compact={compact}
-        />
-        <PlatformButton
-          href={links.satofull}
-          label={compact ? "さとふる" : "さとふるで探す"}
-          badge="ふるさと納税"
-          event="furusato_click"
-          className="bg-[#1b4332] text-white hover:bg-[#16382a]"
-          compact={compact}
-        />
-      </div>
+      {mallGrid}
 
       {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}
     </div>
