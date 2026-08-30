@@ -164,6 +164,7 @@ type ShopLinksStripProps = {
   className?: string;
 };
 
+/** Full brand fills — detail modal / brand page (decision surface). */
 const BRAND_STYLES = {
   amazon: "bg-[#ffd814] text-[#111] hover:bg-[#f7ca00]",
   rakuten: "bg-[#bf0000] text-white hover:bg-[#a40000]",
@@ -172,9 +173,20 @@ const BRAND_STYLES = {
 } as const;
 
 /**
+ * Same hue, slightly eased saturation — home disclosure expand only.
+ * Still reads as mall CTAs; less shouty on the paper canvas.
+ */
+const BRAND_STYLES_SOFT = {
+  amazon: "bg-[#e8c84a] text-[#1a1510] hover:bg-[#dfbf3a]",
+  rakuten: "bg-[#c45a5a] text-white hover:bg-[#b44e4e]",
+  yahoo: "bg-[#e85a6b] text-white hover:bg-[#d64d5d]",
+  satofull: "bg-[#3a6b56] text-white hover:bg-[#335f4c]",
+} as const;
+
+/**
  * Four mall CTAs + optional affiliate disclosure.
- * Home uses `expandMode="disclosure"` (progressive reveal) with brand-colored buttons.
- * Detail / brand page: always open.
+ * Home: `expandMode="disclosure"` + soft brand fills when open.
+ * Detail / brand page: full brand fills, always open.
  */
 export function ShopLinksStrip({
   rice,
@@ -195,6 +207,7 @@ export function ShopLinksStrip({
   }, [rice.id, expandMode]);
 
   const short = compact || expandMode === "disclosure";
+  const fills = expandMode === "disclosure" ? BRAND_STYLES_SOFT : BRAND_STYLES;
 
   const mallGrid = (
     // pt keeps ふるさと納税 badge from clipping at the top edge
@@ -203,21 +216,21 @@ export function ShopLinksStrip({
         href={links.amazon}
         label={short ? "Amazon" : "Amazon で探す"}
         event="amazon_click"
-        className={BRAND_STYLES.amazon}
+        className={fills.amazon}
         compact={compact}
       />
       <PlatformButton
         href={links.rakuten}
         label={short ? "楽天市場" : "楽天市場で探す"}
         event="rakuten_click"
-        className={BRAND_STYLES.rakuten}
+        className={fills.rakuten}
         compact={compact}
       />
       <PlatformButton
         href={links.yahoo}
         label={short ? "Yahoo!" : "Yahoo!で探す"}
         event="yahoo_click"
-        className={BRAND_STYLES.yahoo}
+        className={fills.yahoo}
         compact={compact}
       />
       <PlatformButton
@@ -225,7 +238,7 @@ export function ShopLinksStrip({
         label={short ? "さとふる" : "さとふるで探す"}
         badge="ふるさと納税"
         event="furusato_click"
-        className={BRAND_STYLES.satofull}
+        className={fills.satofull}
         compact={compact}
       />
     </div>

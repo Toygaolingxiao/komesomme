@@ -528,11 +528,7 @@ export function FlavorMatrix() {
             <OpenMapButton onClick={() => setMapOpen(true)} />
           </div>
 
-          <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
-            {consult}
-          </div>
-
-          {/* Layer 3: explore first, then ask for shops (collapsed until open). */}
+          {/* After map: quick path to shops (collapsed). Consult stays a second path below. */}
           {railMatches[0] && loadState !== "loading" && semanticState !== "pending" ? (
             <ShopLinksStrip
               rice={railMatches[0].rice}
@@ -542,6 +538,10 @@ export function FlavorMatrix() {
               className="overflow-visible rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3"
             />
           ) : null}
+
+          <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+            {consult}
+          </div>
         </div>
       )}
 
