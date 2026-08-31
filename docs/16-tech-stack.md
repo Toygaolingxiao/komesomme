@@ -90,7 +90,6 @@
 | [#29](https://github.com/Toygaolingxiao/komesomme/issues/29) | `[P1-2] GTM/GA4` | 观测 |
 | [#30](https://github.com/Toygaolingxiao/komesomme/issues/30) | `[P1-3] Sentry` | 咨询 5xx |
 | [#31](https://github.com/Toygaolingxiao/komesomme/issues/31) | `[P1-4] GSC /library 索引` | スニペット更新 |
-| [#33](https://github.com/Toygaolingxiao/komesomme/issues/33) | SiteHeader + scrollbar-gutter | **0.6.1 本地完成，push 后关** |
 
 ### 本轮已关
 
@@ -99,6 +98,7 @@
 | [#26](https://github.com/Toygaolingxiao/komesomme/issues/26) | 披露 / library リード / SITE_COLUMN（0.5.6） |
 | [#19](https://github.com/Toygaolingxiao/komesomme/issues/19) | スモーク → #28 に集約 |
 | [#32](https://github.com/Toygaolingxiao/komesomme/issues/32) | お店CTA タグ化（0.6.0） |
+| [#33](https://github.com/Toygaolingxiao/komesomme/issues/33) | SiteHeader + scrollbar-gutter（0.6.1） |
 
 ### 不要当 1.0 挡门重开
 
