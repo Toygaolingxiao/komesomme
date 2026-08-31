@@ -44,8 +44,9 @@
 | SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
 | セキュリティ見た目 | TS-SEC-01〜02 | P0 | ✓ | |
 | 解析耐性 | TS-ANALYTICS-01 | P1 | ✓ | |
+| 内部观测台 | TS-OPS-01〜03 | P1 | ✓ | 本番登录は手動 |
 | Mobile レイアウト | TS-MOBILE-01〜03 | P0 | ✓ | |
-| 純関数（座標・URL） | TS-UNIT-01〜04 | P0 | ✓ Vitest | |
+| 純関数（座標・URL・観測） | TS-UNIT-01〜05 | P0 | ✓ Vitest | |
 
 ---
 
@@ -135,7 +136,7 @@
 
 #### TS-LIBRARY-02 統合事典が品鑑＋百科を一ページに出す
 - **手順:** `/library/yumepirika`  
-- **期待:** 米ソムリエメモ、由来、季節と飲み物、炊飯。catalog `description` を origin に再掲しない
+- **期待:** 侍米師メモ、由来、季節と飲み物、炊飯。catalog `description` を origin に再掲しない
 
 #### TS-LIBRARY-03 旧 `/{id}` がライブラリへリダイレクト
 - **手順:** `/yumepirika`  
@@ -152,8 +153,8 @@
 | TS-BUY-02 | 通販 | 楽天 | `rakuten.co.jp` または `hb.afl.rakuten.co.jp` |
 | TS-BUY-03 | 通販 | Yahoo | `shopping.yahoo.co.jp` または VC |
 | TS-BUY-04 | ふるさと | さとふる | `satofull.jp` または VC |
-| TS-BUY-05 | ふるさと | 楽天ふるさと | `rakuten.co.jp/furusato` 系 |
-| TS-BUY-06 | ふるさと | Yahoo!ふるさと | `furusato.yahoo.co.jp` 系 |
+| TS-BUY-05 | ふるさと | 楽天ふるさと | `search.rakuten.co.jp/search/mall` またはアフィ包装 |
+| TS-BUY-06 | ふるさと | Yahoo!ふるさと | `shopping.yahoo.co.jp/search`（クエリにふるさと納税）または VC |
 - **共通:** `rel` に `noopener` / `nofollow`。通販タブ表示中はさとふるリンク 0 件  
 - **自動:** href アサートのみ（外部 EC への実ナビは手動）。表の ID は論理。実装は `e2e/brand.spec.ts` がタブ切替でカバー
 
@@ -177,6 +178,14 @@
 #### TS-ANALYTICS-01
 - analytics API を route mock で 500 にしてもホーム操作可能
 
+#### TS-OPS-01 `/ops` は未認証の公開ランディングにしない
+- 秘密未設定 → 404。設定時 → login へリダイレクト。ダッシュボード生 HTML を返さない
+- **自動:** `e2e/ops.spec.ts`
+
+#### TS-OPS-02 `robots.txt` が `/ops` を Disallow
+
+#### TS-OPS-03 `sitemap.xml` に `/ops` を含めない
+
 ---
 
 ### 2.6 Mobile
@@ -195,6 +204,7 @@
 | TS-UNIT-02 | `hardnessToDisplayY` 往復 | 表示 Y と硬度の整合 |
 | TS-UNIT-03 | `calculateDisplayScore` | 距離→45〜100 |
 | TS-UNIT-04 | `shopQuery` / `amazonSearchUrl` | クエリ結合・URL |
+| TS-UNIT-05 | `ops/auth` · `ops/aggregate` | 署名 cookie・JST 日次・ふるさとチャネル |
 
 ---
 
@@ -209,6 +219,7 @@
 | P0-5e | 本式样の自動一式 |
 | P0-2d / P1-5b | TS-SEC-* |
 | P1-4b | TS-SEO-* |
+| P1-2b | TS-OPS-* |
 
 ---
 
@@ -230,3 +241,4 @@ npm run test    # unit + e2e
 | 版 | 日付 | 内容 |
 | --- | --- | --- |
 | TS-1.0 | 2026-08-30 | 初版。Playwright + Vitest + CI 対応 |
+| TS-1.1 | 2026-08-31 | TS-OPS-01〜03 / TS-UNIT-05 内部观测台 |

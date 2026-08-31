@@ -39,6 +39,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | — | [test-specification.md](./test-specification.md) | 試験式样书（TS-*）· 自動テスト正本 |
 | — | [test-results.md](./test-results.md) | 直近の自動試験結果レポート（生成物） |
 | — | `/library`（アプリ） | 銘柄ライブラリ：検索・地域フィルタ・詳細事典 |
+| — | `/ops`（アプリ・非公開） | 内部观测台。`OPS_DASHBOARD_SECRET` 必須。公開ナビに出さない |
 | — | [scripts/data/README.md](../scripts/data/README.md) | 味わい再校正アーカイブと灌庫メモ |
 
 ## 読み分け

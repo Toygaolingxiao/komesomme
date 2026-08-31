@@ -102,7 +102,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | **コード済** `GtmSnippet` + `track()`。本番は `NEXT_PUBLIC_GTM_ID` を入れ GTM 内で GA4 接続 |
-| P1-2b | 必須イベントのダッシュボード: map / slider / detail / purchase_* / language_search | 初週の CVR 概算が取れる | `src/lib/analytics/` のイベント一覧 |
+| P1-2b | 必須イベントのダッシュボード: map / detail / purchase_* / language_search | 初週の CVR 概算が取れる | **内部完了** `/ops`（`OPS_DASHBOARD_SECRET`）。GA4 看板は P1-2a 後 |
 | P1-2c | 本番では `console.debug` に依存しない | ユーザー向けコンソールが静か | `src/lib/analytics/` |
 
 ### P1-3. エラー監視

@@ -1,4 +1,4 @@
-# 技術振り返り — 米ソムリエをゼロから
+# 技術振り返り — 侍米師をゼロから
 
 KomeSomme を一から組み立てたときの技術選定、システム設計、生成 AI 活用、RAG 試行の記録。構想から現行までの経緯（コンサル / 開発）は [12-product-journey.ja.md](./12-product-journey.ja.md)（[中国語](./12-product-journey.md)）。現行実装の入口は [03-system-design.md](./03-system-design.md)、RAG 詳細は [05-semantic-search.md](./05-semantic-search.md)。
 
@@ -149,7 +149,7 @@ sources/（手書き打分・文案）
 
 - 推薦式・座標式・打分正本は変更しない
 - mock / 勝手な seed 禁止
-- 案内役は「米ソムリエ」、UI 文案は日本語
+- 案内役は「侍米師（じべいし）」、UI 文案は日本語
 
 ### 限界と人間の判断が要る箇所
 

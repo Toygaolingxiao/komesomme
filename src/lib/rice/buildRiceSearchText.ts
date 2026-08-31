@@ -26,7 +26,7 @@ export function buildRiceSearchText(rice: RiceProfileV2): string {
       : "",
     line("特徴：", rice.short_),
     line("説明：", rice.description),
-    line("米ソムリエメモ：", rice.sommelier_note),
+    line("侍米師メモ：", rice.sommelier_note),
     line("相性の理由：", rice.pairing_reason),
     line("位置づけ：", rice.curation_notes ?? ""),
 

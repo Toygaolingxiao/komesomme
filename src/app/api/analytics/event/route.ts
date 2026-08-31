@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { isLocalAnalyticsHost, requestHost } from "@/lib/analytics/recordPolicy";
+import { hasValidOpsSession } from "@/lib/ops/session";
 import { clientIpFromRequest } from "@/lib/security/clientIp";
 import { sweepStaleBuckets, takeToken } from "@/lib/security/rateLimit";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -38,6 +40,18 @@ function sanitizeMeta(input: unknown): Record<string, string | number | boolean 
  */
 export async function POST(request: Request) {
   if (!analyticsEnabled()) {
+    return NextResponse.json({ ok: true, skipped: true });
+  }
+
+  if (isLocalAnalyticsHost(requestHost(request))) {
+    return NextResponse.json({ ok: true, skipped: true });
+  }
+
+  if (process.env.VERCEL_ENV === "preview") {
+    return NextResponse.json({ ok: true, skipped: true });
+  }
+
+  if (await hasValidOpsSession()) {
     return NextResponse.json({ ok: true, skipped: true });
   }
 

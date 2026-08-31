@@ -1,4 +1,5 @@
 import { recordAccess } from "@/lib/analytics/accessClient";
+import { isOpsPath } from "@/lib/ops/paths";
 
 export type AnalyticsEvent =
   | "page_view"
@@ -10,6 +11,9 @@ export type AnalyticsEvent =
   | "amazon_click"
   | "yahoo_click"
   | "furusato_click"
+  | "rakuten_furusato_click"
+  | "yahoo_furusato_click"
+  | "satofull_click"
   | "shop_disclosure_toggle"
   | "shop_mode_toggle"
   | "language_search_submit"
@@ -34,6 +38,7 @@ declare global {
  */
 export function track(event: AnalyticsEvent, payload: AnalyticsPayload = {}) {
   if (typeof window === "undefined") return;
+  if (isOpsPath(window.location.pathname)) return;
 
   const entry = { event, ...payload, ts: Date.now() };
   window.dataLayer = window.dataLayer ?? [];

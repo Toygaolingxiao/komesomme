@@ -7,7 +7,7 @@ import {
   PROBE,
 } from "@/components/brand/markGeometry";
 
-export const alt = "KomeSomme | 米ソムリエ";
+export const alt = "KomeSomme | 侍米師（じべいし）";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -82,7 +82,7 @@ export default function OpenGraphImage() {
                 letterSpacing: "0.08em",
               }}
             >
-              米ソムリエ
+              侍米師（じべいし）
             </div>
           </div>
         </div>

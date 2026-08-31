@@ -11,13 +11,13 @@
 | 层 | 选型 | 备注 |
 | --- | --- | --- |
 | **应用框架** | Next.js 15 App Router · React 19 · TypeScript 5 | 单仓；SSR + Route Handler |
-| **样式 / 动效** | Tailwind CSS 4 · Motion · Phosphor Icons | 无 chart 库；地图与轮廓用 HTML/CSS/SVG |
+| **样式 / 动效** | Tailwind CSS 4 · Motion · Phosphor Icons | 公开面无 chart；内部 `/ops` 用 recharts |
 | **托管** | Vercel Production | 旗舰域 `komesomme.jp`；`.com` / `sommeatlas.com` → 301 |
 | **数据** | Supabase PostgreSQL + pgvector + RLS | VIEW `rice_catalog`；migration 0003–0005 |
 | **检索 / AI** | Embedding：Gemini `gemini-embedding-001`（或 OpenAI `text-embedding-3-small`，1536 维）；短回复：Gemini Flash 链（失败 → OpenAI / Flavor Bridge） | **坐标推荐纯客户端**；咨询才打 API |
 | **联盟** | 搜索 CTA + 标签 wrap；UI：`ShopLinksStrip`（通販 \| ふるさと） | 楽天 Item Search 隔离见 [13](./13-affiliate-compliance.md)；VC SID 本番未齐 |
 | **披露** | 文案正本 `src/lib/affiliate.ts`；表面表 [15](./15-disclosure-surfaces.md) | CTA `※PR`；Amazon 定型在页脚 |
-| **观测** | 自建 `access_events` + `track()`；GTM 埋点（ID 可选） | GA4 / Sentry 未接或未配 |
+| **观测** | 自建 `access_events` + `track()`；内部 `/ops` 看板；GTM 埋点（ID 可选） | `/ops` 需 `OPS_DASHBOARD_SECRET`；GA4 / Sentry 可选 |
 | **试验** | Vitest · Playwright（Desktop/Mobile Chromium）· `validate:rice` · `assert:client-bundle` | CI 全绿门禁见 workflow |
 | **CI / 协作** | GitHub Actions · Issue/PR 模板 · Cursor rules（SemVer / 工作流 / 披露） | branch protection 仍要手动开 |
 
@@ -26,7 +26,7 @@
 ## 2. 关键架构决策（可写进方法论的「原则」）
 
 1. **双轨推荐**  
-   地图/滑条 = 本地距离；「米ソムリエに相談」才 embedding + RPC。体感快、账单可控、故障时地图仍可用。
+   地图/滑条 = 本地距离；「侍米師に相談」才 embedding + RPC。体感快、账单可控、故障时地图仍可用。
 
 2. **打分在 Git，检索在 DB**  
    `sources/` → `validate:rice` → `seed:rice`。禁止在 Table Editor 手拧味道分。
@@ -35,7 +35,7 @@
    Corpus 是日语 `search_text`；Generator 只写短回复且不得编造未入选的铭柄名。
 
 4. **匿名面尽量小**  
-   anon 不读 embedding；`access_events` 仅 service role 写；浏览器不进 service_role。
+   anon 不读 embedding；`access_events` 仅 service role 写/读；浏览器不进 service_role。内部观测台用独立密钥 + HttpOnly cookie，未配置则整面 404。
 
 5. **联盟隔离**  
    楽天 API 商品字段不得混入他店 DOM（见 13）。披露表面一张表（见 15），禁止各页各写一套。
@@ -44,7 +44,7 @@
    正本只有 `VERSION` + `package.json`；changelog 写到日（`YYYY-MM-DD`）。
 
 7. **共享 chrome**  
-   `SiteHeader` + `SITE_COLUMN`；副题固定「米ソムリエ」；`scrollbar-gutter: stable` 消除有无滚动条时的顶栏横移。
+   `SiteHeader` + `SITE_COLUMN`；副题固定「侍米師」（読み じべいし）；`scrollbar-gutter: stable` 消除有无滚动条时的顶栏横移。
 
 ---
 
@@ -73,7 +73,7 @@
 5. **合规装配**：披露表面表 + ASP 隔离 + 特商法/隐私最小集  
 6. **上线门禁**：P0/P1 清单文化（证据优先于「功能感觉做完了」）  
 7. **人机协作**：Cursor rules 把「绝对不改」写成可执行约束  
-8. **观测最小集**：先自建事件表，再挂 GTM/GA4  
+8. **观测最小集**：先自建事件表 + `/ops` 看板，再挂 GTM/GA4（不等 VC / 付费 GitHub）  
 
 ---
 
@@ -87,7 +87,7 @@
 | [#20](https://github.com/Toygaolingxiao/komesomme/issues/20) | `[P0-6a] Vercel env 突合` | 域名已上；Dashboard 再确认 |
 | [#28](https://github.com/Toygaolingxiao/komesomme/issues/28) | `[P0-5] スモーク A–E 留档` | Desktop+Mobile（#19 已并入） |
 | [#27](https://github.com/Toygaolingxiao/komesomme/issues/27) | `[P1-1] VC SID + アフィ突合` | 収益门禁 |
-| [#29](https://github.com/Toygaolingxiao/komesomme/issues/29) | `[P1-2] GTM/GA4` | 观测 |
+| [#29](https://github.com/Toygaolingxiao/komesomme/issues/29) | `[P1-2] GTM/GA4` | 第一方看板已在 `/ops`；GA4 仍要 GTM 容器 ID |
 | [#30](https://github.com/Toygaolingxiao/komesomme/issues/30) | `[P1-3] Sentry` | 咨询 5xx |
 | [#31](https://github.com/Toygaolingxiao/komesomme/issues/31) | `[P1-4] GSC /library 索引` | スニペット更新 |
 

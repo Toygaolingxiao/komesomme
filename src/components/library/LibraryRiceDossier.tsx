@@ -219,7 +219,7 @@ export function LibraryRiceDossier({
       {rice.sommelier_note ? (
         <blockquote className="mt-5 rounded-[1.5rem] border border-[var(--km-border)] border-l-[3px] border-l-[var(--km-gold)] bg-[var(--km-surface-warm)]/90 px-5 py-5 sm:px-7">
           <span className="block text-[11px] tracking-[0.12em] text-[var(--km-gold)]">
-            米ソムリエメモ
+            侍米師メモ
           </span>
           <p className="mt-2 text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
             {rice.sommelier_note}

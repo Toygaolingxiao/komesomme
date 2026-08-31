@@ -47,7 +47,7 @@ POST /rest/v1/rpc/match_rice_profiles
 ## 5. アプリ確認
 
 - 本番 / Preview URL で味わい地図が表示される
-- 「米ソムリエに相談」が Top 4 を返す（サーバーは service role）
+- 「侍米師に相談」が Top 4 を返す（サーバーは service role）
 
 ## 完了条件
 

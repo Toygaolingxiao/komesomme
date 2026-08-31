@@ -116,14 +116,19 @@ export function BrandMark({
 
 export function BrandLockup({
   subtitle,
+  subtitleReading,
   tone = "color",
 }: {
   subtitle?: string;
+  /** Brand yomigana for tooltip / a11y (e.g. じべいし). Kept off-canvas to preserve h-12. */
+  subtitleReading?: string;
   tone?: BrandMarkTone;
 }) {
   const ink = tone === "inverse" ? "text-[var(--km-surface)]" : "text-[var(--km-ink)]";
   const muted =
     tone === "inverse" ? "text-[var(--km-surface)]/70" : "text-[var(--km-muted)]";
+  const annotated =
+    subtitle && subtitleReading ? `${subtitle}（${subtitleReading}）` : subtitle;
 
   return (
     <span className="flex min-w-0 items-center gap-2.5">
@@ -142,6 +147,8 @@ export function BrandLockup({
         {subtitle ? (
           <span
             className={`mt-0.5 block whitespace-nowrap text-[10px] leading-none tracking-wide ${muted}`}
+            title={annotated}
+            aria-label={annotated}
           >
             {subtitle}
           </span>

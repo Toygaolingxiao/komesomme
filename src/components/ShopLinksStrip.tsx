@@ -276,21 +276,21 @@ export function ShopLinksStrip({
           <PlatformButton
             href={links.rakutenFurusato}
             label={short ? "楽天" : "楽天ふるさと"}
-            event="furusato_click"
+            event="rakuten_furusato_click"
             className={MALL_STYLES.rakuten}
             compact={compact}
           />
           <PlatformButton
             href={links.yahooFurusato}
             label={short ? "Yahoo!" : "Yahoo!ふるさと"}
-            event="furusato_click"
+            event="yahoo_furusato_click"
             className={MALL_STYLES.yahoo}
             compact={compact}
           />
           <PlatformButton
             href={links.satofull}
             label={short ? "さとふる" : "さとふるで探す"}
-            event="furusato_click"
+            event="satofull_click"
             className={MALL_STYLES.satofull}
             compact={compact}
           />

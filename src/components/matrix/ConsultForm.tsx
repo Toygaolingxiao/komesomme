@@ -2,6 +2,7 @@
 
 import { BeerBottle, Flame, Heart, Snowflake, Sparkle, Warning, X } from "@phosphor-icons/react";
 import { track } from "@/lib/analytics";
+import { GUIDE_CONSULT_LABEL, GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { FOCUS, ICON_WEIGHT, TAG_TONES } from "./shared";
 
 const EXAMPLES: Array<{ text: string; Icon: typeof Sparkle }> = [
@@ -100,7 +101,11 @@ export function ConsultForm({
       }}
     >
       <Sparkle size={14} weight={ICON_WEIGHT} />
-      {pending ? "読み解いています" : reply ? "もう一度聞く" : "一膳を提案してもらう"}
+      {pending
+        ? "読み解いています"
+        : reply
+          ? "もう一度聞く"
+          : GUIDE_CONSULT_LABEL}
     </button>
   );
 
@@ -165,7 +170,7 @@ export function ConsultForm({
           >
             <span className="mr-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
               <Sparkle size={11} weight="fill" />
-              米ソムリエ
+              {GUIDE_ROLE}
             </span>
             {reply}
           </p>

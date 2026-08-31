@@ -18,7 +18,7 @@ const MAX_QUERY_LENGTH = 500;
 const MATCH_THRESHOLD = 0.1;
 
 /**
- * Semantic recommendation ("米ソムリエに相談").
+ * Semantic recommendation ("侍米師に相談").
  *
  * Only free-text consultation reaches this route; the map and sliders rank locally.
  * The embedding stays server-side so the provider key is never exposed.

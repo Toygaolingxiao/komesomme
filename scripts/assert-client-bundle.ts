@@ -35,6 +35,8 @@ function main() {
   const needles: string[] = ["ci-service-placeholder"];
   const secret = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
   if (secret && secret.length >= 8) needles.push(secret);
+  const opsSecret = process.env.OPS_DASHBOARD_SECRET?.trim();
+  if (opsSecret && opsSecret.length >= 8) needles.push(opsSecret);
 
   const files = walk(STATIC_DIR);
   const hits: Array<{ file: string; needle: string }> = [];

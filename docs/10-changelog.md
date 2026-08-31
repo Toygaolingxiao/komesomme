@@ -6,6 +6,23 @@
 
 ## Unreleased
 
+## 0.8.0 — 2026-08-31
+
+- 案内役を **侍米師（じべいし）** に改称。画面・meta・OG・相談 CTA・メモ見出しから「米ソムリエ」を除去（登録商標「お米ソムリエ」との称呼衝突を避ける）
+- 指定読みは音読み統一の **じべいし**（姉妹・仕舞いとの同音混同を避ける）。頂栏副題は読みを併記
+- 利用規約に資格・認定制度と無関係である旨を明記
+- 正本定数は `src/lib/brand/guideRole.ts`
+
+## 0.7.0 — 2026-08-31
+
+- 内部观测台 `/ops`：密钥 `OPS_DASHBOARD_SECRET` + HttpOnly HMAC cookie（Edge Web Crypto），服务端聚合 `access_events`
+- 看板：购入率 / 咨询率、JST 日趋势、ふるさと按按钮文案拆渠道、recharts
+- 未配置密钥时整面 404；`robots` / sitemap 隔离；login 10/min、summary 30/min；client bundle 扫描 ops 密钥
+- `/ops` 不写入 `access_events`、不加载 GTM
+- 本机 localhost、Preview、已登录观测台的浏览器不再写入 `access_events`
+- 看板按通販 / ふるさと分网站计数；说明改成给使用者看的段落
+- ふるさと搜索改走现行楽天モール検索・Yahoo!ショッピング検索（旧 `/furusato/search`、`furusato.yahoo.co.jp` 已失效）
+
 ## 0.6.1 — 2026-08-31
 
 - ホームと `/library` の頂栏を完全同一化（副題は常に「米ソムリエ」、高さ `h-12`）

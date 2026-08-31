@@ -2,6 +2,7 @@
 
 import { Warning } from "@phosphor-icons/react";
 import { motion } from "motion/react";
+import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { ICON_WEIGHT, LAYER } from "./shared";
 
 export function MatrixSkeleton() {
@@ -51,7 +52,7 @@ export function RailSkeleton({ reduceMotion = false }: { reduceMotion?: boolean 
 export function SemanticReading({ reduceMotion }: { reduceMotion: boolean }) {
   return (
     <RailAwaiting
-      kicker="米ソムリエ"
+      kicker={GUIDE_ROLE}
       message="言葉を読み、味わいの近い銘柄を探しています"
       reduceMotion={reduceMotion}
     />

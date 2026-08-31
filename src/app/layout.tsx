@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GtmSnippet } from "@/components/analytics/GtmSnippet";
+import { SkipOnOps } from "@/components/analytics/SkipOnOps";
+import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
@@ -26,7 +28,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: siteMetadataBase(),
   title: {
-    default: "KomeSomme | 米ソムリエ",
+    default: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
     template: "%s | KomeSomme",
   },
   description: SITE_DESCRIPTION,
@@ -38,12 +40,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ja_JP",
     siteName: "KomeSomme",
-    title: "KomeSomme | 米ソムリエ",
+    title: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "KomeSomme | 米ソムリエ",
+    title: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
     description: SITE_DESCRIPTION,
   },
 };
@@ -59,7 +61,9 @@ export default function RootLayout({
       className={`${geist.variable} ${geistMono.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
     >
       <body>
-        <GtmSnippet />
+        <SkipOnOps>
+          <GtmSnippet />
+        </SkipOnOps>
         <AnalyticsProvider>{children}</AnalyticsProvider>
       </body>
     </html>

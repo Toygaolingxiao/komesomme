@@ -33,12 +33,15 @@ src/
 │   ├── api/rice/semantic-recommend/  # 意味検索
 │   ├── api/rice/shop-links/          # 購入 URL 解決（楽天 item 等）
 │   ├── api/rice/rakuten-item/        # 楽天商品（RakutenOffer 専用）
-│   └── api/analytics/event/          # 匿名 access_events
+│   ├── ops/                          # 内部观测台（密钥门禁・noindex）
+│   ├── api/analytics/event/          # 匿名 access_events
+│   └── api/ops/                      # login / logout / summary
 ├── components/
-│   ├── SiteHeader.tsx                # 共通頂栏（副題は常に「米ソムリエ」）
+│   ├── SiteHeader.tsx                # 共通頂栏（副題は常に「侍米師」／読み じべいし）
 │   ├── ShopLinksStrip.tsx            # 通販 / ふるさと納税タグ＋軟色カプセル
 │   ├── FlavorMatrix.tsx
 │   ├── analytics/                    # GTM + page_view
+│   ├── ops/                          # OpsDashboard / OpsLoginForm
 │   ├── library/
 │   └── matrix/
 ├── data/rice/                        # sources / overlay / catalog / encyclopedia
@@ -96,3 +99,4 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 - ベクトル比較は必ず `embedding_model` で絞る
 - 公開 URL の相談 API は `guardSemanticRecommend`（kill switch + レート制限）
 - 匿名 UI イベントは `POST /api/analytics/event` → `access_events`（anon は SELECT 不可）
+- 内部观测台 `/ops` のみ service_role で `access_events` を集計。`OPS_DASHBOARD_SECRET` 未設定なら 404

@@ -1,12 +1,12 @@
 # Embedding・意味検索設計
 
-現行の「米ソムリエに相談」は、自然言語を embedding して Top 4 を返す意味検索である。設計思想と RAG としての位置づけは [02-tech-retrospective.md](./02-tech-retrospective.md) §4。理由文は Flavor Bridge。Top 4 が揃ったあと、Gemini が 2 文の返事を書く。返事は候補銘柄以外の名前を創作しない。
+現行の「侍米師に相談」は、自然言語を embedding して Top 4 を返す意味検索である。設計思想と RAG としての位置づけは [02-tech-retrospective.md](./02-tech-retrospective.md) §4。理由文は Flavor Bridge。Top 4 が揃ったあと、Gemini が 2 文の返事を書く。返事は候補銘柄以外の名前を創作しない。
 
 ## 1. search_text
 
 `buildRiceSearchText` が JSON を stringify せず、空フィールドを除いた自然な日本語を改行結合する。相談文（「ハイボールと唐揚げに合う米」など）と向き合うため、フィールド名のノイズを入れない。
 
-含める内容: 銘柄・産地・象限・食感/甘みラベル、短評、説明、米ソムリエメモ、料理、季節、酒、気分・場面、タグ、検索意図。
+含める内容: 銘柄・産地・象限・食感/甘みラベル、短評、説明、侍米師メモ、料理、季節、酒、気分・場面、タグ、検索意図。
 
 ## 2. プロバイダ
 

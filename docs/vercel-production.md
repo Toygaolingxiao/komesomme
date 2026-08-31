@@ -20,6 +20,7 @@ Vercel → Project → **Settings → Environment Variables**。
 | `SEMANTIC_RATE_LIMIT_PER_DAY` | `80`（目安） | 同左 | |
 | `NEXT_PUBLIC_GTM_ID` | `GTM-…`（任意） | 任意 | 未設定なら GTM スクリプトを出さない。GA4 は GTM 内で接続 |
 | `ACCESS_LOG_ENABLED` | `true` | `true` | `false` で Supabase `access_events` 書き込みを止める |
+| `OPS_DASHBOARD_SECRET` | 16 文字以上の乱数 | **置かない**（または別秘密） | 内部 `/ops` 观测台。未設定なら 404。`NEXT_PUBLIC_` 禁止。cookie のみブラウザへ |
 | `RAKUTEN_APPLICATION_ID` | 楽天アプリ ID | 同左 | Item Search 用。未設定ならキーワード検索にフォールバック |
 | `RAKUTEN_ACCESS_KEY` | 楽天 accessKey | 同左 | **Server only**。2026-07-01 API 必須 |
 | `RAKUTEN_AFFILIATE_ID` | アフィリエイト ID | 同左 | API 応答の `affiliateUrl` 用。未設定なら `NEXT_PUBLIC_` 側を使う |
@@ -32,6 +33,14 @@ Vercel → Project → **Settings → Environment Variables**。
 | `VALUE_COMMERCE_WRAP` | 省略可（Production は自動 on） | `0` または未設定 | `1` は登録済み URL での手動テスト専用 |
 
 変更後は **Redeploy** する。
+
+### 1.1 内部观测台 `/ops`
+
+1. Production に `OPS_DASHBOARD_SECRET`（16〜256 文字の乱数）を入れる。Preview には置かないか**別秘密**にする  
+2. Redeploy 後 `https://komesomme.jp/ops/login` で密钥登录（未設定時は 404，不宣传该路径）  
+3. 看板只读 `access_events`（service_role）。anon SELECT 依然不可  
+4. 公开导航・sitemap 不出。`robots.txt` Disallow `/ops`。响应 `Cache-Control: private, no-store`  
+5. 密钥禁止 `NEXT_PUBLIC_`。浏览器只持有 12h HttpOnly 签名 cookie。门禁在 Node（layout / Route Handler），不依赖 Edge middleware  
 
 ## 2. 分離の目安
 
@@ -148,6 +157,7 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 | `POST /api/rice/semantic-recommend` | **Gemini + Supabase RPC（高）** | IP 8/min・80/day、`SEMANTIC_RECOMMEND_ENABLED` kill switch |
 | `GET /api/rice/shop-links`・`rakuten-item` | 楽天 API | 40/min/IP。超過時は検索 URL フォールバック |
 | `POST /api/analytics/event` | 低 | 60/min/IP |
+| `/ops`・`/api/ops/*` | 低（読取） | 未設定は 404。設定時は署名 cookie。login 10/min/IP、summary 30/min/IP |
 | 実装 | — | `src/lib/security/rateLimit.ts`（**isolate 内メモリ**。複数インスタンス間は非共有） |
 
 `.jp` は Cloudflare **活动**（NS 変更済み想定）。以下 §7.5 でエッジ設定手順。

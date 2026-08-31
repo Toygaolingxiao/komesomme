@@ -54,6 +54,14 @@ export function furusatoQuery({ prefecture, brand }: AffiliateBrandInput): strin
   return [prefecture.trim(), brand.trim()].filter(Boolean).join(" ");
 }
 
+/** Search UIs expect ふるさと納税 in the query; overlay keywords often already include it. */
+export function qualifyFurusatoQuery(query: string): string {
+  const trimmed = query.trim();
+  if (!trimmed) return "ふるさと納税 米";
+  if (/ふるさと納税|返礼品/.test(trimmed)) return trimmed;
+  return `${trimmed} ふるさと納税`;
+}
+
 export function amazonAssociateTag(): string {
   return (
     process.env.NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG?.trim() ||
@@ -74,11 +82,11 @@ export function yahooShoppingSearchUrl(query: string): string {
 }
 
 export function yahooFurusatoSearchUrl(query: string): string {
-  return `https://furusato.yahoo.co.jp/search?keyword=${encodeURIComponent(query)}`;
+  return `https://shopping.yahoo.co.jp/search?p=${encodeURIComponent(qualifyFurusatoQuery(query))}`;
 }
 
 export function rakutenFurusatoSearchUrl(query: string): string {
-  return `https://www.rakuten.co.jp/furusato/search/?sitem=${encodeURIComponent(query)}`;
+  return `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(qualifyFurusatoQuery(query))}/`;
 }
 
 export function satofullSearchBase(): string {
@@ -158,6 +166,11 @@ export function wrapValueCommerceIfReady(
 export function wrapYahooSearchUrl(query: string, sid?: string, pid?: string): string {
   const { sid: envSid, pid: envPid } = yahooValueCommerceEnv();
   return wrapValueCommerceIfReady(yahooShoppingSearchUrl(query), sid ?? envSid, pid ?? envPid);
+}
+
+export function wrapYahooFurusatoSearchUrl(query: string, sid?: string, pid?: string): string {
+  const { sid: envSid, pid: envPid } = yahooValueCommerceEnv();
+  return wrapValueCommerceIfReady(yahooFurusatoSearchUrl(query), sid ?? envSid, pid ?? envPid);
 }
 
 export function wrapSatofullSearchUrl(query: string, sid?: string, pid?: string): string {

@@ -3,6 +3,7 @@ import { BrandLockup } from "@/components/brand/BrandMark";
 import { SiteLegalNav } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
+import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 
 export type SiteNavActive = "map" | "library";
 
@@ -10,9 +11,6 @@ const NAV = [
   { id: "map" as const, href: "/", label: "味わいの地図" },
   { id: "library" as const, href: "/library", label: "ライブラリ" },
 ] as const;
-
-/** Fixed brand tagline under the wordmark — never page-specific. */
-const BRAND_TAGLINE = "米ソムリエ";
 
 /**
  * Shared top chrome for home and library.
@@ -25,7 +23,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
       className={`${SITE_COLUMN} flex h-12 shrink-0 items-center justify-between gap-3`}
     >
       <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
-        <BrandLockup subtitle={BRAND_TAGLINE} />
+        <BrandLockup subtitle={GUIDE_ROLE_ANNOTATED} />
       </Link>
       <div className="flex max-w-[52%] shrink-0 flex-col items-end gap-0.5">
         <nav aria-label="主要ナビ" className="flex items-center gap-3 sm:gap-4">

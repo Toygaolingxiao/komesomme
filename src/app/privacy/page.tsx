@@ -34,7 +34,7 @@ export default function PrivacyPage() {
         </h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>
-            <strong className="text-[var(--km-ink)]">相談文:</strong>「米ソムリエに相談」に入力された文章。推薦のためサーバーで処理します。
+            <strong className="text-[var(--km-ink)]">相談文:</strong>「侍米師に相談」に入力された文章。推薦のためサーバーで処理します。
           </li>
           <li>
             <strong className="text-[var(--km-ink)]">技術情報:</strong>

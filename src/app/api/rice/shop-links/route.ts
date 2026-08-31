@@ -6,8 +6,8 @@ import {
   rakutenFurusatoSearchUrl,
   shopQuery,
   wrapSatofullSearchUrl,
+  wrapYahooFurusatoSearchUrl,
   wrapYahooSearchUrl,
-  yahooFurusatoSearchUrl,
 } from "@/lib/affiliate";
 import { yahooShoppingItemUrl } from "@/lib/affiliate/yahoo";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     yahoo: wrapYahooSearchUrl(shop, yahooSid, yahooPid),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
-    yahooFurusato: yahooFurusatoSearchUrl(furusato),
+    yahooFurusato: wrapYahooFurusatoSearchUrl(furusato, yahooSid, yahooPid),
   };
 
   const ip = clientIpFromRequest(request);

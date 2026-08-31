@@ -1,3 +1,5 @@
+import { isOpsPath } from "@/lib/ops/paths";
+
 const SESSION_KEY = "km_sid";
 
 function sessionId(): string {
@@ -27,10 +29,12 @@ export function recordAccess(
   path?: string
 ) {
   if (typeof window === "undefined") return;
+  const resolved = cleanPath(path ?? window.location.pathname);
+  if (isOpsPath(resolved)) return;
 
   const body = JSON.stringify({
     event: event.slice(0, 64),
-    path: cleanPath(path ?? window.location.pathname),
+    path: resolved,
     sessionId: sessionId(),
     meta,
   });

@@ -48,12 +48,12 @@ describe("TS-UNIT-04 shop / amazon URL builders", () => {
   });
 
   it("builds rakuten and yahoo furusato search URLs", () => {
-    expect(rakutenFurusatoSearchUrl("北海道 ゆめぴりか")).toContain(
-      "rakuten.co.jp/furusato/search/",
-    );
-    expect(yahooFurusatoSearchUrl("北海道 ゆめぴりか")).toContain(
-      "furusato.yahoo.co.jp/search",
-    );
+    const rakuten = rakutenFurusatoSearchUrl("北海道 ゆめぴりか");
+    expect(rakuten).toContain("search.rakuten.co.jp/search/mall/");
+    expect(rakuten).toContain(encodeURIComponent("ふるさと納税"));
+    const yahoo = yahooFurusatoSearchUrl("北海道 ゆめぴりか");
+    expect(yahoo).toContain("shopping.yahoo.co.jp/search");
+    expect(yahoo).toContain(encodeURIComponent("ふるさと納税"));
   });
 
   it("builds yahoo shopping search", () => {

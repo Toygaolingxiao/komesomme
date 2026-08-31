@@ -350,7 +350,7 @@ export function BrandDetailPanel({
                 <blockquote className="mt-8 border-l-2 border-[var(--km-brown)]/35 bg-[var(--km-surface-warm)]/70 px-4 py-3">
                   <span className="mb-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
                     <Sparkle size={12} weight={ICON_WEIGHT} />
-                    米ソムリエメモ
+                    侍米師メモ
                   </span>
                   <p className="font-serif text-[13px] leading-[1.9] text-[var(--km-ink-soft)]">
                     {rice.sommelier_note}

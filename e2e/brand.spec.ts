@@ -45,6 +45,14 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     const satofull = purchase.getByRole("link", { name: /さとふる/ });
     await expect(satofull).toHaveAttribute("href", /satofull\.jp|valuecommerce/);
+    await expect(purchase.getByRole("link", { name: /楽天/ })).toHaveAttribute(
+      "href",
+      /search\.rakuten\.co\.jp\/search\/mall|hb\.afl\.rakuten/
+    );
+    await expect(purchase.getByRole("link", { name: /Yahoo/ })).toHaveAttribute(
+      "href",
+      /shopping\.yahoo\.co\.jp\/search|valuecommerce/
+    );
     const satofullRel = (await satofull.getAttribute("rel")) ?? "";
     expect(satofullRel).toMatch(/noopener/);
     expect(satofullRel).toMatch(/nofollow/);

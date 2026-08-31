@@ -11,7 +11,7 @@ test.describe("TS-CONSULT", () => {
   test("TS-CONSULT-01 kill-switch shows safe Japanese message", async ({ page }) => {
     await waitForHomeReady(page);
     await page.locator("#km-query").fill("ハイボールと唐揚げに合う米");
-    await page.getByRole("button", { name: /一膳を提案してもらう|もう一度聞く/ }).click();
+    await page.getByRole("button", { name: /侍米師に相談|もう一度聞く/ }).click();
     await expect(
       page.getByText(/一時停止|味わいの地図から|うまく読み取れませんでした/),
     ).toBeVisible({ timeout: 20_000 });
