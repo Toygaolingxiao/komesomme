@@ -55,7 +55,7 @@ export default async function LibraryArticlePage({ params }: PageProps) {
   const neighbours = calculateTasteNeighbours(riceProfiles, rice, 3);
 
   return (
-    <main className="min-h-[100dvh] w-full min-w-0 bg-[var(--km-bg)] text-[var(--km-ink)]">
+    <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
       <LibraryChrome />
       <LibraryRiceDossier rice={rice} article={article} neighbours={neighbours} />
       <SiteFooter />

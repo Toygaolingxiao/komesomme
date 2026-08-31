@@ -39,7 +39,7 @@
 | 品鑑オーバーレイ | TS-DETAIL-01〜03 | P0 | ✓ | |
 | 銘柄ページ | TS-BRAND-01〜04 | P0 | ✓ | |
 | 銘柄ライブラリ | TS-LIBRARY-01〜03 | P1 | ✓ | |
-| 購入 4 CTA | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
+| 購入（通販 / ふるさとタグ） | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
 | 法務ページ | TS-LEGAL-01〜03 | P0 | ✓ | |
 | SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
 | セキュリティ見た目 | TS-SEC-01〜02 | P0 | ✓ | |
@@ -85,7 +85,7 @@
 - **期待:** 品鑑ダイアログ / パネルが開く（閉じる操作可能）
 
 #### TS-HOME-10 お店で探す（※PR・Progressive Disclosure）
-- **期待:** ホームに「お店で探す」。初期は 4 モールリンクが非表示。展開後に Amazon / 楽天 / Yahoo / さとふる（モール色・ホームは微減彩度）と ※PR。Amazon 定型文の長文はホームに**無い**。Mobile では地図の後・相談の前
+- **期待:** ホームに「お店で探す」。初期はモールリンク非表示。展開後は **通販** タブに楽天 / Yahoo / Amazon（縦一列・軟色）と ※PR。**ふるさと納税** タブに楽天ふるさと / Yahoo!ふるさと / さとふる。Amazon 定型文の長文はホームに**無い**。Mobile では地図の後・相談の前
 
 ---
 
@@ -113,7 +113,7 @@
 
 #### TS-DETAIL-02 銘柄ページへ遷移
 - **手順:** 「詳しく見る」系リンク  
-- **期待:** URL が `/[brand]` 形式
+- **期待:** URL が `/library/[id]` 形式（旧 `/{id}` はリダイレクト）
 
 #### TS-BRAND-01 静的銘柄ページ 200
 - **手順:** カタログ既知 ID（例: ソース上の安定 ID）を開く  
@@ -145,15 +145,17 @@
 
 ### 2.4 購入リンク
 
-#### TS-BUY-01〜04 各モール href 形状
-| ID | チャネル | 期待（非 Production wrap 可） |
-| --- | --- | --- |
-| TS-BUY-01 | Amazon | `amazon.co.jp` を含む。tag は env 依存 |
-| TS-BUY-02 | 楽天 | `rakuten.co.jp` または `hb.afl.rakuten.co.jp` |
-| TS-BUY-03 | Yahoo | `shopping.yahoo.co.jp` または VC |
-| TS-BUY-04 | さとふる | `satofull.jp` または VC |
-- **共通:** `rel` に `noopener` / `nofollow`  
-- **自動:** href アサートのみ（外部 EC への実ナビは手動）
+#### TS-BUY-01〜06 各モール href 形状（タブ別）
+| ID | タブ | チャネル | 期待（非 Production wrap 可） |
+| --- | --- | --- | --- |
+| TS-BUY-01 | 通販 | Amazon | `amazon.co.jp` を含む。tag は env 依存 |
+| TS-BUY-02 | 通販 | 楽天 | `rakuten.co.jp` または `hb.afl.rakuten.co.jp` |
+| TS-BUY-03 | 通販 | Yahoo | `shopping.yahoo.co.jp` または VC |
+| TS-BUY-04 | ふるさと | さとふる | `satofull.jp` または VC |
+| TS-BUY-05 | ふるさと | 楽天ふるさと | `rakuten.co.jp/furusato` 系 |
+| TS-BUY-06 | ふるさと | Yahoo!ふるさと | `furusato.yahoo.co.jp` 系 |
+- **共通:** `rel` に `noopener` / `nofollow`。通販タブ表示中はさとふるリンク 0 件  
+- **自動:** href アサートのみ（外部 EC への実ナビは手動）。表の ID は論理。実装は `e2e/brand.spec.ts` がタブ切替でカバー
 
 ---
 

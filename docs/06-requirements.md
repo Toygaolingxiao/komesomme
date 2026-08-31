@@ -31,7 +31,8 @@
 
 - 詳細パネル（銘柄品鑑）は重点説明（味わい・今日の食べ方・料理相性）と購入 CTA を優先し、お酒・お茶・季節の詳細相性は出さない
 - `/library/[id]` が銘柄の統合事典（品鑑＋由来＋季節・酒＋炊飯＋購入目安）。旧 `/{id}` は同 URL へ永久リダイレクト
-- CTA: 楽天、Amazon、ふるさと納税（検索 URL。Affiliate API は未実装）。銘柄品鑑では重点説明の直後に置く
+- 購入 UI: **通販**（楽天 / Yahoo / Amazon）と **ふるさと納税**（楽天ふるさと / Yahoo!ふるさと / さとふる）のタグ切替。各 3 軟色カプセル（検索 URL）。銘柄品鑑では重点説明の直後
+- アフィタグ配線（楽天 wrap・Amazon Associate・VC 用ヘルパ）はコード済み。**商品 API / deep link と VC 本番 SID・成果突合**は未完（P1/P2）
 - 味わい値を公的測定値として表示しない
 
 ### 1.5 データと状態
@@ -54,15 +55,15 @@
 
 [11-launch-checklist.md](./11-launch-checklist.md) が実行リスト。ここに「将来」と書いてあっても、チェックリスト側が新しい。
 
-**1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel）、RLS 0004、匿名 `access_events`、GTM 埋め込み（コンテナ ID は未設定）、法務草案ページ。
+**1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel / `komesomme.jp`）、RLS 0004、匿名 `access_events`、GTM 埋め込み（コンテナ ID は未設定）、法務草案（特商法は運営情報記入済み・住所電話は請求時開示）、Vitest / Playwright / CI、購入タグ UI（通販 / ふるさと）。
 
-**まだ残り:**
+**まだ残り（1.0 の門に近いもの）:**
 
-- 特商法の事業者情報、Affiliate タグと成果突合、GA4 ダッシュボード、Sentry
-- 単体・統合・E2E・アクセシビリティ試験
-- 独自ドメイン
-- Rakuten Affiliate API / deep link（検索 CTA のタグ付けは P1、商品 API は P2）
-- お気に入り、履歴、個人化、Auth
-- grounded LLM 推薦文と炊飯アドバイス
+- Affiliate 成果突合、VC 本番 SID、GA4 ダッシュボード実連、Sentry
+- branch protection（CI 必須化）、スモーク試験の人手記録欄
+- Library / 銘柄 URL の Search Console インデックス定着
+- アクセシビリティの人手確認強化
+
+**1.0 後（P2）:** Rakuten 商品 API / deep link、お気に入り・履歴・Auth、grounded LLM 長文・炊飯アドバイス、PWA。
 
 将来要件を現行機能として README や UI に記載しない。

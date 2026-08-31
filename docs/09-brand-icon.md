@@ -19,7 +19,7 @@
 | 32px 以上・UI | `public/brand/mark.svg` | 線画 + 等深線 + 軌道 + 探針 |
 | 180 Apple | `src/app/apple-icon.tsx` | 米白地に標準マーク |
 | 512 / アバター | `public/brand/icon-light.svg` `icon-mono.svg` | 角丸スクエア（墨地版は置かない） |
-| ヘッダー | `BrandLockup` | 標準マーク + 明朝の KomeSomme |
+| ヘッダー | `BrandLockup`（`SiteHeader` 経由） | 標準マーク + 明朝の KomeSomme + 固定副題 **米ソムリエ**（ページ名はナビと H1） |
 
 モノクロは `mark-mono.svg` / `lockup-mono.svg` / `icon-mono.svg`。
 

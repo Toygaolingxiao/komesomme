@@ -1,7 +1,7 @@
 # 本番リリース・チェックリスト（収益化サイト）
 
 対象: **B）アフィリエイト収益を伴う正式サイト**。  
-現状: 体験・防護・自前アクセス記録・法務草案（特商法含む）・購入 4 CTA は入った。GTM ID 本番接続・VC・branch protection・スモーク記録などが残。番号は [`VERSION`](../VERSION)。  
+現状: 体験・防護・自前アクセス記録・法務草案（特商法含む）・購入 UI（通販 / ふるさとタグ＋各 3 店）・独自ドメイン `komesomme.jp`・CI（unit/e2e）は入った。GTM ID 本番接続・VC 本番 SID・branch protection・スモーク人手記録・アフィ突合などが残。番号は [`VERSION`](../VERSION)。  
 ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。
 
 使い方: 各タスクの `[ ]` を完了したら `[x]`。完了条件（Done）を満たすまで次フェーズへ進まない。
@@ -67,7 +67,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | --- | --- | --- | --- |
 | P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | **手順書:** [smoke-test.md](./smoke-test.md)（実施記録は人手） |
 | P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | `/api/rice/semantic-recommend` |
-| P0-5c | `/[brand]` と品鑑パネル: 横溢れなし、購入 1 列（スマホ） | 390px 幅で横スクロール無し | PurchaseLinks、brand page |
+| P0-5c | `/library/[id]` と品鑑パネル: 横溢れなし、購入縦一列（スマホ） | 390px 幅で横スクロール無し。旧 `/{id}` は 301 | `ShopLinksStrip`、library dossier |
 | P0-5d | 購入 6 リンクが各 EC / ふるさと検索へ開く | 全ボタン 200 系で検索結果が出る | shared URL helpers |
 | P0-5e | Playwright 等で P0-5b〜d の最低 3 本を CI または手動ランナー化 | 失敗が検知できる | **完了** `e2e/` + Vitest + CI。式样 [test-specification.md](./test-specification.md) |
 
@@ -78,7 +78,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P0-6a | Vercel Production と Preview の env 分離 | Production のみ本番 Supabase / 本番鍵 | **手順書:** [vercel-production.md](./vercel-production.md)（Dashboard 作業は人手） |
 | P0-6b | `.env.example` と本番必須変数の突合 | 欠落で起動失敗または明確な 500 | **手順書あり** `.env.example` + vercel-production |
 | P0-6c | `EMBEDDING_PROVIDER` と DB の `embedding_model` 一致 | 相談が Top4 を返す。混在モデルで 0 件にならない | 相談が既に通っていれば実質 OK。切替時は再 seed |
-| P0-6d | 独自ドメイン接続 + HTTPS | 本番ホストで証明書エラー無し | DNS / Vercel（任意のタイミング） |
+| P0-6d | 独自ドメイン接続 + HTTPS | 本番ホストで証明書エラー無し | **完了** `komesomme.jp`（[vercel-production.md](./vercel-production.md) §5） |
 | P0-6e | 障害時ロールバック手順（直前デプロイへ戻す） | 1 ページの runbook | **文書化済** vercel-production §4 + 本ファイル「運用」 |
 
 **P0 出口基準:** 上記すべて `[x]`。公開 URL で「選ぶ → 相談 → 詳細 → 外部 EC」が安全に一周できる。
@@ -136,7 +136,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | 備考 |
 | --- | --- | --- |
-| P2-1 | E2E（Playwright）を CI 常駐 | P0-5e の拡張 |
+| P2-1 | E2E シナリオ拡張（`@live` 相談・更多ブラウザ） | **CI 常駐は完了**（P0-5e）。ここはカバレッジ増分 |
 | P2-2 | a11y: `prefers-reduced-motion` 実装、主要フローのキーボード確認 | [08-ui-design.md](./08-ui-design.md) §7 |
 | P2-3 | Auth / お気に入り / 履歴 | [06-requirements.md](./06-requirements.md) |
 | P2-4 | Affiliate 商品検索 API・deep link | `RakutenAffiliateClient` 本実装 |
@@ -161,9 +161,9 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [ ] P0-3b branch protection（GitHub で status check 必須化）
 - [x] P0-6 手順書 + ロールバック文書（[vercel-production.md](./vercel-production.md)）
 - [ ] P0-6a/b Dashboard で env を Production に投入・突合（`NEXT_PUBLIC_SITE_URL` 含む）
-- [ ] P0-6d 独自ドメイン（任意）
+- [x] P0-6d 独自ドメイン `komesomme.jp`
 - [x] P1-5a/b env fail-fast + 基本セキュリティヘッダ
-- [ ] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` / `NEXT_PUBLIC_SITE_URL` を設定
+- [x] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` / `NEXT_PUBLIC_SITE_URL` を設定（本番運用中）
 
 ### Sprint B — 法務と品質ゲート
 
@@ -230,6 +230,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | 味わい地図・座標推薦・意味検索・銘柄詳細・購入 CTA UI | 実装済み |
 | Mobile 横溢れ・購入 1 列・探針ランダム・プレビュー拡大 | 0.2.1 済み |
 | 味わい再校正 + `access_events` / GTM コード | 0.3.0 済み（`NEXT_PUBLIC_GTM_ID` は未設定） |
-| Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap | 実装済み（特商法欄・Affiliate タグは未） |
-| Affiliate タグ / GA4 接続 / Sentry | **未**（週末以降 + P1-2b/3） |
+| Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap / 独自ドメイン | 実装済み |
+| 購入 UI（通販 / ふるさとタグ）・楽天/Amazon タグ配線 | 実装済み。**VC 本番 SID・成果突合は未** |
+| GTM 埋込 / GA4 実連 / Sentry | コード済み or **未**（GTM ID・GA4・Sentry は人手） |
 | Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |

@@ -23,7 +23,7 @@ export default function LibraryPage() {
   const entries = encyclopediaManifest();
 
   return (
-    <main className="min-h-[100dvh] w-full min-w-0 bg-[var(--km-bg)] text-[var(--km-ink)]">
+    <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
       <LibraryChrome />
 
       {entries.length === 0 ? (

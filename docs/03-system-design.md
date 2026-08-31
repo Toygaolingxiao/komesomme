@@ -4,13 +4,17 @@
 
 ## 1. 技術スタック
 
+正本の層別一覧（コンサル向け）は [16-tech-stack.md](./16-tech-stack.md)。要約:
+
 - **Web:** Next.js 15 App Router、React 19、TypeScript 5
 - **スタイル:** Tailwind CSS 4
 - **モーション:** Motion（`motion/react`）
 - **アイコン:** Phosphor Icons
+- **ホスティング:** Vercel（旗艦 `komesomme.jp`）
 - **データ:** Supabase（PostgreSQL、pgvector、RLS）
-- **Embedding:** Gemini `gemini-embedding-001` または OpenAI `text-embedding-3-small`（いずれも 1536 次元）
+- **Embedding / 返事:** Gemini（OpenAI フォールバック）。1536 次元
 - **API:** Next.js Route Handler、Node.js runtime、非 Streaming JSON
+- **試験:** Vitest + Playwright（CI）
 - **シード:** `tsx`、embedding 抽象層、service role
 
 チャートは HTML/CSS と Motion。座標推薦はクライアントだけ。相談の短い返事だけ Gemini / OpenAI が書く。
@@ -20,20 +24,28 @@
 ```text
 src/
 ├── app/
-│   ├── page.tsx
+│   ├── page.tsx                      # 味わいの地図（ホーム）
 │   ├── layout.tsx
-│   ├── [brand]/page.tsx              # 銘柄詳細 SSR
+│   ├── library/page.tsx              # 銘柄ライブラリ一覧
+│   ├── library/[id]/page.tsx         # 銘柄事典の正本（SSR）
+│   ├── [brand]/page.tsx              # 旧 URL → /library/[id] 永久リダイレクト
 │   ├── privacy / terms / tokushoho   # 法務草案
 │   ├── api/rice/semantic-recommend/  # 意味検索
+│   ├── api/rice/shop-links/          # 購入 URL 解決（楽天 item 等）
+│   ├── api/rice/rakuten-item/        # 楽天商品（RakutenOffer 専用）
 │   └── api/analytics/event/          # 匿名 access_events
 ├── components/
+│   ├── SiteHeader.tsx                # 共通頂栏（副題は常に「米ソムリエ」）
+│   ├── ShopLinksStrip.tsx            # 通販 / ふるさと納税タグ＋軟色カプセル
 │   ├── FlavorMatrix.tsx
 │   ├── analytics/                    # GTM + page_view
+│   ├── library/
 │   └── matrix/
-├── data/rice/                        # sources / overlay / catalog
+├── data/rice/                        # sources / overlay / catalog / encyclopedia
 ├── lib/
 │   ├── rice/
 │   ├── analytics/
+│   ├── affiliate.ts                  # 検索 URL・披露文案の正本
 │   ├── embedding/
 │   └── supabase/
 └── types/
@@ -47,8 +59,10 @@ supabase/migrations/
 scripts/
 ├── validate-rice-profiles.ts
 ├── seed-rice-profiles.ts
+├── audit-shop-inventory.ts
+├── generate-rice-encyclopedia.ts
 ├── apply-taste-consensus.ts
-└── data/                             # 味わい再校正アーカイブ
+└── data/                             # 味わい再校正・在庫ギャップ表
 ```
 
 ## 3. 主要データフロー

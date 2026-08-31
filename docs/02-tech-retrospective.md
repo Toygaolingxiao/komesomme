@@ -21,7 +21,7 @@ KomeSomme を一から組み立てたときの技術選定、システム設計�
 
 | 技術 | 用途 | 選定理由 |
 | --- | --- | --- |
-| Next.js 15 App Router | SSR、API Route、ルーティング | `[brand]` 詳細の SEO と単一リポジトリ |
+| Next.js 15 App Router | SSR、API Route、ルーティング | `/library/[id]` 事典の SEO と単一リポジトリ（旧 `/{id}` は永久リダイレクト） |
 | React 19 | UI | App Router の標準 |
 | TypeScript 5 | 型安全 | 銘柄プロファイル・DB 型の共有 |
 | Tailwind CSS 4 | スタイル | デザイントークンを utility で統一 |
@@ -47,6 +47,8 @@ KomeSomme を一から組み立てたときの技術選定、システム設計�
 | Gemini `gemini-3.6-flash` | 相談の短い返事（2 文） | 候補確定後のみ。失敗時は reason にフォールバック |
 | Flavor Bridge（非 LLM） | 推薦理由文 | 酒種・場面ルールで安定。幻覚を避ける |
 
+層別の正本（ホスティング・試験・アフィ・SC 向け交付模式）は [16-tech-stack.md](./16-tech-stack.md)。
+
 ### 開発環境
 
 | 技術 | 用途 |
@@ -54,6 +56,8 @@ KomeSomme を一から組み立てたときの技術選定、システム設計�
 | ESLint + Next config | 静的解析 |
 | cross-env + system CA | 企業ネットワークでの API 接続 |
 | Cursor + エージェント | 実装・リファクタ・ドキュメント整備 |
+| Vitest + Playwright | unit / e2e（GitHub Actions 常駐） |
+| Vercel | Production（旗艦 `komesomme.jp`） |
 
 ## 3. システム設計の要点
 

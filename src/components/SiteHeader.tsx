@@ -11,21 +11,21 @@ const NAV = [
   { id: "library" as const, href: "/library", label: "ライブラリ" },
 ] as const;
 
+/** Fixed brand tagline under the wordmark — never page-specific. */
+const BRAND_TAGLINE = "米ソムリエ";
+
 /**
  * Shared top chrome for home and library.
  * Order is fixed; the current section is emphasized (enterprise nav pattern).
+ * Page identity lives in the nav active state and the page H1 — not the lockup.
  */
-export function SiteHeader({
-  active,
-  subtitle,
-}: {
-  active: SiteNavActive;
-  subtitle: string;
-}) {
+export function SiteHeader({ active }: { active: SiteNavActive }) {
   return (
-    <header className={`${SITE_COLUMN} flex shrink-0 items-center justify-between gap-2 py-2.5 sm:h-12 sm:gap-3 sm:py-0`}>
+    <header
+      className={`${SITE_COLUMN} flex h-12 shrink-0 items-center justify-between gap-3`}
+    >
       <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
-        <BrandLockup subtitle={subtitle} />
+        <BrandLockup subtitle={BRAND_TAGLINE} />
       </Link>
       <div className="flex max-w-[52%] shrink-0 flex-col items-end gap-0.5">
         <nav aria-label="主要ナビ" className="flex items-center gap-3 sm:gap-4">

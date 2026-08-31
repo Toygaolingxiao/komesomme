@@ -1,6 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 
-/** Library pages share the same header chrome as home. */
-export function LibraryChrome({ subtitle = "銘柄ライブラリ" }: { subtitle?: string }) {
-  return <SiteHeader active="library" subtitle={subtitle} />;
+/** Shared library chrome — same SiteHeader as the taste map. */
+export function LibraryChrome() {
+  return <SiteHeader active="library" />;
 }

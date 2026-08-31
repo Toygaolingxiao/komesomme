@@ -61,13 +61,12 @@ export function LibraryBrowser({
 
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
-      <header className="max-w-2xl">
+      <header className="max-w-xl">
         <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
           銘柄ライブラリ
         </h1>
-        <p className="mt-3 text-[13px] leading-relaxed text-[var(--km-muted)]">
-          約 {entries.length}{" "}
-          銘柄の味わい・料理との相性・由来・炊き方を、一冊の事典にまとめています。今日の一膳に合う米を、ここから辿れます。
+        <p className="mt-3 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">
+          {`約${entries.length}銘柄の味わい・料理との相性・由来・炊き方を、一冊の事典にまとめています。`}
         </p>
       </header>
 

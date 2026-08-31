@@ -3,7 +3,7 @@ import { expect, type Page } from "@playwright/test";
 export async function waitForHomeReady(page: Page) {
   await page.goto("/");
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
-  // Avoid header subtitle「米ソムリエが選ぶ、今日の一膳」(hidden on mobile).
+  // Scope to #matrix so the header tagline「米ソムリエ」is not matched.
   await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible({
     timeout: 30_000,
   });
