@@ -1,6 +1,6 @@
 # 技術振り返り — 米ソムリエをゼロから
 
-KomeSomme を一から組み立てたときの技術選定、システム設計、生成 AI 活用、RAG 試行の記録。構想から現行までの経緯（コンサル / 開発）は [12-product-journey.md](./12-product-journey.md)。現行実装の入口は [03-system-design.md](./03-system-design.md)、RAG 詳細は [05-semantic-search.md](./05-semantic-search.md)。
+KomeSomme を一から組み立てたときの技術選定、システム設計、生成 AI 活用、RAG 試行の記録。構想から現行までの経緯（コンサル / 開発）は [12-product-journey.ja.md](./12-product-journey.ja.md)（[中国語](./12-product-journey.md)）。現行実装の入口は [03-system-design.md](./03-system-design.md)、RAG 詳細は [05-semantic-search.md](./05-semantic-search.md)。
 
 ## 1. プロジェクトの出発点
 
@@ -163,4 +163,4 @@ sources/（手書き打分・文案）
 | [01-versioning.md](./01-versioning.md) | SemVer ルール |
 | [10-changelog.md](./10-changelog.md) | バージョン別の変更履歴 |
 | [11-launch-checklist.md](./11-launch-checklist.md) | 1.0.0 までの実行タスク |
-| [12-product-journey.md](./12-product-journey.md) | 構想〜現行の経緯（中国語） |
+| [12-product-journey.ja.md](./12-product-journey.ja.md) | 構想〜現行の経緯（日本語。[中国語](./12-product-journey.md)） |

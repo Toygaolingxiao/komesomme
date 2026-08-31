@@ -2,7 +2,7 @@
 
 本文是工程设计，**不是法律意见**。条文以乐天现行「ウェブサービス利用規約」「楽天アフィリエイトパートナー規約」为准。Amazon / Yahoo / さとふる / ValueCommerce 的要点与正文链接见 [14-affiliate-programs.md](./14-affiliate-programs.md)。
 
-**已落地：** 混排 4 CTA 卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。购买卡与页脚展示官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit)（HTML 不改）。Amazon 第 5 条定型文。Yahoo / さとふる 的 ValueCommerce 转链已预留。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
+**已落地：** 混排 4 CTA 卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。乐天官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit) 与 Amazon 第 5 条在 **页脚**（HTML 不改）。CTA 旁只标 ※PR。Yahoo / さとふる 的 ValueCommerce 转链已预留。表面清单 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
 
 正文：[楽天ウェブサービス規約](https://webservice.rakuten.co.jp/guide/rule)（日本語原文が正文）。
 
@@ -71,14 +71,21 @@ API 拿到的商品信息只用于当场导流，不进公开 catalog、不写�
 ## 3. 今天的状态（混排卡 + href 隔离）
 
 ```
-[ この銘柄を探す ]
+[ お店で探す ※PR ]
   Amazon | 楽天市場 | Yahoo! | さとふる
-  披露: Amazon 第5条 / アフィリエイト広告 / Supported by Rakuten Developers
 ```
+
+页脚（ライブラリ / 法务。首页因 100dvh 没有页脚）:
+
+```
+Amazon 第5条 / アフィリエイト広告を含みます / Supported by Rakuten Developers
+```
+
+表面正本：[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。
 
 - 乐天 href：`/api/rice/shop-links` → Item Search 成功则商品 URL（アフィ包装），失败则搜索アフィ
 - **不展示** API 的商品名、价格、店铺、缩略图（第 8 条 4 项：API 字段未进入与他店并排的 DOM）
-- クレジットは公式テキストスニペットを改変せず、購入カード／`SiteFooter` の `AffiliateDisclosure variant="full"` に置く。ホーム右レールは `variant="pr"`（※PR）のみ——生活 UI に定型文と Developers クレジットを堆めない
+- クレジット用官方文本 snippet、不改 HTML，只放 `SiteFooter` 的 `AffiliateDisclosure variant="full"`。CTA 旁只有 `variant="pr"`（※PR）
 - 若以后要在卡上画出乐天商品名・价格，必须先拆成 §4 的独立 `.km-rakuten` 区块
 
 ---
@@ -156,7 +163,7 @@ yahooShoppingUrl(keyword)  // 明天加 ValueCommerce SID
 
 - 购买区用语保持「探す」，不做レジ、最安、比较表。
 - 乐天 API クレジット：公式スニペットを改変しない（`src/lib/rakuten/credit.ts` → `AffiliateDisclosure`）。
-- 页脚または购买区：Amazon 第 5 条定型文 + 「アフィリエイト広告」。
+- 页脚（ライブラリ / 法务；首页无页脚）：Amazon 第 5 条定型文 + 「アフィリエイト広告」。CTA 旁只标 `※PR`。清单见 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。
 - 不要写「最安」「公式最安」「楽天グループ公式」。
 
 ---

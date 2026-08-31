@@ -120,7 +120,7 @@
 - **期待:** 200、銘柄名表示
 
 #### TS-BRAND-02 `#km-purchase` と 4 CTA
-- **期待:** Amazon / 楽天 / Yahoo! / さとふる。フル開示（Amazon 定型 + アフィリエイト広告 + Rakuten Developers）
+- **期待:** Amazon / 楽天 / Yahoo! / さとふる。ページ内（フッター可）に Amazon 定型 + 「アフィリエイト広告」+ Rakuten Developers。購入カード内は ※PR で足りる（[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)）
 
 #### TS-BRAND-03 類似銘柄リンク
 - **期待:** 類似があれば内部リンクで他銘柄へ

@@ -46,7 +46,7 @@ export function ProfileNode({
   dimmed,
   bestCaption,
   reduceMotion,
-  showTooltip = true,
+  tooltipOpen = false,
   touchFriendly = false,
   onSelect,
   onHover,
@@ -60,7 +60,8 @@ export function ProfileNode({
   dimmed: boolean;
   bestCaption: string;
   reduceMotion: boolean;
-  showTooltip?: boolean;
+  /** Exactly one map node may show a tasting label at a time. */
+  tooltipOpen?: boolean;
   touchFriendly?: boolean;
   onSelect: () => void;
   onHover?: (id: string | null) => void;
@@ -151,9 +152,9 @@ export function ProfileNode({
         />
       ) : null}
 
-      {showTooltip ? (
+      {tooltipOpen && !muted ? (
         <span
-          className={`pointer-events-none absolute z-10 min-w-[7.25rem] max-w-[9.5rem] rounded-lg border border-[var(--km-border)] bg-[#fffdf7] px-2.5 py-1.5 text-left shadow-[0_8px_18px_rgba(112,69,34,0.12)] transition-opacity duration-200 ${
+          className={`pointer-events-none absolute z-10 min-w-[7.25rem] max-w-[9.5rem] rounded-lg border border-[var(--km-border)] bg-[#fffdf7] px-2.5 py-1.5 text-left shadow-[0_8px_18px_rgba(112,69,34,0.12)] ${
             rice.display_y <= 1.8 ? "bottom-full mb-2.5" : "top-full mt-2.5"
           } ${
             rice.display_x <= 1.55
@@ -161,12 +162,6 @@ export function ProfileNode({
               : rice.display_x >= 4.45
                 ? "right-0"
                 : "left-1/2 -translate-x-1/2"
-          } ${
-            isBestMatch || isSelected
-              ? "opacity-100"
-              : muted
-                ? "hidden"
-                : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
           }`}
         >
           {isBestMatch ? (

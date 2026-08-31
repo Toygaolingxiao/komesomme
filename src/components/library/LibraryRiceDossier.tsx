@@ -4,6 +4,7 @@ import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { PurchaseLead, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { TasteContour } from "@/components/matrix/TasteContour";
 import { CatalogPairingGuide } from "@/components/library/CatalogPairingGuide";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import {
   DISCLAIMER,
   FOCUS,
@@ -110,7 +111,7 @@ export function LibraryRiceDossier({
   const extra = extraTasteMetrics(rice);
 
   return (
-    <article className="mx-auto w-full min-w-0 max-w-[1040px] px-4 pb-16 pt-4 sm:px-5">
+    <article className={`${SITE_COLUMN} pb-16 pt-4`}>
       <nav className="text-[12px] text-[var(--km-muted)]">
         <Link href="/library" className={`hover:text-[var(--km-gold)] ${FOCUS}`}>
           ライブラリ

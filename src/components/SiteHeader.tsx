@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { SiteLegalNav } from "@/components/SiteFooter";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 
 export type SiteNavActive = "map" | "library";
@@ -22,7 +23,7 @@ export function SiteHeader({
   subtitle: string;
 }) {
   return (
-    <header className="mx-auto flex w-full min-w-0 max-w-[1440px] shrink-0 items-center justify-between gap-2 px-4 py-2.5 sm:h-12 sm:gap-3 sm:px-5 sm:py-0">
+    <header className={`${SITE_COLUMN} flex shrink-0 items-center justify-between gap-2 py-2.5 sm:h-12 sm:gap-3 sm:py-0`}>
       <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
         <BrandLockup subtitle={subtitle} />
       </Link>

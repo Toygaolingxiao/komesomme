@@ -119,8 +119,8 @@ Mobile は文書スクロール可。Desktop の `100dvh` ロックは `lg` 以�
 - マップ上の強調は、座標モードでは探針の最近傍、相談モードでは推薦 1 位（探針もそこへ移る）
 - No.1 カードは銘柄、産地、象限、相性、理由、粒感・甘み・粘り・旨みを表示
 - 詳細パネル（銘柄品鑑）は重点説明に絞る: `sommelier_note`、主要指標、料理・食材・`avoid_pairings`、気分・場面。深掘りはライブラリ一本
-- 購入 CTA は **Sommelier-first / Progressive Disclosure**: ホームは「お店で探す」を折りたたみ、展開後に微減彩度のモール色 4 ボタン＋※PR。詳細パネル / ライブラリはフル彩度で常時表示。Amazon 定型文・景表法・楽天 Developers クレジットは購入カード／フッター側。カード CTA は「くわしく見る」
-- `/library/[id]` が銘柄の正本ページ。ヘッダーは `SiteHeader` 共通（`max-w-[1440px]`）。ナビ順は常に **味わいの地図 → ライブラリ**、現在地は `font-semibold` + ink で強調。旧 `/{id}` は `/library/[id]` へ永久リダイレクト
+- 購入 CTA は **Sommelier-first / Progressive Disclosure**: ホームは「お店で探す」を折りたたみ、展開後に微減彩度のモール色 4 ボタン＋※PR。詳細パネル / ライブラリはフル彩度で常時表示。Amazon 定型文・景表法の短文・楽天 Developers クレジットは **フッター一箇所**（ホームは 100dvh のためフッターなし、CTA は ※PR のみ）。カード CTA は「くわしく見る」。表面は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)
+- `/library/[id]` が銘柄の正本ページ。ヘッダー・地図・ライブラリ本文は共通の `SITE_COLUMN`（`max-w-[1440px]` + 左右 padding）。ナビ順は常に **味わいの地図 → ライブラリ**、現在地は `font-semibold` + ink で強調。旧 `/{id}` は `/library/[id]` へ永久リダイレクト
 
 相談プレースホルダ: `例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい`
 

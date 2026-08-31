@@ -197,6 +197,8 @@ export function TasteMap({
   const pole = POLES[variant];
   const showLegend = variant !== "preview";
   const touchFriendly = variant !== "desktop";
+  /** One tasting label at a time: hover/focus → selection → No.1. */
+  const activeTooltipId = highlightId ?? selectedId ?? bestMatchId;
   const showTooltip = variant === "desktop";
 
   useEffect(() => {
@@ -333,7 +335,6 @@ export function TasteMap({
                   }
                   bestCaption={bestCaption}
                   reduceMotion={reduceMotion}
-                  showTooltip={showTooltip}
                   touchFriendly={touchFriendly}
                   isBestMatch={rice.id === bestMatchId}
                   isRunnerUp={
@@ -341,6 +342,7 @@ export function TasteMap({
                   }
                   isSelected={rice.id === selectedId}
                   isHighlighted={rice.id === highlightId}
+                  tooltipOpen={showTooltip && rice.id === activeTooltipId}
                   onSelect={() => onSelect(rice.id)}
                   onHover={onHover}
                 />

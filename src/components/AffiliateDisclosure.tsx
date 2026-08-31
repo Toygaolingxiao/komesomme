@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AFFILIATE_PR_LABEL,
   AFFILIATE_PR_NOTICE,
   AMAZON_ASSOCIATE_DISCLOSURE,
 } from "@/lib/affiliate";
@@ -9,8 +10,9 @@ import { RAKUTEN_WEB_SERVICE_CREDIT_HTML } from "@/lib/rakuten/credit";
 type DisclosureVariant = "full" | "pr";
 
 /**
- * `full` — Amazon Art.5 + 景表法 PR + Rakuten Developers credit (purchase card / footer).
- * `pr` — short 「アフィリエイト広告」badge for lifestyle surfaces (home rail).
+ * `full` — Amazon Art.5 + short PR + Rakuten Developers credit. SiteFooter only.
+ * `pr` — ※PR chip next to mall CTAs. Copy lives in `src/lib/affiliate.ts`.
+ * Surfaces: `docs/15-disclosure-surfaces.md`.
  */
 export function AffiliateDisclosure({
   variant = "full",
@@ -25,7 +27,7 @@ export function AffiliateDisclosure({
         className={`text-[10px] leading-none tracking-wide text-[var(--km-muted)] ${className}`}
         title={AFFILIATE_PR_NOTICE}
       >
-        ※PR（アフィリエイト広告）
+        {AFFILIATE_PR_LABEL}
       </p>
     );
   }

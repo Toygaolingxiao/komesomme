@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
+import { TASTE_DISCLAIMER } from "@/lib/affiliate";
 import { FOCUS } from "@/components/matrix/shared";
 
 const LINKS = [
@@ -37,7 +38,7 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-[960px] flex-col gap-3 text-[11px] leading-relaxed text-[var(--km-muted)]">
         <SiteLegalNav />
         <AffiliateDisclosure />
-        <p>味わい評価は KomeSomme 独自基準による目安です。</p>
+        <p>{TASTE_DISCLAIMER}</p>
         <p>
           <Link
             href="https://sommeatlas.com"

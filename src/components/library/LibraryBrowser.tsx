@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 import { FOCUS } from "@/components/matrix/shared";
+import { SITE_COLUMN } from "@/components/siteChrome";
 
 const REGIONS = [
   "すべて",
@@ -59,14 +60,14 @@ export function LibraryBrowser({
   }, [entries, query, region]);
 
   return (
-    <div className="mx-auto w-full max-w-[1100px] px-4 pb-16 pt-6 sm:px-5">
+    <div className={`${SITE_COLUMN} pb-16 pt-6`}>
       <header className="max-w-2xl">
         <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
           銘柄ライブラリ
         </h1>
         <p className="mt-3 text-[13px] leading-relaxed text-[var(--km-muted)]">
           約 {entries.length}{" "}
-          銘柄の味わい・相性・由来・炊き方を、一冊の事典にまとめています。味わい数値は編集評価であり、公的測定ではありません。
+          銘柄の味わい・料理との相性・由来・炊き方を、一冊の事典にまとめています。今日の一膳に合う米を、ここから辿れます。
         </p>
       </header>
 

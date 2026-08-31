@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+## 0.5.6 — 2026-08
+
+- 地図と `/library` の版心を `SITE_COLUMN`（`max-w-[1440px]`）に統一。ヘッダーと本文が横位置で揃う
+- `/library` の検索向けリードから「公的測定ではありません」を外し、meta を招待文に。味わい免責はフッターのまま
+- 広告開示を最小化: CTA 横は ※PR、Amazon 定型・短 PR・楽天クレジットはフッター一箇所。ASP 名は利用規約のみ
+- 開示の正本を `docs/15-disclosure-surfaces.md` に固定（文案は `src/lib/affiliate.ts`）
+- Desktop 右レール: 外側の微妙な縦スクロールバーを消し、一覧だけ内側スクロール（バー非表示）。お店 CTA は下端に固定
+- 地図のテイスティングラベルは同時に 1 枚だけ（hover / 選択 / No.1 の優先順）
+
 ## 0.5.5 — 2026-08
 
 - ホーム / ライブラリの頂栏を `SiteHeader` に統一（ナビ順: 味わいの地図 → ライブラリ、現在ページを強調）
@@ -99,6 +108,8 @@
 
 - [14-affiliate-programs.md](./14-affiliate-programs.md): Amazon / 楽天ウェブサービス / パートナー規約・ガイドライン / ValueCommerce / ポイントクラブ
 - [13-affiliate-compliance.md](./13-affiliate-compliance.md): 楽天 API と他モール共存の隔離設計
+- 現在バージョンの正本を `VERSION` / `package.json` に限定。他 md は番号を手書きしない。`package-lock.json` は `npm install` で同期し、手で編集しない
+- [12-product-journey.md](./12-product-journey.md) / [12-product-journey.ja.md](./12-product-journey.ja.md): 構想から現行までの振り返り（中国語 / 日本語）
 
 ## 0.3.0 — 2026-08
 

@@ -1,10 +1,24 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  AFFILIATE_PR_LABEL,
+  AFFILIATE_PR_NOTICE,
+  AFFILIATE_PR_NOTICE_DETAIL,
+  AMAZON_ASSOCIATE_DISCLOSURE,
   amazonSearchUrl,
   furusatoQuery,
   shopQuery,
   yahooShoppingSearchUrl,
 } from "./affiliate";
+
+describe("disclosure copy layering", () => {
+  it("keeps Amazon Art.5 and short PR separate from the ASP list", () => {
+    expect(AMAZON_ASSOCIATE_DISCLOSURE).toContain("アソシエイトとして");
+    expect(AFFILIATE_PR_LABEL).toBe("※PR");
+    expect(AFFILIATE_PR_NOTICE).toContain("アフィリエイト広告");
+    expect(AFFILIATE_PR_NOTICE).not.toContain("バリューコマース");
+    expect(AFFILIATE_PR_NOTICE_DETAIL).toContain("バリューコマース");
+  });
+});
 
 describe("TS-UNIT-04 shop / amazon URL builders", () => {
   afterEach(() => {

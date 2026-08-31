@@ -19,7 +19,7 @@ export function RiceProductCard({ rice }: { rice: RiceProfileV2 }) {
         rice={rice}
         variant="full"
         title=""
-        disclosure="full"
+        disclosure="pr"
         className="mt-4"
       />
     </article>

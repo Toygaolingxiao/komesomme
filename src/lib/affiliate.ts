@@ -5,13 +5,31 @@
 
 export const AFFILIATE_LINK_REL = "noopener noreferrer nofollow" as const;
 
-/** Amazon Associates Operating Agreement art. 5 (required, prominent). */
+/** Amazon Associates Operating Agreement art. 5 (required, prominent). Footer only. */
 export const AMAZON_ASSOCIATE_DISCLOSURE =
   "Amazonのアソシエイトとして、KomeSommeは適格販売により収入を得ています。";
 
-/** 景表法 + ValueCommerce 第11条4項（原則「広告」であることの表示）。 */
+/** Near-CTA chip. Footer carries the full 「アフィリエイト広告」sentence. */
+export const AFFILIATE_PR_LABEL = "※PR";
+
+/**
+ * Footer / `AffiliateDisclosure` `full`. 景表法 + ValueCommerce 第11条4項.
+ * ASP names stay in `AFFILIATE_PR_NOTICE_DETAIL` (terms), not in chrome.
+ */
 export const AFFILIATE_PR_NOTICE =
-  "※当サイトの外部リンクにはアフィリエイト広告が含まれます（Amazonアソシエイト、楽天アフィリエイト、バリューコマース経由のYahoo!ショッピング・さとふる等）。";
+  "外部リンクにはアフィリエイト広告を含みます。";
+
+/** `/terms` only — names the ASPs. Do not paste into CTA chrome. */
+export const AFFILIATE_PR_NOTICE_DETAIL =
+  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、バリューコマース経由のYahoo!ショッピング・さとふる等）。";
+
+/** Footer one-liner. */
+export const TASTE_DISCLAIMER =
+  "味わい評価はKomeSomme独自基準による目安です。";
+
+/** Brand overlay / library dossier. */
+export const TASTE_DISCLAIMER_DETAIL =
+  "味わい評価はKomeSomme独自基準による目安です。公的な認定・等級を示すものではありません。";
 
 /** ValueCommerce MyLink / 自由テキスト. SID+PID が揃うまでプレーン URL のまま。 */
 export const VALUE_COMMERCE_REFERRAL_HTTPS =

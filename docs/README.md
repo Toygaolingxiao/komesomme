@@ -7,8 +7,8 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | ルール | 例 |
 | --- | --- |
 | `docs/` 直下にフラット配置 | サブフォルダは使わない |
-| 先頭 `00`〜`14` + kebab-case | `03-system-design.md` |
-| 本文は日本語。**12・13 は中国語** | — |
+| 先頭 `00`〜`15` + kebab-case | `03-system-design.md` |
+| 本文は日本語。12 は中国語/日本語併置、13 と 15 は中国語 | [12-product-journey.md](./12-product-journey.md) / [12-product-journey.ja.md](./12-product-journey.ja.md) |
 | この README が唯一の索引 | — |
 
 ## 文書一覧
@@ -27,9 +27,11 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 09 | [09-brand-icon.md](./09-brand-icon.md) | アイコン（参考図: [grain-probe-brand-board.png](./grain-probe-brand-board.png)） |
 | 10 | [10-changelog.md](./10-changelog.md) | 変更履歴 |
 | 11 | [11-launch-checklist.md](./11-launch-checklist.md) | 収益化本番リリースの実行タスク（P0/P1/P2） |
-| 12 | [12-product-journey.md](./12-product-journey.md) | 構想〜現行の開発者 / コンサル振り返り（**中国語**） |
+| 12 | [12-product-journey.md](./12-product-journey.md) | 構想〜現行の開発者 / コンサル振り返り（中国語） |
+| 12 | [12-product-journey.ja.md](./12-product-journey.ja.md) | 同上（日本語） |
 | 13 | [13-affiliate-compliance.md](./13-affiliate-compliance.md) | 楽天 API と他モール共存の隔離設計（**中国語**） |
 | 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo・さとふる VC の規約リンクと実装メモ |
+| 15 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 公開披露の表面一覧と文案の正本（**中国語**） |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・**独自ドメイン・GSC**・Redeploy |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
@@ -47,10 +49,11 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | コードの置き場所 | 03 |
 | 画面を直す | 08 |
 | バージョンを上げる | 01 → 10（番号の正本は `VERSION`） |
-| 構想から今までの経緯 | 12（中国語） |
+| 構想から今までの経緯 | 12（[中国語](./12-product-journey.md) / [日本語](./12-product-journey.ja.md)） |
 | 本番公開までにやること | 11 |
 | 本番ドメイン・Google 検索登録 | [vercel-production.md](./vercel-production.md) §5–6 |
 | アフィリエイト各社の規約・転鎖 | 14（楽天隔離は 13） |
+| どこに PR / Amazon 定型を出すか | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) |
 | プライバシー / 利用規約 | `/privacy` `/terms` `/tokushoho` |
 
 作業リズム（Issue / DoD / Go-live）は Cursor rule `.cursor/rules/project-workflow.mdc`。コンサル向け WBS/甘特ツールは別リポジトリ `pmo-kit`。

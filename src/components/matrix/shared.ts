@@ -98,9 +98,6 @@ export function furusatoUrl(keyword: string): string {
   return wrapSatofullSearchUrl(keyword);
 }
 
-export const PURCHASE_NOTE =
-  "Amazonのアソシエイトとして、KomeSommeは適格販売により収入を得ています。購入時は産地・年産・精米時期・内容量をご確認ください。";
-
 export function shortTasteTags(rice: RiceProfileV2): string[] {
   const tags = [rice.texture_label, rice.sweetness_label];
   if (rice.cold_rice_quality >= 4) tags.push("冷めても美味しい");
@@ -287,8 +284,7 @@ export function drinkStyleLabels(items: string[]): string[] {
   );
 }
 
-export const DISCLAIMER =
-  "味わい評価はKomeSomme独自基準による目安です。公的な認定・等級を示すものではありません。";
+export { TASTE_DISCLAIMER_DETAIL as DISCLAIMER } from "@/lib/affiliate";
 
 export function coreTasteMetrics(rice: RiceProfileV2): Array<[string, number]> {
   return [

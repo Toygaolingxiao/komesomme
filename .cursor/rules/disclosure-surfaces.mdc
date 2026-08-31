@@ -1,0 +1,17 @@
+---
+description: Amazon / PR / 乐天クレジット文案只改 affiliate.ts；表面清单见 docs/15
+globs: src/lib/affiliate.ts, src/lib/rakuten/credit.ts, src/components/AffiliateDisclosure.tsx, src/components/SiteFooter.tsx, src/components/ShopLinksStrip.tsx, src/components/RiceProductCard.tsx, src/components/matrix/PurchaseLinks.tsx, src/app/terms/page.tsx, src/app/privacy/page.tsx, src/app/tokushoho/page.tsx
+alwaysApply: false
+---
+
+# 披露文案
+
+公开 UI 的定型文只放 [`src/lib/affiliate.ts`](../../src/lib/affiliate.ts)。乐天官方クレジット HTML 只放 [`src/lib/rakuten/credit.ts`](../../src/lib/rakuten/credit.ts)，不得改标签。
+
+**先读** [`docs/15-disclosure-surfaces.md`](../../docs/15-disclosure-surfaces.md)，不要全仓搜索再发明一份文案。
+
+- CTA 旁：`AFFILIATE_PR_LABEL`（`※PR`）
+- 页脚唯一 `AffiliateDisclosure` `full`：Amazon 第 5 条 + 短 PR + 乐天クレジット
+- ASP 名单：`AFFILIATE_PR_NOTICE_DETAIL`，只进 `/terms`
+- 购买卡不要 `disclosure="full"`
+- 首页没有页脚、也不显示 Amazon 定型（Desktop 100dvh + `e2e/home.spec.ts`）

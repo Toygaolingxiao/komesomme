@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
+  AFFILIATE_PR_LABEL,
   amazonSearchUrl,
   furusatoQuery,
   shopQuery,
@@ -156,8 +157,8 @@ type ShopLinksStripProps = {
   /** Heading above the buttons (always-open surfaces). */
   title?: string;
   /**
-   * `pr` — home: ※PR only (no Amazon wall / Rakuten credit).
-   * `full` — purchase card / footer surfaces.
+   * `pr` — ※PR chip next to CTAs (default). Full Amazon / Rakuten copy is SiteFooter.
+   * `full` — do not use on cards; reserved if a surface has no footer.
    * `none` — disclosure lives elsewhere on the same view.
    */
   disclosure?: "none" | "pr" | "full";
@@ -198,7 +199,7 @@ export function ShopLinksStrip({
 }: ShopLinksStripProps) {
   const links = useShopLinks(rice);
   const compact = variant === "compact";
-  const mode = disclosure ?? (compact ? "pr" : "full");
+  const mode = disclosure ?? "pr";
   const panelId = useId();
   const [open, setOpen] = useState(expandMode === "always");
 
@@ -270,7 +271,7 @@ export function ShopLinksStrip({
                 お店で探す
               </span>
               {mode === "pr" ? (
-                <span className="text-[10px] text-[var(--km-muted)]">※PR</span>
+                <span className="text-[10px] text-[var(--km-muted)]">{AFFILIATE_PR_LABEL}</span>
               ) : null}
             </span>
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">

@@ -1,6 +1,6 @@
 # KomeSomme 历程回顾（构想 → 现行）
 
-本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。未完成的上线任务见 [11-launch-checklist.md](./11-launch-checklist.md)。
+本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。日语版是 [12-product-journey.ja.md](./12-product-journey.ja.md)。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。未完成的上线任务见 [11-launch-checklist.md](./11-launch-checklist.md)。
 
 读者：产品主理人 GAO，以及之后接手的开发者 / 顾问。
 
@@ -81,7 +81,7 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 
 ### 4.2 踩过的坑
 
-- **办公室网络：** Gemini / Supabase 的 `fetch failed` 会在灌库开头连续失败。embedding 有重试不够，upsert 也要重试。企业 CA 用 `--use-system-ca`。
+- **网络：** Gemini / Supabase 的 `fetch failed` 会在灌库开头连续失败。embedding 有重试不够，upsert 也要重试。企业 CA 用 `--use-system-ca`。
 - **轴映射：** 外部图是 もちもち / あっさり 等，我们的轴不改名、只映射。改轴等于改产品记忆，必须主理人点头。
 - **文档里的「当前版本号」：** 曾经写进 overview、checklist、changelog 文首、docs 索引。漏一处就像文档在撒谎。正本现已收成 `VERSION` + `package.json`。
 - **空壳模块：** 未接线的 `RakutenAffiliateClient`、未使用的 `createServerClient`、示例里的アフィ env，会让人以为已经接上。没有读代码的 env 不要出现在 `.env.example`。
@@ -143,6 +143,6 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 ## 7. 和 02 的分工
 
 - **02（日文）:** 为什么选 Next / Supabase / Gemini，RAG 层怎么切，生成式开发怎么用。
-- **12（本文）:** 为什么做这个产品、商业上还差什么、开发过程里哪些约束真的提高了效率。
+- **12（本文，中文） / [12.ja](./12-product-journey.ja.md):** 为什么做这个产品、商业上还差什么、开发过程里哪些约束真的提高了效率。
 
-两者不要互相抄表格。改技术决策时改 02；改「我们怎么走到这里」时改本文。
+两者不要互相抄表格。改技术决策时改 02；改「我们怎么走到这里」时改 12 的两种语言。

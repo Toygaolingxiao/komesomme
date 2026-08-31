@@ -4,11 +4,20 @@ import { LibraryChrome } from "@/components/library/LibraryChrome";
 import { SiteFooter } from "@/components/SiteFooter";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 
-export const metadata: Metadata = {
-  title: "銘柄ライブラリ",
-  description:
-    "日本のブランド米の味わい・由来・炊飯のコツを一冊にまとめた KomeSomme 銘柄事典。",
-};
+export function generateMetadata(): Metadata {
+  const count = encyclopediaManifest().length;
+  const description =
+    count > 0
+      ? `日本のブランド米 約${count}銘柄。甘みや粒感、料理との相性、産地の由来と炊き方を、米ソムリエが案内します。`
+      : "日本のブランド米の味わい・料理との相性・由来・炊き方を、米ソムリエが案内する銘柄事典。";
+
+  return {
+    title: "銘柄ライブラリ",
+    description,
+    openGraph: { description },
+    twitter: { description },
+  };
+}
 
 export default function LibraryPage() {
   const entries = encyclopediaManifest();

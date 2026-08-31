@@ -28,6 +28,7 @@ import type {
   TasteCoordinate,
 } from "@/types/rice";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
@@ -447,7 +448,7 @@ export function FlavorMatrix() {
   return (
     <section className="w-full min-w-0 overflow-x-clip lg:h-full lg:min-h-0">
       {isLg ? (
-        <div className="mx-auto grid h-full min-h-0 w-full max-w-[1440px] grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-3 px-4 py-2 sm:px-5">
+        <div className={`${SITE_COLUMN} grid h-full min-h-0 grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-3 py-2`}>
           <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             <div className="shrink-0 px-4 pt-3 sm:px-5">
               <h2 className="font-serif text-lg font-semibold tracking-tight text-[var(--km-ink)] sm:text-xl">
@@ -479,7 +480,7 @@ export function FlavorMatrix() {
             </div>
           </div>
 
-          <aside className="h-full min-h-0 min-w-0 overflow-y-auto overflow-x-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
+          <aside className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-2.5 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
             <RecommendationRail
               matches={railMatches}
               mode={recommendationMode}
@@ -499,7 +500,7 @@ export function FlavorMatrix() {
           <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1440px] flex-col gap-3 px-4 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3">
+        <div className={`${SITE_COLUMN} flex flex-col gap-3 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3`}>
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}

@@ -3,7 +3,7 @@
 **法律意見ではない。** 正文は各社の最新規約。改定後は本ファイルの日付とリンクを更新する。
 
 楽天 API と他モールの **DOM 隔離** は [13-affiliate-compliance.md](./13-affiliate-compliance.md)。  
-公開 UI の定型文は `src/lib/affiliate.ts`（`AMAZON_ASSOCIATE_DISCLOSURE` / `AFFILIATE_PR_NOTICE`）。
+公開 UI の定型文は `src/lib/affiliate.ts`。どの画面に何を出すかは [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。
 
 ---
 
@@ -148,7 +148,7 @@ Yahoo!ショッピングとさとふるは **別広告主**。共通で拘束さ
 | 8 | **広告主ごとの提携承認が別途必要**。Yahoo とさとふるは別 PID。承認前はプレーン検索のまま |
 | 8・16・17 | 提携終了後は HTML / リンク / 周辺説明を遅滞なく外す → env の SID/PID を空にして Redeploy |
 | 9 | 成果の正は VC トラッキング。広告主未承認の注文は報酬なし。報酬請求は広告主へ直接しない。月次 1,000 円未満は繰越 |
-| 11④ | **原則「広告」であることの表示**（カード・フッターの `AFFILIATE_PR_NOTICE`） |
+| 11④ | **原則「広告」であることの表示**（CTA の `※PR` + フッターの `AFFILIATE_PR_NOTICE`） |
 | 11② | 不正クリック・虚偽注文が起きないよう管理。自己クリックしない |
 | 12 | 継続的に広告を最低 1 つ掲載するよう努める（購入 CTA が該当） |
 | 14 改変 | 公式の referral クエリ（`sid` / `pid` / `vc_url`）以外に広告コードを改変しない。バナー HTML を独自改変しない |
@@ -244,7 +244,7 @@ Yahoo ItemSearch の `affiliate_id` は `http://ck.jp.ap.valuecommerce.com/servl
 
 ## 6. 景表法（ステマ規制）との関係
 
-Amazon 第 5 条定型文に加え、購入カードとフッターで **「アフィリエイト広告」** と明示する（VC 第11条4項・景表法）。外链は `rel="noopener noreferrer nofollow"`。「最安」「公式最安」、Amazon / 広告主の後援を示す文言は置かない。
+Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `full`）。購入 CTA 横は `※PR` のみ。ASP 名の列挙は `/terms`。詳細は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。外链は `rel="noopener noreferrer nofollow"`。「最安」「公式最安」、Amazon / 広告主の後援を示す文言は置かない。
 
 ---
 
@@ -256,6 +256,7 @@ Amazon 第 5 条定型文に加え、購入カードとフッターで **「ア�
 | `src/lib/affiliate.ts` | Amazon tag、VC 転鎖とゲート、開示文定数 |
 | `src/lib/affiliate/yahoo.ts` | ItemSearch。ゲート off なら `affiliate_type=vc` なし |
 | `src/app/api/rice/shop-links/route.ts` | 4 URL をサーバーで解決 |
-| `src/components/AffiliateDisclosure.tsx` | Amazon 第 5 条 + 広告表示 |
-| `src/components/RiceProductCard.tsx` | 4 CTA |
-| `src/components/SiteFooter.tsx` | サイト全体の開示 |
+| `src/components/AffiliateDisclosure.tsx` | `pr` = ※PR。`full` = フッター用（Amazon + 短 PR + 楽天クレジット） |
+| `src/components/RiceProductCard.tsx` | 4 CTA。開示は `pr`（定型はフッター） |
+| `src/components/SiteFooter.tsx` | サイト全体の `full` 開示 |
+| [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 表面一覧の正本 |

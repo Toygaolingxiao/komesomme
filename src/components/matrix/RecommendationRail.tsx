@@ -253,7 +253,7 @@ export function RecommendationRail({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {loading ? (
           <RailSkeleton reduceMotion={reduceMotion} />
         ) : pending ? (
@@ -291,20 +291,21 @@ export function RecommendationRail({
                       onHover={onHover}
                     />
                   ) : null}
-                  {/* After discovery: collapsed shop CTA (Sommelier-first). */}
-                  <ShopLinksStrip
-                    rice={primary.rice}
-                    variant="compact"
-                    expandMode="disclosure"
-                    disclosure="pr"
-                    className="mt-3 border-t border-[var(--km-border)]/70 pt-3"
-                  />
                 </>
               ) : null}
             </motion.div>
           </AnimatePresence>
         )}
       </div>
+      {!loading && !pending && primary ? (
+        <ShopLinksStrip
+          rice={primary.rice}
+          variant="compact"
+          expandMode="disclosure"
+          disclosure="pr"
+          className="mt-2 shrink-0 border-t border-[var(--km-border)]/70 pt-2"
+        />
+      ) : null}
     </div>
   );
 }

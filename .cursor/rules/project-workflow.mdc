@@ -16,7 +16,7 @@ alwaysApply: true
 | 烟雾 | [`docs/smoke-test.md`](../../docs/smoke-test.md) |
 | 本番 env / 回滚 | [`docs/vercel-production.md`](../../docs/vercel-production.md) |
 | UI | [`docs/08-ui-design.md`](../../docs/08-ui-design.md) |
-| 联盟合规 | [`docs/13-affiliate-compliance.md`](../../docs/13-affiliate-compliance.md)、[`docs/14-affiliate-programs.md`](../../docs/14-affiliate-programs.md) |
+| 联盟合规 | [`docs/13-affiliate-compliance.md`](../../docs/13-affiliate-compliance.md)、[`docs/14-affiliate-programs.md`](../../docs/14-affiliate-programs.md)、披露表面 [`docs/15-disclosure-surfaces.md`](../../docs/15-disclosure-surfaces.md) |
 
 ## Issue / PR
 
