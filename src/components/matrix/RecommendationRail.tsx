@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, BowlFood, MapPin, Sparkle } from "@phosphor-icons/react";
+import { ArrowRight, MapPin } from "@phosphor-icons/react";
 import { track } from "@/lib/analytics";
 import type { RecommendationMode } from "@/types/rice";
 import {
@@ -79,8 +79,7 @@ function BestMatchCard({
       />
 
       <span className="relative pl-2">
-        <span className="flex items-center gap-1.5 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
-          <Sparkle size={13} weight="fill" />
+        <span className="text-[11px] font-medium text-[var(--km-brown)]">
           今日の一膳
         </span>
         <span className="mt-1 block font-serif text-[19px] font-semibold leading-tight tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
@@ -100,23 +99,10 @@ function BestMatchCard({
       </span>
 
       {dishes.length > 0 ? (
-        <span className="relative mt-2 block min-h-[2.5rem] pl-2">
-          <span className="text-[10px] text-[var(--km-muted)]">今日の食卓なら</span>
-          <span className="mt-1 flex flex-wrap gap-1">
-            {dishes.slice(0, 3).map((dish) => (
-              <span
-                key={dish}
-                className="inline-flex items-center gap-1 rounded-md bg-[var(--km-surface-warm)] px-1.5 py-0.5 text-[9px] text-[var(--km-brown)]"
-              >
-                <BowlFood size={10} weight={ICON_WEIGHT} />
-                {dish}
-              </span>
-            ))}
-          </span>
+        <span className="relative mt-2 block pl-2 text-[11px] leading-snug text-[var(--km-ink-soft)]">
+          {dishes.slice(0, 3).join("、")}
         </span>
-      ) : (
-        <span className="relative mt-2 block min-h-[2.5rem] pl-2" aria-hidden />
-      )}
+      ) : null}
 
       <span className="relative mt-2 inline-flex items-center gap-1 pl-2 text-[11px] text-[var(--km-accent)]">
         くわしく見る

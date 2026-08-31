@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GtmSnippet } from "@/components/analytics/GtmSnippet";
 import { SkipOnOps } from "@/components/analytics/SkipOnOps";
-import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
+import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
@@ -25,10 +25,12 @@ const notoSerifJp = Noto_Serif_JP({
 const SITE_DESCRIPTION =
   "日本のブランド米を味わいの地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。";
 
+const SITE_TITLE = `KomeSomme | ${GUIDE_ROLE}`;
+
 export const metadata: Metadata = {
   metadataBase: siteMetadataBase(),
   title: {
-    default: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
+    default: SITE_TITLE,
     template: "%s | KomeSomme",
   },
   description: SITE_DESCRIPTION,
@@ -40,12 +42,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ja_JP",
     siteName: "KomeSomme",
-    title: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `KomeSomme | ${GUIDE_ROLE_ANNOTATED}`,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
 };

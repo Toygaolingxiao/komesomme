@@ -20,7 +20,10 @@ export type AnalyticsEvent =
   | "suggestion_chip_click"
   | "similar_rice_click"
   | "detail_scroll_50"
-  | "detail_scroll_90";
+  | "detail_scroll_90"
+  | "share_card_native"
+  | "share_card_download"
+  | "share_card_copy_link";
 
 type AnalyticsPayload = Record<string, string | number | boolean | null | undefined>;
 

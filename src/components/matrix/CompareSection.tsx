@@ -10,21 +10,31 @@ import {
   suitabilityLine,
 } from "./shared";
 
-export function ForYou({ rice }: { rice: RiceProfileV2 }) {
+export function ForYou({
+  rice,
+  heading = "この米はこんな人に",
+}: {
+  rice: RiceProfileV2;
+  /** Set null when a parent section already provides the title. */
+  heading?: string | null;
+}) {
   const lines = forYouLines(rice);
   if (lines.length === 0) return null;
 
   return (
     <section>
-      <h2 className="font-serif text-[15px] font-semibold text-[var(--km-ink)] sm:text-lg">
-        この米はこんな人に
-      </h2>
-      <ul className="mt-2 flex flex-col gap-1.5 text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+      {heading ? (
+        <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
+          {heading}
+        </h2>
+      ) : null}
+      <ul
+        className={`list-none space-y-2 text-[13px] leading-relaxed text-[var(--km-ink-soft)] ${
+          heading ? "mt-3" : ""
+        }`}
+      >
         {lines.map((line) => (
-          <li key={line} className="flex gap-2">
-            <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--km-gold)]" />
-            {line}
-          </li>
+          <li key={line}>{line}</li>
         ))}
       </ul>
     </section>
@@ -34,9 +44,11 @@ export function ForYou({ rice }: { rice: RiceProfileV2 }) {
 export function SimilarRiceCards({
   neighbours,
   onSelect,
+  heading = "似ている銘柄と比べる",
 }: {
   neighbours: RiceMatchResult[];
   onSelect?: (id: string) => void;
+  heading?: string | null;
 }) {
   if (neighbours.length === 0) return null;
 
@@ -47,23 +59,26 @@ export function SimilarRiceCards({
 
   return (
     <section>
-      <h2 className="font-serif text-[15px] font-semibold text-[var(--km-ink)] sm:text-lg">
-        似ている銘柄と比べる
-      </h2>
-      <ul className="mt-3 grid gap-2 sm:grid-cols-3">
+      {heading ? (
+        <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
+          {heading}
+        </h2>
+      ) : null}
+      <ul className={`divide-y divide-[var(--km-border)] ${heading ? "mt-4" : ""}`}>
         {neighbours.map((neighbour) => {
           const inner = (
             <>
-              <span className="block truncate font-serif text-[15px] font-semibold text-[var(--km-ink)]">
-                {neighbour.rice.name}
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-serif text-[15px] font-semibold text-[var(--km-ink)]">
+                  {neighbour.rice.name}
+                </span>
+                <span className="mt-0.5 text-[12px] text-[var(--km-muted)]">
+                  {neighbour.rice.prefecture}
+                  {" / "}
+                  {suitabilityLine(neighbour.rice)}
+                </span>
               </span>
-              <span className="mt-0.5 block text-[11px] text-[var(--km-muted)]">
-                {neighbour.rice.prefecture}
-              </span>
-              <span className="mt-1.5 block text-[12px] leading-snug text-[var(--km-ink-soft)]">
-                {suitabilityLine(neighbour.rice)}
-              </span>
-              <span className="mt-2 block text-[10px] text-[var(--km-muted)]">
+              <span className="shrink-0 text-[11px] text-[var(--km-muted)]">
                 {affinityLabel(neighbour.score)} {affinityDisplay(neighbour.score)}
               </span>
             </>
@@ -75,7 +90,7 @@ export function SimilarRiceCards({
                 <button
                   type="button"
                   onClick={() => open(neighbour.rice.id)}
-                  className={`w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-3 py-2.5 text-left transition hover:border-[var(--km-gold)]/40 ${FOCUS}`}
+                  className={`flex w-full items-baseline justify-between gap-4 py-3.5 text-left transition hover:text-[var(--km-brown)] ${FOCUS}`}
                 >
                   {inner}
                 </button>
@@ -83,7 +98,7 @@ export function SimilarRiceCards({
                 <a
                   href={`/library/${neighbour.rice.id}`}
                   onClick={() => track("similar_rice_click", { id: neighbour.rice.id })}
-                  className={`block rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-3 py-2.5 transition hover:border-[var(--km-gold)]/40 ${FOCUS}`}
+                  className={`flex items-baseline justify-between gap-4 py-3.5 transition hover:text-[var(--km-brown)] ${FOCUS}`}
                 >
                   {inner}
                 </a>

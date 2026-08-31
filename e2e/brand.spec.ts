@@ -20,6 +20,9 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /楽天ふるさと|楽天でふるさと納税/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /Yahoo!ふるさと|Yahoo!でふるさと納税/ })).toBeVisible();
+    await expect(page.locator("#km-purchase-foot")).toBeVisible();
     await expect(page.getByText("Amazonのアソシエイトとして").first()).toBeVisible();
     await expect(page.getByText("アフィリエイト広告").first()).toBeVisible();
     await expect(page.getByText("Supported by Rakuten Developers").first()).toBeVisible();

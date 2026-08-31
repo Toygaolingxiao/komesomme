@@ -4,11 +4,8 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  BowlFood,
   CaretDown,
-  Fish,
   MapPin,
-  Sparkle,
   X,
 } from "@phosphor-icons/react";
 import { motion } from "motion/react";
@@ -18,7 +15,6 @@ import {
   FOCUS,
   ICON_WEIGHT,
   LAYER,
-  TAG_TONES,
   affinityDisplay,
   affinityLabel,
   appetiteLine,
@@ -31,54 +27,19 @@ import {
 } from "./shared";
 import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
+import { ShareCardActions } from "@/components/brand/ShareCardActions";
 import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
-function PairingChip({
-  item,
-  index,
-  icon: Icon,
-}: {
-  item: string;
-  index: number;
-  icon?: typeof BowlFood;
-}) {
-  const tone = TAG_TONES[index % TAG_TONES.length];
-  return (
-    <li
-      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] leading-snug"
-      style={{ background: tone.bg, border: `1px solid ${tone.border}`, color: tone.text }}
-    >
-      {Icon ? <Icon size={11} weight={ICON_WEIGHT} /> : null}
-      {item}
-    </li>
-  );
-}
+import { TastePips } from "./TastePips";
 
-function TagList({
-  label,
-  items,
-  icon: Icon,
-  chipIcon,
-}: {
-  label: string;
-  items: string[];
-  icon: typeof BowlFood;
-  chipIcon?: typeof BowlFood;
-}) {
+function PairingLine({ label, items }: { label: string; items: string[] }) {
   if (items.length === 0) return null;
-
   return (
-    <div>
-      <p className="flex items-center gap-1.5 font-serif text-[13px] font-semibold text-[var(--km-ink)]">
-        <Icon size={14} weight={ICON_WEIGHT} />
-        {label}
-      </p>
-      <ul className="mt-2 flex flex-wrap gap-1.5">
-        {items.map((item, index) => (
-          <PairingChip key={item} item={item} index={index} icon={chipIcon} />
-        ))}
-      </ul>
-    </div>
+    <p className="text-[13px] leading-[1.75] text-[var(--km-ink-soft)]">
+      <span className="font-medium text-[var(--km-ink)]">{label}</span>
+      <span className="mx-2 text-[var(--km-muted)]">/</span>
+      {items.join("、")}
+    </p>
   );
 }
 
@@ -88,25 +49,11 @@ function CoreTaste({ rice }: { rice: RiceProfileV2 }) {
   return (
     <section>
       <h4 className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">主要な味わい</h4>
-      <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 sm:gap-2">
+      <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5 sm:gap-3">
         {core.map(([label, value]) => (
-          <div key={label} className="min-w-0">
-            <dt className="text-[10px] text-[var(--km-muted)]">{label}</dt>
-            <dd className="mt-1 font-serif text-xl leading-none text-[var(--km-brown)] sm:text-2xl">
-              {value}
-            </dd>
-            <span
-              aria-hidden
-              className="mt-2 block h-1 overflow-hidden rounded-full bg-[var(--km-ink)]/8"
-            >
-              <span
-                className="block h-full rounded-full bg-[var(--km-gold)]"
-                style={{ width: `${((value - 1) / 4) * 100}%` }}
-              />
-            </span>
-          </div>
+          <TastePips key={label} label={label} value={value} size="sm" />
         ))}
-      </dl>
+      </div>
     </section>
   );
 }
@@ -151,21 +98,12 @@ function SoftMetrics({
   return (
     <section>
       <h4 className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">{title}</h4>
-      <dl className="mt-3 flex flex-col gap-2">
+      <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
         {items.map(([label, value]) => (
-          <div key={label} className="flex items-center gap-3">
-            <dt className="w-[4.5rem] shrink-0 text-[11px] text-[var(--km-muted)]">{label}</dt>
-            <dd className="flex min-w-0 flex-1 items-center gap-2">
-              <span className="w-4 font-serif text-sm text-[var(--km-brown)]">{value}</span>
-              <span
-                aria-hidden
-                className="h-1 flex-1 overflow-hidden rounded-full bg-[var(--km-ink)]/8"
-              >
-                <span
-                  className="block h-full rounded-full bg-[var(--km-gold)]/75"
-                  style={{ width: `${((value - 1) / 4) * 100}%` }}
-                />
-              </span>
+          <div key={label}>
+            <dt className="text-[11px] text-[var(--km-muted)]">{label}</dt>
+            <dd className="mt-0.5 font-serif text-lg leading-none text-[var(--km-brown)]">
+              {value}
             </dd>
           </div>
         ))}
@@ -254,30 +192,21 @@ export function BrandDetailPanel({
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="flex items-center gap-1.5 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
-                    <Sparkle size={12} weight={ICON_WEIGHT} />
-                    銘柄品鑑
-                  </p>
                   <h3
                     id="km-detail-title"
-                    className="mt-1 font-serif text-[1.75rem] font-semibold leading-[1.15] tracking-tight text-[var(--km-ink)] sm:text-3xl"
+                    className="font-serif text-[1.75rem] font-semibold leading-[1.15] tracking-tight text-[var(--km-ink)] sm:text-3xl"
                   >
                     {rice.name}
                   </h3>
-                  <p className="mt-2 flex items-center gap-2 text-xs text-[var(--km-muted)]">
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--km-muted)]">
                     <MapPin size={13} weight={ICON_WEIGHT} />
-                    <span
-                      aria-hidden
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: fill }}
-                    />
                     {rice.prefecture} / {rice.region}
                   </p>
-                  <ul className="mt-2 flex flex-wrap gap-1.5">
-                    {tags.map((tag, index) => (
-                      <PairingChip key={tag} item={tag} index={index} />
-                    ))}
-                  </ul>
+                  {tags.length > 0 ? (
+                    <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-brown)]">
+                      {tags.join("、")}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className="flex shrink-0 items-start gap-3">
@@ -320,21 +249,17 @@ export function BrandDetailPanel({
                 </p>
               ) : null}
               <div className="mt-5">
-                <PurchaseLead rice={rice} />
+                <PurchaseLead rice={rice} bare />
               </div>
+              <ShareCardActions rice={rice} compact />
             </div>
 
             <div className="min-w-0 px-5 pb-6 sm:px-8 sm:pb-8">
               <ForYou rice={rice} />
 
-              <div className="mt-8 flex flex-col gap-5">
-                <TagList
-                  label="相性の良い料理"
-                  items={rice.best_match_dishes}
-                  icon={BowlFood}
-                  chipIcon={BowlFood}
-                />
-                <TagList label="相性のよい食材" items={rice.good_with} icon={Fish} />
+              <div className="mt-8 space-y-3">
+                <PairingLine label="料理" items={rice.best_match_dishes} />
+                <PairingLine label="食材" items={rice.good_with} />
                 {rice.avoid_pairings.length > 0 ? (
                   <p className="text-xs leading-relaxed text-[var(--km-muted)]">
                     控えたい組み合わせ：{rice.avoid_pairings.join("、")}
@@ -347,12 +272,9 @@ export function BrandDetailPanel({
               </div>
 
               {rice.sommelier_note ? (
-                <blockquote className="mt-8 border-l-2 border-[var(--km-brown)]/35 bg-[var(--km-surface-warm)]/70 px-4 py-3">
-                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
-                    <Sparkle size={12} weight={ICON_WEIGHT} />
-                    侍米師メモ
-                  </span>
-                  <p className="font-serif text-[13px] leading-[1.9] text-[var(--km-ink-soft)]">
+                <blockquote className="mt-8 border-l-2 border-[var(--km-gold)] pl-4">
+                  <p className="text-[12px] text-[var(--km-gold)]">侍米師メモ</p>
+                  <p className="mt-2 font-serif text-[13px] leading-[1.9] text-[var(--km-ink-soft)]">
                     {rice.sommelier_note}
                   </p>
                 </blockquote>
@@ -387,11 +309,11 @@ export function BrandDetailPanel({
                 </div>
               ) : null}
 
-              <div className="mt-8 flex flex-col gap-3 border-t border-[var(--km-border)] pt-6">
+              <div className="mt-8 flex flex-col gap-5 border-t border-[var(--km-border)] pt-6">
                 <PurchaseLinks rice={rice} />
                 <Link
                   href={`/library/${rice.id}`}
-                  className={`inline-flex w-fit items-center gap-1 text-[12px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
+                  className={`inline-flex w-fit items-center gap-1 text-[13px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
                 >
                   由来・季節・炊き方まで、ライブラリで読む
                   <ArrowUpRight size={12} weight={ICON_WEIGHT} />

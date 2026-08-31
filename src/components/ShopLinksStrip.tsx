@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { CaretDown } from "@phosphor-icons/react";
 import type { AnalyticsEvent } from "@/lib/analytics";
 import { track } from "@/lib/analytics";
@@ -140,6 +140,7 @@ function PlatformButton({
   );
 }
 
+/** Browser-style tags: selected tab shares the panel face below. */
 function ModeTabs({
   mode,
   onChange,
@@ -153,9 +154,7 @@ function ModeTabs({
     <div
       role="tablist"
       aria-label="購入の種類"
-      className={`flex rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 p-0.5 ${
-        compact ? "text-[10px]" : "text-[11px]"
-      }`}
+      className={`grid grid-cols-2 gap-1 ${compact ? "text-[11px]" : "text-[12px]"}`}
     >
       {(
         [
@@ -170,10 +169,10 @@ function ModeTabs({
             type="button"
             role="tab"
             aria-selected={selected}
-            className={`min-w-0 flex-1 rounded-full px-2.5 py-1 font-medium tracking-wide transition ${FOCUS} ${
+            className={`relative py-2.5 text-center font-medium tracking-wide transition ${FOCUS} ${
               selected
-                ? "bg-[var(--km-surface)] text-[var(--km-ink)] shadow-[0_1px_2px_rgba(112,69,34,0.12)]"
-                : "text-[var(--km-muted)] hover:text-[var(--km-ink)]"
+                ? "z-10 -mb-px rounded-t-lg border border-b-0 border-[var(--km-border)] bg-[var(--km-surface-warm)] text-[var(--km-ink)]"
+                : "rounded-t-lg border border-transparent bg-[var(--km-bg-soft)]/55 text-[var(--km-muted)] hover:bg-[var(--km-bg-soft)] hover:text-[var(--km-ink)]"
             }`}
             onClick={() => {
               onChange(id);
@@ -184,6 +183,31 @@ function ModeTabs({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function ShopModePanel({
+  mode,
+  tabs,
+  mallGrid,
+  className = "",
+}: {
+  mode: ShopMode;
+  tabs: ReactNode;
+  mallGrid: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      {tabs}
+      <div
+        className={`border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-3 pb-3 pt-3 ${
+          mode === "retail" ? "rounded-b-xl rounded-tr-xl" : "rounded-b-xl rounded-tl-xl"
+        }`}
+      >
+        {mallGrid}
+      </div>
     </div>
   );
 }
@@ -265,7 +289,7 @@ export function ShopLinksStrip({
           />
           <PlatformButton
             href={links.amazon}
-            label={short ? "Amazon" : "Amazon で探す"}
+            label={short ? "Amazon" : "Amazonで探す"}
             event="amazon_click"
             className={MALL_STYLES.amazon}
             compact={compact}
@@ -275,14 +299,14 @@ export function ShopLinksStrip({
         <>
           <PlatformButton
             href={links.rakutenFurusato}
-            label={short ? "楽天" : "楽天ふるさと"}
+            label={short ? "楽天ふるさと" : "楽天でふるさと納税"}
             event="rakuten_furusato_click"
             className={MALL_STYLES.rakuten}
             compact={compact}
           />
           <PlatformButton
             href={links.yahooFurusato}
-            label={short ? "Yahoo!" : "Yahoo!ふるさと"}
+            label={short ? "Yahoo!ふるさと" : "Yahoo!でふるさと納税"}
             event="yahoo_furusato_click"
             className={MALL_STYLES.yahoo}
             compact={compact}
@@ -347,9 +371,8 @@ export function ShopLinksStrip({
         </button>
 
         {open ? (
-          <div id={panelId} className="overflow-visible pb-0.5">
-            <div className="mt-1">{tabs}</div>
-            {mallGrid}
+          <div id={panelId} className="mt-2">
+            <ShopModePanel mode={shopMode} tabs={tabs} mallGrid={mallGrid} />
           </div>
         ) : null}
       </div>
@@ -377,8 +400,12 @@ export function ShopLinksStrip({
         </div>
       ) : null}
 
-      <div className={compact ? "mt-2" : "mt-3"}>{tabs}</div>
-      {mallGrid}
+      <ShopModePanel
+        mode={shopMode}
+        tabs={tabs}
+        mallGrid={mallGrid}
+        className={title || mode === "pr" ? (compact ? "mt-2" : "mt-3") : ""}
+      />
 
       {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}
     </div>

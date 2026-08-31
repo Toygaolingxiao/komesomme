@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, BowlFood, MapPin, Sparkle } from "@phosphor-icons/react";
+import { ArrowRight, ArrowUpRight, MapPin } from "@phosphor-icons/react";
 import { track } from "@/lib/analytics";
 import type { RiceProfileV2 } from "@/types/rice";
 import {
@@ -32,7 +32,6 @@ export function MobileTodayCard({
 
   if (!match) return null;
 
-  const fill = match.rice.region_color ?? regionColor(match.rice.region);
   const dishes = dishTags(match.rice).slice(0, 3);
   const label = affinityLabel(match.score);
   const intro = match.reason?.trim() || appetiteLine(match.rice);
@@ -48,8 +47,7 @@ export function MobileTodayCard({
     >
       <span className="flex items-start justify-between gap-3">
         <span className="min-w-0">
-          <span className="flex items-center gap-1.5 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
-            <Sparkle size={12} weight="fill" />
+          <span className="text-[11px] font-medium text-[var(--km-brown)]">
             今日の一膳
           </span>
           <span className="mt-1.5 block font-serif text-[1.25rem] font-semibold leading-snug text-[var(--km-ink)]">
@@ -85,17 +83,8 @@ export function MobileTodayCard({
       </span>
 
       {dishes.length > 0 ? (
-        <span className="mt-3 flex flex-wrap gap-1.5">
-          {dishes.map((dish) => (
-            <span
-              key={dish}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--km-brown)]"
-              style={{ background: `${fill}22` }}
-            >
-              <BowlFood size={11} weight={ICON_WEIGHT} />
-              {dish}
-            </span>
-          ))}
+        <span className="mt-3 block text-[12px] leading-snug text-[var(--km-ink-soft)]">
+          {dishes.join("、")}
         </span>
       ) : null}
       <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent)]">
@@ -126,7 +115,7 @@ export function MobileSelectedCard({
         style={{ backgroundColor: fill }}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] tracking-[0.12em] text-[var(--km-accent)]">
+        <p className="text-[11px] font-medium text-[var(--km-brown)]">
           {isBestMatch ? "いちばん近い一膳" : "選んだ銘柄"}
         </p>
         <p className="font-serif text-[16px] font-semibold leading-snug text-[var(--km-ink)]">
@@ -134,15 +123,8 @@ export function MobileSelectedCard({
         </p>
         <p className="mt-0.5 text-[11px] text-[var(--km-muted)]">{rice.prefecture}</p>
         {tags.length > 0 ? (
-          <p className="mt-1 flex flex-wrap gap-1">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-[var(--km-surface-warm)] px-1.5 py-0.5 text-[9px] text-[var(--km-brown)]"
-              >
-                {tag}
-              </span>
-            ))}
+          <p className="mt-1 text-[11px] text-[var(--km-ink-soft)]">
+            {tags.join("、")}
           </p>
         ) : null}
       </div>

@@ -17,30 +17,6 @@ const REGIONS = [
   "全国銘柄",
 ] as const;
 
-function TastePips({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) {
-  return (
-    <span className="inline-flex items-center gap-1.5 text-[10px] text-[var(--km-muted)]">
-      <span>{label}</span>
-      <span className="inline-flex gap-0.5" aria-label={`${label} ${value}`}>
-        {Array.from({ length: 5 }, (_, i) => (
-          <span
-            key={i}
-            className={`h-1.5 w-1.5 rounded-full ${
-              i < value ? "bg-[var(--km-gold)]" : "bg-[var(--km-border)]"
-            }`}
-          />
-        ))}
-      </span>
-    </span>
-  );
-}
-
 export function LibraryBrowser({
   entries,
 }: {
@@ -70,28 +46,24 @@ export function LibraryBrowser({
         </p>
       </header>
 
-      <div className="mt-8 flex flex-col gap-3 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.35)] sm:flex-row sm:items-end">
+      <div className="mt-8 flex flex-col gap-3 border-b border-[var(--km-border)] pb-6 sm:flex-row sm:items-end">
         <label className="min-w-0 flex-1">
-          <span className="text-[10px] tracking-[0.12em] text-[var(--km-muted)]">
-            検索
-          </span>
+          <span className="text-[12px] text-[var(--km-muted)]">検索</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="銘柄名・県名・キーワード"
-            className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 px-3 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+            className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
           />
         </label>
         <label className="sm:w-56">
-          <span className="text-[10px] tracking-[0.12em] text-[var(--km-muted)]">
-            地域
-          </span>
+          <span className="text-[12px] text-[var(--km-muted)]">地域</span>
           <select
             value={region}
             onChange={(event) =>
               setRegion(event.target.value as (typeof REGIONS)[number])
             }
-            className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+            className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
           >
             {REGIONS.map((item) => (
               <option key={item} value={item}>
@@ -106,33 +78,37 @@ export function LibraryBrowser({
         {filtered.length} 件表示
       </p>
 
-      <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-2 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
         {filtered.map((entry) => (
           <li key={entry.id}>
             <Link
               href={`/library/${entry.id}`}
-              className={`group flex h-full flex-col rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 transition hover:-translate-y-0.5 hover:border-[var(--km-gold)]/40 hover:shadow-[0_16px_40px_-28px_rgba(112,69,34,0.55)] ${FOCUS}`}
+              className={`group flex flex-col gap-1 py-4 transition hover:bg-[var(--km-surface-warm)]/40 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 ${FOCUS}`}
             >
-              <span className="text-[10px] tracking-[0.12em] text-[var(--km-muted)]">
-                {entry.prefecture}
-                <span className="mx-1.5 text-[var(--km-border)]">/</span>
-                {entry.region}
-              </span>
-              <span className="mt-1.5 font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
-                {entry.name}
-              </span>
-              {entry.reading ? (
-                <span className="mt-0.5 text-[11px] text-[var(--km-muted)]">
-                  {entry.reading}
+              <span className="min-w-0">
+                <span className="block text-[12px] text-[var(--km-muted)]">
+                  {entry.prefecture}
+                  <span className="mx-1.5 text-[var(--km-muted)]/50">/</span>
+                  {entry.region}
                 </span>
-              ) : null}
-              <span className="mt-3 line-clamp-3 text-[12px] leading-relaxed text-[var(--km-ink-soft)]">
-                {entry.headline}
+                <span className="mt-1 block font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+                  {entry.name}
+                </span>
+                {entry.reading ? (
+                  <span className="mt-0.5 block text-[11px] text-[var(--km-muted)]">
+                    {entry.reading}
+                  </span>
+                ) : null}
+                <span className="mt-2 line-clamp-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)] sm:line-clamp-1">
+                  {entry.headline}
+                </span>
               </span>
-              <span className="mt-4 flex flex-wrap gap-x-3 gap-y-1">
-                <TastePips label="甘み" value={entry.sweetness} />
-                <TastePips label="粒感" value={entry.hardness} />
-                <TastePips label="粘り" value={entry.stickiness} />
+              <span className="shrink-0 text-[12px] text-[var(--km-muted)] sm:text-right">
+                甘み {entry.sweetness}
+                <span className="mx-1.5 text-[var(--km-muted)]/40">/</span>
+                粒感 {entry.hardness}
+                <span className="mx-1.5 text-[var(--km-muted)]/40">/</span>
+                粘り {entry.stickiness}
               </span>
             </Link>
           </li>

@@ -168,8 +168,7 @@ export function ConsultForm({
               wide ? "line-clamp-2" : "leading-relaxed"
             }`}
           >
-            <span className="mr-1.5 inline-flex items-center gap-1 text-[10px] tracking-[0.14em] text-[var(--km-accent)]">
-              <Sparkle size={11} weight="fill" />
+            <span className="mr-1.5 text-[11px] font-medium text-[var(--km-brown)]">
               {GUIDE_ROLE}
             </span>
             {reply}
