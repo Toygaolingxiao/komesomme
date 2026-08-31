@@ -3,9 +3,11 @@ import { findRiceProfile } from "@/data/rice/catalog";
 import {
   amazonSearchUrl,
   furusatoQuery,
+  rakutenFurusatoSearchUrl,
   shopQuery,
   wrapSatofullSearchUrl,
   wrapYahooSearchUrl,
+  yahooFurusatoSearchUrl,
 } from "@/lib/affiliate";
 import { yahooShoppingItemUrl } from "@/lib/affiliate/yahoo";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
@@ -23,10 +25,12 @@ export type ShopLinks = {
   rakuten: string;
   yahoo: string;
   satofull: string;
+  rakutenFurusato: string;
+  yahooFurusato: string;
 };
 
 /**
- * Resolve Amazon / Rakuten / Yahoo / さとふる hrefs for one catalog brand.
+ * Resolve mall hrefs for one catalog brand.
  * The card only receives URLs — API product copy is never mixed into other malls.
  */
 export async function GET(request: Request) {
@@ -57,6 +61,8 @@ export async function GET(request: Request) {
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
     yahoo: wrapYahooSearchUrl(shop, yahooSid, yahooPid),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
+    rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
+    yahooFurusato: yahooFurusatoSearchUrl(furusato),
   };
 
   const ip = clientIpFromRequest(request);
@@ -77,6 +83,8 @@ export async function GET(request: Request) {
     rakuten: rakuten.url,
     yahoo,
     satofull: fallback.satofull,
+    rakutenFurusato: fallback.rakutenFurusato,
+    yahooFurusato: fallback.yahooFurusato,
   };
 
   return NextResponse.json(links);

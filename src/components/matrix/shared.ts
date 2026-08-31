@@ -1,4 +1,10 @@
-import { amazonSearchUrl, wrapSatofullSearchUrl, yahooShoppingSearchUrl } from "@/lib/affiliate";
+import {
+  amazonSearchUrl,
+  rakutenFurusatoSearchUrl,
+  wrapSatofullSearchUrl,
+  yahooFurusatoSearchUrl,
+  yahooShoppingSearchUrl,
+} from "@/lib/affiliate";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import { RICE_REGIONS, regionColor as colorForRegion } from "@/lib/rice/regions";
@@ -87,11 +93,11 @@ export function yahooShoppingUrl(keyword: string): string {
 }
 
 export function rakutenFurusatoUrl(keyword: string): string {
-  return `https://www.rakuten.co.jp/furusato/search/?sitem=${encodeURIComponent(keyword)}`;
+  return rakutenFurusatoSearchUrl(keyword);
 }
 
 export function yahooFurusatoUrl(keyword: string): string {
-  return `https://furusato.yahoo.co.jp/search?keyword=${encodeURIComponent(keyword)}`;
+  return yahooFurusatoSearchUrl(keyword);
 }
 
 export function furusatoUrl(keyword: string): string {

@@ -25,6 +25,6 @@ KomeSomme は [Semantic Versioning 2.0.0](https://semver.org/lang/ja/)（`X.Y.Z`
 1. [`VERSION`](../VERSION) を読む。指定がなければ 1 段だけ上げ、飛ばさない
 2. `VERSION` と `package.json` の `version` を同じ値にする
 3. `npm install` を一度走らせ、`package-lock.json` のルート `version` を同期する（**lock は手で編集しない**）
-4. [10-changelog.md](./10-changelog.md) の Unreleased を `## X.Y.Z — YYYY-MM` へ移す
+4. [10-changelog.md](./10-changelog.md) の Unreleased を `## X.Y.Z — YYYY-MM-DD` へ移す（発版日は日まで書く。月だけにしない）
 
 1.0.0 のときだけ [00-overview.md](./00-overview.md) の現行説明と [11-launch-checklist.md](./11-launch-checklist.md) のスナップショットを見直す。

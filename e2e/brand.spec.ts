@@ -13,9 +13,12 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await page.goto(`/library/${STABLE_BRAND_ID}`);
     const purchase = page.locator("#km-purchase");
     await expect(purchase).toBeVisible();
-    await expect(purchase.getByRole("link", { name: /Amazon/ })).toBeVisible();
+    await expect(purchase.getByRole("tab", { name: "通販" })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /楽天/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /Yahoo/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /Amazon/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
+    await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toBeVisible();
     await expect(page.getByText("Amazonのアソシエイトとして").first()).toBeVisible();
     await expect(page.getByText("アフィリエイト広告").first()).toBeVisible();
@@ -28,18 +31,23 @@ test.describe("TS-BRAND / TS-BUY", () => {
     const amazon = purchase.getByRole("link", { name: /Amazon/ });
     const rakuten = purchase.getByRole("link", { name: /楽天/ });
     const yahoo = purchase.getByRole("link", { name: /Yahoo/ });
-    const satofull = purchase.getByRole("link", { name: /さとふる/ });
 
     await expect(amazon).toHaveAttribute("href", /amazon\.co\.jp/);
     await expect(rakuten).toHaveAttribute("href", /rakuten\.co\.jp|hb\.afl\.rakuten/);
     await expect(yahoo).toHaveAttribute("href", /yahoo\.co\.jp|valuecommerce/);
-    await expect(satofull).toHaveAttribute("href", /satofull\.jp|valuecommerce/);
 
-    for (const link of [amazon, rakuten, yahoo, satofull]) {
+    for (const link of [amazon, rakuten, yahoo]) {
       const rel = (await link.getAttribute("rel")) ?? "";
       expect(rel).toMatch(/noopener/);
       expect(rel).toMatch(/nofollow/);
     }
+
+    await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
+    const satofull = purchase.getByRole("link", { name: /さとふる/ });
+    await expect(satofull).toHaveAttribute("href", /satofull\.jp|valuecommerce/);
+    const satofullRel = (await satofull.getAttribute("rel")) ?? "";
+    expect(satofullRel).toMatch(/noopener/);
+    expect(satofullRel).toMatch(/nofollow/);
   });
 
   test("TS-BRAND-04 mobile no horizontal overflow", async ({ page, isMobile }) => {

@@ -36,7 +36,7 @@ alwaysApply: true
 
 1. `VERSION`
 2. `package.json` 的 `version`
-3. `docs/10-changelog.md`：Unreleased → `## X.Y.Z — YYYY-MM`
+3. `docs/10-changelog.md`：Unreleased → `## X.Y.Z — YYYY-MM-DD`（发版日写到日，不要只写月）
 4. 跑 `npm install`，把 lock 根 `version` 带上（仍不要手改 lock 正文）
 
 `docs/01-versioning.md` 的履歴表、overview 的能力描述、checklist 快照：**不必**为了 patch/minor 去改数字。1.0.0 时再改 overview / checklist。

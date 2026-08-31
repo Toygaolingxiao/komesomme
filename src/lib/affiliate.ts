@@ -73,6 +73,14 @@ export function yahooShoppingSearchUrl(query: string): string {
   return `https://shopping.yahoo.co.jp/search?p=${encodeURIComponent(query)}`;
 }
 
+export function yahooFurusatoSearchUrl(query: string): string {
+  return `https://furusato.yahoo.co.jp/search?keyword=${encodeURIComponent(query)}`;
+}
+
+export function rakutenFurusatoSearchUrl(query: string): string {
+  return `https://www.rakuten.co.jp/furusato/search/?sitem=${encodeURIComponent(query)}`;
+}
+
 export function satofullSearchBase(): string {
   return process.env.SATOFULL_SEARCH_BASE_URL?.trim() || SATOFULL_DEFAULT_BASE;
 }
@@ -161,6 +169,8 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
   amazon: string;
   yahoo: string;
   satofull: string;
+  yahooFurusato: string;
+  rakutenFurusato: string;
 } {
   const shop = shopQuery(input);
   const furusato = furusatoQuery(input);
@@ -168,5 +178,7 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
     amazon: amazonSearchUrl(shop),
     yahoo: yahooShoppingSearchUrl(shop),
     satofull: satofullSearchUrl(furusato),
+    yahooFurusato: yahooFurusatoSearchUrl(furusato),
+    rakutenFurusato: rakutenFurusatoSearchUrl(furusato),
   };
 }

@@ -11,6 +11,7 @@ export type AnalyticsEvent =
   | "yahoo_click"
   | "furusato_click"
   | "shop_disclosure_toggle"
+  | "shop_mode_toggle"
   | "language_search_submit"
   | "suggestion_chip_click"
   | "similar_rice_click"

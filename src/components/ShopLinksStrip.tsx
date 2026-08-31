@@ -10,7 +10,9 @@ import {
   AFFILIATE_PR_LABEL,
   amazonSearchUrl,
   furusatoQuery,
+  rakutenFurusatoSearchUrl,
   shopQuery,
+  yahooFurusatoSearchUrl,
   yahooShoppingSearchUrl,
 } from "@/lib/affiliate";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
@@ -23,7 +25,11 @@ export type ShopLinks = {
   rakuten: string;
   yahoo: string;
   satofull: string;
+  rakutenFurusato: string;
+  yahooFurusato: string;
 };
+
+type ShopMode = "retail" | "furusato";
 
 const linkCache = new Map<string, ShopLinks>();
 
@@ -49,6 +55,8 @@ function fallbackLinks(rice: RiceProfileV2): ShopLinks {
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
     yahoo: yahooShoppingSearchUrl(shop),
     satofull: `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(furusato)}`,
+    rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
+    yahooFurusato: yahooFurusatoSearchUrl(furusato),
   };
 }
 
@@ -86,6 +94,8 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           rakuten: httpsUrl(data.rakuten, next.rakuten),
           yahoo: httpsUrl(data.yahoo, next.yahoo),
           satofull: httpsUrl(data.satofull, next.satofull),
+          rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
+          yahooFurusato: httpsUrl(data.yahooFurusato, next.yahooFurusato),
         };
         linkCache.set(rice.id, resolved);
         setLinks(resolved);
@@ -105,14 +115,12 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
 function PlatformButton({
   href,
   label,
-  badge,
   event,
   className,
   compact,
 }: {
   href: string;
   label: string;
-  badge?: string;
   event: AnalyticsEvent;
   className: string;
   compact?: boolean;
@@ -122,26 +130,61 @@ function PlatformButton({
       href={href}
       target="_blank"
       rel={AFFILIATE_LINK_REL}
-      className={`relative inline-flex w-full items-center justify-center rounded-full text-center font-semibold transition ${FOCUS} ${className} ${
-        compact
-          ? "min-h-9 px-2 py-1.5 text-[11px]"
-          : "min-h-11 px-3 py-2.5 text-[12px]"
+      className={`inline-flex w-full items-center justify-center rounded-full text-center font-semibold transition ${FOCUS} ${className} ${
+        compact ? "min-h-9 px-2 py-1.5 text-[11px]" : "min-h-11 px-3 py-2.5 text-[12px]"
       }`}
       onClick={() => track(event, { label })}
     >
-      {badge ? (
-        <span
-          className={`absolute z-10 font-medium text-[var(--km-brown)] ring-1 ring-[var(--km-border)] ${
-            compact
-              ? "-top-1.5 right-1 rounded-full bg-[var(--km-surface)] px-1 py-px text-[8px]"
-              : "-top-2 right-2 rounded-full bg-[var(--km-surface)] px-1.5 py-0.5 text-[9px]"
-          }`}
-        >
-          {badge}
-        </span>
-      ) : null}
       {label}
     </a>
+  );
+}
+
+function ModeTabs({
+  mode,
+  onChange,
+  compact,
+}: {
+  mode: ShopMode;
+  onChange: (next: ShopMode) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label="購入の種類"
+      className={`flex rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 p-0.5 ${
+        compact ? "text-[10px]" : "text-[11px]"
+      }`}
+    >
+      {(
+        [
+          ["retail", "通販"],
+          ["furusato", "ふるさと納税"],
+        ] as const
+      ).map(([id, label]) => {
+        const selected = mode === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            className={`min-w-0 flex-1 rounded-full px-2.5 py-1 font-medium tracking-wide transition ${FOCUS} ${
+              selected
+                ? "bg-[var(--km-surface)] text-[var(--km-ink)] shadow-[0_1px_2px_rgba(112,69,34,0.12)]"
+                : "text-[var(--km-muted)] hover:text-[var(--km-ink)]"
+            }`}
+            onClick={() => {
+              onChange(id);
+              track("shop_mode_toggle", { mode: id });
+            }}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -165,29 +208,20 @@ type ShopLinksStripProps = {
   className?: string;
 };
 
-/** Full brand fills — detail modal / brand page (decision surface). */
-const BRAND_STYLES = {
-  amazon: "bg-[#ffd814] text-[#111] hover:bg-[#f7ca00]",
-  rakuten: "bg-[#bf0000] text-white hover:bg-[#a40000]",
-  yahoo: "bg-[#ff0033] text-white hover:bg-[#e0002c]",
-  satofull: "bg-[#1b4332] text-white hover:bg-[#16382a]",
-} as const;
-
 /**
- * Same hue, slightly eased saturation — home disclosure expand only.
- * Still reads as mall CTAs; less shouty on the paper canvas.
+ * Soft versions of each mall's official hue (not invented colors).
+ * Rakuten #bf0000 → muted brick; Yahoo #ff0033 → lighter pink-red; Amazon gold; さとふる green.
  */
-const BRAND_STYLES_SOFT = {
+const MALL_STYLES = {
   amazon: "bg-[#e8c84a] text-[#1a1510] hover:bg-[#dfbf3a]",
-  rakuten: "bg-[#c45a5a] text-white hover:bg-[#b44e4e]",
-  yahoo: "bg-[#e85a6b] text-white hover:bg-[#d64d5d]",
+  rakuten: "bg-[#c05050] text-white hover:bg-[#ad4545]",
+  yahoo: "bg-[#ef6b7e] text-white hover:bg-[#e0556a]",
   satofull: "bg-[#3a6b56] text-white hover:bg-[#335f4c]",
 } as const;
 
 /**
- * Four mall CTAs + optional affiliate disclosure.
- * Home: `expandMode="disclosure"` + soft brand fills when open.
- * Detail / brand page: full brand fills, always open.
+ * Mall CTAs + optional affiliate disclosure.
+ * Equal-width stack: 楽天 → Yahoo → Amazon / さとふる (last is not larger).
  */
 export function ShopLinksStrip({
   rice,
@@ -202,47 +236,71 @@ export function ShopLinksStrip({
   const mode = disclosure ?? "pr";
   const panelId = useId();
   const [open, setOpen] = useState(expandMode === "always");
+  const [shopMode, setShopMode] = useState<ShopMode>("retail");
 
   useEffect(() => {
     setOpen(expandMode === "always");
+    setShopMode("retail");
   }, [rice.id, expandMode]);
 
   const short = compact || expandMode === "disclosure";
-  const fills = expandMode === "disclosure" ? BRAND_STYLES_SOFT : BRAND_STYLES;
 
   const mallGrid = (
-    // pt keeps ふるさと納税 badge from clipping at the top edge
-    <div className={`grid grid-cols-2 gap-2 pt-2 ${compact ? "mt-1" : "mt-2"}`}>
-      <PlatformButton
-        href={links.amazon}
-        label={short ? "Amazon" : "Amazon で探す"}
-        event="amazon_click"
-        className={fills.amazon}
-        compact={compact}
-      />
-      <PlatformButton
-        href={links.rakuten}
-        label={short ? "楽天市場" : "楽天市場で探す"}
-        event="rakuten_click"
-        className={fills.rakuten}
-        compact={compact}
-      />
-      <PlatformButton
-        href={links.yahoo}
-        label={short ? "Yahoo!" : "Yahoo!で探す"}
-        event="yahoo_click"
-        className={fills.yahoo}
-        compact={compact}
-      />
-      <PlatformButton
-        href={links.satofull}
-        label={short ? "さとふる" : "さとふるで探す"}
-        badge="ふるさと納税"
-        event="furusato_click"
-        className={fills.satofull}
-        compact={compact}
-      />
+    <div className={`flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`}>
+      {shopMode === "retail" ? (
+        <>
+          <PlatformButton
+            href={links.rakuten}
+            label={short ? "楽天市場" : "楽天市場で探す"}
+            event="rakuten_click"
+            className={MALL_STYLES.rakuten}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.yahoo}
+            label={short ? "Yahoo!" : "Yahoo!で探す"}
+            event="yahoo_click"
+            className={MALL_STYLES.yahoo}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.amazon}
+            label={short ? "Amazon" : "Amazon で探す"}
+            event="amazon_click"
+            className={MALL_STYLES.amazon}
+            compact={compact}
+          />
+        </>
+      ) : (
+        <>
+          <PlatformButton
+            href={links.rakutenFurusato}
+            label={short ? "楽天" : "楽天ふるさと"}
+            event="furusato_click"
+            className={MALL_STYLES.rakuten}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.yahooFurusato}
+            label={short ? "Yahoo!" : "Yahoo!ふるさと"}
+            event="furusato_click"
+            className={MALL_STYLES.yahoo}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.satofull}
+            label={short ? "さとふる" : "さとふるで探す"}
+            event="furusato_click"
+            className={MALL_STYLES.satofull}
+            compact={compact}
+          />
+        </>
+      )}
     </div>
+  );
+
+  const tabs = (
+    <ModeTabs mode={shopMode} onChange={setShopMode} compact={compact || expandMode === "disclosure"} />
   );
 
   if (expandMode === "disclosure") {
@@ -251,6 +309,7 @@ export function ShopLinksStrip({
         className={className}
         data-shop-strip="disclosure"
         data-shop-expanded={open ? "true" : "false"}
+        data-shop-mode={shopMode}
       >
         <button
           type="button"
@@ -289,6 +348,7 @@ export function ShopLinksStrip({
 
         {open ? (
           <div id={panelId} className="overflow-visible pb-0.5">
+            <div className="mt-1">{tabs}</div>
             {mallGrid}
           </div>
         ) : null}
@@ -297,7 +357,7 @@ export function ShopLinksStrip({
   }
 
   return (
-    <div className={className} data-shop-strip="brand">
+    <div className={className} data-shop-strip="brand" data-shop-mode={shopMode}>
       {title || mode === "pr" ? (
         <div className="flex items-center justify-between gap-2">
           {title ? (
@@ -317,6 +377,7 @@ export function ShopLinksStrip({
         </div>
       ) : null}
 
+      <div className={compact ? "mt-2" : "mt-3"}>{tabs}</div>
       {mallGrid}
 
       {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}

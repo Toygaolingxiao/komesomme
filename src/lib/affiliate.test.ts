@@ -6,7 +6,9 @@ import {
   AMAZON_ASSOCIATE_DISCLOSURE,
   amazonSearchUrl,
   furusatoQuery,
+  rakutenFurusatoSearchUrl,
   shopQuery,
+  yahooFurusatoSearchUrl,
   yahooShoppingSearchUrl,
 } from "./affiliate";
 
@@ -43,6 +45,15 @@ describe("TS-UNIT-04 shop / amazon URL builders", () => {
     vi.stubEnv("NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG", "komesomme-22");
     const tagged = amazonSearchUrl("test");
     expect(tagged).toContain("tag=komesomme-22");
+  });
+
+  it("builds rakuten and yahoo furusato search URLs", () => {
+    expect(rakutenFurusatoSearchUrl("北海道 ゆめぴりか")).toContain(
+      "rakuten.co.jp/furusato/search/",
+    );
+    expect(yahooFurusatoSearchUrl("北海道 ゆめぴりか")).toContain(
+      "furusato.yahoo.co.jp/search",
+    );
   });
 
   it("builds yahoo shopping search", () => {

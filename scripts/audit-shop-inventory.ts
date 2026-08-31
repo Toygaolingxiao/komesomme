@@ -62,6 +62,8 @@ type BrandAudit = {
   };
   amazon: { class: "search_only_platform"; searchUrl: string };
   satofull: { class: "search_only_platform"; searchUrl: string };
+  rakutenFurusato: { class: MallClass; error?: string };
+  yahooFurusato: { class: MallClass; error?: string };
 };
 
 function keywordFor(rice: RiceProfileV2): string {
@@ -98,6 +100,8 @@ async function auditOne(rice: RiceProfileV2): Promise<BrandAudit> {
       class: "search_only_platform",
       searchUrl: satofullSearchUrl(furusatoKeyword),
     },
+    rakutenFurusato: { class: "search" },
+    yahooFurusato: { class: "search" },
   };
 
   try {
@@ -124,6 +128,29 @@ async function auditOne(rice: RiceProfileV2): Promise<BrandAudit> {
     row.yahoo = { class: yahoo.source, url: yahoo.url };
   } catch (cause) {
     row.yahoo = {
+      class: "error",
+      error: cause instanceof Error ? cause.message : String(cause),
+    };
+  }
+
+  try {
+    const rakutenGift = await recommendRakutenItem({
+      keyword: `${rice.name} ふるさと納税`,
+      brandName: rice.name,
+    });
+    row.rakutenFurusato = { class: rakutenGift.source };
+  } catch (cause) {
+    row.rakutenFurusato = {
+      class: "error",
+      error: cause instanceof Error ? cause.message : String(cause),
+    };
+  }
+
+  try {
+    const yahooGift = await recommendYahooItem(`${rice.name} ふるさと納税`);
+    row.yahooFurusato = { class: yahooGift.source };
+  } catch (cause) {
+    row.yahooFurusato = {
       class: "error",
       error: cause instanceof Error ? cause.message : String(cause),
     };
@@ -177,8 +204,10 @@ function gapsMarkdown(rows: BrandAudit[], generatedAt: string): string {
     `| 楽天 item ヒット | ${rows.filter((r) => r.rakuten.class === "item").length} |`,
     `| 楽天 search のみ | ${rakutenOnlySearch.length} |`,
     `| Yahoo item ヒット | ${rows.filter((r) => r.yahoo.class === "item").length} |`,
+    `| 楽天ふるさと語で item | ${rows.filter((r) => r.rakutenFurusato.class === "item").length} |`,
+    `| Yahoo ふるさと語で item | ${rows.filter((r) => r.yahooFurusato.class === "item").length} |`,
     `| 楽天も Yahoo も item なし | ${weak.length} |`,
-    `| Amazon / さとふる | 検索 URL のみ（PA-API 未接続） |`,
+    `| Amazon / さとふる / 各ふるさと検索 | 検索 URL のみ（PA-API・ふるさと商品 API 未接続。スクレイピングしない） |`,
     "",
     "## 両モールとも item なし（優先してキーワード見直し）",
     "",

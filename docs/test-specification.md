@@ -119,8 +119,8 @@
 - **手順:** カタログ既知 ID（例: ソース上の安定 ID）を開く  
 - **期待:** 200、銘柄名表示
 
-#### TS-BRAND-02 `#km-purchase` と 4 CTA
-- **期待:** Amazon / 楽天 / Yahoo! / さとふる。ページ内（フッター可）に Amazon 定型 + 「アフィリエイト広告」+ Rakuten Developers。購入カード内は ※PR で足りる（[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)）
+#### TS-BRAND-02 `#km-purchase` と CTA
+- **期待:** 通販タブに楽天 / Yahoo! / Amazon（縦一列・等幅）。ふるさと納税タブに楽天ふるさと / Yahoo!ふるさと / さとふる。ページ内（フッター可）に Amazon 定型 + 「アフィリエイト広告」+ Rakuten Developers。購入カード内は ※PR で足りる（[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)）
 
 #### TS-BRAND-03 類似銘柄リンク
 - **期待:** 類似があれば内部リンクで他銘柄へ
