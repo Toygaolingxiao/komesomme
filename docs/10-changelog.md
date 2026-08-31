@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+## 0.9.1 — 2026-08-31
+
+- シェアカード API が Route Handler として不正な `contentType` を export していたため production build が落ちていたのを修正
+
 ## 0.9.0 — 2026-08-31
 
 - `/library/[id]` 事典を編集カラム（約 40rem）に再設計。入れ子カードを廃し、味わい・食卓・由来・購入など少数セクションに統合

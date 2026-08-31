@@ -9,7 +9,6 @@ import { shareCardQrDataUrl } from "@/lib/brand/shareCardQr";
 import { getSiteUrl } from "@/lib/site";
 
 export const runtime = "nodejs";
-export const contentType = "image/png";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -123,6 +122,7 @@ export async function GET(request: Request, { params }: RouteProps) {
         { name: "Noto Serif JP", data: serif, style: "normal", weight: 700 },
       ],
       headers: {
+        "Content-Type": "image/png",
         "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
         "Content-Disposition": `inline; filename="${rice.id}-komesomme${withQr ? "-qr" : ""}.png"`,
       },
