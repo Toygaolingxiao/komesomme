@@ -18,8 +18,8 @@ const POLES = {
   fullscreen: { x: 36, y: 28 },
 } as const;
 const LEGEND = 28;
+/** Below this short side, shrink non-focus nodes (ProfileNode muted) — never cull the cloud. */
 const SPARSE_MIN = 380;
-const FOCUS_MIN = 280;
 
 function fitPlot(availW: number, availH: number) {
   return {
@@ -241,27 +241,19 @@ export function TasteMap({
   );
 
   const shortSide = Math.min(plot.w, plot.h);
+  // Desktop one-screen layouts often measure < 280px short side. Never enter
+  // "focus" (hard-cull to Top 4) — that made the home map look empty.
   const density: MapDensity =
     variant === "preview"
       ? "sparse"
       : variant === "fullscreen"
         ? "full"
-        : shortSide > 0 && shortSide < FOCUS_MIN
-          ? "focus"
-          : shortSide > 0 && shortSide < SPARSE_MIN
-            ? "sparse"
-            : "full";
+        : shortSide > 0 && shortSide < SPARSE_MIN
+          ? "sparse"
+          : "full";
   const longPoles = variant === "fullscreen" || (variant === "desktop" && density === "full");
 
-  const visiblePoints =
-    density === "focus" && (bestMatchId || selectedId)
-      ? points.filter(
-          (rice) =>
-            rice.id === bestMatchId ||
-            runnerUpIds.has(rice.id) ||
-            rice.id === selectedId
-        )
-      : points;
+  const visiblePoints = points;
 
   return (
     <div ref={stageRef} className="flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden">
@@ -327,9 +319,11 @@ export function TasteMap({
                     (Boolean(focusRegion) &&
                       rice.region_id !== focusRegion &&
                       rice.region !== regions.find((region) => region.id === focusRegion)?.name) ||
-                    (Boolean(bestMatchId || selectedId) &&
-                      rice.id !== bestMatchId &&
+                    // Dim the cloud only after an explicit pick — not while the
+                    // probe merely has a No.1 (that washed out ~100 grains).
+                    (Boolean(selectedId) &&
                       rice.id !== selectedId &&
+                      rice.id !== bestMatchId &&
                       !runnerUpIds.has(rice.id) &&
                       rice.id !== highlightId)
                   }
