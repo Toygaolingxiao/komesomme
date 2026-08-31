@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   icons: {
-    icon: [{ url: "/icon", type: "image/png" }],
-    apple: [{ url: "/apple-icon", type: "image/png" }],
+    icon: [{ url: "/icon", type: "image/png", sizes: "48x48" }],
+    apple: [{ url: "/apple-icon", type: "image/png", sizes: "180x180" }],
   },
   openGraph: {
     type: "website",
@@ -63,6 +63,20 @@ export default function RootLayout({
       className={`${geist.variable} ${geistMono.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
     >
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "KomeSomme",
+              alternateName: ["コメソムメ", GUIDE_ROLE],
+              url: siteMetadataBase().origin,
+              description: SITE_DESCRIPTION,
+              inLanguage: "ja-JP",
+            }),
+          }}
+        />
         <SkipOnOps>
           <GtmSnippet />
         </SkipOnOps>

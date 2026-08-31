@@ -128,6 +128,8 @@ API を使うアプリは、[公式 3 パターン](https://webservice.rakuten.c
 
 Yahoo!ショッピングとさとふるは **別広告主**。共通で拘束されるのは運営者規約。広告主ごとの提携条件は管理画面の案件ページ（承認後に本書へ追記）。
 
+**2026-08: 初回サイト登録は見送り。** 再申請前の自己点検は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。承認まで SID/PID を本番に入れない。
+
 | 項目 | 内容 |
 | --- | --- |
 | 正文 | [アフィリエイトサイト運営者利用規約](https://www.valuecommerce.ne.jp/st_affiliate/terms.html)（ページ末尾の改定歴を確認。本メモ作成時の直近: **2025/7/16**） |

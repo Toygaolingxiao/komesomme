@@ -6,6 +6,13 @@
 
 ## Unreleased
 
+- VC 再申請自己点検: [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)（2026-08 見送り記録）
+
+## 0.9.2 — 2026-08-31
+
+- favicon を Google SERP 向け 48×48 に変更（32px だと地球アイコンに落ちやすい）
+- `WebSite` JSON-LD をルートに追加
+
 ## 0.9.1 — 2026-08-31
 
 - シェアカード API が Route Handler として不正な `contentType` を export していたため production build が落ちていたのを修正

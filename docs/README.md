@@ -32,6 +32,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 13 | [13-affiliate-compliance.md](./13-affiliate-compliance.md) | 楽天 API と他モール共存の隔離設計（**中国語**） |
 | 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo・さとふる VC の規約リンクと実装メモ |
 | 15 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 公開披露の表面一覧と文案の正本（**中国語**） |
+| 17 | [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) | VC 見送り後の再申請自己点検 |
 | 16 | [16-tech-stack.md](./16-tech-stack.md) | 技術スタック層別・交付模式・Issue 整理案（**中国語**·SC 素材） |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・**独自ドメイン・GSC**・Redeploy |

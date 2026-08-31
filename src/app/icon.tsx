@@ -1,10 +1,14 @@
 import { ImageResponse } from "next/og";
 import { GOLD_POINT, GRAIN_PATH, ORBIT_PATH, PROBE } from "@/components/brand/markGeometry";
 
-export const size = { width: 32, height: 32 };
+/**
+ * Google Search requires favicon edge length to be a multiple of 48px.
+ * 32px often falls back to the generic globe in SERP.
+ */
+export const size = { width: 48, height: 48 };
 export const contentType = "image/png";
 
-/** Light tab icon: cream field, charcoal grain line, gold point. Never a filled black disc. */
+/** Light tab / SERP icon: cream field, charcoal grain line, gold point. */
 export default function Icon() {
   return new ImageResponse(
     (
@@ -18,7 +22,7 @@ export default function Icon() {
           justifyContent: "center",
         }}
       >
-        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+        <svg width="40" height="40" viewBox="0 0 64 64" fill="none">
           <path
             d={GRAIN_PATH}
             stroke="#302820"

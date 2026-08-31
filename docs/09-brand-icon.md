@@ -15,7 +15,7 @@
 
 | 用途 | ファイル | 内容 |
 |---|---|---|
-| 16–24px favicon | `src/app/icon.tsx` | 米白地・墨の線・金点。塗りつぶしの黒は使わない |
+| 48px favicon（SERP） | `src/app/icon.tsx` | **48×48**（Google は 48 の倍数必須。32 だと地球アイコンに落ちやすい）。米白地・墨の線・金点 |
 | 32px 以上・UI | `public/brand/mark.svg` | 線画 + 等深線 + 軌道 + 探針 |
 | 180 Apple | `src/app/apple-icon.tsx` | 米白地に標準マーク |
 | 512 / アバター | `public/brand/icon-light.svg` `icon-mono.svg` | 角丸スクエア（墨地版は置かない） |
