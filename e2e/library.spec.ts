@@ -14,10 +14,10 @@ test.describe("TS-LIBRARY", () => {
     await expect(page.getByRole("heading", { level: 1, name: "ゆめぴりか" })).toBeVisible();
     await expect(page.getByText("侍米師メモ").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "由来と特徴" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "季節と飲み物との相性" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "季節と飲み物" })).toBeVisible();
     await expect(page.getByText("季節", { exact: true })).toBeVisible();
     await expect(page.getByText("飲み物", { exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "美味しく炊くためのコツ" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "炊き方" })).toBeVisible();
   });
 
   test("TS-LIBRARY-03 legacy /{id} redirects to library", async ({ page }) => {

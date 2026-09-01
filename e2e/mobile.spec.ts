@@ -14,7 +14,9 @@ test.describe("TS-MOBILE", () => {
     await waitForHomeReady(page);
     const shop = page.locator("[data-shop-strip=disclosure]");
     const consult = page.getByRole("heading", { name: "言葉でえらぶ、今日の一膳" });
-    const mapHint = page.getByText("色の点は銘柄。触ると今日の一膳が変わります。");
+    const mapHint = page.getByText("色の点は銘柄です。触ると今日の一膳が変わります。", {
+      exact: true,
+    });
     await expect(consult).toBeVisible();
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
 

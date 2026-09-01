@@ -307,8 +307,8 @@ export function extraTasteMetrics(rice: RiceProfileV2): Array<[string, number]> 
     ["香り", rice.aroma],
     ["余韻", rice.aftertaste],
     ["コク", rice.richness],
-    ["タレ相性", rice.sauce_absorption],
-    ["油相性", rice.oil_compatibility],
+    ["タレの絡み", rice.sauce_absorption],
+    ["油もの", rice.oil_compatibility],
     ["淡麗さ", rice.clarity],
     ["粒の大きさ", rice.grain_size],
   ];
@@ -361,14 +361,14 @@ export function contourSummary(rice: RiceProfileV2): string {
   const ranked = [...contourAxes(rice)].sort((a, b) => b.value - a.value);
   const top = ranked[0];
   const second = ranked[1];
-  if (!top) return "味わいの輪郭は、品鑑の目安です。";
+  if (!top) return "味わいの輪郭は、編集の目安です。";
   if (top.label === "冷めても" || second?.label === "冷めても") {
-    return `${top.label}と${second?.label ?? "粒感"}の傾向があり、弁当や煮物にも合わせやすい味わいです。`;
+    return `${top.label}と${second?.label ?? "粒感"}が先に来ます。弁当や煮物にも合います。`;
   }
   if (top.label === "旨み" || rice.sauce_absorption >= 4) {
-    return `${top.label}と${second?.label ?? "甘み"}が立ち、煮物やタレ料理に寄せやすい味わいです。`;
+    return `${top.label}と${second?.label ?? "甘み"}が立ちます。煮物やタレ料理に寄せやすいです。`;
   }
-  return `${top.label}と${second?.label ?? "粒感"}が際立ち、日々の食卓に合わせやすい味わいです。`;
+  return `${top.label}と${second?.label ?? "粒感"}がはっきりしていて、毎日の食卓に合わせやすいです。`;
 }
 
 /**

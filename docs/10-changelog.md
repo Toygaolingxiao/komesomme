@@ -8,6 +8,17 @@
 
 - VC 再申請自己点検: [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)（2026-08 見送り記録）
 
+## 0.10.1 — 2026-09-01
+
+- Yahoo 公式短鎖の入力がハイフン・アンダースコアを受け付ける。記入した `promo_url` を購入 CTA が検索より優先し、未記入の検索キャッシュで埋まらない
+- 公開画面の日本語を、店先で案内する口調に整えた（です・ます、くだけすぎない）
+
+## 0.10.0 — 2026-09-01
+
+- Yahoo ショッピング公式アフィリエイト短鎖を Supabase `yahoo_shopping_affiliate_links` で管理。`promo_url` があれば CTA に使い、空なら従来の検索 URL
+- 有効な短鎖を書いた時刻は `recorded_at`（東京時間で観測台に表示）
+- 内部観測台 `/ops/yahoo` で銘柄表に貼る。CSV 手帳は廃止
+
 ## 0.9.2 — 2026-08-31
 
 - favicon を Google SERP 向け 48×48 に変更（32px だと地球アイコンに落ちやすい）

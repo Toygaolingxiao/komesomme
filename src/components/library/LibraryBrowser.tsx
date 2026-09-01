@@ -42,7 +42,7 @@ export function LibraryBrowser({
           銘柄ライブラリ
         </h1>
         <p className="mt-3 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">
-          {`約${entries.length}銘柄の味わい・料理との相性・由来・炊き方を、一冊の事典にまとめています。`}
+          {`約${entries.length}銘柄。甘みや粒の立ち方、合いそうな料理、産地の話まで、ゆっくり読めます。`}
         </p>
       </header>
 
@@ -117,7 +117,7 @@ export function LibraryBrowser({
 
       {filtered.length === 0 ? (
         <p className="mt-10 text-center text-sm text-[var(--km-muted)]">
-          条件に合う銘柄がありません。検索語を変えてみてください。
+          見つかりませんでした。言葉を少し変えて、もう一度どうぞ。
         </p>
       ) : null}
     </div>

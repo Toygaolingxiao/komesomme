@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "0.9.2",
+  "version": "0.10.1",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
@@ -15,6 +15,7 @@
     "inventory:audit": "node --use-system-ca --import tsx scripts/audit-shop-inventory.ts",
     "encyclopedia:generate": "node --use-system-ca --import tsx scripts/generate-rice-encyclopedia.ts",
     "encyclopedia:audit": "node --import tsx scripts/audit-encyclopedia-vs-catalog.ts",
+    "yahoo:sync": "node --use-system-ca --import tsx scripts/sync-yahoo-affiliate-links.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

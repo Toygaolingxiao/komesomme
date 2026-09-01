@@ -38,7 +38,7 @@ Vercel → Project → **Settings → Environment Variables**。
 
 1. Production に `OPS_DASHBOARD_SECRET`（16〜256 文字の乱数）を入れる。Preview には置かないか**別秘密**にする  
 2. Redeploy 後 `https://komesomme.jp/ops/login` で密钥登录（未設定時は 404，不宣传该路径）  
-3. 看板只读 `access_events`（service_role）。anon SELECT 依然不可  
+3. 看板只读 `access_events`（service_role）。anon SELECT 依然不可。Yahoo 短鎖表 `yahoo_shopping_affiliate_links` も anon 不可（0006）  
 4. 公开导航・sitemap 不出。`robots.txt` Disallow `/ops`。响应 `Cache-Control: private, no-store`  
 5. 密钥禁止 `NEXT_PUBLIC_`。浏览器只持有 12h HttpOnly 签名 cookie。门禁在 Node（layout / Route Handler），不依赖 Edge middleware  
 

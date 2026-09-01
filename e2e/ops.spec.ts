@@ -5,6 +5,8 @@ test.describe("TS-OPS private analytics surface", () => {
     // No secret → 404. Secret set (local) → redirect to login, never raw dashboard.
     const response = await request.get("/ops", { maxRedirects: 0 });
     expect([404, 401, 302, 303, 307, 308]).toContain(response.status());
+    const yahoo = await request.get("/ops/yahoo", { maxRedirects: 0 });
+    expect([404, 401, 302, 303, 307, 308]).toContain(yahoo.status());
   });
 
   test("TS-OPS-02 robots disallows /ops", async ({ request }) => {

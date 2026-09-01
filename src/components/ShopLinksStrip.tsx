@@ -19,6 +19,7 @@ import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affilia
 import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import type { RiceProfileV2 } from "@/types/rice";
 import { FOCUS } from "@/components/matrix/shared";
+import { isYahooPromoShortHref } from "@/lib/affiliate/yahooShortLinks";
 
 export type ShopLinks = {
   amazon: string;
@@ -71,16 +72,20 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
 
   useEffect(() => {
     const hit = linkCache.get(rice.id);
-    if (hit) {
+    // Search fallbacks stay stale if we cache them forever. Refetch until a
+    // yahoo.jp short link is in hand so newly filled promo URLs win.
+    if (hit && isYahooPromoShortHref(hit.yahoo)) {
       setLinks(hit);
       return;
     }
+    if (hit) setLinks(hit);
 
     const next = fallbackLinks(rice);
-    setLinks(next);
+    if (!hit) setLinks(next);
 
     const controller = new AbortController();
     fetch(`/api/rice/shop-links?id=${encodeURIComponent(rice.id)}`, {
+      cache: "no-store",
       signal: controller.signal,
     })
       .then((response) => (response.ok ? response.json() : null))
@@ -251,7 +256,7 @@ export function ShopLinksStrip({
   rice,
   variant = "full",
   expandMode = "always",
-  title = "取扱オンラインショップ",
+  title = "お店で探す",
   disclosure,
   className = "",
 }: ShopLinksStripProps) {
@@ -358,7 +363,7 @@ export function ShopLinksStrip({
               ) : null}
             </span>
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
-              {open ? "とじる" : `${rice.name}の取扱店`}
+              {open ? "とじる" : `${rice.name}を探す`}
             </span>
           </span>
           <CaretDown

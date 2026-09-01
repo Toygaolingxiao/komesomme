@@ -455,7 +455,7 @@ export function FlavorMatrix() {
                 味わいの地図
               </h2>
               <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--km-muted)]">
-                点を選ぶと銘柄を表示。スライダーを動かすと、今日の一膳が変わります。
+                点に触れると銘柄が出ます。スライダーを動かすと、今日の一膳が変わります。
               </p>
               <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             </div>
@@ -510,7 +510,7 @@ export function FlavorMatrix() {
           <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
             <div>
               <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
-                色の点は銘柄。触ると今日の一膳が変わります。
+                色の点は銘柄です。触ると今日の一膳が変わります。
               </p>
               <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             </div>

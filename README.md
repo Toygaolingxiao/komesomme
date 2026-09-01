@@ -1,6 +1,6 @@
 # KomeSomme
 
-KomeSomme（コメソム）は、日本のブランド米を味わいの地図から選べる選米ナビゲーションです。画面の案内役は **侍米師（じべいし）** です。
+KomeSomme（コメソム）は、日本のブランド米を味わいの地図から探すサイトです。画面の案内役は **侍米師（じべいし）** です。
 
 食べたい料理、今日の気分、合わせたいお酒を言葉にすると、地図上の位置と銘柄の解説から、今日の一膳が見えてきます。
 
@@ -24,7 +24,7 @@ Desktop は 100% 表示で一画面に収まります。Mobile は推薦 → 小
 
 ## 開発者向け
 
-Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql)、[`0005_access_events.sql`](./supabase/migrations/0005_access_events.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
+Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql)、[`0005_access_events.sql`](./supabase/migrations/0005_access_events.sql)、Yahoo 短鎖を使うなら [`0006_yahoo_shopping_affiliate_links.sql`](./supabase/migrations/0006_yahoo_shopping_affiliate_links.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
 
 ```bash
 npm install

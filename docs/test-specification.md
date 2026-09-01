@@ -180,6 +180,7 @@
 
 #### TS-OPS-01 `/ops` は未認証の公開ランディングにしない
 - 秘密未設定 → 404。設定時 → login へリダイレクト。ダッシュボード生 HTML を返さない
+- `/ops/yahoo` も同じ
 - **自動:** `e2e/ops.spec.ts`
 
 #### TS-OPS-02 `robots.txt` が `/ops` を Disallow
@@ -204,6 +205,7 @@
 | TS-UNIT-02 | `hardnessToDisplayY` 往復 | 表示 Y と硬度の整合 |
 | TS-UNIT-03 | `calculateDisplayScore` | 距離→45〜100 |
 | TS-UNIT-04 | `shopQuery` / `amazonSearchUrl` | クエリ結合・URL |
+| TS-UNIT-04b | `parseYahooShoppingShortLink` / `mergeYahooAffiliateSheet` | 短鎖形式・空は検索フォールバック |
 | TS-UNIT-05 | `ops/auth` · `ops/aggregate` | 署名 cookie・JST 日次・ふるさとチャネル |
 
 ---

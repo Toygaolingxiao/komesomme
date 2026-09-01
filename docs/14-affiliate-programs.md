@@ -230,6 +230,18 @@ Yahoo ItemSearch の `affiliate_id` は `http://ck.jp.ap.valuecommerce.com/servl
 
 クライアント直出しリンクにも付けたい場合のみ `NEXT_PUBLIC_YAHOO_VC_*`。Preview には置かない。
 
+### 公式ショッピングアフィリエイト短鎖（VC 不使用）
+
+ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検索結果**短鎖（`https://yahoo.jp/xxxx`）を銘柄ごとに手貼りする。商品 SKU 短鎖は使わない。
+
+| 項目 | 内容 |
+| --- | --- |
+| 表 | Supabase `yahoo_shopping_affiliate_links`（migration 0006） |
+| 記入 | 観測台 [`/ops/yahoo`](../src/app/ops/yahoo/page.tsx) の「推广链接」列。Table Editor でも可 |
+| 実行時 | `promo_url` があれば Yahoo CTA に使う。空なら従来の検索 URL |
+| 時刻 | `recorded_at` はトリガが書く。観測台は東京時間で表示 |
+| 同期 | `npm run yahoo:sync`（名称行だけ。既存の短鎖は上書きしない） |
+
 ---
 
 ## 5. さとふる × ValueCommerce（予約）
@@ -257,6 +269,7 @@ Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `
 | `src/lib/rakuten/affiliate.ts` | 検索 URL とアフィ包装。未登録 Preview では包まない |
 | `src/lib/affiliate.ts` | Amazon tag、VC 転鎖とゲート、開示文定数 |
 | `src/lib/affiliate/yahoo.ts` | ItemSearch。ゲート off なら `affiliate_type=vc` なし |
+| `src/lib/affiliate/yahooPromo.ts` | Supabase の `promo_url`。未記入・表未作成は検索 URL |
 | `src/app/api/rice/shop-links/route.ts` | 4 URL をサーバーで解決 |
 | `src/components/AffiliateDisclosure.tsx` | `pr` = ※PR。`full` = フッター用（Amazon + 短 PR + 楽天クレジット） |
 | `src/components/RiceProductCard.tsx` | 4 CTA。開示は `pr`（定型はフッター） |

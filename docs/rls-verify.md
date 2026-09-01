@@ -44,6 +44,18 @@ POST /rest/v1/rpc/match_rice_profiles
 
 （本文にダミー embedding を入れても権限エラーになること）
 
+## 4.1 運用表も anon から読めないこと
+
+期待: **失敗**（0005 / 0006 適用後）
+
+```http
+GET /rest/v1/access_events?select=id&limit=1
+```
+
+```http
+GET /rest/v1/yahoo_shopping_affiliate_links?select=brand_id,promo_url&limit=1
+```
+
 ## 5. アプリ確認
 
 - 本番 / Preview URL で味わい地図が表示される

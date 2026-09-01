@@ -53,7 +53,7 @@ export function SemanticReading({ reduceMotion }: { reduceMotion: boolean }) {
   return (
     <RailAwaiting
       kicker={GUIDE_ROLE}
-      message="言葉を読み、味わいの近い銘柄を探しています"
+      message="近い銘柄を探しています"
       reduceMotion={reduceMotion}
     />
   );

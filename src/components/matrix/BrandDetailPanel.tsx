@@ -48,7 +48,7 @@ function CoreTaste({ rice }: { rice: RiceProfileV2 }) {
 
   return (
     <section>
-      <h4 className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">主要な味わい</h4>
+      <h4 className="font-serif text-[13px] font-semibold text-[var(--km-ink)]">味わい</h4>
       <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5 sm:gap-3">
         {core.map(([label, value]) => (
           <TastePips key={label} label={label} value={value} size="sm" />
@@ -71,7 +71,7 @@ function TodayEat({ rice, appetite }: { rice: RiceProfileV2; appetite: string })
   return (
     <section>
       <h4 className="font-serif text-[15px] font-semibold text-[var(--km-ink)]">
-        今日どう食べると美味しいか
+        今日の食べ方
       </h4>
       {serve ? (
         <p className="mt-2 font-serif text-[15px] leading-[1.85] text-[var(--km-ink)]">{serve}</p>
@@ -315,7 +315,7 @@ export function BrandDetailPanel({
                   href={`/library/${rice.id}`}
                   className={`inline-flex w-fit items-center gap-1 text-[13px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
                 >
-                  由来・季節・炊き方まで、ライブラリで読む
+                  産地や炊き方は、ライブラリでどうぞ
                   <ArrowUpRight size={12} weight={ICON_WEIGHT} />
                 </Link>
               </div>

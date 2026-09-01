@@ -10,6 +10,8 @@ import {
   wrapYahooSearchUrl,
 } from "@/lib/affiliate";
 import { yahooShoppingItemUrl } from "@/lib/affiliate/yahoo";
+import { resolveYahooShopHref } from "@/lib/affiliate/yahooShortLinks";
+import { lookupYahooPromoUrl } from "@/lib/affiliate/yahooPromo";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import { recommendRakutenItem } from "@/lib/rakuten/ichiba";
 import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
@@ -19,6 +21,14 @@ import { takeToken } from "@/lib/security/rateLimit";
 export const runtime = "nodejs";
 
 const MINUTE_MS = 60_000;
+const NO_STORE = { "Cache-Control": "private, no-store" } as const;
+
+function json(body: unknown, status = 200, extra?: HeadersInit) {
+  return NextResponse.json(body, {
+    status,
+    headers: { ...NO_STORE, ...extra },
+  });
+}
 
 export type ShopLinks = {
   amazon: string;
@@ -36,12 +46,12 @@ export type ShopLinks = {
 export async function GET(request: Request) {
   const id = new URL(request.url).searchParams.get("id")?.trim() ?? "";
   if (!id) {
-    return NextResponse.json({ message: "id は必須です。" }, { status: 400 });
+    return json({ message: "id は必須です。" }, 400);
   }
 
   const rice = findRiceProfile(id);
   if (!rice) {
-    return NextResponse.json({ message: "銘柄が見つかりません。" }, { status: 404 });
+    return json({ message: "銘柄が見つかりません。" }, 404);
   }
 
   const shop =
@@ -56,10 +66,13 @@ export async function GET(request: Request) {
   const satofullSid = process.env.SATOFULL_VC_SID?.trim();
   const satofullPid = process.env.SATOFULL_VC_PID?.trim();
 
+  const yahooPromo = await lookupYahooPromoUrl(rice.id);
+  const yahooSearch = wrapYahooSearchUrl(shop, yahooSid, yahooPid);
+
   const fallback: ShopLinks = {
     amazon: amazonSearchUrl(shop),
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
-    yahoo: wrapYahooSearchUrl(shop, yahooSid, yahooPid),
+    yahoo: resolveYahooShopHref(yahooPromo, yahooSearch),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     yahooFurusato: wrapYahooFurusatoSearchUrl(furusato, yahooSid, yahooPid),
@@ -68,24 +81,22 @@ export async function GET(request: Request) {
   const ip = clientIpFromRequest(request);
   const limit = takeToken(`shop:m:${ip}`, 40, MINUTE_MS);
   if (!limit.ok) {
-    return NextResponse.json(fallback, {
-      headers: { "Retry-After": String(limit.retryAfterSec) },
-    });
+    return json(fallback, 200, { "Retry-After": String(limit.retryAfterSec) });
   }
 
-  const [rakuten, yahoo] = await Promise.all([
+  const [rakuten, yahooItem] = await Promise.all([
     recommendRakutenItem({ keyword: shop, brandName: rice.name }),
-    yahooShoppingItemUrl(shop),
+    yahooPromo ? Promise.resolve(yahooPromo) : yahooShoppingItemUrl(shop),
   ]);
 
   const links: ShopLinks = {
     amazon: fallback.amazon,
     rakuten: rakuten.url,
-    yahoo,
+    yahoo: resolveYahooShopHref(yahooPromo, yahooItem),
     satofull: fallback.satofull,
     rakutenFurusato: fallback.rakutenFurusato,
     yahooFurusato: fallback.yahooFurusato,
   };
 
-  return NextResponse.json(links);
+  return json(links);
 }

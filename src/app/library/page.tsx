@@ -8,8 +8,8 @@ export function generateMetadata(): Metadata {
   const count = encyclopediaManifest().length;
   const description =
     count > 0
-      ? `日本のブランド米 約${count}銘柄。甘みや粒感、料理との相性、産地の由来と炊き方を、侍米師（じべいし）が案内します。`
-      : "日本のブランド米の味わい・料理との相性・由来・炊き方を、侍米師（じべいし）が案内する銘柄事典。";
+      ? `日本のブランド米、約${count}銘柄。甘みや粒の立ち方、合いそうな料理、産地と炊き方をご案内します。`
+      : "日本のブランド米の味わい、合いそうな料理、産地と炊き方をご案内します。";
 
   return {
     title: "銘柄ライブラリ",

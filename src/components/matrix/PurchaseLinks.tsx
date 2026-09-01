@@ -17,7 +17,7 @@ export function PurchaseLead({
       <ShopLinksStrip
         rice={rice}
         variant="compact"
-        title="取扱オンラインショップ"
+        title="お店で探す"
         disclosure="pr"
         className={
           bare

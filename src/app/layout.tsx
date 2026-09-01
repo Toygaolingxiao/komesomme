@@ -23,7 +23,7 @@ const notoSerifJp = Noto_Serif_JP({
 });
 
 const SITE_DESCRIPTION =
-  "日本のブランド米を味わいの地図から探し、料理や気分に合う一膳へたどり着く選米ナビゲーション。";
+  "味わいの地図から、今日のごはんに合う日本のブランド米を。料理や気分に合わせてご案内します。";
 
 const SITE_TITLE = `KomeSomme | ${GUIDE_ROLE}`;
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import {
   Area,
@@ -11,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { OpsChrome } from "@/components/ops/OpsChrome";
 import type { OpsRange, OpsSummary } from "@/lib/ops/aggregate";
 
 const RANGES: Array<{ id: OpsRange; label: string }> = [
@@ -134,7 +134,6 @@ export function OpsDashboard({
   initial: OpsSummary;
   loadError?: boolean;
 }) {
-  const router = useRouter();
   const [summary, setSummary] = useState(initial);
   const [range, setRange] = useState<OpsRange>(initial.range);
   const [pending, startTransition] = useTransition();
@@ -166,50 +165,26 @@ export function OpsDashboard({
     });
   }
 
-  async function logout() {
-    await fetch("/api/ops/logout", { method: "POST" });
-    router.replace("/ops/login");
-    router.refresh();
-  }
-
   return (
     <main className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 sm:py-10">
-      <header className="flex flex-col gap-4 border-b border-[#3d2f24] pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] tracking-[0.22em] text-[#d49a2a]">KOMESOMME</p>
-          <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-[#fff5e5] sm:text-4xl">
-            观测台
-          </h1>
-          <p className="mt-2 max-w-lg text-sm leading-relaxed text-[#cbb9a4]">
-            {rangeCaption(range)}的站点行为。滚动窗口，东京时间。
-          </p>
+      <OpsChrome title="观测台" subtitle={`${rangeCaption(range)}的站点行为。滚动窗口，东京时间。`}>
+        <div className="flex rounded-full border border-[#3d2f24] bg-[#1a1410] p-1">
+          {RANGES.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => loadRange(item.id)}
+              className={`rounded-full px-3 py-1.5 text-xs transition ${
+                range === item.id
+                  ? "bg-[#e56b3f] font-semibold text-[#fffdf7]"
+                  : "text-[#cbb9a4] hover:text-[#fff5e5]"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-full border border-[#3d2f24] bg-[#1a1410] p-1">
-            {RANGES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => loadRange(item.id)}
-                className={`rounded-full px-3 py-1.5 text-xs transition ${
-                  range === item.id
-                    ? "bg-[#e56b3f] font-semibold text-[#fffdf7]"
-                    : "text-[#cbb9a4] hover:text-[#fff5e5]"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => void logout()}
-            className="rounded-full border border-[#3d2f24] px-3 py-1.5 text-xs text-[#cbb9a4] transition hover:border-[#d49a2a]/50 hover:text-[#fff5e5]"
-          >
-            退出
-          </button>
-        </div>
-      </header>
+      </OpsChrome>
 
       {pending ? (
         <p className="mt-4 text-xs tracking-wide text-[#9a8774]">刷新中…</p>

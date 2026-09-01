@@ -49,7 +49,7 @@ export function ConsultForm({
       <p className="mt-0.5 text-[11px] leading-snug text-[var(--km-muted)]">
         {reply
           ? "言葉を変えて、続けて聞けます。"
-          : "料理名や気分を入れるだけで、相性のよい銘柄を探せます。"}
+          : "料理の名前でも、今夜の気分でも構いません。今日の一膳を探します。"}
       </p>
     </div>
   );
@@ -102,7 +102,7 @@ export function ConsultForm({
     >
       <Sparkle size={14} weight={ICON_WEIGHT} />
       {pending
-        ? "読み解いています"
+        ? "探しています"
         : reply
           ? "もう一度聞く"
           : GUIDE_CONSULT_LABEL}
@@ -155,7 +155,7 @@ export function ConsultForm({
         <p className="flex min-w-0 items-start gap-2 text-[11px] leading-relaxed text-[#a33b2a]">
           <Warning size={13} weight={ICON_WEIGHT} className="mt-0.5 shrink-0" />
           {reply?.trim() ||
-            "うまく読み取れませんでした。言葉を変えて、もう一度どうぞ。"}
+            "うまく拾えませんでした。言葉を変えて、もう一度どうぞ。"}
         </p>
       ) : reply ? (
         <div

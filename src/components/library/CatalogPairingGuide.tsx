@@ -19,7 +19,7 @@ export function CatalogPairingGuide({ rice }: { rice: RiceProfileV2 }) {
   return (
     <section className="mt-14 border-t border-[var(--km-border)] pt-10">
       <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
-        季節と飲み物との相性
+        季節と飲み物
       </h2>
 
       {seasons.length > 0 ? (
@@ -66,7 +66,7 @@ export function CatalogPairingGuide({ rice }: { rice: RiceProfileV2 }) {
 
       {scenes.length > 0 ? (
         <p className="mt-8 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-          <span className="font-medium text-[var(--km-ink)]">暮らしのシーン</span>
+          <span className="font-medium text-[var(--km-ink)]">こんなとき</span>
           <span className="mx-2 text-[var(--km-muted)]">/</span>
           {scenes.join("、")}
         </p>

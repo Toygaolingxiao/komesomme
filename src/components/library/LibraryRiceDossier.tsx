@@ -169,7 +169,7 @@ export function LibraryRiceDossier({
       </Section>
 
       {/* 2. 食卓 — pairings + serve + ideas */}
-      <Section title="食卓での合わせ方">
+      <Section title="合わせる食卓">
         <div className="space-y-3">
           <PairingLine label="料理" items={rice.best_match_dishes} />
           <PairingLine label="食材" items={rice.good_with} />
@@ -241,7 +241,7 @@ export function LibraryRiceDossier({
 
       {/* 5. 炊き方 */}
       {article.cookingTips.length > 0 ? (
-        <Section title="美味しく炊くためのコツ">
+        <Section title="炊き方">
           <ul className="space-y-6">
             {article.cookingTips.map((tip) => (
               <li key={tip.title}>

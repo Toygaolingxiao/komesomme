@@ -167,7 +167,10 @@ ${JSON.stringify(profile, null, 2)}
 - 「日本一」「金賞」などは、プロフィールに明示がない限り書かない。一般的な評判は「とされる」「と言われる」で留める
 - 味わいスコアを公的測定のように書かない（KomeSomme 編集評価である旨を必要なら caveats に）
 - 炊飯のコツは grain_size / stickiness / cold_rice_quality などから論理的に導く
-- モール在庫やアフィリエイト価格のスクレイピング結果をでっち上げない`;
+- モール在庫やアフィリエイト価格のスクレイピング結果をでっち上げない
+- 日本語は人が書いた米の案内にする。「ことができます」「と考えられます」「様々な」「包括的」「本稿」「SKU」「注目されます」「いきましょう」は使わない
+- です。が3回続かない。主語は省いてよい。箇条書き調の「理由は3つ」は書かない
+- 結びは事実で止める。大げさにまとめない`;
 }
 
 function parseArticle(
@@ -231,7 +234,7 @@ function parseArticle(
     purchaseNotes: scrubBanned(String(json.purchaseNotes ?? "").trim()),
     caveats: scrubBanned(
       String(json.caveats ?? "").trim() ||
-        "本稿は公開情報と KomeSomme 編集評価をもとにした案内であり、公的な食味測定ではありません。",
+        "公開されている情報と、KomeSommeの編集評価をもとにしています。公的な食味の測定ではありません。",
     ),
     confidence,
     generatedAt,
@@ -281,7 +284,7 @@ function buildTemplateArticle(rice: RiceProfileV2, generatedAt: string): RiceEnc
     origin: scrubBanned(
       `「${rice.name}」は${rice.prefecture}（${rice.region}）にゆかりのブランド米として知られます。${
         rice.description?.trim() || rice.sommelier_note?.trim() || rice.short_ || ""
-      } 本稿の味わい記述は KomeSomme の編集評価（1〜5）を踏まえた案内であり、公的な食味測定ではありません。`,
+      } 味わいの記述は KomeSomme の編集評価（1〜5）を踏まえた案内で、公的な食味測定ではありません。`,
     ),
     features: [
       {
@@ -327,10 +330,10 @@ function buildTemplateArticle(rice: RiceProfileV2, generatedAt: string): RiceEnc
       "白ごはんとして味わう",
     ].filter(Boolean).slice(0, 6),
     purchaseNotes: scrubBanned(
-      `${rice.prefecture}産の流通がある銘柄です。スーパー・米穀店・ふるさと納税・各オンラインショップで見つかることがありますが、季節や年産で在庫は変動します。価格は銘柄の位置づけや精米・数量で幅があるため、具体額は記載しません。下の取扱店リンクから各モールの最新結果を確認してください。`,
+      `${rice.prefecture}産として出回っています。スーパー、米穀店、ふるさと納税、通販で見つかることがありますが、季節や年産で在庫は変わります。値段は精米や量で幅があるので、具体額は書きません。下の店リンクから、いまの出品を見てください。`,
     ),
     caveats:
-      "本稿は catalog の編集評価と公開情報をもとにしたテンプレート記事です。受賞歴や特定価格は断定していません。Gemini で再生成すると表現がより豊かになる場合があります。",
+      "カタログの編集評価と公開情報から組んだ案内です。受賞歴や特定の値段は断定していません。",
     confidence: "medium",
     generatedAt,
     model: "catalog-template",

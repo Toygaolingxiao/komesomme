@@ -23,7 +23,7 @@ export type SommelierMatchBrief = {
 function fallbackReply(query: string, matches: SommelierMatchBrief[]): string {
   const top = matches[0];
   if (!top) {
-    return "ご相談の内容に近い銘柄を探しています。言葉を少し変えて、もう一度聞いてみてください。";
+    return "近い銘柄が見つかりませんでした。言葉を少し変えて、もう一度どうぞ。";
   }
   if (nameMatch(query, top.name)) {
     const reason = top.reason.trim();
@@ -90,7 +90,8 @@ function buildPrompt(query: string, matches: SommelierMatchBrief[]): string {
     )
     .join("\n");
 
-  return `役割: 侍米師（じべいし）。選米案内役。資格名・認定を名乗らない。出力: 日本語の本文2文のみ。
+  return `役割: 侍米師（じべいし）。店先で米を勧める人。資格名・認定を名乗らない。出力: 日本語の本文2文のみ。
+「ことができます」「と考えられます」「様々な」「包括的」「注目されます」は使わない。です。が3回続かない。主語は省いてよい。
 候補以外の銘柄名は出さない。知らない相性は書かない。
 相談が候補の銘柄を名指しし、料理や向きを聞いているなら、その銘柄の料理向きを答える。質問文を繰り返さない。
 産地・地名なら、その土地の候補を味わいで短く勧める。

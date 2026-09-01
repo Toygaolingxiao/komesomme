@@ -119,5 +119,21 @@ Migration [`0005_access_events.sql`](../supabase/migrations/0005_access_events.s
 
 anon / authenticated は権限なし。INSERT は Next.js `POST /api/analytics/event` が service role で行う。
 
-**適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004 → 0005。  
-**既存 0003 / 0004 済み:** 0005 だけ追加実行。
+## `yahoo_shopping_affiliate_links`（Yahoo 公式アフィリエイト短鎖）
+
+Migration [`0006_yahoo_shopping_affiliate_links.sql`](../supabase/migrations/0006_yahoo_shopping_affiliate_links.sql)。
+
+手貼り用。検索 URL はカタログ側で都度組む。`promo_url` が空の銘柄は従来どおりプレーン検索。
+
+| カラム | 型 | 用途 |
+| --- | --- | --- |
+| `brand_id` | text PK | カタログ id |
+| `name` / `prefecture` / `region` / `search_keyword` | text | Table Editor 用。`search_keyword` は Yahoo に貼る銘柄名 |
+| `promo_url` | text nullable | 推广链接。`https://yahoo.jp/` + 英数字/连字符/下划线。CHECK 制約 |
+| `no_products` | boolean | Yahoo 上暂时没有合适米商品（0009）。观测台可筛；CTA 仍用普通搜索 |
+| `recorded_at` | timestamptz | 有効な `promo_url` を最後に書いた時刻。空に戻すと NULL。BEFORE トリガが書く |
+
+anon / authenticated は権限なし。読み書きは service role（購入 CTA の `/api/rice/shop-links` と `/ops/yahoo`）。
+
+**適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004 → 0005 → 0006 → `npm run yahoo:sync`。  
+**既存 0003 / 0004 / 0005 済み:** 0006 を SQL Editor で実行してから `npm run yahoo:sync`。

@@ -123,6 +123,19 @@ export type AccessEventRow = {
   meta: Json;
 };
 
+export type YahooShoppingAffiliateLinkRow = {
+  brand_id: string;
+  name: string;
+  prefecture: string;
+  region: string;
+  search_keyword: string;
+  promo_url: string | null;
+  no_products: boolean;
+  recorded_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export interface Database {
   public: {
     Tables: {
@@ -137,6 +150,23 @@ export interface Database {
           meta?: Json;
         };
         Update: Partial<AccessEventRow>;
+        Relationships: [];
+      };
+      yahoo_shopping_affiliate_links: {
+        Row: YahooShoppingAffiliateLinkRow;
+        Insert: {
+          brand_id: string;
+          name: string;
+          prefecture?: string;
+          region?: string;
+          search_keyword?: string;
+          promo_url?: string | null;
+          no_products?: boolean;
+          recorded_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<YahooShoppingAffiliateLinkRow, "brand_id">>;
         Relationships: [];
       };
       rice_regions: {
