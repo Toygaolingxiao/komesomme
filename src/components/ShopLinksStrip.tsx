@@ -20,6 +20,7 @@ import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import type { RiceProfileV2 } from "@/types/rice";
 import { FOCUS } from "@/components/matrix/shared";
 import { isYahooPromoShortHref } from "@/lib/affiliate/yahooShortLinks";
+import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
 
 export type ShopLinks = {
   amazon: string;
@@ -260,6 +261,7 @@ export function ShopLinksStrip({
   disclosure,
   className = "",
 }: ShopLinksStripProps) {
+  const enabled = isShopLinksEnabled();
   const links = useShopLinks(rice);
   const compact = variant === "compact";
   const mode = disclosure ?? "pr";
@@ -271,6 +273,8 @@ export function ShopLinksStrip({
     setOpen(expandMode === "always");
     setShopMode("retail");
   }, [rice.id, expandMode]);
+
+  if (!enabled) return null;
 
   const short = compact || expandMode === "disclosure";
 

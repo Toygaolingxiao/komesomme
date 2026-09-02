@@ -13,7 +13,7 @@ export const AMAZON_ASSOCIATE_DISCLOSURE =
 export const AFFILIATE_PR_LABEL = "※PR";
 
 /**
- * Footer / `AffiliateDisclosure` `full`. 景表法 + ValueCommerce 第11条4項.
+ * Footer / `AffiliateDisclosure` `full`. 景表法.
  * ASP names stay in `AFFILIATE_PR_NOTICE_DETAIL` (terms), not in chrome.
  */
 export const AFFILIATE_PR_NOTICE =
@@ -21,7 +21,7 @@ export const AFFILIATE_PR_NOTICE =
 
 /** `/terms` only — names the ASPs. Do not paste into CTA chrome. */
 export const AFFILIATE_PR_NOTICE_DETAIL =
-  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、バリューコマース経由のYahoo!ショッピング・さとふる等）。";
+  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト等）。";
 
 /** Footer one-liner. */
 export const TASTE_DISCLAIMER =
@@ -31,11 +31,14 @@ export const TASTE_DISCLAIMER =
 export const TASTE_DISCLAIMER_DETAIL =
   "味わい評価はKomeSomme独自基準による目安です。公的な認定・等級を示すものではありません。";
 
-/** ValueCommerce MyLink / 自由テキスト. SID+PID が揃うまでプレーン URL のまま。 */
+/**
+ * @deprecated ValueCommerce は採用しない（2026-09）。転鎖ヘルパは互換のため残すが常に無効。
+ * 本番の Yahoo は公式短鎖（`yahoo_shopping_affiliate_links`）またはプレーン検索。
+ */
 export const VALUE_COMMERCE_REFERRAL_HTTPS =
   "https://ck.jp.ap.valuecommerce.com/servlet/referral";
 
-/** Yahoo Shopping API `affiliate_id` が要求する http 形式。 */
+/** @deprecated See VALUE_COMMERCE_REFERRAL_HTTPS. */
 export const VALUE_COMMERCE_REFERRAL_HTTP =
   "http://ck.jp.ap.valuecommerce.com/servlet/referral";
 
@@ -138,29 +141,18 @@ export function satofullValueCommerceEnv(): { sid: string; pid: string } {
   };
 }
 
-/**
- * 第14条: 登録済みアフィリエイトサイト以外への広告コード掲載禁止。
- * Preview / 未フラグのローカルでは SID があっても包まない。
- */
+/** ValueCommerce 廃止。常に false（環境変数では再有効化しない）。 */
 export function valueCommerceWrapEnabled(): boolean {
-  const flag = process.env.VALUE_COMMERCE_WRAP?.trim().toLowerCase();
-  if (flag === "0" || flag === "false" || flag === "off") return false;
-  if (flag === "1" || flag === "true" || flag === "on") return true;
-  return process.env.VERCEL_ENV?.trim() === "production";
+  return false;
 }
 
-/** SID+PID が揃うまで素の URL。既に VC 転鎖なら二重に包まない。 */
+/** VC 廃止後は常に素の URL を返す。 */
 export function wrapValueCommerceIfReady(
   targetUrl: string,
-  sid?: string,
-  pid?: string
+  _sid?: string,
+  _pid?: string
 ): string {
-  if (!valueCommerceWrapEnabled()) return targetUrl;
-  const s = sid?.trim() ?? "";
-  const p = pid?.trim() ?? "";
-  if (!s || !p) return targetUrl;
-  if (/valuecommerce\.com/i.test(targetUrl)) return targetUrl;
-  return valueCommerceReferralUrl(targetUrl, s, p);
+  return targetUrl;
 }
 
 export function wrapYahooSearchUrl(query: string, sid?: string, pid?: string): string {

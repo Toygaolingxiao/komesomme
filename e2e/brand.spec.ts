@@ -22,7 +22,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /楽天ふるさと|楽天でふるさと納税/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /Yahoo!ふるさと|Yahoo!でふるさと納税/ })).toBeVisible();
-    await expect(page.locator("#km-purchase-foot")).toBeVisible();
+    await expect(page.locator("#km-purchase")).toHaveCount(1);
     await expect(page.getByText("Amazonのアソシエイトとして").first()).toBeVisible();
     await expect(page.getByText("アフィリエイト広告").first()).toBeVisible();
     await expect(page.getByText("Supported by Rakuten Developers").first()).toBeVisible();
@@ -37,7 +37,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
 
     await expect(amazon).toHaveAttribute("href", /amazon\.co\.jp/);
     await expect(rakuten).toHaveAttribute("href", /rakuten\.co\.jp|hb\.afl\.rakuten/);
-    await expect(yahoo).toHaveAttribute("href", /yahoo\.co\.jp|valuecommerce/);
+    await expect(yahoo).toHaveAttribute("href", /yahoo\.co\.jp|yahoo\.jp\//);
 
     for (const link of [amazon, rakuten, yahoo]) {
       const rel = (await link.getAttribute("rel")) ?? "";
@@ -47,14 +47,14 @@ test.describe("TS-BRAND / TS-BUY", () => {
 
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     const satofull = purchase.getByRole("link", { name: /さとふる/ });
-    await expect(satofull).toHaveAttribute("href", /satofull\.jp|valuecommerce/);
+    await expect(satofull).toHaveAttribute("href", /satofull\.jp/);
     await expect(purchase.getByRole("link", { name: /楽天/ })).toHaveAttribute(
       "href",
       /search\.rakuten\.co\.jp\/search\/mall|hb\.afl\.rakuten/
     );
     await expect(purchase.getByRole("link", { name: /Yahoo/ })).toHaveAttribute(
       "href",
-      /shopping\.yahoo\.co\.jp\/search|valuecommerce/
+      /shopping\.yahoo\.co\.jp\/search|yahoo\.jp\//
     );
     const satofullRel = (await satofull.getAttribute("rel")) ?? "";
     expect(satofullRel).toMatch(/noopener/);

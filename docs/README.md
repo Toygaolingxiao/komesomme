@@ -30,10 +30,11 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 12 | [12-product-journey.md](./12-product-journey.md) | 構想〜現行の開発者 / コンサル振り返り（中国語） |
 | 12 | [12-product-journey.ja.md](./12-product-journey.ja.md) | 同上（日本語） |
 | 13 | [13-affiliate-compliance.md](./13-affiliate-compliance.md) | 楽天 API と他モール共存の隔離設計（**中国語**） |
-| 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo・さとふる VC の規約リンクと実装メモ |
+| 14 | [14-affiliate-programs.md](./14-affiliate-programs.md) | Amazon / 楽天 / Yahoo 公式短鎖の規約リンクと実装メモ |
 | 15 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 公開披露の表面一覧と文案の正本（**中国語**） |
-| 17 | [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) | VC 見送り後の再申請自己点検 |
 | 16 | [16-tech-stack.md](./16-tech-stack.md) | 技術スタック層別・交付模式・Issue 整理案（**中国語**·SC 素材） |
+| 17 | [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) | ValueCommerce **廃止**記録 |
+| 18 | [18-brand-illustration.md](./18-brand-illustration.md) | 銘柄手描きイラスト方針（他社写真転載禁止） |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・**独自ドメイン・GSC**・Redeploy |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |

@@ -197,7 +197,7 @@ yahooShoppingUrl(keyword)  // 明天加 ValueCommerce SID
 乐天商品 API 已有。缺的是别家**计佣账号**：
 
 1. [Amazonアソシエイト](https://affiliate.amazon.co.jp/) → `tag`（搜索 URL 即可先赚钱；PA-API 可后补）。
-2. [バリューコマース](https://www.valuecommerce.ne.jp/)（Yahoo!ショッピング）→ SID。
+2. Yahoo!ショッピング → **公式アフィリエイト短鎖**（VC は採用しない。見 [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)）。
 3. ふるさと各平台是否允许联盟，以各社条款为准；未批则只做无 tag 搜索或隐藏。
 
 ---

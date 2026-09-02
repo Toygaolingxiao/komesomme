@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
-import { PurchaseLead, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { PurchaseJump, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { TasteContour } from "@/components/matrix/TasteContour";
 import { TastePips } from "@/components/matrix/TastePips";
 import { CatalogPairingGuide } from "@/components/library/CatalogPairingGuide";
@@ -130,7 +130,7 @@ export function LibraryRiceDossier({
         </p>
 
         <div className="mt-7">
-          <PurchaseLead rice={rice} bare />
+          <PurchaseJump label="お店で探す（ページ下部）" />
         </div>
         <ShareCardActions rice={rice} />
       </header>
@@ -264,7 +264,7 @@ export function LibraryRiceDossier({
         </Section>
       ) : null}
 
-      {/* 7. 購入 — notes + shop again so buyers need not scroll back */}
+      {/* 7. 購入 — single mall strip (top is jump only) */}
       <Section title="購入の目安">
         <p className="text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
           {article.purchaseNotes}

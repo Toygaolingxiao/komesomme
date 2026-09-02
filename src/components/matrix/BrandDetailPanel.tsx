@@ -28,7 +28,7 @@ import {
 import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { ShareCardActions } from "@/components/brand/ShareCardActions";
-import { PurchaseLead, PurchaseLinks } from "./PurchaseLinks";
+import { PurchaseJump, PurchaseLead } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
 import { TastePips } from "./TastePips";
 
@@ -310,7 +310,7 @@ export function BrandDetailPanel({
               ) : null}
 
               <div className="mt-8 flex flex-col gap-5 border-t border-[var(--km-border)] pt-6">
-                <PurchaseLinks rice={rice} />
+                <PurchaseJump label="お店で探すへ戻る" />
                 <Link
                   href={`/library/${rice.id}`}
                   className={`inline-flex w-fit items-center gap-1 text-[13px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}

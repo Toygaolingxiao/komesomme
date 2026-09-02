@@ -93,7 +93,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | --- | --- | --- | --- |
 | P1-1a | 楽天アフィリエイト: 検索 URL にアフィパラメータ | 管理画面でクリックまたは遷移が確認できる | **コード済** `wrapRakutenAffiliateUrl` + `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID` |
 | P1-1b | Amazon アソシエイト | タグ付き検索 URL + 第 5 条定型文。未契約なら UI から外す | **コード済** `amazonSearchUrl` + `AMAZON_ASSOCIATE_DISCLOSURE` |
-| P1-1c | Yahoo! / さとふるの ValueCommerce | 本番メディア登録 + 広告主提携承認後、Production のみ SID。Preview はプレーン検索 | **予約済** `valueCommerceWrapEnabled`。規約要約は [14-affiliate-programs.md](./14-affiliate-programs.md) |
+| P1-1c | Yahoo! / さとふるの ValueCommerce | — | **廃止**（2026-09）。VC 再申請しない。Yahoo は公式短鎖 / プレーン検索。記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) |
 | P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | [07-roadmap.md](./07-roadmap.md) 計測節を更新可 |
 | P1-1e | 楽天 Item Search + クレジット | href のみ（商品名・価格は出さない）。公式クレジット表示 | **コード済** `shop-links` + `src/lib/rakuten/credit.ts`。隔離の次段は [13](./13-affiliate-compliance.md) §4 |
 
@@ -144,6 +144,9 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P2-6 | CTA A/B、初見スコア再評価 | [07-roadmap.md](./07-roadmap.md) |
 | P2-7 | PWA / インストール体験 | 任意 |
 | P2-8 | 構造化ログ、レート制限の高度化（ユーザー単位等） | 運用規模に応じる |
+| P2-9 | 今日の一膳（日付シードの軽推薦） | [08-ui-design.md](./08-ui-design.md) §5「ライブラリの発見」。売り込み口調にしない |
+| P2-10 | 季節・用途の編集特集（月次コレクション） | 同上。自動量産しない |
+| P2-11 | 銘柄手描きイラスト本番接続 | [18-brand-illustration.md](./18-brand-illustration.md)。スパイク承認後 |
 
 ---
 

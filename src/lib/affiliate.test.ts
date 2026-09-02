@@ -18,7 +18,8 @@ describe("disclosure copy layering", () => {
     expect(AFFILIATE_PR_LABEL).toBe("※PR");
     expect(AFFILIATE_PR_NOTICE).toContain("アフィリエイト広告");
     expect(AFFILIATE_PR_NOTICE).not.toContain("バリューコマース");
-    expect(AFFILIATE_PR_NOTICE_DETAIL).toContain("バリューコマース");
+    expect(AFFILIATE_PR_NOTICE_DETAIL).not.toContain("バリューコマース");
+    expect(AFFILIATE_PR_NOTICE_DETAIL).toContain("Amazonアソシエイト");
   });
 });
 

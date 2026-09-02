@@ -6,7 +6,12 @@
 
 ## Unreleased
 
-- VC 再申請自己点検: [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)（2026-08 見送り記録）
+## 0.10.2 — 2026-09-02
+
+- 購入 CTA をページ内 1 箇所に整理（詳細は上部・事典は「購入の目安」）。`NEXT_PUBLIC_SHOP_LINKS_ENABLED=0` で店舗リンク全体を隠せる
+- ValueCommerce を廃止。開示文・env・転鎖ゲートを更新。Yahoo は公式短鎖 / 検索のまま
+- 銘柄手描きイラスト方針と試作スパイク（本番未接続）。今日の一膳・編集特集を checklist P2 に追加
+- ライブラリ一覧を味わいスキャンに：甘み・粒感・粘りを金の pips で比較。headline は事典側へ
 
 ## 0.10.1 — 2026-09-01
 

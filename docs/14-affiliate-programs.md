@@ -124,18 +124,17 @@ API を使うアプリは、[公式 3 パターン](https://webservice.rakuten.c
 
 ---
 
-## 3. バリューコマース（ASP）
+## 3. バリューコマース（ASP）— **廃止**
 
-Yahoo!ショッピングとさとふるは **別広告主**。共通で拘束されるのは運営者規約。広告主ごとの提携条件は管理画面の案件ページ（承認後に本書へ追記）。
+**2026-09: ValueCommerce は採用しない。** 転鎖ヘルパは常に無効。記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。Yahoo は下記 §4 の公式短鎖、さとふるはプレーン検索。
 
-**2026-08: 初回サイト登録は見送り。** 再申請前の自己点検は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。承認まで SID/PID を本番に入れない。
+以下は歴史メモ（再有効化しない）。
 
 | 項目 | 内容 |
 | --- | --- |
-| 正文 | [アフィリエイトサイト運営者利用規約](https://www.valuecommerce.ne.jp/st_affiliate/terms.html)（ページ末尾の改定歴を確認。本メモ作成時の直近: **2025/7/16**） |
+| 正文 | [アフィリエイトサイト運営者利用規約](https://www.valuecommerce.ne.jp/st_affiliate/terms.html) |
 | 契約相手 | バリューコマース株式会社 |
-| 準拠法 | 日本法。東京簡裁・地裁（第34・35条） |
-| 実装 | `valueCommerceWrapEnabled()` + `wrapValueCommerceIfReady()`。SID+PID 空、または Preview / 未フラグ環境では **包まない** |
+| 実装 | `valueCommerceWrapEnabled()` は **常に false** |
 
 本文は転載しない。改定通知（第32条）が来たらリンクと本表を更新する。
 
@@ -217,7 +216,7 @@ Yahoo ItemSearch の `affiliate_id` は `http://ck.jp.ap.valuecommerce.com/servl
 
 ---
 
-## 4. Yahoo!ショッピング × ValueCommerce（予約）
+## 4. Yahoo!ショッピング（公式短鎖 / 検索）
 
 | 項目 | 内容 |
 | --- | --- |
@@ -244,7 +243,7 @@ ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検�
 
 ---
 
-## 5. さとふる × ValueCommerce（予約）
+## 5. さとふる（プレーン検索）
 
 | 項目 | 内容 |
 | --- | --- |

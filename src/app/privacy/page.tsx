@@ -74,7 +74,7 @@ export default function PrivacyPage() {
           <li>アクセス解析（Google タグマネージャ / Google アナリティクス。設定時）</li>
           <li>利用イベントの保管（Supabase 上の access_events。匿名）</li>
           <li>
-            アフィリエイト計測（Amazon アソシエイト、楽天、バリューコマース等）。特別リンクのクリックにより各社が参照元を記録することがあります。Amazon
+            アフィリエイト計測（Amazon アソシエイト、楽天、Yahoo!ショッピング公式アフィリエイト等）。特別リンクのクリックにより各社が参照元を記録することがあります。Amazon
             の取扱いは
             <a
               className="text-[var(--km-gold)] underline-offset-2 hover:underline"

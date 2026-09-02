@@ -1,16 +1,19 @@
 /**
  * Five gold rice-grain pips for 1–5 taste scores.
- * Prefer on detail / dossier; library index stays numeric for density.
+ * Detail / dossier show the numeral; library index uses label + pips only.
  */
 export function TastePips({
   value,
   label,
   size = "md",
+  showValue = true,
 }: {
   value: number;
   /** Accessible name; when set, renders as a labeled row. */
   label?: string;
   size?: "sm" | "md";
+  /** When false with a label, hide the serif numeral (library density). */
+  showValue?: boolean;
 }) {
   const n = Math.max(0, Math.min(5, Math.round(value)));
   const pip = size === "sm" ? "h-[6px] w-[8px]" : "h-[8px] w-[10px]";
@@ -37,11 +40,18 @@ export function TastePips({
   }
 
   return (
-    <span className="inline-flex flex-col gap-1.5">
+    <span className="inline-flex flex-col gap-1">
       <span className="text-[11px] text-[var(--km-muted)]">{label}</span>
-      <span className="inline-flex items-center gap-2" aria-label={`${label} ${n}`}>
+      <span
+        className="inline-flex items-center gap-2"
+        aria-label={`${label} ${n}`}
+      >
         {dots}
-        <span className="font-serif text-sm leading-none text-[var(--km-brown)]">{n}</span>
+        {showValue ? (
+          <span className="font-serif text-sm leading-none text-[var(--km-brown)]">
+            {n}
+          </span>
+        ) : null}
       </span>
     </span>
   );

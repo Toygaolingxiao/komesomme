@@ -39,7 +39,7 @@ function rangeCaption(range: OpsRange): string {
 const GUIDE: Array<{ title: string; body: string }> = [
   {
     title: "这张表在看什么",
-    body: "过去一段时间里，访客在站点上做了什么。数字来自我们自己记下的点击，不是楽天、Amazon、ValueCommerce 的后台。成交、承认、佣金要去那些网站对。",
+    body: "过去一段时间里，访客在站点上做了什么。数字来自我们自己记下的点击，不是楽天、Amazon、Yahoo 公式アフィリエイト后台。成交、承认、佣金要去那些网站对。",
   },
   {
     title: "会话和浏览",
