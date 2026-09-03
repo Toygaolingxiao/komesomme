@@ -29,7 +29,9 @@ import type {
 } from "@/types/rice";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { SITE_COLUMN } from "@/components/siteChrome";
+import { readBrandQuery, writeBrandQuery } from "@/lib/navigation/brandQuery";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
+import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
 import { TasteControls } from "./matrix/TasteControls";
@@ -238,15 +240,55 @@ export function FlavorMatrix() {
     }
   }, []);
 
-  const openDetail = useCallback((id: string) => {
-    setSelectedId(id);
-    setDetailOpen(true);
-  }, []);
+  const handleHover = useCallback(
+    (id: string | null) => {
+      setHoveredId(id);
+      if (!id) return;
+      const rice = profiles.find((row) => row.id === id);
+      if (rice) prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+    },
+    [profiles]
+  );
+
+  const openDetail = useCallback(
+    (id: string, opts?: { syncUrl?: boolean; history?: "push" | "replace" }) => {
+      const rice = profiles.find((row) => row.id === id);
+      if (rice) prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+      setSelectedId(id);
+      setDetailOpen(true);
+      if (opts?.syncUrl === false) return;
+      writeBrandQuery(id, opts?.history ?? "push");
+    },
+    [profiles]
+  );
 
   const closeDetail = useCallback(() => {
     setDetailOpen(false);
     if (isLg) setSelectedId(null);
+    writeBrandQuery(null, "replace");
   }, [isLg]);
+
+  /** Restore panel from `/?brand=` after catalog load; honor Back/Forward. */
+  useEffect(() => {
+    if (loadState !== "ready" || profiles.length === 0) return;
+
+    const applyFromUrl = () => {
+      const id = readBrandQuery();
+      if (id && profiles.some((row) => row.id === id)) {
+        const rice = profiles.find((row) => row.id === id)!;
+        prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+        setSelectedId(id);
+        setDetailOpen(true);
+        return;
+      }
+      setDetailOpen(false);
+      if (isLg) setSelectedId(null);
+    };
+
+    applyFromUrl();
+    window.addEventListener("popstate", applyFromUrl);
+    return () => window.removeEventListener("popstate", applyFromUrl);
+  }, [loadState, profiles, isLg]);
 
   useEffect(() => {
     if (isLg) setMapOpen(false);
@@ -429,7 +471,7 @@ export function FlavorMatrix() {
     loading: loadState === "loading",
     reduceMotion,
     onProbeMove: moveProbe,
-    onHover: setHoveredId,
+    onHover: handleHover,
   };
 
   const consult = (
@@ -493,7 +535,7 @@ export function FlavorMatrix() {
                 if (recommendationMode === "coordinate") inspectOnMap(id);
                 openDetail(id);
               }}
-              onHover={setHoveredId}
+              onHover={handleHover}
             />
           </aside>
 

@@ -2,7 +2,7 @@
 
 Hand-painted / gouache editorial illustrations made for KomeSomme (2026-09). Not photographs of commercial packaging. No third-party product photos.
 
-Sources are stored as **WebP** (resized ≤1280px long edge) via `npm run brand-art:optimize`. See [docs/18-brand-illustration.md](../../docs/18-brand-illustration.md).
+Sources are stored as **WebP** (resized ≤1600px long edge, quality≈82) via `npm run brand-art:optimize`. See [docs/18-brand-illustration.md](../../docs/18-brand-illustration.md).
 
 | File | Source |
 | --- | --- |
@@ -22,4 +22,5 @@ Sources are stored as **WebP** (resized ≤1280px long edge) via `npm run brand-
 | `collections/shinmai.webp` | Collection hero |
 | `collections/nabe.webp` | Collection hero |
 | `regions/*.webp` | Neutral macro-region fallbacks (no single-prefecture highlight) |
-| `prefectures/*.webp` | One art per catalog prefecture (37); silhouette / mood for that prefecture only |
+| `prefectures/*.webp` | Atlas plates for catalog prefectures (46): region base + **full-prefecture wash** + rice / local mood (2026-09-03). No town pins, no prefecture-name text in image. |
+

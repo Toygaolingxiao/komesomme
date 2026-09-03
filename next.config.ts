@@ -47,6 +47,12 @@ const nextConfig: NextConfig = {
         destination: "/collections/:slug",
         permanent: true,
       },
+      {
+        /** Index lives under ピックアップ; magazine pages stay at /collections/[slug]. */
+        source: "/collections",
+        destination: "/discover",
+        permanent: true,
+      },
     ];
   },
   async headers() {

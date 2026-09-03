@@ -21,8 +21,8 @@ export function CollectionView({
     <article className="pb-20">
       <div className={`${SITE_COLUMN} pt-4`}>
         <p className="text-[12px] text-[var(--km-muted)]">
-          <Link href="/collections" className={`hover:text-[var(--km-gold)] ${FOCUS}`}>
-            特集
+          <Link href="/discover#collections" className={`hover:text-[var(--km-gold)] ${FOCUS}`}>
+            ピックアップ
           </Link>
           <span className="mx-1.5">/</span>
           {collection.title}

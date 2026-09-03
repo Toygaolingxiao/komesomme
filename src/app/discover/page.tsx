@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DiscoverChrome } from "@/components/editorial/DiscoverChrome";
-import { DiscoverCollectionTeaser } from "@/components/editorial/DiscoverCollectionTeaser";
+import { CollectionsIndex } from "@/components/editorial/CollectionsIndex";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { TodaysBowl } from "@/components/editorial/TodaysBowl";
@@ -8,13 +8,13 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
-import { featuredCollections } from "@/lib/editorial/collections";
+import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
 
 export const metadata: Metadata = {
   title: "ピックアップ",
   description:
-    "きょうの三銘柄と今月の特集。日付と旬で入れ替わる、米ソムリエのピックアップです。",
+    "きょうの三銘柄と旬の特集。日付と食卓の場面で入れ替わる、米ソムリエのピックアップです。",
   alternates: { canonical: "/discover" },
 };
 
@@ -22,12 +22,15 @@ export default function DiscoverPage() {
   const entries = encyclopediaManifest();
   const knownIds = new Set(entries.map((row) => row.id));
   const bowl = pickTodaysBowl(entries);
-  const collections = featuredCollections(knownIds);
+  const collections = collectionsForIndex(knownIds);
   const preloadHrefs = [
     ...bowl
       .map((row) => resolveBrandArt(row.id, row.region, row.prefecture)?.src)
       .filter(Boolean),
-    ...collections.map((row) => collectionArtSrc(row.artFile)).filter(Boolean),
+    ...collections
+      .slice(0, 2)
+      .map((row) => collectionArtSrc(row.artFile))
+      .filter(Boolean),
   ] as string[];
 
   return (
@@ -52,7 +55,9 @@ export default function DiscoverPage() {
           <TodaysBowl items={bowl} />
         </div>
 
-        <DiscoverCollectionTeaser collections={collections} />
+        <div className="mt-14 border-t border-[var(--km-border)] pt-12">
+          <CollectionsIndex collections={collections} embedded />
+        </div>
       </div>
 
       <SiteFooter />

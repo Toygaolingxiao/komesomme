@@ -9,8 +9,9 @@ import path from "node:path";
 import sharp from "sharp";
 
 const ROOT = path.join(process.cwd(), "public", "brand-art");
-const MAX_EDGE = 1280;
-const WEBP_QUALITY = 78;
+/** Heroes / prefecture atlas plates — keep detail for retina. */
+const MAX_EDGE = 1600;
+const WEBP_QUALITY = 82;
 
 async function walkPngs(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true });

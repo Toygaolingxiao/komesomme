@@ -42,9 +42,15 @@ test.describe("TS-LIBRARY", () => {
   });
 
   test("TS-LIBRARY-05 editorial collection page", async ({ page }) => {
+    await page.goto("/discover");
+    await expect(
+      page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "ピックアップ" })
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "特集" })).toBeVisible();
+    await expect(page.locator("#collections")).toBeVisible();
+
     await page.goto("/collections");
-    await expect(page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "特集" })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 1, name: "特集" })).toBeVisible();
+    await expect(page).toHaveURL(/\/discover/);
 
     await page.goto("/collections/shinmai");
     await expect(page.getByRole("heading", { level: 1, name: "新米のころ" })).toBeVisible();

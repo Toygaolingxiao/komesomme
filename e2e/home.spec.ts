@@ -62,5 +62,12 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     await page.getByRole("button", { name: /今日の一膳/ }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
+    await expect(page).toHaveURL(/\?brand=/);
+  });
+
+  test("TS-HOME-11 shallow brand query opens detail", async ({ page }) => {
+    await waitForHomeReady(page, "/?brand=yumepirika");
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("heading", { name: /ゆめぴりか/ })).toBeVisible();
   });
 });

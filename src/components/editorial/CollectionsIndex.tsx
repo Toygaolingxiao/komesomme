@@ -7,26 +7,39 @@ import type { EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
 import { jstMonth } from "@/lib/editorial/jst";
 
-export function CollectionsIndex({ collections }: { collections: EditorialCollection[] }) {
+export function CollectionsIndex({
+  collections,
+  /** Nested under /discover — h2 + anchor, shorter intro. */
+  embedded = false,
+}: {
+  collections: EditorialCollection[];
+  embedded?: boolean;
+}) {
   const month = jstMonth();
   const [first, ...rest] = collections;
   if (!first) return null;
 
   const firstCurrent = first.months.includes(month);
+  const Heading = embedded ? "h2" : "h1";
 
   return (
-    <div className={`${SITE_COLUMN} pb-20 pt-8`}>
+    <div
+      id={embedded ? "collections" : undefined}
+      className={`${SITE_COLUMN} ${embedded ? "scroll-mt-16 pb-4 pt-2" : "pb-20 pt-8"}`}
+    >
       <header className="max-w-2xl">
         <SteamMark className="h-8 w-8" title="特集" />
-        <h1 className="mt-3 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
+        <Heading className="mt-3 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
           特集
-        </h1>
+        </Heading>
         <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
           旬や使い方で組んだ特集です。売り込みではなく、食卓の場面ごとに銘柄を並べています。
         </p>
-        <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-          毎月自動では増やしません。手元で読み直せる長さにしています。
-        </p>
+        {embedded ? null : (
+          <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
+            毎月自動では増やしません。手元で読み直せる長さにしています。
+          </p>
+        )}
       </header>
 
       <div className="mt-12">

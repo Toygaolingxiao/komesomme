@@ -11,7 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/library",
     "/discover",
-    "/collections",
     "/privacy",
     "/terms",
     "/tokushoho",
@@ -19,15 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${origin}${path || "/"}`,
     lastModified,
     changeFrequency:
-      path === "" || path === "/library" || path === "/discover" || path === "/collections"
-        ? "weekly"
-        : "yearly",
+      path === "" || path === "/library" || path === "/discover" ? "weekly" : "yearly",
     priority:
-      path === ""
-        ? 1
-        : path === "/library" || path === "/discover" || path === "/collections"
-          ? 0.8
-          : 0.3,
+      path === "" ? 1 : path === "/library" || path === "/discover" ? 0.8 : 0.3,
   }));
 
   const collections: MetadataRoute.Sitemap = EDITORIAL_COLLECTIONS.map((row) => ({

@@ -1,6 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 
-/** Shared chrome for /collections. */
+/** Shared chrome for /collections/[slug] — nav highlights ピックアップ. */
 export function CollectionsChrome() {
-  return <SiteHeader active="collections" />;
+  return <SiteHeader active="discover" />;
 }

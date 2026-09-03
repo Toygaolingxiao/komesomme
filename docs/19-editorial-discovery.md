@@ -38,11 +38,11 @@ UI は `src/components/editorial/` のみ。ライブラリの品評表 `Library
 
 ### `/discover`（ピックアップ）
 
-ナビの一級。きょうの三銘柄はニュース行（サムネ＋県＋名＋一行の headline）。今月特集は横長の短いバナー（日付ラベル付き）。ホームでは東京日付ごと初回だけ軽い案内（localStorage、地図キャンバスの外）。
+ナビの一級（地図・ライブラリと並ぶ 3 項目のひとつ）。きょうの三銘柄はニュース行（サムネ＋県＋名＋一行の headline）。その下 `#collections` に特集一覧（先頭バナー＋密な行）。ホームでは東京日付ごと初回だけ軽い案内（localStorage、地図キャンバスの外）。
 
-### `/collections` と `/collections/[slug]`（特集）
+### `/collections/[slug]`（特集誌面）
 
-ナビの一級。一覧は先頭を横長バナー寄り、以降は密な行。各特集に `dateLabel`（期間）。誌面は英雄＋タイトルを寄せ、銘柄はサムネ＋headline。旧 `/library/collections/[slug]` は永久リダイレクト。
+誌面は英雄＋タイトルを寄せ、銘柄はサムネ＋headline。各特集に `dateLabel`（期間）。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/[slug]` は誌面へ永久リダイレクト。
 
 ### `/library/[id]`
 

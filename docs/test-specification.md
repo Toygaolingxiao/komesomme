@@ -148,8 +148,8 @@
 - **期待:** ナビに「ピックアップ」。銘柄リンクは `/library/{id}`
 
 #### TS-LIBRARY-05 編集特集ページ
-- **手順:** `/collections/shinmai`（または今月出ている slug）  
-- **期待:** 特集見出しと銘柄リンク。未知 slug は 404。旧 `/library/collections/shinmai` は `/collections/shinmai` へリダイレクト。ナビに「特集」
+- **手順:** `/discover` で特集見出し。`/collections` は `/discover` へ。`/collections/shinmai` で誌面  
+- **期待:** ナビに「ピックアップ」（「特集」一級なし）。誌面に銘柄リンク。未知 slug は 404。旧 `/library/collections/shinmai` は `/collections/shinmai` へ
 
 #### TS-LIBRARY-06 事典ヒーロー画（ある銘柄だけ）
 - **手順:** `/library/koshihikari-uonuma`  

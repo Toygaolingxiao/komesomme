@@ -5,13 +5,13 @@ import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 
-export type SiteNavActive = "map" | "library" | "collections" | "discover";
+/** Primary nav. Collection magazine pages highlight ピックアップ. */
+export type SiteNavActive = "map" | "library" | "discover";
 
 const NAV = [
   { id: "map" as const, href: "/", label: "味わいの地図" },
   { id: "library" as const, href: "/library", label: "ライブラリ" },
   { id: "discover" as const, href: "/discover", label: "ピックアップ" },
-  { id: "collections" as const, href: "/collections", label: "特集" },
 ] as const;
 
 /**
@@ -38,7 +38,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
                 key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`font-serif text-[10.5px] tracking-wide transition sm:text-[12px] ${FOCUS} ${
+                className={`font-serif text-[11px] tracking-wide transition sm:text-[12px] ${FOCUS} ${
                   isActive
                     ? "font-semibold text-[var(--km-ink)]"
                     : "text-[var(--km-muted)] hover:text-[var(--km-gold)]"

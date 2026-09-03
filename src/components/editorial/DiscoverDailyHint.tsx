@@ -42,7 +42,11 @@ export function DiscoverDailyHint() {
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-end p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5">
+    <div
+      // Desktop: bottom-left over the map column (not the recommendation rail / consult).
+      // Mobile: bottom-right corner.
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-end p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-5 lg:justify-start lg:p-6 lg:pb-6"
+    >
       <div className="pointer-events-auto w-full max-w-sm rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)]/95 p-4 shadow-[0_12px_40px_rgba(48,40,32,0.12)] backdrop-blur-sm">
         <div className="flex items-start justify-between gap-3">
           <div>
