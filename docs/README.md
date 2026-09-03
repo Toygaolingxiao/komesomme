@@ -7,7 +7,7 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | ルール | 例 |
 | --- | --- |
 | `docs/` 直下にフラット配置 | サブフォルダは使わない |
-| 先頭 `00`〜`16` + kebab-case | `03-system-design.md` |
+| 先頭 `00`〜`19` + kebab-case | `03-system-design.md` |
 | 本文は日本語。12 / 16 は中国語（12 は日本語併置）、13 と 15 は中国語 | [12-product-journey.md](./12-product-journey.md) / [16-tech-stack.md](./16-tech-stack.md) |
 | この README が唯一の索引 | — |
 
@@ -35,12 +35,13 @@ KomeSomme の文書は **`docs/` 直下の番号付き md のみ**。開発手�
 | 16 | [16-tech-stack.md](./16-tech-stack.md) | 技術スタック層別・交付模式・Issue 整理案（**中国語**·SC 素材） |
 | 17 | [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) | ValueCommerce **廃止**記録 |
 | 18 | [18-brand-illustration.md](./18-brand-illustration.md) | 銘柄手描きイラスト方針（他社写真転載禁止） |
+| 19 | [19-editorial-discovery.md](./19-editorial-discovery.md) | 編集発見（きょうの三銘柄・特集・手描き）。地図推薦とは解耦 |
 | — | [rls-verify.md](./rls-verify.md) | 本番 RLS / anon 実測手順（0004 後） |
 | — | [vercel-production.md](./vercel-production.md) | Vercel 本番 env・**独自ドメイン・GSC**・Redeploy |
 | — | [smoke-test.md](./smoke-test.md) | 本番スモーク試験の手順と記録欄 |
 | — | [test-specification.md](./test-specification.md) | 試験式样书（TS-*）· 自動テスト正本 |
 | — | [test-results.md](./test-results.md) | 直近の自動試験結果レポート（生成物） |
-| — | `/library`（アプリ） | 銘柄ライブラリ：検索・地域フィルタ・詳細事典 |
+| — | `/library`（アプリ） | 銘柄ライブラリ：編集帯・検索・地域フィルタ・詳細事典 |
 | — | `/ops`（アプリ・非公開） | 内部观测台。`OPS_DASHBOARD_SECRET` 必須。公開ナビに出さない |
 | — | [scripts/data/README.md](../scripts/data/README.md) | 味わい再校正アーカイブと灌庫メモ |
 

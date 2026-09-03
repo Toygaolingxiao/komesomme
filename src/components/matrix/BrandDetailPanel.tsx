@@ -28,6 +28,8 @@ import {
 import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { ShareCardActions } from "@/components/brand/ShareCardActions";
+import { EditorialArt } from "@/components/editorial/EditorialArt";
+import { resolveBrandArt } from "@/lib/editorial/art";
 import { PurchaseJump, PurchaseLead } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
 import { TastePips } from "./TastePips";
@@ -140,6 +142,7 @@ export function BrandDetailPanel({
   const technical = technicalLine(rice);
   const shownScore = affinityDisplay(score);
   const scoreLabel = affinityLabel(score);
+  const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -213,15 +216,13 @@ export function BrandDetailPanel({
                   {score > 0 ? (
                     <span
                       aria-label={`${scoreLabel}、味わい相性 ${shownScore}`}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] text-center"
+                      className="flex shrink-0 flex-col items-center gap-0.5"
                     >
-                      <span>
-                        <span className="block text-[8px] leading-tight text-[var(--km-muted)]">
-                          {scoreLabel}
-                        </span>
-                        <span className="mt-0.5 block font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
-                          {shownScore}
-                        </span>
+                      <span className="whitespace-nowrap text-[9px] leading-none tracking-wide text-[var(--km-muted)]">
+                        {scoreLabel}
+                      </span>
+                      <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
+                        {shownScore}
                       </span>
                     </span>
                   ) : null}
@@ -237,17 +238,37 @@ export function BrandDetailPanel({
                 </div>
               </div>
 
-              <p
-                id="km-detail-summary"
-                className="mt-5 max-w-[46ch] break-words font-serif text-[17px] leading-[1.85] text-[var(--km-ink)] [overflow-wrap:anywhere]"
+              <div
+                className={`mt-5 ${
+                  heroArt
+                    ? "grid grid-cols-[minmax(0,1fr)_minmax(6.75rem,9rem)] items-start gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(9.5rem,12.5rem)] sm:gap-6"
+                    : ""
+                }`}
               >
-                {appetite}
-              </p>
-              {technical ? (
-                <p className="mt-2 max-w-[46ch] text-[12px] leading-relaxed text-[var(--km-muted)]">
-                  {technical}
-                </p>
-              ) : null}
+                <div className="min-w-0">
+                  <p
+                    id="km-detail-summary"
+                    className="max-w-[46ch] break-words font-serif text-[17px] leading-[1.85] text-[var(--km-ink)] [overflow-wrap:anywhere]"
+                  >
+                    {appetite}
+                  </p>
+                  {technical ? (
+                    <p className="mt-2 max-w-[46ch] text-[12px] leading-relaxed text-[var(--km-muted)]">
+                      {technical}
+                    </p>
+                  ) : null}
+                </div>
+                {heroArt ? (
+                  <EditorialArt
+                    src={heroArt.src}
+                    alt=""
+                    className="aspect-[5/4] w-full overflow-hidden rounded-2xl"
+                    sizes="(min-width: 640px) 200px, 144px"
+                    objectPosition="50% 42%"
+                  />
+                ) : null}
+              </div>
+
               <div className="mt-5">
                 <PurchaseLead rice={rice} bare />
               </div>

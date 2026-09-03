@@ -4,6 +4,8 @@ import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { PurchaseJump, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
 import { TasteContour } from "@/components/matrix/TasteContour";
 import { TastePips } from "@/components/matrix/TastePips";
+import { ShareCardActions } from "@/components/brand/ShareCardActions";
+import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { CatalogPairingGuide } from "@/components/library/CatalogPairingGuide";
 import {
   DISCLAIMER,
@@ -13,10 +15,9 @@ import {
   extraTasteMetrics,
   forYouLines,
   regionColor,
-  shortTasteTags,
   todayServeLine,
 } from "@/components/matrix/shared";
-import { ShareCardActions } from "@/components/brand/ShareCardActions";
+import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
 
@@ -78,7 +79,7 @@ export function LibraryRiceDossier({
   neighbours: RiceMatchResult[];
 }) {
   const fill = rice.region_color ?? regionColor(rice.region);
-  const tags = shortTasteTags(rice).slice(0, 3);
+  const tags = dossierExtraTags(rice);
   const appetite = appetiteLine(rice);
   const serve = todayServeLine(rice);
   const pairReason = rice.pairing_reason.trim();
@@ -88,6 +89,8 @@ export function LibraryRiceDossier({
     .slice(0, 2);
   const extra = extraTasteMetrics(rice);
   const forYou = forYouLines(rice);
+  const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
+  const reading = distinctReading(rice.name, article.reading);
 
   return (
     <article className={`${DOSSIER_COLUMN} pb-20 pt-5`}>
@@ -100,25 +103,27 @@ export function LibraryRiceDossier({
       </nav>
 
       <header className="mt-6">
+        {heroArt ? (
+          <EditorialArt
+            src={heroArt.src}
+            alt=""
+            className="mb-6 aspect-[16/9] w-full"
+            sizes="(min-width: 640px) 40rem, 100vw"
+            priority
+          />
+        ) : null}
         <div
           aria-hidden
           className="mb-5 h-1 w-12 rounded-full"
           style={{ background: fill }}
         />
-        <p className="text-[12px] text-[var(--km-muted)]">
-          {rice.prefecture}
-          <span className="mx-1.5 text-[var(--km-muted)]/50">/</span>
-          {rice.region}
-        </p>
+        <p className="text-[12px] text-[var(--km-muted)]">{rice.prefecture}</p>
         <h1 className="mt-2 font-serif text-[2.25rem] font-semibold leading-[1.15] tracking-tight text-[var(--km-ink)] sm:text-[2.6rem]">
           {rice.name}
         </h1>
-        {article.reading ? (
-          <p className="mt-1.5 text-[13px] text-[var(--km-muted)]">{article.reading}</p>
+        {reading ? (
+          <p className="mt-1.5 text-[13px] text-[var(--km-muted)]">{reading}</p>
         ) : null}
-        <p className="mt-1 text-[13px] text-[var(--km-muted)]">
-          {rice.texture_label}／{rice.sweetness_label}
-        </p>
         {tags.length > 0 ? (
           <p className="mt-3 text-[12px] leading-relaxed text-[var(--km-brown)]">
             {tags.join("、")}

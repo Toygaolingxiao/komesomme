@@ -23,7 +23,11 @@ export type AnalyticsEvent =
   | "detail_scroll_90"
   | "share_card_native"
   | "share_card_download"
-  | "share_card_copy_link";
+  | "share_card_copy_link"
+  | "editorial_bowl_click"
+  | "editorial_collection_open"
+  | "editorial_discover_open"
+  | "editorial_discover_dismiss";
 
 type AnalyticsPayload = Record<string, string | number | boolean | null | undefined>;
 

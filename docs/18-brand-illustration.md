@@ -21,19 +21,40 @@
 銘柄メタ（産地色・甘み帯）
   → プロンプトテンプレ（手描き・米色紙・米粒／ quanta of cooked rice）
   → 生成 → 人手レビュー（ロゴ混入・過度な写実・誇大表現）
-  → public/brand-art/{id}.webp
-  → encyclopedia manifest または overlay に image キー
+  → public/brand-art/brands/{id}.webp または regions/{regionId}.webp
+  → `npm run brand-art:optimize`（PNG 投入後に WebP 化・長辺 ≤1280）
+  → src/data/editorial/artManifest.ts
 ```
 
-一覧は小さく、事典ヒーローは横長。未用意の銘柄は産地色の抽象テクスチャにフォールバック。
+本番ディレクトリは `public/brand-art/`（帰属は同梱 `ATTRIBUTION.md`）。解決順は銘柄画 → 産地画 → なし（色棒のみ）。画面配線は [19-editorial-discovery.md](./19-editorial-discovery.md)。
+
+配信: 原図は WebP。`next/image` が AVIF/WebP を再エンコードし、`/_next/image` と `/brand-art/*` は長めの Cache-Control。**ホーム地図は編集画を先読みしない**（初回描画優先。詳細パネルを開いたときだけその銘柄／産地画を取る）。ピックアップ・ライブラリは可視画だけ preload。
+
+一覧は小さく、事典ヒーローは横長。未用意の銘柄は産地画、それも無ければ従来の色棒。
+
+## 産地画の構図レシピ（必須）
+
+産地 7 点は「同じ茶碗の色違い」にしない。手描きガッシュのまま、構図主軸をずらす。地図は水彩の陸塊・列島シルエット（雰囲気）であり、GIS や県名文字は入れない。産地名の「注釈」は UI テキスト側で出す。
+
+| regionId | 構図主軸 | 色調アンカー |
+| --- | --- | --- |
+| `hokkaido-tohoku` | 北海道〜東北の柔かい陸塊シルエット + 遠景の霧・水田。米粒近景は小さめ | `#3F8FA3` |
+| `kanto-koshinetsu` | 関東平野の開けた田 + 山脚。匙／掬いの米を特写 | `#7CA83B` |
+| `tokai-hokuriku` | 夕照の収穫色が主。茶碗は画面の片側に寄せる | `#E29A35` |
+| `kansai` | 近景の器・梅色の色斑。地図シルエットは極小 | `#C85A72` |
+| `chugoku-shikoku` | 瀬戸内の多島シルエット + 一膳。横長構図 | `#4C9B72` |
+| `kyushu-okinawa` | 南の暖色、蒸気は控えめ、光はやや硬く | `#E56B3F` |
+| `national` | 抽象の列島点描 + 近景の粒。具体の県輪郭は描かない | `#8C6BB1` |
+
+特集ヒーロー（弁当・新米・鍋）も、産地画と被らないモチーフにする。生成は 1 ターン最大 2 枚。紙色と ink はブランドから外さない。
+
+**県の強調は県画（`prefectures/{slug}.webp`）だけに載せる。** 広域の産地画 7 点は県を強調しない中性画（共用フォールバック）。解決順は 銘柄画 → 県画 → 産地画。画面側に県ラベルのピンを重ねない。全国銘柄は県画を持たない。
 
 ## スパイク（2026-09-02）
 
-試作は `docs/spikes/brand-illustration/`（本番ページ未接続）。
+試作は `docs/spikes/brand-illustration/`。マストヘッドと魚沼コシヒカリは本番 `public/brand-art/` へコピーして接続する。
 
 | ファイル | 意図 |
 | --- | --- |
 | `spike-uonuma-grains.png` | 白米の粒・掬いの手描き編集画（パッケージ非再現） |
 | `spike-koshihikari-bowl.png` | 一膳イメージの手描き（化粧箱・銘柄ロゴなし） |
-
-採用判断のあと、本番パスと manifest を決める。
