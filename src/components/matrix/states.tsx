@@ -88,14 +88,14 @@ function RailAwaiting({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3">
+      <div className="rounded-xl border-l-[3px] border-[var(--km-border)] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3">
         <span className={`block h-2.5 w-[4.5rem] rounded ${bar}`} />
         <span className={`mt-3 block h-6 w-36 rounded ${bar}`} />
         <span className={`mt-2.5 block h-3 w-full rounded ${bar}`} />
         <span className={`mt-1.5 block h-3 w-4/5 rounded ${bar}`} />
         <span className="mt-3 flex items-end justify-between gap-3">
           <span className={`h-3 w-24 rounded ${bar}`} />
-          <span className={`h-11 w-11 rounded-full border border-[var(--km-border)] ${bar}`} />
+          <span className={`h-8 w-10 rounded ${bar}`} />
         </span>
         <span className="mt-2 block min-h-[2.5rem]">
           <span className={`block h-2.5 w-16 rounded ${bar}`} />

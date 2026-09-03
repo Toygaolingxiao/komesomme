@@ -25,15 +25,13 @@ function AffinitySeal({ score }: { score: number }) {
   return (
     <span
       aria-label={`${label}、味わい相性 ${shown}`}
-      className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] text-center"
+      className="relative shrink-0 text-right"
     >
-      <span>
-        <span className="block text-[8px] leading-tight text-[var(--km-muted)]">
-          {label}
-        </span>
-        <span className="block font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
-          {shown}
-        </span>
+      <span className="block text-[9px] leading-tight tracking-wide text-[var(--km-muted)]">
+        {label}
+      </span>
+      <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+        {shown}
       </span>
     </span>
   );
@@ -66,32 +64,27 @@ function BestMatchCard({
       onMouseLeave={() => onHover?.(null)}
       onFocus={() => onHover?.(match.rice.id)}
       onBlur={() => onHover?.(null)}
-      className={`group relative w-full overflow-hidden rounded-2xl border p-3 text-left transition duration-300 active:scale-[0.99] ${FOCUS} ${
+      className={`group relative w-full overflow-hidden rounded-xl border-l-[3px] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3 text-left transition duration-300 active:scale-[0.99] ${FOCUS} ${
         active || highlighted
-          ? "border-[var(--km-brown)]/25 bg-[var(--km-surface)]"
-          : "border-[var(--km-border)] bg-[var(--km-surface)] hover:border-[var(--km-gold)]/35"
+          ? "bg-[var(--km-surface)] shadow-[inset_0_0_0_1px_rgba(112,69,34,0.12)]"
+          : "hover:bg-[var(--km-surface)]"
       }`}
+      style={{ borderLeftColor: fill }}
     >
-      <span
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-1"
-        style={{ background: fill }}
-      />
-
-      <span className="relative pl-2">
-        <span className="text-[11px] font-medium text-[var(--km-brown)]">
+      <span className="relative">
+        <span className="text-[11px] font-medium tracking-wide text-[var(--km-brown)]">
           今日の一膳
         </span>
-        <span className="mt-1 block font-serif text-[19px] font-semibold leading-tight tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+        <span className="mt-1.5 block font-serif text-[1.25rem] font-semibold leading-tight tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
           {match.rice.name}
         </span>
-        <span className="mt-1.5 line-clamp-2 block break-words text-[12px] leading-relaxed text-[var(--km-ink)] [overflow-wrap:anywhere]">
+        <span className="mt-2 line-clamp-2 block break-words text-[12.5px] leading-relaxed text-[var(--km-ink-soft)] [overflow-wrap:anywhere]">
           {benefit}
         </span>
       </span>
 
-      <span className="relative mt-2 flex items-end justify-between gap-3 pl-2">
-        <span className="flex items-center gap-1 text-xs text-[var(--km-muted)]">
+      <span className="relative mt-3 flex items-end justify-between gap-3">
+        <span className="flex items-center gap-1 text-[11px] text-[var(--km-muted)]">
           <MapPin size={12} weight={ICON_WEIGHT} />
           {match.rice.prefecture}産
         </span>
@@ -99,12 +92,12 @@ function BestMatchCard({
       </span>
 
       {dishes.length > 0 ? (
-        <span className="relative mt-2 block pl-2 text-[11px] leading-snug text-[var(--km-ink-soft)]">
+        <span className="relative mt-2.5 block text-[11px] leading-snug text-[var(--km-muted)]">
           {dishes.slice(0, 3).join("、")}
         </span>
       ) : null}
 
-      <span className="relative mt-2 inline-flex items-center gap-1 pl-2 text-[11px] text-[var(--km-accent)]">
+      <span className="relative mt-3 inline-flex items-center gap-1 text-[11px] text-[var(--km-accent)]">
         くわしく見る
         <ArrowRight size={12} weight={ICON_WEIGHT} />
       </span>
@@ -148,9 +141,9 @@ function RunnerUpList({
               <button
                 type="button"
                 onClick={() => onSelect(match.rice.id)}
-                className={`group grid w-full grid-cols-[1.4rem_minmax(0,1fr)_auto] items-center gap-2 rounded-xl border border-transparent px-2 py-1.5 text-left transition hover:-translate-y-px hover:border-[var(--km-border)] hover:bg-[var(--km-surface)] hover:shadow-[0_6px_14px_rgba(112,69,34,0.08)] ${FOCUS} ${
+                className={`group grid w-full grid-cols-[1.4rem_minmax(0,1fr)_auto] items-center gap-2 rounded-lg px-1.5 py-2 text-left transition hover:bg-[var(--km-surface)]/80 ${FOCUS} ${
                   activeId === match.rice.id || highlightId === match.rice.id
-                    ? "border-[var(--km-border)] bg-[var(--km-surface)]"
+                    ? "bg-[var(--km-surface)]"
                     : ""
                 }`}
                 onMouseEnter={() => onHover?.(match.rice.id)}

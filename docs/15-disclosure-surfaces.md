@@ -13,7 +13,7 @@
 | CTA 旁 | `AFFILIATE_PR_LABEL`（`※PR`） | 景表法：链接附近能认出是宣传。不堆 Amazon 定型、不列 ASP 名 |
 | `SiteFooter`（全站唯一 `full`） | Amazon 第 5 条 + `AFFILIATE_PR_NOTICE`（含「アフィリエイト広告」）+ 乐天官方クレジット + `TASTE_DISCLAIMER` | Amazon 目立つ位置；乐天クレジットガイド；产品诚实 |
 | `/terms` | `AFFILIATE_PR_NOTICE_DETAIL`（列 ASP）+ Amazon 定型 + 不赞助声明 | 名单只放法务页 |
-| `/privacy` `/tokushoho` | 各页自己的法务叙述（计量方、特商法、味わい保证） | 不是 chrome 定型，勿与 CTA 文案混用 |
+| `/privacy` `/tokushoho` | privacy=计量与 Cookie；tokushoho=特商法表。味わい长说明互链 `/terms` §3，勿三页复读 | 不是 chrome 定型，勿与 CTA 文案混用 |
 
 **不要做：** 购买卡再贴一遍 Amazon 墙；CTA 下列 Amazon / 楽天；把 `AFFILIATE_PR_NOTICE_DETAIL` 贴进页脚。
 
@@ -63,9 +63,9 @@
 
 | 页 | 文件 | 写什么 |
 | --- | --- | --- |
-| 利用规约 §4 | `src/app/terms/page.tsx` | 从 `affiliate.ts` 引入 DETAIL + Amazon 定型，另写不赞助 / 非乐天站 / Yahoo 公式アフィリエイト |
-| 隐私 §4 | `src/app/privacy/page.tsx` | 计量方名单（Amazon / 楽天 / Yahoo 公式等）。这是数据处理说明，不是 PR 徽章 |
-| 特商法 | `src/app/tokushoho/page.tsx` | アフィリエイト案内；味わい「保证しない」用该页自己的句子 |
+| 利用规约 §3–4 | `src/app/terms/page.tsx` | §3 味わい声明（他页可链来）。§4 DETAIL + Amazon 定型 + 不赞助 / 非乐天站；委托细节链 privacy |
+| 隐私 §4 | `src/app/privacy/page.tsx` | 计量方名单。Amazon Art.5 全文不重复，链 terms |
+| 特商法 | `src/app/tokushoho/page.tsx` | 必填表格式字段；味わい注意链 terms §3 |
 
 品味 overlay / 事典末的 `DISCLAIMER` 与 encyclopedia JSON 的 `caveats` 是**产品诚实**，不是 ASP 规则。不要删 tasting 免责去「少显示广告字」。
 

@@ -1,0 +1,64 @@
+export type EditorialCollection = {
+  slug: string;
+  title: string;
+  dek: string;
+  /** Extra line for the index list; keep short. */
+  lede?: string;
+  /** Display date for lists and banners, e.g. 2026年9月. */
+  dateLabel: string;
+  /** Calendar months 1–12 when this collection is featured on /collections. */
+  months: number[];
+  riceIds: string[];
+  /** Filename under public/brand-art/collections/, or null until art exists. */
+  artFile: string | null;
+  body: string[];
+};
+
+/**
+ * Hand-edited seasonal notes. Not generated. Ids must exist in the encyclopedia
+ * manifest; unknown ids are stripped at lookup time.
+ */
+export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
+  {
+    slug: "bento-cold",
+    title: "冷めても、弁当に",
+    dek: "昼の弁当箱で、粒がばらけすぎない米を集めました。",
+    lede: "朝に炊いて、昼に蓋を開ける日のための読みどころです。",
+    dateLabel: "2026年4–9月",
+    months: [4, 5, 6, 7, 8, 9],
+    riceIds: ["sasanishiki", "hitomebore", "nanatsuboshi", "milky-queen", "haenuki"],
+    artFile: "bento.webp",
+    body: [
+      "朝に炊いて、昼に蓋を開ける。そのあいだに粒が固まらず、かといって水っぽくならない米があります。",
+      "冷めたときの粒立ちを目安に集めました。",
+    ],
+  },
+  {
+    slug: "shinmai",
+    title: "新米のころ",
+    dek: "秋の食卓に、炊きたての香りを。",
+    lede: "刈り入れのあとは、産地の違う数銘柄を並べて読むと違いがつかみやすいです。",
+    dateLabel: "2026年9–11月",
+    months: [9, 10, 11],
+    riceIds: ["yumepirika", "koshihikari-uonuma", "tsuyahime", "hitomebore", "tentakaku"],
+    artFile: "shinmai.webp",
+    body: [
+      "刈り入れのあとの米は、水分が多く、香りが立ちやすいとされています。同じ銘柄でも年で差が出ます。",
+      "新米の時期に、産地の違う数銘柄を並べて読むと、甘みと粒の違いがつかみやすいです。",
+    ],
+  },
+  {
+    slug: "nabe",
+    title: "鍋の季節",
+    dek: "汁気の多い料理に、しっかりした粒。",
+    lede: "汁がかかっても粒が残りやすい米を中心に置いてあります。",
+    dateLabel: "2026年11–2月",
+    months: [11, 12, 1, 2],
+    riceIds: ["yumepirika", "koshihikari-uonuma", "akitakomachi", "tsuyahime", "sagabiyori"],
+    artFile: "nabe.webp",
+    body: [
+      "すき焼きや寄せ鍋のあと、ご飯に汁がかかることがあります。溶ける米より、粒が残る米のほうが合いやすい日です。",
+      "甘みの強い銘柄と、すっきりした銘柄を両方置いてあります。今夜の鍋に合わせて選んでください。",
+    ],
+  },
+];

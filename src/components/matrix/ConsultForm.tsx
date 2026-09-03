@@ -71,7 +71,7 @@ export function ConsultForm({
                 ? "例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい"
                 : "例：刺身に合う、冷めても美味しい"
           }
-          className={`h-11 w-full min-w-0 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/50 py-2 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:bg-[var(--km-surface)] focus:outline-none ${
+          className={`h-11 w-full min-w-0 rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] py-2 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-gold)] focus:outline-none ${
             hasQuery ? "px-3 pr-9" : "px-3"
           }`}
         />
@@ -196,7 +196,7 @@ export function ConsultForm({
       id="consult"
       className={
         wide
-          ? "min-w-0 w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-2.5 shadow-[0_16px_40px_-28px_rgba(112,69,34,0.35)] sm:px-5"
+          ? "min-w-0 w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)]/95 px-4 py-3 shadow-[0_12px_32px_-28px_rgba(112,69,34,0.28)] sm:px-5"
           : "min-w-0 shrink-0"
       }
     >

@@ -29,7 +29,9 @@ import type {
 } from "@/types/rice";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { SITE_COLUMN } from "@/components/siteChrome";
+import { readBrandQuery, writeBrandQuery } from "@/lib/navigation/brandQuery";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
+import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
 import { TasteControls } from "./matrix/TasteControls";
@@ -238,15 +240,55 @@ export function FlavorMatrix() {
     }
   }, []);
 
-  const openDetail = useCallback((id: string) => {
-    setSelectedId(id);
-    setDetailOpen(true);
-  }, []);
+  const handleHover = useCallback(
+    (id: string | null) => {
+      setHoveredId(id);
+      if (!id) return;
+      const rice = profiles.find((row) => row.id === id);
+      if (rice) prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+    },
+    [profiles]
+  );
+
+  const openDetail = useCallback(
+    (id: string, opts?: { syncUrl?: boolean; history?: "push" | "replace" }) => {
+      const rice = profiles.find((row) => row.id === id);
+      if (rice) prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+      setSelectedId(id);
+      setDetailOpen(true);
+      if (opts?.syncUrl === false) return;
+      writeBrandQuery(id, opts?.history ?? "push");
+    },
+    [profiles]
+  );
 
   const closeDetail = useCallback(() => {
     setDetailOpen(false);
     if (isLg) setSelectedId(null);
+    writeBrandQuery(null, "replace");
   }, [isLg]);
+
+  /** Restore panel from `/?brand=` after catalog load; honor Back/Forward. */
+  useEffect(() => {
+    if (loadState !== "ready" || profiles.length === 0) return;
+
+    const applyFromUrl = () => {
+      const id = readBrandQuery();
+      if (id && profiles.some((row) => row.id === id)) {
+        const rice = profiles.find((row) => row.id === id)!;
+        prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+        setSelectedId(id);
+        setDetailOpen(true);
+        return;
+      }
+      setDetailOpen(false);
+      if (isLg) setSelectedId(null);
+    };
+
+    applyFromUrl();
+    window.addEventListener("popstate", applyFromUrl);
+    return () => window.removeEventListener("popstate", applyFromUrl);
+  }, [loadState, profiles, isLg]);
 
   useEffect(() => {
     if (isLg) setMapOpen(false);
@@ -429,7 +471,7 @@ export function FlavorMatrix() {
     loading: loadState === "loading",
     reduceMotion,
     onProbeMove: moveProbe,
-    onHover: setHoveredId,
+    onHover: handleHover,
   };
 
   const consult = (
@@ -448,13 +490,13 @@ export function FlavorMatrix() {
   return (
     <section className="w-full min-w-0 overflow-x-clip lg:h-full lg:min-h-0">
       {isLg ? (
-        <div className={`${SITE_COLUMN} grid h-full min-h-0 grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-3 py-2`}>
-          <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
-            <div className="shrink-0 px-4 pt-3 sm:px-5">
-              <h2 className="font-serif text-lg font-semibold tracking-tight text-[var(--km-ink)] sm:text-xl">
+        <div className={`${SITE_COLUMN} grid h-full min-h-0 grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] grid-rows-[minmax(0,1fr)_auto] gap-4 py-2`}>
+          <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_18px_48px_-40px_rgba(112,69,34,0.4)]">
+            <div className="shrink-0 px-4 pt-3.5 sm:px-5">
+              <h2 className="font-serif text-[1.2rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[1.35rem]">
                 味わいの地図
               </h2>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--km-muted)]">
+              <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-muted)]">
                 点に触れると銘柄が出ます。スライダーを動かすと、今日の一膳が変わります。
               </p>
               <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
@@ -480,7 +522,7 @@ export function FlavorMatrix() {
             </div>
           </div>
 
-          <aside className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/90 px-4 py-2.5 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] sm:px-5">
+          <aside className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-4 py-3 shadow-[0_18px_48px_-40px_rgba(112,69,34,0.35)] sm:px-5">
             <RecommendationRail
               matches={railMatches}
               mode={recommendationMode}
@@ -493,21 +535,21 @@ export function FlavorMatrix() {
                 if (recommendationMode === "coordinate") inspectOnMap(id);
                 openDetail(id);
               }}
-              onHover={setHoveredId}
+              onHover={handleHover}
             />
           </aside>
 
           <div className="col-span-2 min-w-0">{consult}</div>
         </div>
       ) : (
-        <div className={`${SITE_COLUMN} flex flex-col gap-3 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3`}>
+        <div className={`${SITE_COLUMN} flex flex-col gap-4 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3`}>
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}
             onOpen={openDetail}
           />
 
-          <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+          <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.35)]">
             <div>
               <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
                 色の点は銘柄です。触ると今日の一膳が変わります。
@@ -545,11 +587,11 @@ export function FlavorMatrix() {
               variant="compact"
               expandMode="disclosure"
               disclosure="pr"
-              className="overflow-visible rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3"
+              className="overflow-visible rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3"
             />
           ) : null}
 
-          <div className="min-w-0 rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3 shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)]">
+          <div className="min-w-0 rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.3)]">
             {consult}
           </div>
         </div>

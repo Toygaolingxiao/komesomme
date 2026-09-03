@@ -43,8 +43,11 @@ function MetricPips({
 
 export function LibraryBrowser({
   entries,
+  showPageTitle = true,
 }: {
   entries: RiceEncyclopediaManifestEntry[];
+  /** Masthead already has the page h1. */
+  showPageTitle?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<(typeof REGIONS)[number]>("すべて");
@@ -62,14 +65,25 @@ export function LibraryBrowser({
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
       <div className="mx-auto w-full max-w-4xl">
-        <header className="max-w-xl">
-          <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
-            銘柄ライブラリ
-          </h1>
-          <p className="mt-3 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">
-            {`約${entries.length}銘柄。甘み・粒感・粘りを点で見比べ、気になる銘柄から読めます。`}
-          </p>
-        </header>
+        {showPageTitle ? (
+          <header className="max-w-xl">
+            <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
+              銘柄ライブラリ
+            </h1>
+            <p className="mt-3 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">
+              {`約${entries.length}銘柄。甘み・粒感・粘りを点で見比べ、気になる銘柄から読めます。`}
+            </p>
+          </header>
+        ) : (
+          <header className="max-w-xl">
+            <h2 className="font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)]">
+              味わいで見比べる
+            </h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">
+              甘み・粒感・粘りを点で見比べます。
+            </p>
+          </header>
+        )}
 
         <div className="mt-8 flex flex-col gap-3 border-b border-[var(--km-border)] pb-6 sm:flex-row sm:items-end">
           <label className="min-w-0 flex-1">

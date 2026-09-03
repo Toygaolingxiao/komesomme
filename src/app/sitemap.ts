@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
+import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { getSiteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -9,14 +10,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/library",
+    "/discover",
     "/privacy",
     "/terms",
     "/tokushoho",
   ].map((path) => ({
     url: `${origin}${path || "/"}`,
     lastModified,
-    changeFrequency: path === "" || path === "/library" ? "weekly" : "yearly",
-    priority: path === "" ? 1 : path === "/library" ? 0.8 : 0.3,
+    changeFrequency:
+      path === "" || path === "/library" || path === "/discover" ? "weekly" : "yearly",
+    priority:
+      path === "" ? 1 : path === "/library" || path === "/discover" ? 0.8 : 0.3,
+  }));
+
+  const collections: MetadataRoute.Sitemap = EDITORIAL_COLLECTIONS.map((row) => ({
+    url: `${origin}/collections/${encodeURIComponent(row.slug)}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.65,
   }));
 
   /** Canonical brand URLs live under /library/[id]. Legacy /{id} redirects permanently. */
@@ -27,5 +38,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...libraryArticles];
+  return [...staticRoutes, ...collections, ...libraryArticles];
 }

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { LibraryBrowser } from "@/components/library/LibraryBrowser";
 import { LibraryChrome } from "@/components/library/LibraryChrome";
+import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
+import { LibraryMasthead } from "@/components/editorial/LibraryMasthead";
 import { SiteFooter } from "@/components/SiteFooter";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
+import { mastheadArtSrc } from "@/lib/editorial/art";
 
 export function generateMetadata(): Metadata {
   const count = encyclopediaManifest().length;
@@ -21,9 +24,11 @@ export function generateMetadata(): Metadata {
 
 export default function LibraryPage() {
   const entries = encyclopediaManifest();
+  const masthead = mastheadArtSrc();
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
+      {masthead ? <EditorialArtPreloads hrefs={[masthead]} /> : null}
       <LibraryChrome />
 
       {entries.length === 0 ? (
@@ -38,7 +43,10 @@ export default function LibraryPage() {
           </p>
         </div>
       ) : (
-        <LibraryBrowser entries={entries} />
+        <>
+          <LibraryMasthead brandCount={entries.length} />
+          <LibraryBrowser entries={entries} showPageTitle={false} />
+        </>
       )}
 
       <SiteFooter />

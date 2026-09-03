@@ -26,7 +26,7 @@ export function MobileTodayCard({
 }) {
   if (loading) {
     return (
-      <div className="h-[9rem] animate-pulse rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)]" />
+      <div className="h-[9rem] animate-pulse rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)]" />
     );
   }
 
@@ -43,14 +43,14 @@ export function MobileTodayCard({
         track("recommendation_detail_click", { id: match.rice.id });
         onOpen(match.rice.id);
       }}
-      className={`w-full rounded-[1.5rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_28px_64px_-36px_rgba(112,69,34,0.45)] ${FOCUS}`}
+      className={`w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
     >
       <span className="flex items-start justify-between gap-3">
         <span className="min-w-0">
-          <span className="text-[11px] font-medium text-[var(--km-brown)]">
+          <span className="text-[11px] font-medium tracking-wide text-[var(--km-brown)]">
             今日の一膳
           </span>
-          <span className="mt-1.5 block font-serif text-[1.25rem] font-semibold leading-snug text-[var(--km-ink)]">
+          <span className="mt-1.5 block font-serif text-[1.35rem] font-semibold leading-snug tracking-tight text-[var(--km-ink)]">
             {match.rice.name}
           </span>
           <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-[var(--km-muted)]">
@@ -64,21 +64,19 @@ export function MobileTodayCard({
         {match.score > 0 ? (
           <span
             aria-label={`${label}、味わい相性 ${affinityDisplay(match.score)}`}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)] text-center"
+            className="shrink-0 text-right"
           >
-            <span>
-              <span className="block text-[8px] leading-tight text-[var(--km-muted)]">
-                {label}
-              </span>
-              <span className="mt-0.5 block font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
-                {affinityDisplay(match.score)}
-              </span>
+            <span className="block text-[9px] leading-tight text-[var(--km-muted)]">
+              {label}
+            </span>
+            <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+              {affinityDisplay(match.score)}
             </span>
           </span>
         ) : null}
       </span>
 
-      <span className="mt-3 block break-words text-[13px] leading-[1.7] text-[var(--km-ink)] [overflow-wrap:anywhere]">
+      <span className="mt-3.5 block break-words font-serif text-[14px] leading-[1.75] text-[var(--km-ink)] [overflow-wrap:anywhere]">
         {intro}
       </span>
 

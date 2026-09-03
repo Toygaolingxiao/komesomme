@@ -86,7 +86,7 @@ KomeSomme は、AI ダッシュボードではなく「和紙の味わい地図�
 - Desktop は `100dvh` に収め、ページ全体のスクロールを出さない
 - 左右は同一の外枠に収める。右カラムに**ページ全体**のスクロールを設けない。近い銘柄一覧だけ内側スクロール（バー非表示）可。「お店で探す」は下端固定
 - 詳細ダイアログは内容量に応じて独立スクロールしてよい
-- 頂栏 `SiteHeader` はホーム / ライブラリ共通。副題は常に **侍米師**（読み **じべいし**。ページ名はナビ強調と H1）。版心は `SITE_COLUMN`
+- 頂栏 `SiteHeader` はホーム / ライブラリ / ピックアップ共通（3 項目）。副題は常に **侍米師**（読み **じべいし**。ページ名はナビ強調と H1）。版心は `SITE_COLUMN`
 - `html { scrollbar-gutter: stable }` で、スクロールバーの有無による頂栏の横ずれを防ぐ（Desktop Windows）
 
 ### 銘柄の二層（地図プレビュー / ライブラリ事典）
@@ -125,17 +125,19 @@ Mobile は文書スクロール可。Desktop の `100dvh` ロックは `lg` 以�
 - **モール帯は 1 ページ 1 箇所**。詳細パネルは上部に本体、末尾は「お店で探すへ戻る」ジャンプのみ。ライブラリ事典は「購入の目安」に本体、見出し付近は下部へのジャンプのみ（上下二重のモール列は置かない）
 - 購入 UI 全体のゲート: `NEXT_PUBLIC_SHOP_LINKS_ENABLED` / `SHOP_LINKS_ENABLED`（`0` で非表示。未設定は表示）
 - Amazon 定型文は **フッター一箇所**（ホームは 100dvh のためフッターなし、CTA は ※PR のみ）。表面は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)
-- `/library/[id]` が銘柄の正本ページ。ヘッダー・地図・ライブラリ本文は共通の `SITE_COLUMN`（`max-w-[1440px]` + 左右 padding）。ナビ順は常に **味わいの地図 → ライブラリ**、現在地は `font-semibold` + ink で強調。旧 `/{id}` は `/library/[id]` へ永久リダイレクト
+- `/library/[id]` が銘柄の正本ページ。ヘッダー・地図・ライブラリ本文は共通の `SITE_COLUMN`（`max-w-[1440px]` + 左右 padding）。ナビ順は常に **味わいの地図 → ライブラリ → ピックアップ**、現在地は `font-semibold` + ink で強調。旧 `/{id}` は `/library/[id]` へ永久リダイレクト
+- ホーム詳細パネルは浅路由 `/?brand=<id>`（History API）。戻るで閉じる。深読みは `/library/[id]`
 
 ### ライブラリの発見（検索以外）
 
-検索・地域フィルタに加え、次を段階導入する（実装は checklist P2）。
+正本は [19-editorial-discovery.md](./19-editorial-discovery.md)。ホーム地図の座標推薦とは別系統。Desktop `100dvh` の地図面には特集もイラスト帯も置かない。
 
-- **今日の一膳**: 日付シードで銘柄 1〜3。地図の座標推薦とは別枠。売り込み口調にしない
-- **季節・用途の特集**: 月次または旬で固定コレクション（例: 冷めておいしい弁当米、新米の時期）。JSON / MD の編集データ。自動生成の量産特集はしない
+- **ピックアップ** `/discover`：きょうの三銘柄 + 特集一覧（`#collections`）。ナビは一級ここだけ
+- **特集誌面** `/collections/[slug]`：人手編集。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/*` も誌面へ
+- `/library` は編集マストヘッド → 品評表のみ
 - 一覧の味わい表示は数字壁より **金の pips**（`TastePips`）を優先。長文 headline は事典側
 
-銘柄ビジュアルは [18-brand-illustration.md](./18-brand-illustration.md)（手描き風・他社写真の転載禁止）。
+銘柄ビジュアルは [18-brand-illustration.md](./18-brand-illustration.md)。本番ファイルは `public/brand-art/`。
 
 相談プレースホルダ: `例：刺身に合う、冷めても美味しい、ウイスキーと合わせたい`
 

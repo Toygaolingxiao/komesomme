@@ -39,6 +39,7 @@
 | 品鑑オーバーレイ | TS-DETAIL-01〜03 | P0 | ✓ | |
 | 銘柄ページ | TS-BRAND-01〜04 | P0 | ✓ | |
 | 銘柄ライブラリ | TS-LIBRARY-01〜03 | P1 | ✓ | |
+| 編集発見（三銘柄・特集・事典画） | TS-LIBRARY-04〜06 | P2 | ✓ | イラストのロゴ混入は手動 |
 | 購入（通販 / ふるさとタグ） | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
 | 法務ページ | TS-LEGAL-01〜03 | P0 | ✓ | |
 | SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
@@ -141,6 +142,18 @@
 #### TS-LIBRARY-03 旧 `/{id}` がライブラリへリダイレクト
 - **手順:** `/yumepirika`  
 - **期待:** URL が `/library/yumepirika` になり、銘柄見出しが表示される
+
+#### TS-LIBRARY-04 ピックアップ（きょうの三銘柄）
+- **手順:** `/library` に三銘柄見出しが無いこと。`/discover` で「きょうの三銘柄」と 3 リンク  
+- **期待:** ナビに「ピックアップ」。銘柄リンクは `/library/{id}`
+
+#### TS-LIBRARY-05 編集特集ページ
+- **手順:** `/discover` で特集見出し。`/collections` は `/discover` へ。`/collections/shinmai` で誌面  
+- **期待:** ナビに「ピックアップ」（「特集」一級なし）。誌面に銘柄リンク。未知 slug は 404。旧 `/library/collections/shinmai` は `/collections/shinmai` へ
+
+#### TS-LIBRARY-06 事典ヒーロー画（ある銘柄だけ）
+- **手順:** `/library/koshihikari-uonuma`  
+- **期待:** 手描きヒーロー（`brand-art`）。ロゴ・袋面が無いこと（手動）
 
 ---
 

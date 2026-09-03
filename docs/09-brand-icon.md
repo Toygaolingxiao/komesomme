@@ -20,8 +20,9 @@
 | 180 Apple | `src/app/apple-icon.tsx` | 米白地に標準マーク |
 | 512 / アバター | `public/brand/icon-light.svg` `icon-mono.svg` | 角丸スクエア（墨地版は置かない） |
 | ヘッダー | `BrandLockup`（`SiteHeader` 経由） | 標準マーク + 明朝の KomeSomme + 固定副題 **侍米師**（読み じべいし。ページ名はナビと H1） |
+| ライブラリ編集節 | `EditorialMarks` | 椀・暦・蒸気。`markGeometry.ts` の米粒パスから派生。Phosphor はナビ・フォームのまま |
 
-モノクロは `mark-mono.svg` / `lockup-mono.svg` / `icon-mono.svg`。
+モノクロは `mark-mono.svg` / `lockup-mono.svg` / `icon-mono.svg`。侍・刀・キャラクターは使わない。編集マークの詳細は [19-editorial-discovery.md](./19-editorial-discovery.md) §5。
 
 ## クリアスペースと最小サイズ
 

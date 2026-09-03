@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "0.10.2",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
@@ -15,12 +15,15 @@
     "inventory:audit": "node --use-system-ca --import tsx scripts/audit-shop-inventory.ts",
     "encyclopedia:generate": "node --use-system-ca --import tsx scripts/generate-rice-encyclopedia.ts",
     "encyclopedia:audit": "node --import tsx scripts/audit-encyclopedia-vs-catalog.ts",
+    "brand-art:optimize": "node --import tsx scripts/optimize-brand-art.ts",
+    "brand-art:sync-prefs": "node --import tsx scripts/sync-prefecture-art-ids.ts",
     "yahoo:sync": "node --use-system-ca --import tsx scripts/sync-yahoo-affiliate-links.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:report": "node --import tsx scripts/write-test-report.ts",
-    "test": "npm run test:unit && npm run test:e2e && npm run test:report"
+    "test": "npm run test:unit && npm run test:e2e && npm run test:report",
+    "brand-art:sync-prefs": "node --import tsx scripts/sync-prefecture-art-ids.ts"
   },
   "dependencies": {
     "@google/genai": "^2.19.0",

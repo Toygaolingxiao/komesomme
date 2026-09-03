@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <LegalShell title="プライバシーポリシー">
-      <p>最終更新: 2026年8月29日</p>
+      <p>最終更新: 2026年9月3日</p>
 
       <section className="space-y-2">
         <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -34,7 +34,8 @@ export default function PrivacyPage() {
         </h2>
         <ul className="list-disc space-y-1 pl-5">
           <li>
-            <strong className="text-[var(--km-ink)]">相談文:</strong>「侍米師に相談」に入力された文章。推薦のためサーバーで処理します。
+            <strong className="text-[var(--km-ink)]">相談文:</strong>
+            「侍米師に相談」に入力された文章。推薦のためサーバーで処理します。
           </li>
           <li>
             <strong className="text-[var(--km-ink)]">技術情報:</strong>
@@ -84,7 +85,14 @@ export default function PrivacyPage() {
             >
               Amazon.co.jpプライバシー規約
             </a>
-            も参照してください。
+            も参照してください。アフィリエイト表示の文言は
+            <Link
+              className="text-[var(--km-gold)] underline-offset-2 hover:underline"
+              href="/terms"
+            >
+              利用規約
+            </Link>
+            にあります。
           </li>
         </ul>
         <p>
@@ -117,7 +125,7 @@ export default function PrivacyPage() {
           7. お問い合わせ
         </h2>
         <p>
-          個人情報の取扱いに関するお問い合わせは、特定商取引法に基づく表記に記載の連絡先へご連絡ください（準備中の場合は追記します）。
+          個人情報の取扱いに関するお問い合わせは、特定商取引法に基づく表記に記載の連絡先へご連絡ください。
         </p>
       </section>
     </LegalShell>

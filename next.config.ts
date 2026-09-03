@@ -15,13 +15,63 @@ const securityHeaders = [
   },
 ];
 
+/** Fingerprinted deploy assets + editorial art: long CDN / browser cache. */
+const immutableAssetCache = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=31536000, immutable",
+  },
+];
+
+/** Next image optimizer output — keep warm across visits. */
+const optimizedImageCache = [
+  {
+    key: "Cache-Control",
+    value: "public, max-age=2592000, stale-while-revalidate=86400",
+  },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    /** Cache optimized variants for 30 days (source files change with deploys). */
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1440],
+    imageSizes: [64, 96, 128, 160, 200, 256, 320, 384],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/library/collections/:slug",
+        destination: "/collections/:slug",
+        permanent: true,
+      },
+      {
+        /** Index lives under ピックアップ; magazine pages stay at /collections/[slug]. */
+        source: "/collections",
+        destination: "/discover",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        source: "/brand-art/:path*",
+        headers: immutableAssetCache,
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: immutableAssetCache,
+      },
+      {
+        source: "/_next/image",
+        headers: optimizedImageCache,
       },
     ];
   },
