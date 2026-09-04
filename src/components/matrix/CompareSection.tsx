@@ -4,6 +4,7 @@ import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import { track } from "@/lib/analytics";
 import {
   FOCUS,
+  AFFINITY_CAPTION,
   affinityDisplay,
   forYouLines,
   suitabilityLine,
@@ -77,8 +78,11 @@ export function SimilarRiceCards({
                   {suitabilityLine(neighbour.rice)}
                 </span>
               </span>
-              <span className="shrink-0 text-[11px] text-[var(--km-muted)]">
-                {affinityDisplay(neighbour.score)}
+              <span className="shrink-0 text-right text-[11px] text-[var(--km-muted)]">
+                <span className="block text-[9px]">{AFFINITY_CAPTION}</span>
+                <span className="font-serif text-[var(--km-brown)]">
+                  {affinityDisplay(neighbour.score)}
+                </span>
               </span>
             </>
           );

@@ -7,6 +7,7 @@ import {
   FOCUS,
   ICON_WEIGHT,
   affinityDisplay,
+  AFFINITY_CAPTION,
   appetiteLine,
   dishTags,
   pairTasteTags,
@@ -62,8 +63,11 @@ export function MobileTodayCard({
           </span>
         </span>
         {match.score > 0 ? (
-          <span aria-label={`味わい相性 ${shown}`} className="shrink-0 text-right">
-            <span className="block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+          <span aria-label={`${AFFINITY_CAPTION} ${shown}`} className="shrink-0 text-right">
+            <span className="block text-[9px] leading-tight text-[var(--km-muted)]">
+              {AFFINITY_CAPTION}
+            </span>
+            <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
               {shown}
             </span>
           </span>

@@ -8,6 +8,7 @@ import {
   FOCUS,
   ICON_WEIGHT,
   affinityDisplay,
+  AFFINITY_CAPTION,
   appetiteLine,
   dishTags,
   regionColor,
@@ -21,8 +22,11 @@ function AffinitySeal({ score }: { score: number }) {
   const shown = affinityDisplay(score);
 
   return (
-    <span aria-label={`味わい相性 ${shown}`} className="relative shrink-0 text-right">
-      <span className="block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+    <span aria-label={`${AFFINITY_CAPTION} ${shown}`} className="relative shrink-0 text-right">
+      <span className="block text-[9px] leading-tight tracking-wide text-[var(--km-muted)]">
+        {AFFINITY_CAPTION}
+      </span>
+      <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
         {shown}
       </span>
     </span>
@@ -170,7 +174,13 @@ function RunnerUpList({
                       : suitabilityLine(match.rice)}
                   </span>
                 </span>
-                <span aria-label={`味わい相性 ${affinityDisplay(match.score)}`} className="text-right">
+                <span
+                  aria-label={`${AFFINITY_CAPTION} ${affinityDisplay(match.score)}`}
+                  className="text-right"
+                >
+                  <span className="block text-[9px] text-[var(--km-muted)]">
+                    {AFFINITY_CAPTION}
+                  </span>
                   <span className="font-serif text-sm text-[var(--km-brown)]">
                     {affinityDisplay(match.score)}
                   </span>

@@ -151,6 +151,57 @@ function withPeriod(text: string) {
   return trimmed.endsWith("。") ? trimmed : `${trimmed}。`;
 }
 
+const COPY_STOP = new Set(["品種", "銘柄", "お米", "白米", "こと", "ため"]);
+
+function copyTokens(text: string): Set<string> {
+  const tokens = new Set<string>();
+  for (const match of text.matchAll(/[ァ-ヴー]{2,}|[一-龯]{2,}/g)) {
+    if (!COPY_STOP.has(match[0])) tokens.add(match[0]);
+  }
+  for (const match of text.matchAll(
+    /もっちり|ふっくら|あっさり|やわらか|さっぱり|すっきり|もちもち|ほどよい/g
+  )) {
+    tokens.add(match[0]);
+  }
+  return tokens;
+}
+
+function compactCopy(text: string) {
+  return text.replace(/[\s、。！？]/g, "").replace(/(です|ます)$/u, "");
+}
+
+/** True when two lines restated the same facts with different wording. */
+export function copyEchoes(left: string, right: string): boolean {
+  const a = left.trim();
+  const b = right.trim();
+  if (!a || !b) return false;
+  if (a === b) return true;
+
+  const compactA = compactCopy(a);
+  const compactB = compactCopy(b);
+  if (compactA.length >= 8 && compactB.includes(compactA)) return true;
+  if (compactB.length >= 8 && compactA.includes(compactB)) return true;
+
+  const tokensA = copyTokens(a);
+  const tokensB = copyTokens(b);
+  if (tokensA.size === 0 || tokensB.size === 0) return false;
+  const smaller = tokensA.size <= tokensB.size ? tokensA : tokensB;
+  const larger = tokensA.size <= tokensB.size ? tokensB : tokensA;
+  let hits = 0;
+  for (const token of smaller) {
+    if (larger.has(token)) hits += 1;
+  }
+  return hits >= 2 && hits / smaller.size >= 0.55;
+}
+
+function descriptionSentences(text: string): string[] {
+  return text
+    .split("。")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => `${part}。`);
+}
+
 /**
  * Recommendation blurb for a brand. Always the brand's own editorial line —
  * never a grain/sweetness bucket template (those repeated across the catalogue).
@@ -171,10 +222,13 @@ export function appetiteLine(rice: RiceProfileV2): string {
   return withPeriod(`${rice.prefecture}の${rice.name}`);
 }
 
-/** Technical follow-up. Variety facts stay in the source description. */
+/** Follow-up from description that does not restate the recommendation line. */
 export function technicalLine(rice: RiceProfileV2): string {
-  const line = firstSentence(rice.description);
-  return line === appetiteLine(rice) ? "" : line;
+  const lead = appetiteLine(rice);
+  for (const sentence of descriptionSentences(rice.description)) {
+    if (!copyEchoes(lead, sentence)) return sentence;
+  }
+  return "";
 }
 
 export function todayServeLine(rice: RiceProfileV2): string {
@@ -193,6 +247,9 @@ export function affinityDisplay(score: number): number {
   const clamped = Math.max(45, Math.min(100, score));
   return Math.round(45 + ((clamped - 45) * 51) / 55);
 }
+
+/** Noun next to the number. Do not put this beside the prefecture. */
+export const AFFINITY_CAPTION = "相性";
 
 export function affinityLabel(score: number): string {
   const shown = affinityDisplay(score);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { riceProfiles } from "@/data/rice/catalog";
-import { appetiteLine, suitabilityLine } from "./shared";
+import { appetiteLine, copyEchoes, suitabilityLine, technicalLine } from "./shared";
 import type { RiceProfileV2 } from "@/types/rice";
 
 function stub(partial: Partial<RiceProfileV2> = {}): RiceProfileV2 {
@@ -82,5 +82,39 @@ describe("suitabilityLine", () => {
     expect(suitabilityLine(stub())).toBe(
       "低アミロース由来の強い粘りとふくよかな甘み"
     );
+  });
+});
+
+describe("technicalLine", () => {
+  it("skips a description that restates short_ for こしいぶき", () => {
+    const rice = riceProfiles.find((row) => row.id === "koshiibuki");
+    expect(rice).toBeTruthy();
+    const line = technicalLine(rice!);
+    expect(line).not.toContain("系統");
+    expect(line).not.toContain("早生品種");
+    expect(line.length).toBeGreaterThan(0);
+  });
+
+  it("never repeats the recommendation line as the follow-up", () => {
+    const repeats = riceProfiles.filter((rice) => {
+      const follow = technicalLine(rice);
+      return Boolean(follow) && copyEchoes(appetiteLine(rice), follow);
+    });
+    expect(repeats.map((rice) => rice.id)).toEqual([]);
+  });
+
+  it("treats lineage restatements as echoes", () => {
+    expect(
+      copyEchoes(
+        "コシヒカリの系統を引く、扱いやすい早生。",
+        "コシヒカリの系統を受け継ぐ新潟の早生品種。"
+      )
+    ).toBe(true);
+    expect(
+      copyEchoes(
+        "コシヒカリの系統を引く、扱いやすい早生。",
+        "味わいはやや軽く、日々のご飯として扱いやすい性格です。"
+      )
+    ).toBe(false);
   });
 });

@@ -11,6 +11,7 @@ import {
   DISCLAIMER,
   FOCUS,
   appetiteLine,
+  copyEchoes,
   coreTasteMetrics,
   extraTasteMetrics,
   forYouLines,
@@ -83,7 +84,7 @@ export function LibraryRiceDossier({
   const appetite = appetiteLine(rice);
   const serve = todayServeLine(rice);
   const pairReason = rice.pairing_reason.trim();
-  const showReason = Boolean(pairReason) && pairReason !== appetite;
+  const showReason = Boolean(pairReason) && !copyEchoes(appetite, pairReason);
   const days = [...rice.mood_pairings, ...rice.occasion_pairings]
     .filter(Boolean)
     .slice(0, 2);

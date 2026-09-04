@@ -16,7 +16,9 @@ import {
   ICON_WEIGHT,
   LAYER,
   affinityDisplay,
+  AFFINITY_CAPTION,
   appetiteLine,
+  copyEchoes,
   coreTasteMetrics,
   extraTasteMetrics,
   regionColor,
@@ -62,7 +64,7 @@ function CoreTaste({ rice }: { rice: RiceProfileV2 }) {
 function TodayEat({ rice, appetite }: { rice: RiceProfileV2; appetite: string }) {
   const serve = todayServeLine(rice);
   const reason = rice.pairing_reason.trim();
-  const showReason = Boolean(reason) && reason !== appetite;
+  const showReason = Boolean(reason) && !copyEchoes(appetite, reason);
   const days = [...rice.mood_pairings, ...rice.occasion_pairings]
     .filter(Boolean)
     .slice(0, 2);
@@ -213,9 +215,12 @@ export function BrandDetailPanel({
                 <div className="flex shrink-0 items-start gap-3">
                   {score > 0 ? (
                     <span
-                      aria-label={`味わい相性 ${shownScore}`}
+                      aria-label={`${AFFINITY_CAPTION} ${shownScore}`}
                       className="flex shrink-0 flex-col items-center gap-0.5"
                     >
+                      <span className="whitespace-nowrap text-[9px] leading-none tracking-wide text-[var(--km-muted)]">
+                        {AFFINITY_CAPTION}
+                      </span>
                       <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
                         {shownScore}
                       </span>
