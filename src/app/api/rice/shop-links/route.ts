@@ -7,12 +7,12 @@ import {
   rakutenFurusatoSearchUrl,
   shopQuery,
   wrapSatofullSearchUrl,
-  wrapYahooFurusatoSearchUrl,
   wrapYahooSearchUrl,
+  yahooFurusatoSearchUrl,
 } from "@/lib/affiliate";
 import { yahooShoppingItemUrl } from "@/lib/affiliate/yahoo";
 import { resolveYahooShopHref } from "@/lib/affiliate/yahooShortLinks";
-import { lookupYahooFurusatoPromoUrl, lookupYahooPromoUrl } from "@/lib/affiliate/yahooPromo";
+import { lookupYahooPromoUrl } from "@/lib/affiliate/yahooPromo";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import { recommendRakutenItem } from "@/lib/rakuten/ichiba";
 import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
@@ -68,12 +68,9 @@ export async function GET(request: Request) {
   const satofullSid = process.env.SATOFULL_VC_SID?.trim();
   const satofullPid = process.env.SATOFULL_VC_PID?.trim();
 
-  const [yahooPromo, yahooFurusatoPromo] = await Promise.all([
-    lookupYahooPromoUrl(rice.id),
-    lookupYahooFurusatoPromoUrl(rice.id),
-  ]);
+  const yahooPromo = await lookupYahooPromoUrl(rice.id);
   const yahooSearch = wrapYahooSearchUrl(shop, yahooSid, yahooPid);
-  const yahooFurusatoSearch = wrapYahooFurusatoSearchUrl(furusato, yahooSid, yahooPid);
+  const yahooFurusatoSearch = yahooFurusatoSearchUrl(furusato);
 
   const fallback: ShopLinks = {
     amazon: amazonSearchUrl(shop),
@@ -82,7 +79,7 @@ export async function GET(request: Request) {
     mercari: mercariSearchUrl(shop),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
-    yahooFurusato: resolveYahooShopHref(yahooFurusatoPromo, yahooFurusatoSearch),
+    yahooFurusato: yahooFurusatoSearch,
   };
 
   const ip = clientIpFromRequest(request);

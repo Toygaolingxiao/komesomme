@@ -5,7 +5,8 @@
  *
  * Desktop: map + sliders on the left, recommendations on the right, language
  * consultation full-width below. Mobile: recommendation first, then an inline
- * tasting map with sliders (no separate fullscreen mode).
+ * tasting map with sliders (no separate fullscreen mode). On the phone map,
+ * first tap moves the probe (Top 4 glow); the same grain again opens the panel.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -304,6 +305,19 @@ export function FlavorMatrix() {
     [inspectOnMap, openDetail]
   );
 
+  /** Mobile: first tap moves the probe (Top 4 glow). Same grain again opens the panel. */
+  const tapOnMap = useCallback(
+    (id: string) => {
+      track("map_marker_click", { id });
+      if (selectedId === id) {
+        openDetail(id);
+        return;
+      }
+      inspectOnMap(id);
+    },
+    [selectedId, inspectOnMap, openDetail]
+  );
+
   const setAxis = useCallback(
     (axis: keyof TasteCoordinate, value: number) => {
       closeDetail();
@@ -510,7 +524,7 @@ export function FlavorMatrix() {
                     {...mapShared}
                     variant="preview"
                     runnerUpIds={runnerUpIds}
-                    onSelect={pickOnMap}
+                    onSelect={tapOnMap}
                   />
                 </div>
                 <TasteControls coordinate={coordinate} onAxisChange={setAxis} />

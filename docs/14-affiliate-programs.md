@@ -241,18 +241,11 @@ ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検�
 | 時刻 | `recorded_at` はトリガが書く。観測台は東京時間で表示 |
 | 同期 | `npm run yahoo:sync`（名称行だけ。既存の短鎖は上書きしない） |
 
-### 公式ふるさと納税アフィリエイト短鎖（VC 不使用）
+### 公式ふるさと納税アフィリエイト短鎖（使わない）
 
-Yahoo ふるさと CTA も同じ `yahoo.jp` 検索結果短鎖。通販表とは別（検索語が違う）。
+Yahoo 公式アフィの成果は**購入・発送**。ふるさと納税は寄附のため**成果対象外**（料率 0）。CTA はプレーン検索のまま。観測台 `/ops/yahoo-furusato` と表 `yahoo_furusato_affiliate_links` は残すが、購入ボタンは `promo_url` を使わない。
 
-| 項目 | 内容 |
-| --- | --- |
-| 表 | Supabase `yahoo_furusato_affiliate_links`（migration 0012） |
-| 記入 | 観測台 [`/ops/yahoo-furusato`](../src/app/ops/yahoo-furusato/page.tsx) |
-| 実行時 | `promo_url` があればふるさと Yahoo CTA に使う。空ならプレーン検索 |
-| 同期 | `npm run yahoo:sync:furusato` |
-
-楽天ふるさとは `wrapRakutenAffiliateUrl`（本番で `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID`）。Yahoo ふるさとに楽天 ID は付けない。
+楽天ふるさとは `wrapRakutenAffiliateUrl`（本番で `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID`）。
 
 ---
 
@@ -294,7 +287,7 @@ Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `
 | `src/lib/rakuten/affiliate.ts` | 検索 URL とアフィ包装。未登録 Preview では包まない |
 | `src/lib/affiliate.ts` | Amazon tag、メルカリ afid、VC 転鎖とゲート、開示文定数 |
 | `src/lib/affiliate/yahoo.ts` | ItemSearch。ゲート off なら `affiliate_type=vc` なし |
-| `src/lib/affiliate/yahooPromo.ts` | Supabase の `promo_url`（通販・ふるさと別表）。未記入・表未作成は検索 URL |
+| `src/lib/affiliate/yahooPromo.ts` | 通販 CTA の `promo_url`。ふるさと表は観測台用で、購入ボタンは使わない |
 | `src/app/api/rice/shop-links/route.ts` | 通販 4 + ふるさと 3 をサーバーで解決 |
 | `src/components/AffiliateDisclosure.tsx` | `pr` = ※PR。`full` = フッター用（Amazon + 短 PR + 楽天クレジット） |
 | `src/components/ShopLinksStrip.tsx` | 通販 4 / ふるさと 3 カプセル。塗りは内側 span |

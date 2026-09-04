@@ -25,7 +25,7 @@ export default async function OpsYahooFurusatoPage() {
     <main className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 sm:py-10">
       <OpsChrome
         title="Yahoo故乡税"
-        subtitle="搜索词是「产地 铭柄 ふるさと納税」。点开 Yahoo 检索，在联盟后台抓 yahoo.jp 短链贴回来。对齐目录不会清空已填链接。"
+        subtitle="本番の Yahoo 故乡税按钮是普通搜索（寄附没有联盟返点）。这张表不必填。默认只看待办。"
       />
       <YahooAffiliateSheet
         initialRows={rows}

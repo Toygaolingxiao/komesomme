@@ -105,7 +105,8 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           mercari: httpsUrl(data.mercari, next.mercari),
           satofull: httpsUrl(data.satofull, next.satofull),
           rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
-          yahooFurusato: httpsUrl(data.yahooFurusato, next.yahooFurusato),
+          // Yahoo ふるさと寄附は公式アフィの成果対象外。短鎖があっても検索のまま。
+          yahooFurusato: next.yahooFurusato,
         };
         linkCache.set(rice.id, resolved);
         setLinks(resolved);

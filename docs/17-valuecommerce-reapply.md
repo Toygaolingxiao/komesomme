@@ -2,7 +2,7 @@
 
 **2026-09 以降、KomeSomme は ValueCommerce を採用しない。**
 
-2026-08 にサイト登録が見送られたあと、再申請は行わない方針に切り替えた。Yahoo!ショッピングは **公式アフィリエイト短鎖**（通販 `yahoo_shopping_affiliate_links` / `/ops/yahoo`、ふるさと `yahoo_furusato_affiliate_links` / `/ops/yahoo-furusato`）またはプレーン検索 URL。さとふるはプレーン検索。楽天・Amazon は従来どおり。
+2026-08 にサイト登録が見送られたあと、再申請は行わない方針に切り替えた。Yahoo!ショッピング通販は **公式アフィリエイト短鎖**（`yahoo_shopping_affiliate_links` / `/ops/yahoo`）またはプレーン検索。ふるさと納税の Yahoo は寄附が成果対象外のため **常にプレーン検索**。さとふるはプレーン検索。楽天・Amazon は従来どおり。
 
 ## コード上の扱い
 

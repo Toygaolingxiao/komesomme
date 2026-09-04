@@ -142,10 +142,10 @@ anon / authenticated は権限なし。読み書きは service role（購入 CTA
 
 Migration [`0012_yahoo_furusato_affiliate_links.sql`](../supabase/migrations/0012_yahoo_furusato_affiliate_links.sql)。
 
-通販表とは別。同じ銘柄でも検索語（ふるさと納税）と短鎖が違う。空なら従来のふるさと検索。
+通販表とは別。Yahoo 公式アフィは寄附が成果対象外のため、**公開 CTA は `promo_url` を使わない**（プレーン検索のまま）。観測台 `/ops/yahoo-furusato` は残すが、本番ボタンには載らない。
 
 カラムは通販表と同じ（`no_products` は最初からある）。`search_keyword` は産地＋銘柄、またはカタログ `furusato_keywords[0]`。
 
-anon / authenticated は権限なし。service role（`/api/rice/shop-links` の Yahoo ふるさと CTA と `/ops/yahoo-furusato`）。
+anon / authenticated は権限なし。service role は `/ops/yahoo-furusato` のみ（`/api/rice/shop-links` はふるさと表を読まない）。
 
 **既存本番:** SQL Editor で 0012 を実行してから観測台で「对齐目录」、または `npm run yahoo:sync:furusato`。
