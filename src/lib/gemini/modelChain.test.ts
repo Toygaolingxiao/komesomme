@@ -5,6 +5,7 @@ import {
   isRetryableQuotaError,
   resolveGeminiChatModelChain,
   RETIRED_GEMINI_MODELS,
+  withTimeout,
 } from "./modelChain";
 
 describe("resolveGeminiChatModelChain", () => {
@@ -45,5 +46,13 @@ describe("quota error helpers", () => {
 
   it("detects unavailable models", () => {
     expect(isModelUnavailableError("404 NOT_FOUND")).toBe(true);
+  });
+});
+
+describe("withTimeout", () => {
+  it("rejects when the work does not finish", async () => {
+    await expect(
+      withTimeout(new Promise(() => undefined), 20, "probe")
+    ).rejects.toThrow(/timed out after 20ms/);
   });
 });

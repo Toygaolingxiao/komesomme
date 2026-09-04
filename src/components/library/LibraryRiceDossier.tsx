@@ -19,6 +19,7 @@ import {
   todayServeLine,
 } from "@/components/matrix/shared";
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
+import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
 
@@ -122,9 +123,7 @@ export function LibraryRiceDossier({
         <h1 className="mt-2 font-serif text-[2.25rem] font-semibold leading-[1.15] tracking-tight text-[var(--km-ink)] sm:text-[2.6rem]">
           {rice.name}
         </h1>
-        {reading ? (
-          <p className="mt-1.5 text-[13px] text-[var(--km-muted)]">{reading}</p>
-        ) : null}
+        <BrandNameMeta id={rice.id} reading={reading} />
         {tags.length > 0 ? (
           <p className="mt-3 text-[12px] leading-relaxed text-[var(--km-brown)]">
             {tags.join("、")}

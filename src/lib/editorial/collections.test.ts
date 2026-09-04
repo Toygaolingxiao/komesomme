@@ -19,6 +19,7 @@ const KNOWN = new Set([
   "tentakaku",
   "akitakomachi",
   "sagabiyori",
+  "seiten-no-hekireki",
 ]);
 
 describe("editorial collections", () => {
@@ -59,6 +60,7 @@ describe("editorial collections", () => {
     expect(collectionsForIndex(KNOWN, september).map((row) => row.slug)).toEqual([
       "bento-cold",
       "shinmai",
+      "toku-a",
       "nabe",
     ]);
   });
@@ -71,5 +73,15 @@ describe("editorial collections", () => {
   it("prints bento's date in September, not a fake April", () => {
     const bento = EDITORIAL_COLLECTIONS.find((row) => row.slug === "bento-cold");
     expect(bento?.dateLabel).toBe("2026年9月2日 0時02分");
+  });
+
+  it("prints toku-a's first-ship date", () => {
+    const tokuA = EDITORIAL_COLLECTIONS.find((row) => row.slug === "toku-a");
+    expect(tokuA?.dateLabel).toBe("2026年9月5日 1時45分");
+  });
+
+  it("features toku-a when the ranking is news", () => {
+    const february = Date.UTC(2026, 1, 27, 3, 0);
+    expect(featuredCollections(KNOWN, february).map((row) => row.slug)).toContain("toku-a");
   });
 });

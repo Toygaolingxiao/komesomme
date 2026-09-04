@@ -30,6 +30,7 @@ export const COLLECTION_ART_FILES = new Set<string>([
   "bento.webp",
   "shinmai.webp",
   "nabe.webp",
+  "toku-a.webp",
 ]);
 
 export function brandArtPath(id: string): string {

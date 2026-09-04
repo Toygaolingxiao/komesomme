@@ -6,11 +6,14 @@ import {
   isRetryableQuotaError,
   resolveGeminiChatModelChain,
   sleep,
+  withTimeout,
 } from "@/lib/gemini/modelChain";
 import { nameMatch } from "./semanticScore";
 
 const OPENAI_CHAT_MODEL = "gpt-4o-mini";
 const MAX_REPLY_CHARS = 180;
+/** Live consult: do not wait out a hung Gemini call. */
+const SOMMELIER_TIMEOUT_MS = 5_000;
 
 const BANNED = ["最強", "圧倒的", "究極", "唯一無二", "爆発", "神", "無敵"];
 
@@ -230,20 +233,32 @@ export async function generateSommelierReply(
   matches: SommelierMatchBrief[]
 ): Promise<string> {
   if (matches.length === 0) return fallbackReply(query, matches);
+  if (matches.some((match) => nameMatch(query, match.name))) {
+    return fallbackReply(query, matches);
+  }
 
   const prompt = buildPrompt(query, matches);
 
   try {
     const raw = process.env.GEMINI_API_KEY?.trim()
-      ? await generateWithGemini(prompt)
-      : await generateWithOpenAI(prompt);
+      ? await withTimeout(generateWithGemini(prompt), SOMMELIER_TIMEOUT_MS, "sommelier")
+      : await withTimeout(generateWithOpenAI(prompt), SOMMELIER_TIMEOUT_MS, "sommelier");
     if (!raw.trim()) return fallbackReply(query, matches);
     return cleanReply(raw, query, matches);
   } catch (cause) {
     console.error("Sommelier reply generation failed:", cause);
-    if (process.env.GEMINI_API_KEY?.trim() && process.env.OPENAI_API_KEY?.trim()) {
+    const timedOut = cause instanceof Error && cause.message.includes("timed out");
+    if (
+      !timedOut &&
+      process.env.GEMINI_API_KEY?.trim() &&
+      process.env.OPENAI_API_KEY?.trim()
+    ) {
       try {
-        const raw = await generateWithOpenAI(prompt);
+        const raw = await withTimeout(
+          generateWithOpenAI(prompt),
+          SOMMELIER_TIMEOUT_MS,
+          "sommelier-openai"
+        );
         if (raw.trim()) return cleanReply(raw, query, matches);
       } catch (fallbackCause) {
         console.error("OpenAI sommelier fallback failed:", fallbackCause);

@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { isRetryableQuotaError, sleep } from "@/lib/gemini/modelChain";
+import { isRetryableQuotaError, sleep, withTimeout } from "@/lib/gemini/modelChain";
 
 /**
  * Provider-agnostic embedding layer (server only).
@@ -20,6 +20,7 @@ const OPENAI_MODEL = "text-embedding-3-small";
 const MAX_RETRIES = 5;
 const BASE_RETRY_MS = 1_000;
 const MAX_RETRY_MS = 30_000;
+const CONSULT_EMBED_TIMEOUT_MS = 5_000;
 
 /**
  * Resolves the active provider.
@@ -132,7 +133,11 @@ export async function createEmbeddingForConsultation(
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
-      return await createEmbedding(input, provider);
+      return await withTimeout(
+        createEmbedding(input, provider),
+        CONSULT_EMBED_TIMEOUT_MS,
+        "consult-embed"
+      );
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);

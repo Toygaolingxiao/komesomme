@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import { createEmbeddingForConsultation, getEmbeddingModel, resolveProvider } from "@/lib/embedding";
+import { riceProfiles } from "@/data/rice/catalog";
 import { expandConsultationQuery } from "@/lib/rice/consultExpand";
 import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
 import { buildSemanticReason } from "@/lib/rice/flavorBridge";
-import { nameMatch, semanticDisplayScore, brandCoreQuery } from "@/lib/rice/semanticScore";
+import { calculateTasteNeighbours } from "@/lib/rice/matrix";
+import { nameMatch, semanticDisplayScore, brandCoreQuery, canonicalBrandName } from "@/lib/rice/semanticScore";
 import { generateSommelierReply } from "@/lib/rice/sommelierReply";
 import { guardSemanticRecommend } from "@/lib/security/semanticGuard";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { RiceProfileV2 } from "@/types/rice";
 
 export const runtime = "nodejs";
+/** Keep under typical hobby/pro limits; Gemini is capped separately. */
+export const maxDuration = 15;
 
 const DEFAULT_MATCH_COUNT = 4;
 const MAX_MATCH_COUNT = 10;
@@ -47,6 +51,33 @@ export async function POST(request: Request) {
       { message: "リクエスト本文を解析できません。" },
       { status: 400 }
     );
+  }
+
+  const namedHit = lookupNamedBrand(query);
+  if (namedHit) {
+    const neighbours = calculateTasteNeighbours(
+      riceProfiles,
+      namedHit,
+      Math.max(0, matchCount - 1)
+    );
+    const ranked = [
+      toMatch(query, namedHit, 1),
+      ...neighbours.map((row) => toMatch(query, row.rice, 0)),
+    ];
+    const reply = await generateSommelierReply(
+      query,
+      ranked.map((match) => ({
+        name: match.rice.name,
+        prefecture: match.rice.prefecture,
+        reason: match.reason,
+      }))
+    );
+    return NextResponse.json({
+      query,
+      reply,
+      embeddingModel: "name-lookup",
+      matches: ranked,
+    });
   }
 
   let provider: ReturnType<typeof resolveProvider>;
@@ -161,7 +192,7 @@ async function findExactNameMatch(
 ) {
   if (alreadyExact) return null;
 
-  const names = [query, brandCoreQuery(query)].filter(
+  const names = [query, brandCoreQuery(query), canonicalBrandName(query) ?? ""].filter(
     (name, index, all) => name.length >= 3 && name.length <= 20 && all.indexOf(name) === index
   );
 
@@ -170,10 +201,21 @@ async function findExactNameMatch(
       .from("rice_catalog")
       .select(RICE_PROFILE_COLUMNS)
       .eq("name", name)
+      .limit(1)
       .maybeSingle();
 
     if (!error && data) return mapRowToRiceProfile(data as unknown as Record<string, unknown>);
   }
 
   return null;
+}
+
+function lookupNamedBrand(query: string): RiceProfileV2 | null {
+  const exact = riceProfiles.find((rice) => nameMatch(query, rice.name) === "exact");
+  if (exact) return exact;
+  const named = canonicalBrandName(query);
+  if (!named) return null;
+  return (
+    riceProfiles.find((rice) => rice.name === named || rice.name.startsWith(named)) ?? null
+  );
 }

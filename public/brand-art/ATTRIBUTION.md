@@ -21,6 +21,7 @@ Sources are stored as **WebP** (resized ≤1600px long edge, quality≈82) via `
 | `collections/bento.webp` | Collection hero |
 | `collections/shinmai.webp` | Collection hero |
 | `collections/nabe.webp` | Collection hero |
+| `collections/toku-a.webp` | Collection hero（特Aの一膳、2026-09-05） |
 | `regions/*.webp` | Neutral macro-region fallbacks (no single-prefecture highlight) |
 | `prefectures/*.webp` | Atlas plates for catalog prefectures (46): region base + **full-prefecture wash** + rice / local mood (2026-09-03). No town pins, no prefecture-name text in image. |
 

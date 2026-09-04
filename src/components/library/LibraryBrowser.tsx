@@ -5,7 +5,9 @@ import { useMemo, useState } from "react";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 import { TastePips } from "@/components/matrix/TastePips";
 import { FOCUS } from "@/components/matrix/shared";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { brandI18nSearchBlob } from "@/data/rice/brandI18n";
+import { isTokuA } from "@/data/rice/tokuA";
+import { TokuABadge } from "@/components/rice/TokuABadge";
 
 const REGIONS = [
   "すべて",
@@ -57,7 +59,8 @@ export function LibraryBrowser({
     return entries.filter((entry) => {
       if (region !== "すべて" && entry.region !== region) return false;
       if (!q) return true;
-      const hay = `${entry.name}${entry.reading}${entry.prefecture}${entry.headline}`.toLowerCase();
+      const hay =
+        `${entry.name}${entry.reading}${entry.prefecture}${entry.headline}${brandI18nSearchBlob(entry.id)}`.toLowerCase();
       return hay.includes(q);
     });
   }, [entries, query, region]);
@@ -91,7 +94,7 @@ export function LibraryBrowser({
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="銘柄名・県名・キーワード"
+              placeholder="銘柄名・県名・中国語・英語"
               className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
             />
           </label>
@@ -140,8 +143,11 @@ export function LibraryBrowser({
                     <span className="mx-1 text-[var(--km-muted)]/45">·</span>
                     {entry.region}
                   </span>
-                  <span className="mt-0.5 block font-serif text-[1.125rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
-                    {entry.name}
+                  <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <span className="font-serif text-[1.125rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+                      {entry.name}
+                    </span>
+                    {isTokuA(entry.id) ? <TokuABadge compact /> : null}
                   </span>
                   {entry.reading ? (
                     <span className="mt-0.5 block text-[11px] text-[var(--km-muted)]">

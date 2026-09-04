@@ -335,11 +335,15 @@ export function FlavorMatrix() {
     setRecommendationMode("semantic");
     setSemanticState("pending");
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 12_000);
+
     try {
       const response = await fetch("/api/rice/semantic-recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: trimmed, matchCount: MATCH_LIMIT }),
+        signal: controller.signal,
       });
 
       const body = (await response.json().catch(() => null)) as {
@@ -400,9 +404,21 @@ export function FlavorMatrix() {
       setSemanticState("idle");
     } catch (cause) {
       console.error("Semantic recommend failed:", cause);
+      const aborted =
+        (typeof cause === "object" &&
+          cause !== null &&
+          "name" in cause &&
+          (cause as { name?: string }).name === "AbortError") ||
+        controller.signal.aborted;
       setSemanticMatches([]);
-      setSemanticReply(null);
+      setSemanticReply(
+        aborted
+          ? "返事が遅かったので、いったん味わいの地図から探してみてください。"
+          : "相談に失敗しました。しばらくしてから、もう一度お試しください。"
+      );
       setSemanticState("error");
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }, [query, profiles, points, probeLeft, probeTop]);
 

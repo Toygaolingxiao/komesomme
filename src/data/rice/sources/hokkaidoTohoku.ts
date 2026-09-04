@@ -303,7 +303,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["甘いタレの重ね使い"],
     sake_pairings: ["冷やした吟醸", "淡麗辛口"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "粘りとキレの均衡。上品な甘みの残るさっぱりした味わい。",
+    short_: "後味が短く、魚介の甘みと競わない青森米。",
     description:
       "粒立ちのよさと控えめな甘さが持ち味の青森米。口の中でほろりと解ける食感で、重たさが残りません。海鮮丼やカレーなど汁気のある料理と相性がよく、食材の旨みを静かに引き立てます。",
     sommelier_note:

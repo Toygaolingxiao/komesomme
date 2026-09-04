@@ -28,6 +28,7 @@ import { ForYou, SimilarRiceCards } from "./CompareSection";
 import { DetailScrollTracker } from "./DetailScrollTracker";
 import { ShareCardActions } from "@/components/brand/ShareCardActions";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
+import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import { resolveBrandArt } from "@/lib/editorial/art";
 import { PurchaseJump, PurchaseLead } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
@@ -196,6 +197,7 @@ export function BrandDetailPanel({
                   >
                     {rice.name}
                   </h3>
+                  <BrandNameMeta id={rice.id} />
                   <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--km-muted)]">
                     <MapPin size={13} weight={ICON_WEIGHT} />
                     {rice.prefecture} / {rice.region}
