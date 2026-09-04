@@ -25,18 +25,16 @@ function grainHash(id: string) {
 
 function grainPose(id: string) {
   const hash = grainHash(id);
-  // Short-grain scatter: gentle tilt + slight plumpness, not long needles.
   return {
-    tilt: ((hash % 40) - 20) * 0.55,
-    plump: 0.92 + (hash % 7) * 0.02,
+    tilt: ((hash % 48) - 24) * 0.7,
+    plump: 0.94 + (hash % 6) * 0.02,
   };
 }
 
 /**
  * One brand on the tasting map.
  *
- * Top 4 read clearly against a quieter rice cloud: No.1 largest + harvest ring,
- * runners gold-rimmed, the rest smaller and softer.
+ * Top 4: larger + glow. The rest: same grain, faded. No oval frames, no rank seals.
  */
 export function ProfileNode({
   rice,
@@ -62,7 +60,6 @@ export function ProfileNode({
   dimmed: boolean;
   bestCaption: string;
   reduceMotion: boolean;
-  /** Exactly one map node may show a tasting label at a time. */
   tooltipOpen?: boolean;
   touchFriendly?: boolean;
   onSelect: () => void;
@@ -80,27 +77,23 @@ export function ProfileNode({
       ? "runner"
       : "rest";
 
-  const baseW = (touchFriendly ? 14 : 12.5) * pose.plump;
-  const baseH = (touchFriendly ? 9.5 : 8.5) * pose.plump;
-  // Strong size ladder so Top 4 leave the beige cloud at a glance.
-  const grow =
-    featured ? 2.05 : isRunnerUp ? 1.55 : isHighlighted ? 1.4 : muted ? 0.78 : 0.92;
+  const baseW = (touchFriendly ? 22 : 20) * pose.plump;
+  const baseH = (touchFriendly ? 15 : 13.5) * pose.plump;
+  const grow = featured ? 1.85 : isRunnerUp ? 1.48 : isHighlighted ? 1.18 : 0.88;
   const width = baseW * grow;
   const height = baseH * grow;
   const hit = touchFriendly
     ? featured
-      ? 38
+      ? 44
       : connected
-        ? 30
-        : Math.max(width, 16)
-    : Math.max(width, featured ? 28 : connected ? 24 : 18);
+        ? 36
+        : Math.max(width + 8, 26)
+    : Math.max(width + 6, featured ? 38 : connected ? 32 : 22);
   const left = valueToPosition(rice.display_x, INSET);
   const top = 100 - valueToPosition(rice.display_y, INSET);
   const fill = mapGrainFill(regionColor(rice.region_id ?? rice.region));
   const tags = pairTasteTags(rice);
-
-  // Cloud stays readable but clearly secondary to the recommendation set.
-  const restOpacity = dimmed ? 0.22 : muted ? 0.4 : 0.48;
+  const restOpacity = dimmed ? 0.34 : muted ? 0.5 : 0.88;
 
   return (
     <motion.button
@@ -116,9 +109,9 @@ export function ProfileNode({
       initial={reduceMotion ? false : { opacity: 0, scale: 0.72 }}
       animate={{
         opacity: connected ? 1 : restOpacity,
-        scale: isHighlighted && !featured ? 1.05 : 1,
+        scale: isHighlighted && !featured ? 1.04 : 1,
       }}
-      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.06 }}
+      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.05 }}
       transition={{
         duration: reduceMotion ? 0 : 0.18,
         ease: [0.22, 1, 0.36, 1],
@@ -142,6 +135,7 @@ export function ProfileNode({
     >
       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <RiceGrainMark
+          markId={rice.id}
           fill={fill}
           width={width}
           height={height}

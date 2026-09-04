@@ -1,12 +1,14 @@
 "use client";
 
-import { useId } from "react";
-
 export type GrainEmphasis = "rest" | "runner" | "featured";
 
+function safeId(raw: string) {
+  return raw.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 48) || "g";
+}
+
 /**
- * Short-grain rice silhouette (plump middle, softly pointed ends).
- * Shared by map nodes and region legend chips.
+ * Cooked short-grain mark: plump oval, one belly shine. No germ cap, no crease.
+ * Gradient ids come from `markId` so SSR and the client stay aligned (no useId).
  */
 export function RiceGrainMark({
   fill,
@@ -14,6 +16,7 @@ export function RiceGrainMark({
   height,
   tilt = 0,
   emphasis = "rest",
+  markId,
   className = "",
 }: {
   fill: string;
@@ -21,71 +24,49 @@ export function RiceGrainMark({
   height: number;
   tilt?: number;
   emphasis?: GrainEmphasis;
+  markId: string;
   className?: string;
 }) {
-  const gid = useId().replace(/:/g, "");
+  const gid = safeId(markId);
   const featured = emphasis === "featured";
   const runner = emphasis === "runner";
 
-  const stroke = featured
-    ? "#e56b3f"
+  const glow = featured
+    ? "drop-shadow(0 0 10px rgba(229,107,63,0.55)) drop-shadow(0 1px 3px rgba(229,107,63,0.35))"
     : runner
-      ? "#c4862a"
-      : "rgba(112,69,34,0.12)";
-  const strokeOpacity = featured ? 0.72 : runner ? 0.85 : 1;
-  const strokeWidth = featured ? 1.45 : runner ? 1.2 : 0.65;
+      ? "drop-shadow(0 0 7px rgba(212,154,42,0.48)) drop-shadow(0 1px 2px rgba(168,110,28,0.28))"
+      : "drop-shadow(0 1px 1px rgba(112,69,34,0.12))";
 
   return (
     <svg
       aria-hidden
       width={width}
       height={height}
-      viewBox="0 0 28 18"
+      viewBox="0 0 40 22"
       className={className}
       style={{
         transform: `rotate(${tilt}deg)`,
-        filter: featured
-          ? "drop-shadow(0 1px 3px rgba(229,107,63,0.28))"
-          : runner
-            ? "drop-shadow(0 1px 2px rgba(196,134,42,0.22))"
-            : "drop-shadow(0 0.5px 1px rgba(112,69,34,0.08))",
+        overflow: "visible",
+        filter: glow,
       }}
     >
       <defs>
-        <radialGradient id={`km-grain-hi-${gid}`} cx="34%" cy="30%" r="72%">
-          <stop offset="0%" stopColor="#fffdf8" stopOpacity="0.95" />
-          <stop offset="45%" stopColor={fill} stopOpacity="1" />
-          <stop
-            offset="100%"
-            stopColor={featured || runner ? "#d4a45c" : "#e0b878"}
-            stopOpacity="0.95"
-          />
+        <radialGradient id={`km-g-body-${gid}`} cx="40%" cy="32%" r="72%">
+          <stop offset="0%" stopColor="#fffef8" />
+          <stop offset="42%" stopColor={fill} />
+          <stop offset="100%" stopColor={fill} stopOpacity="0.88" />
         </radialGradient>
       </defs>
-      {(featured || runner) && (
-        <ellipse
-          cx="14"
-          cy="9"
-          rx="13.2"
-          ry="8.2"
-          fill={featured ? "rgba(229,107,63,0.14)" : "rgba(212,154,42,0.12)"}
-        />
-      )}
+
+      <ellipse cx="20" cy="18.6" rx="12" ry="2.2" fill="rgba(112,69,34,0.1)" />
+
       <path
-        d="M1.6 9C1.6 9 4.2 2.1 14 2.1S26.4 9 26.4 9 23.8 15.9 14 15.9 1.6 9 1.6 9Z"
-        fill={`url(#km-grain-hi-${gid})`}
-        stroke={stroke}
-        strokeOpacity={strokeOpacity}
-        strokeWidth={strokeWidth}
+        d="M4.8 11C4.8 6.6 11.2 3.6 20 3.6C28.8 3.6 35.2 6.6 35.2 11C35.2 15.4 28.8 18.4 20 18.4C11.2 18.4 4.8 15.4 4.8 11Z"
+        fill={`url(#km-g-body-${gid})`}
+        stroke="rgba(112,69,34,0.14)"
+        strokeWidth="0.5"
       />
-      <ellipse
-        cx="11.2"
-        cy="7.1"
-        rx="5.2"
-        ry="2.4"
-        fill="#fffef9"
-        opacity={featured || runner ? 0.45 : 0.32}
-      />
+      <ellipse cx="16.5" cy="8.2" rx="7.4" ry="3" fill="#fffef9" opacity="0.38" />
     </svg>
   );
 }

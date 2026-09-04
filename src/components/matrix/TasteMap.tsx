@@ -162,6 +162,7 @@ function MapLegend({
                 }`}
               >
                 <RiceGrainMark
+                  markId={`legend-${id}`}
                   fill={mapGrainFill(color)}
                   width={11}
                   height={7}
@@ -374,12 +375,9 @@ export function TasteMap({
                   dimmed={
                     (focusSet.size > 0 &&
                       ![...focusSet].some((id) => regionMatches(rice, id, regions))) ||
-                    // Dim the cloud only after an explicit pick — not while the
-                    // probe merely has a No.1 (that washed out ~100 grains).
-                    (Boolean(selectedId) &&
-                      rice.id !== selectedId &&
-                      rice.id !== bestMatchId &&
+                    (rice.id !== bestMatchId &&
                       !runnerUpIds.has(rice.id) &&
+                      rice.id !== selectedId &&
                       rice.id !== highlightId)
                   }
                   bestCaption={bestCaption}

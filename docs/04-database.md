@@ -98,7 +98,7 @@ rice_regions 1 ──∞ rice_brands 1 ── 1 rice_profile_details
 
 - V1 の旧 `rice_brands` が残っていて、まだ 0003 を走らせていないときだけ [`0002_drop_rice_brands.sql`](../supabase/migrations/0002_drop_rice_brands.sql)
 - 0003 は V1 `rice_brands`（`region_id` なし）を検出して自動 drop する
-- 地域色の更新は 0003 の upsert、または `npm run seed:rice`（`rice_regions` を上書きする）
+- 地域色の更新は [`0011_rice_region_appetite_colors.sql`](../supabase/migrations/0011_rice_region_appetite_colors.sql)、または `npm run seed:rice`（`rice_regions` を上書きする）
 
 書き込みは service role。anon / authenticated は `rice_regions` / `rice_brands` / VIEW `rice_catalog` の SELECT のみ。
 

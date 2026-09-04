@@ -42,7 +42,7 @@ UI は `src/components/editorial/` のみ。ライブラリの品評表 `Library
 
 ### `/collections/[slug]`（特集誌面）
 
-誌面は英雄＋タイトルを寄せ、銘柄はサムネ＋headline。各特集に `dateLabel`（期間）。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/[slug]` は誌面へ永久リダイレクト。
+誌面は英雄＋タイトルを寄せ、銘柄はサムネ＋headline。各特集に `dateLabel`（具体の日と時刻。例: 2026年9月3日 16時48分）。表に出す月は `months`。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/[slug]` は誌面へ永久リダイレクト。
 
 ### `/library/[id]`
 

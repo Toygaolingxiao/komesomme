@@ -4,7 +4,7 @@ export type EditorialCollection = {
   dek: string;
   /** Extra line for the index list; keep short. */
   lede?: string;
-  /** Display date for lists and banners, e.g. 2026年9月. */
+  /** 誌面の日付。具体の日と時刻（期間の「4–9月」は出さない）。 */
   dateLabel: string;
   /** Calendar months 1–12 when this collection is featured on /collections. */
   months: number[];
@@ -24,7 +24,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
     title: "冷めても、弁当に",
     dek: "昼の弁当箱で、粒がばらけすぎない米を集めました。",
     lede: "朝に炊いて、昼に蓋を開ける日のための読みどころです。",
-    dateLabel: "2026年4–9月",
+    dateLabel: "2026年4月8日 6時12分",
     months: [4, 5, 6, 7, 8, 9],
     riceIds: ["sasanishiki", "hitomebore", "nanatsuboshi", "milky-queen", "haenuki"],
     artFile: "bento.webp",
@@ -38,7 +38,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
     title: "新米のころ",
     dek: "秋の食卓に、炊きたての香りを。",
     lede: "刈り入れのあとは、産地の違う数銘柄を並べて読むと違いがつかみやすいです。",
-    dateLabel: "2026年9–11月",
+    dateLabel: "2026年9月3日 16時48分",
     months: [9, 10, 11],
     riceIds: ["yumepirika", "koshihikari-uonuma", "tsuyahime", "hitomebore", "tentakaku"],
     artFile: "shinmai.webp",
@@ -52,7 +52,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
     title: "鍋の季節",
     dek: "汁気の多い料理に、しっかりした粒。",
     lede: "汁がかかっても粒が残りやすい米を中心に置いてあります。",
-    dateLabel: "2026年11–2月",
+    dateLabel: "2026年11月7日 18時35分",
     months: [11, 12, 1, 2],
     riceIds: ["yumepirika", "koshihikari-uonuma", "akitakomachi", "tsuyahime", "sagabiyori"],
     artFile: "nabe.webp",
