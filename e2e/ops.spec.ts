@@ -7,6 +7,8 @@ test.describe("TS-OPS private analytics surface", () => {
     expect([404, 401, 302, 303, 307, 308]).toContain(response.status());
     const yahoo = await request.get("/ops/yahoo", { maxRedirects: 0 });
     expect([404, 401, 302, 303, 307, 308]).toContain(yahoo.status());
+    const furusato = await request.get("/ops/yahoo-furusato", { maxRedirects: 0 });
+    expect([404, 401, 302, 303, 307, 308]).toContain(furusato.status());
   });
 
   test("TS-OPS-02 robots disallows /ops", async ({ request }) => {

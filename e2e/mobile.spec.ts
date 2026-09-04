@@ -28,4 +28,18 @@ test.describe("TS-MOBILE", () => {
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
     await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
   });
+
+  test("TS-MOBILE-04 slider releases a tapped grain highlight", async ({ page }) => {
+    await waitForHomeReady(page);
+    const map = page.locator("[data-taste-map=preview]");
+    await map.locator("[aria-current=true]").click();
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
+    await page.getByRole("button", { name: "閉じる" }).first().click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await page.locator("#km-sweetness").fill("1");
+    await page.waitForTimeout(300);
+    await page.locator("#km-sweetness").fill("5");
+    await page.waitForTimeout(300);
+    await expect(map.locator("[aria-current=true]")).toHaveCount(1);
+  });
 });

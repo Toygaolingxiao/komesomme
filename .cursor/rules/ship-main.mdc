@@ -1,0 +1,59 @@
+---
+description: 推 main / 本番、智能模式审批、Windows Shell、npm vs npx。禁止对 git push 试错。
+alwaysApply: true
+---
+
+# 发版推送（main → GitHub → Vercel 本番）
+
+用户说「推送 / push / 推到本番」= 授权把 **当前 `main` 推到 `origin`**。Vercel Production 跟 `origin/main`。不要改成 PR 流程来「绕过」push。
+
+## 智能模式不是失败
+
+`git push origin HEAD` **第一次被 Auto-review 拦住是预期行为**（共享远程、会推进本番）。不是命令写错。
+
+被拦后 **立刻用完全相同的命令再调一次**，并带上：
+
+- `request_smart_mode_approval`: `true`
+- `smart_mode_block_reason`: **拒绝文案原文**（一个字都不要改）
+
+禁止：改命令、加权限参数、换成 `git push origin main`、换 remote、先 pull 再换写法、再试一种「更安全」的 push。那会让用户看不到审批卡，像在试错。
+
+升号后的 `npm install --package-lock-only` 也可能被拦（「只改 lock、与当前任务无关」）。同样：**原命令 + 审批卡 + 原文 block reason**，不要改成手改 lock。
+
+## 一次推送清单
+
+1. `git status` / `git diff --stat` / `git log origin/main..HEAD`
+2. 工作区有改动 → 先 commit（用户已说推送则视为同意 commit）
+3. 用户可感知变更 → 同一 commit 升号（见 `semver.mdc`）
+4. `npm install --package-lock-only`（对齐 lock 根 `version`。不要手改 lock）
+5. `git add` 相关文件 → PowerShell here-string commit（见下）
+6. `git push origin HEAD` → 被拦则走智能模式，不要换命令
+7. `git status` 确认与 `origin/main` 同步
+8. 告诉用户等 Vercel 绿；提醒事后填 `docs/smoke-test.md`
+
+不要：`--force`、`--no-verify`、改 git config、interactive rebase。
+
+## Windows PowerShell（本机）
+
+- **不要** `&&`（旧 PowerShell 会直接语法失败）。多步用 `;` 或分开两次 Shell。
+- **不要** bash HEREDOC。commit 用：
+
+```powershell
+git commit -m @"
+Release 0.x.y: 一句 why.
+
+第二句补充。
+"@
+```
+
+## npm / npx / node
+
+| 要做什么 | 用什么 |
+| --- | --- |
+| `package.json` 里已有的脚本 | **`npm run <name>`**（`test:unit`、`build`、`lint`、`validate:rice`） |
+| 只跑某一个 Vitest 文件（迭代） | `npx vitest run src/foo.test.ts` |
+| 升号后对齐 lock | `npm install --package-lock-only` |
+| `scripts/*.ts` 且要打外网 TLS | `node --use-system-ca --import tsx scripts/….ts` 或已有 `npm run seed:rice` 等 |
+| 纯本地 ts 脚本 | `node --import tsx scripts/….ts` |
+
+不要为已有 npm script 再包一层 npx。DoD 全量仍是 `npm run test:unit`（或 `npm run test`），不要只靠单文件 npx 当门禁。

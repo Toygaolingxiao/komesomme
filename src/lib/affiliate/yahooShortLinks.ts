@@ -49,7 +49,13 @@ export type YahooAffiliateDbRow = {
 
 /** Catalogue drives the sheet. DB supplies promo_url / no_products / recorded_at. */
 export function mergeYahooAffiliateSheet(
-  catalog: Array<{ id: string; name: string; prefecture: string; region: string }>,
+  catalog: Array<{
+    id: string;
+    name: string;
+    prefecture: string;
+    region: string;
+    searchKeyword?: string;
+  }>,
   dbRows: YahooAffiliateDbRow[],
 ): YahooAffiliateSheetRow[] {
   const byId = new Map(dbRows.map((row) => [row.brand_id, row]));
@@ -58,7 +64,7 @@ export function mergeYahooAffiliateSheet(
     seen.add(rice.id);
     const stored = byId.get(rice.id);
     const promoUrl = stored?.promo_url ? parseYahooShoppingShortLink(stored.promo_url) ?? null : null;
-    const searchKeyword = rice.name.trim();
+    const searchKeyword = rice.searchKeyword?.trim() || rice.name.trim();
     return {
       brandId: rice.id,
       name: rice.name,

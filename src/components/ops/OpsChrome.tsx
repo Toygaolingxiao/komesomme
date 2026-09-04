@@ -6,7 +6,8 @@ import type { ReactNode } from "react";
 
 const NAV = [
   { href: "/ops", label: "观测台" },
-  { href: "/ops/yahoo", label: "Yahoo推广链" },
+  { href: "/ops/yahoo", label: "Yahoo通販" },
+  { href: "/ops/yahoo-furusato", label: "Yahoo故乡税" },
 ] as const;
 
 export function OpsChrome({

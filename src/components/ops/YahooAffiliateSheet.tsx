@@ -1,10 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { yahooShoppingSearchUrl } from "@/lib/affiliate";
+import { yahooFurusatoSearchUrl, yahooShoppingSearchUrl } from "@/lib/affiliate";
 import type { YahooAffiliateSheetRow } from "@/lib/affiliate/yahooShortLinks";
 
 type Filter = "all" | "todo" | "filled" | "none";
+
+export type YahooAffiliateSheetProps = {
+  initialRows: YahooAffiliateSheetRow[];
+  tableReady: boolean;
+  apiPath?: string;
+  migrationFile?: string;
+  searchKind?: "shopping" | "furusato";
+  noneLabel?: string;
+};
 
 function formatRecordedAt(value: string | null): string {
   if (!value) return "—";
@@ -19,7 +28,7 @@ function formatRecordedAt(value: string | null): string {
   }).format(new Date(value));
 }
 
-function StatusBadge({ row }: { row: YahooAffiliateSheetRow }) {
+function StatusBadge({ row, noneLabel }: { row: YahooAffiliateSheetRow; noneLabel: string }) {
   if (row.promoUrl) {
     return (
       <span className="rounded-full bg-[#7ca83b]/20 px-2 py-0.5 text-[10px] font-medium text-[#b6d47a]">
@@ -30,7 +39,7 @@ function StatusBadge({ row }: { row: YahooAffiliateSheetRow }) {
   if (row.noProducts) {
     return (
       <span className="rounded-full bg-[#9a8774]/20 px-2 py-0.5 text-[10px] font-medium text-[#cbb9a4]">
-        暂无商品
+        {noneLabel}
       </span>
     );
   }
@@ -44,10 +53,11 @@ function StatusBadge({ row }: { row: YahooAffiliateSheetRow }) {
 export function YahooAffiliateSheet({
   initialRows,
   tableReady,
-}: {
-  initialRows: YahooAffiliateSheetRow[];
-  tableReady: boolean;
-}) {
+  apiPath = "/api/ops/yahoo-links",
+  migrationFile = "0006_yahoo_shopping_affiliate_links.sql",
+  searchKind = "shopping",
+  noneLabel = "暂无商品",
+}: YahooAffiliateSheetProps) {
   const [rows, setRows] = useState(initialRows);
   const [drafts, setDrafts] = useState<Record<string, string>>(() =>
     Object.fromEntries(initialRows.map((row) => [row.brandId, row.promoUrl ?? ""])),
@@ -96,7 +106,7 @@ export function YahooAffiliateSheet({
     setError(null);
     setNotice(null);
     try {
-      const response = await fetch("/api/ops/yahoo-links", {
+      const response = await fetch(apiPath, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ brandId, promoUrl: next }),
@@ -110,7 +120,7 @@ export function YahooAffiliateSheet({
           response.status === 400
             ? "只接受 https://yahoo.jp/xxxx 这种搜索结果短链（可含连字符或下划线）。"
             : payload.message === "table missing"
-              ? "还没有建表。请先执行 0006。"
+              ? `还没有建表。请先执行 ${migrationFile.replace(/\.sql$/, "")}。`
               : "保存失败。",
         );
         return;
@@ -129,7 +139,7 @@ export function YahooAffiliateSheet({
     setError(null);
     setNotice(null);
     try {
-      const response = await fetch("/api/ops/yahoo-links", {
+      const response = await fetch(apiPath, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ brandId, noProducts: next }),
@@ -161,7 +171,7 @@ export function YahooAffiliateSheet({
     setError(null);
     setNotice(null);
     try {
-      const response = await fetch("/api/ops/yahoo-links", { method: "POST" });
+      const response = await fetch(apiPath, { method: "POST" });
       const payload = (await response.json()) as {
         message?: string;
         upserted?: number;
@@ -172,7 +182,7 @@ export function YahooAffiliateSheet({
       if (!response.ok) {
         setError(
           payload.message === "table missing"
-            ? "还没有建表。请先执行 0006。"
+            ? `还没有建表。请先执行 ${migrationFile.replace(/\.sql$/, "")}。`
             : "无法从目录写入空行。",
         );
         return;
@@ -196,7 +206,7 @@ export function YahooAffiliateSheet({
       {!tableReady ? (
         <p className="mt-4 rounded-xl border border-[#e56b3f]/40 bg-[#e56b3f]/10 px-3 py-2 text-sm text-[#f0b4a4]">
           Supabase 里还没有这张表。打开 SQL Editor，执行
-          <code className="mx-1 text-[12px]">supabase/migrations/0006_yahoo_shopping_affiliate_links.sql</code>
+          <code className="mx-1 text-[12px]">supabase/migrations/{migrationFile}</code>
           后再点「对齐目录」。
         </p>
       ) : null}
@@ -294,11 +304,15 @@ export function YahooAffiliateSheet({
                     <div className="font-mono text-[11px] text-[#766658]">{row.brandId}</div>
                   </td>
                   <td className="px-3 py-2.5">
-                    <StatusBadge row={row} />
+                    <StatusBadge row={row} noneLabel={noneLabel} />
                   </td>
                   <td className="px-3 py-2.5">
                     <a
-                      href={yahooShoppingSearchUrl(row.searchKeyword)}
+                      href={
+                        searchKind === "furusato"
+                          ? yahooFurusatoSearchUrl(row.searchKeyword)
+                          : yahooShoppingSearchUrl(row.searchKeyword)
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#fff5e5] underline decoration-[#5c4e42] underline-offset-2 hover:decoration-[#d49a2a]"

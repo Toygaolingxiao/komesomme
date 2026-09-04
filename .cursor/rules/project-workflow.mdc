@@ -13,6 +13,7 @@ alwaysApply: true
 | --- | --- |
 | 上线门禁 P0/P1/P2 | [`docs/11-launch-checklist.md`](../../docs/11-launch-checklist.md) |
 | SemVer | [`VERSION`](../../VERSION) + [`docs/01-versioning.md`](../../docs/01-versioning.md) + rule `semver.mdc` |
+| 推 main / 本番 | rule `ship-main.mdc`（智能模式审批、PowerShell、npm/npx） |
 | 烟雾 | [`docs/smoke-test.md`](../../docs/smoke-test.md) |
 | 本番 env / 回滚 | [`docs/vercel-production.md`](../../docs/vercel-production.md) |
 | UI | [`docs/08-ui-design.md`](../../docs/08-ui-design.md) |

@@ -136,6 +136,8 @@ export type YahooShoppingAffiliateLinkRow = {
   updated_at: string;
 };
 
+export type YahooFurusatoAffiliateLinkRow = YahooShoppingAffiliateLinkRow;
+
 export interface Database {
   public: {
     Tables: {
@@ -167,6 +169,23 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Omit<YahooShoppingAffiliateLinkRow, "brand_id">>;
+        Relationships: [];
+      };
+      yahoo_furusato_affiliate_links: {
+        Row: YahooFurusatoAffiliateLinkRow;
+        Insert: {
+          brand_id: string;
+          name: string;
+          prefecture?: string;
+          region?: string;
+          search_keyword?: string;
+          promo_url?: string | null;
+          no_products?: boolean;
+          recorded_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<YahooFurusatoAffiliateLinkRow, "brand_id">>;
         Relationships: [];
       };
       rice_regions: {

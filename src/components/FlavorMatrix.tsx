@@ -36,10 +36,7 @@ import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
 import { TasteControls } from "./matrix/TasteControls";
 import { TasteMap } from "./matrix/TasteMap";
-import {
-  MobileSelectedCard,
-  MobileTodayCard,
-} from "./matrix/MobileCards";
+import { MobileTodayCard } from "./matrix/MobileCards";
 import {
   FOCUS,
   INSET,
@@ -188,14 +185,6 @@ export function FlavorMatrix() {
     }));
   }, [recommendationMode, semanticMatches, coordinateMatches]);
 
-  const scoreById = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const match of railMatches) {
-      map.set(match.rice.id, match.score);
-    }
-    return map;
-  }, [railMatches]);
-
   const selected = useMemo(
     () => profiles.find((rice) => rice.id === selectedId) ?? null,
     [profiles, selectedId]
@@ -214,18 +203,6 @@ export function FlavorMatrix() {
     () => new Set(railMatches.slice(1).map((match) => match.rice.id)),
     [railMatches]
   );
-
-  /** Same Top 4 as the recommendation rail — mobile used to emphasize 8 and looked crowded. */
-  const previewIds = useMemo(() => {
-    if (recommendationMode === "semantic") {
-      return new Set(railMatches.map((match) => match.rice.id));
-    }
-    return new Set(
-      calculateTopCoordinateMatches(points, coordinate, MATCH_LIMIT).map(
-        (match) => match.rice.id
-      )
-    );
-  }, [recommendationMode, railMatches, points, coordinate]);
 
   const dismissMapHint = useCallback(() => {
     setShowMapHint(false);
@@ -260,9 +237,9 @@ export function FlavorMatrix() {
 
   const closeDetail = useCallback(() => {
     setDetailOpen(false);
-    if (isLg) setSelectedId(null);
+    setSelectedId(null);
     writeBrandQuery(null, "replace");
-  }, [isLg]);
+  }, []);
 
   /** Restore panel from `/?brand=` after catalog load; honor Back/Forward. */
   useEffect(() => {
@@ -278,13 +255,13 @@ export function FlavorMatrix() {
         return;
       }
       setDetailOpen(false);
-      if (isLg) setSelectedId(null);
+      setSelectedId(null);
     };
 
     applyFromUrl();
     window.addEventListener("popstate", applyFromUrl);
     return () => window.removeEventListener("popstate", applyFromUrl);
-  }, [loadState, profiles, isLg]);
+  }, [loadState, profiles]);
 
   const resetSemantic = useCallback(() => {
     setRecommendationMode("coordinate");
@@ -318,24 +295,18 @@ export function FlavorMatrix() {
     [points, commitCoordinate, probeLeft, probeTop, dismissMapHint]
   );
 
-  const tapOnMap = useCallback(
+  const pickOnMap = useCallback(
     (id: string) => {
       track("map_marker_click", { id });
       inspectOnMap(id);
+      openDetail(id);
     },
-    [inspectOnMap]
-  );
-
-  const pickOnMap = useCallback(
-    (id: string) => {
-      inspectOnMap(id);
-      if (isLg) openDetail(id);
-    },
-    [inspectOnMap, isLg, openDetail]
+    [inspectOnMap, openDetail]
   );
 
   const setAxis = useCallback(
     (axis: keyof TasteCoordinate, value: number) => {
+      closeDetail();
       setCoordinate((previous) => {
         const next = { ...previous, [axis]: clamp(value) };
         probeLeft.set(probeLeftOf(next));
@@ -345,15 +316,15 @@ export function FlavorMatrix() {
       track("slider_change", { axis, value });
       if (recommendationMode === "semantic") resetSemantic();
     },
-    [probeLeft, probeTop, recommendationMode, resetSemantic]
+    [closeDetail, probeLeft, probeTop, recommendationMode, resetSemantic]
   );
 
   const moveProbe = useCallback(
     (hardness: number, sweetness: number) => {
-      setSelectedId(null);
+      closeDetail();
       commitCoordinate({ hardness, sweetness });
     },
-    [commitCoordinate]
+    [closeDetail, commitCoordinate]
   );
 
   const runSemantic = useCallback(async () => {
@@ -538,21 +509,13 @@ export function FlavorMatrix() {
                   <TasteMap
                     {...mapShared}
                     variant="preview"
-                    runnerUpIds={previewIds}
-                    onSelect={tapOnMap}
+                    runnerUpIds={runnerUpIds}
+                    onSelect={pickOnMap}
                   />
                 </div>
                 <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
               </>
             )}
-
-            {selected && selected.id !== bestMatchId ? (
-              <MobileSelectedCard
-                rice={selected}
-                isBestMatch={false}
-                onOpen={() => openDetail(selected.id)}
-              />
-            ) : null}
           </div>
 
           {/* After map: quick path to shops (collapsed). Consult stays a second path below. */}
@@ -576,7 +539,6 @@ export function FlavorMatrix() {
         {selected && detailOpen ? (
           <BrandDetailPanel
             rice={selected}
-            score={scoreById.get(selected.id) ?? 0}
             neighbours={neighbours}
             reduceMotion={reduceMotion}
             onSelect={openDetail}

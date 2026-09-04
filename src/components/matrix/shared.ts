@@ -238,27 +238,6 @@ export function todayServeLine(rice: RiceProfileV2): string {
   return "";
 }
 
-/**
- * Display-only remap of the 45-100 ranking score.
- * Ranking order is unchanged; 100 never appears so the scale reads as an estimate.
- */
-export function affinityDisplay(score: number): number {
-  if (score <= 0) return 0;
-  const clamped = Math.max(45, Math.min(100, score));
-  return Math.round(45 + ((clamped - 45) * 51) / 55);
-}
-
-/** Noun next to the number. Do not put this beside the prefecture. */
-export const AFFINITY_CAPTION = "相性";
-
-export function affinityLabel(score: number): string {
-  const shown = affinityDisplay(score);
-  if (shown >= 95) return "とても近い";
-  if (shown >= 88) return "近い";
-  if (shown >= 80) return "やや近い";
-  return "参考";
-}
-
 /** Three character lines from existing scores and dishes. Does not invent facts. */
 export function riceCharacter(rice: RiceProfileV2): string[] {
   const traits: string[] = [];

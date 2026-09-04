@@ -10,6 +10,7 @@ import {
   rakutenFurusatoSearchUrl,
   shopQuery,
   yahooFurusatoSearchUrl,
+  yahooFurusatoSheetKeyword,
   yahooShoppingSearchUrl,
 } from "./affiliate";
 
@@ -35,6 +36,16 @@ describe("TS-UNIT-04 shop / amazon URL builders", () => {
     );
     expect(furusatoQuery({ prefecture: "福島県", brand: "里山のつぶ" })).toBe(
       "福島県 里山のつぶ",
+    );
+    expect(
+      yahooFurusatoSheetKeyword({
+        prefecture: "北海道",
+        brand: "ゆめぴりか",
+        furusatoKeywords: ["北海道 ゆめぴりか ふるさと納税"],
+      }),
+    ).toBe("北海道 ゆめぴりか ふるさと納税");
+    expect(yahooFurusatoSheetKeyword({ prefecture: "栃木県", brand: "あさひの夢" })).toBe(
+      "栃木県 あさひの夢 ふるさと納税",
     );
   });
 

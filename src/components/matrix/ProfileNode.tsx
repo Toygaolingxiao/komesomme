@@ -68,7 +68,6 @@ export function ProfileNode({
   const featured = isBestMatch || isSelected;
   const connected = featured || isRunnerUp || isHighlighted;
   const muted = density !== "full" && !connected;
-  const passThrough = muted || (touchFriendly && dimmed && !connected);
   const pose = grainPose(rice.id);
 
   const emphasis: GrainEmphasis = featured
@@ -84,10 +83,10 @@ export function ProfileNode({
   const height = baseH * grow;
   const hit = touchFriendly
     ? featured
-      ? 44
+      ? 36
       : connected
-        ? 36
-        : Math.max(width + 8, 26)
+        ? 32
+        : Math.max(width + 10, 32)
     : Math.max(width + 6, featured ? 38 : connected ? 32 : 22);
   const left = valueToPosition(rice.display_x, INSET);
   const top = 100 - valueToPosition(rice.display_y, INSET);
@@ -129,9 +128,7 @@ export function ProfileNode({
               ? LAYER.node + 5
               : LAYER.node,
       }}
-      className={`group absolute -translate-x-1/2 -translate-y-1/2 ${FOCUS} ${
-        passThrough ? "pointer-events-none" : ""
-      }`}
+      className={`group absolute -translate-x-1/2 -translate-y-1/2 ${FOCUS}`}
     >
       <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <RiceGrainMark

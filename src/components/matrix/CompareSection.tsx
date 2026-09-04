@@ -4,8 +4,6 @@ import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import { track } from "@/lib/analytics";
 import {
   FOCUS,
-  AFFINITY_CAPTION,
-  affinityDisplay,
   forYouLines,
   suitabilityLine,
 } from "./shared";
@@ -67,24 +65,16 @@ export function SimilarRiceCards({
       <ul className={`divide-y divide-[var(--km-border)] ${heading ? "mt-4" : ""}`}>
         {neighbours.map((neighbour) => {
           const inner = (
-            <>
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate font-serif text-[15px] font-semibold text-[var(--km-ink)]">
-                  {neighbour.rice.name}
-                </span>
-                <span className="mt-0.5 text-[12px] text-[var(--km-muted)]">
-                  {neighbour.rice.prefecture}
-                  {" / "}
-                  {suitabilityLine(neighbour.rice)}
-                </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate font-serif text-[15px] font-semibold text-[var(--km-ink)]">
+                {neighbour.rice.name}
               </span>
-              <span className="shrink-0 text-right text-[11px] text-[var(--km-muted)]">
-                <span className="block text-[9px]">{AFFINITY_CAPTION}</span>
-                <span className="font-serif text-[var(--km-brown)]">
-                  {affinityDisplay(neighbour.score)}
-                </span>
+              <span className="mt-0.5 text-[12px] text-[var(--km-muted)]">
+                {neighbour.rice.prefecture}
+                {" / "}
+                {suitabilityLine(neighbour.rice)}
               </span>
-            </>
+            </span>
           );
 
           return (
@@ -93,7 +83,7 @@ export function SimilarRiceCards({
                 <button
                   type="button"
                   onClick={() => open(neighbour.rice.id)}
-                  className={`flex w-full items-baseline justify-between gap-4 py-3.5 text-left transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                  className={`flex w-full py-3.5 text-left transition hover:text-[var(--km-brown)] ${FOCUS}`}
                 >
                   {inner}
                 </button>
@@ -101,7 +91,7 @@ export function SimilarRiceCards({
                 <a
                   href={`/library/${neighbour.rice.id}`}
                   onClick={() => track("similar_rice_click", { id: neighbour.rice.id })}
-                  className={`flex items-baseline justify-between gap-4 py-3.5 transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                  className={`flex py-3.5 transition hover:text-[var(--km-brown)] ${FOCUS}`}
                 >
                   {inner}
                 </a>

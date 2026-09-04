@@ -7,8 +7,6 @@ import type { RecommendationMode } from "@/types/rice";
 import {
   FOCUS,
   ICON_WEIGHT,
-  affinityDisplay,
-  AFFINITY_CAPTION,
   appetiteLine,
   dishTags,
   regionColor,
@@ -17,21 +15,6 @@ import {
 } from "./shared";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { RailSkeleton, SemanticReading } from "./states";
-
-function AffinitySeal({ score }: { score: number }) {
-  const shown = affinityDisplay(score);
-
-  return (
-    <span aria-label={`${AFFINITY_CAPTION} ${shown}`} className="relative shrink-0 text-right">
-      <span className="block text-[9px] leading-tight tracking-wide text-[var(--km-muted)]">
-        {AFFINITY_CAPTION}
-      </span>
-      <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
-        {shown}
-      </span>
-    </span>
-  );
-}
 
 function BestMatchCard({
   match,
@@ -79,12 +62,9 @@ function BestMatchCard({
         </span>
       </span>
 
-      <span className="relative mt-3 flex items-end justify-between gap-3">
-        <span className="flex items-center gap-1 text-[11px] text-[var(--km-muted)]">
-          <MapPin size={12} weight={ICON_WEIGHT} />
-          {match.rice.prefecture}産
-        </span>
-        <AffinitySeal score={match.score} />
+      <span className="relative mt-3 flex items-center gap-1 text-[11px] text-[var(--km-muted)]">
+        <MapPin size={12} weight={ICON_WEIGHT} />
+        {match.rice.prefecture}産
       </span>
 
       {dishes.length > 0 ? (
@@ -137,7 +117,7 @@ function RunnerUpList({
               <button
                 type="button"
                 onClick={() => onSelect(match.rice.id)}
-                className={`group grid w-full grid-cols-[1.4rem_minmax(0,1fr)_auto] items-center gap-2 rounded-lg px-1.5 py-2 text-left transition hover:bg-[var(--km-surface)]/80 ${FOCUS} ${
+                className={`group grid w-full grid-cols-[1.4rem_minmax(0,1fr)] items-center gap-2 rounded-lg px-1.5 py-2 text-left transition hover:bg-[var(--km-surface)]/80 ${FOCUS} ${
                   activeId === match.rice.id || highlightId === match.rice.id
                     ? "bg-[var(--km-surface)]"
                     : ""
@@ -172,17 +152,6 @@ function RunnerUpList({
                     {semantic
                       ? match.reason
                       : suitabilityLine(match.rice)}
-                  </span>
-                </span>
-                <span
-                  aria-label={`${AFFINITY_CAPTION} ${affinityDisplay(match.score)}`}
-                  className="text-right"
-                >
-                  <span className="block text-[9px] text-[var(--km-muted)]">
-                    {AFFINITY_CAPTION}
-                  </span>
-                  <span className="font-serif text-sm text-[var(--km-brown)]">
-                    {affinityDisplay(match.score)}
                   </span>
                 </span>
               </button>

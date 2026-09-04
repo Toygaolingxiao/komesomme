@@ -137,3 +137,15 @@ anon / authenticated は権限なし。読み書きは service role（購入 CTA
 
 **適用順（空プロジェクト）:** 0003 → `seed:rice` → 0004 → 0005 → 0006 → `npm run yahoo:sync`。  
 **既存 0003 / 0004 / 0005 済み:** 0006 を SQL Editor で実行してから `npm run yahoo:sync`。
+
+## `yahoo_furusato_affiliate_links`（Yahoo ふるさと納税 公式短鎖）
+
+Migration [`0012_yahoo_furusato_affiliate_links.sql`](../supabase/migrations/0012_yahoo_furusato_affiliate_links.sql)。
+
+通販表とは別。同じ銘柄でも検索語（ふるさと納税）と短鎖が違う。空なら従来のふるさと検索。
+
+カラムは通販表と同じ（`no_products` は最初からある）。`search_keyword` は産地＋銘柄、またはカタログ `furusato_keywords[0]`。
+
+anon / authenticated は権限なし。service role（`/api/rice/shop-links` の Yahoo ふるさと CTA と `/ops/yahoo-furusato`）。
+
+**既存本番:** SQL Editor で 0012 を実行してから観測台で「对齐目录」、または `npm run yahoo:sync:furusato`。

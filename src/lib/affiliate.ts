@@ -33,7 +33,7 @@ export const TASTE_DISCLAIMER_DETAIL =
 
 /**
  * @deprecated ValueCommerce は採用しない（2026-09）。転鎖ヘルパは互換のため残すが常に無効。
- * 本番の Yahoo は公式短鎖（`yahoo_shopping_affiliate_links`）またはプレーン検索。
+ * 本番の Yahoo は公式短鎖（通販・ふるさと別表）またはプレーン検索。
  */
 export const VALUE_COMMERCE_REFERRAL_HTTPS =
   "https://ck.jp.ap.valuecommerce.com/servlet/referral";
@@ -55,6 +55,17 @@ export function shopQuery({ prefecture, brand }: AffiliateBrandInput): string {
 
 export function furusatoQuery({ prefecture, brand }: AffiliateBrandInput): string {
   return [prefecture.trim(), brand.trim()].filter(Boolean).join(" ");
+}
+
+/**
+ * Keyword shown on the Yahoo ふるさと ops sheet and pasted into Yahoo search.
+ * Always includes ふるさと納税 so the affiliate tool hits 返礼品, not 通販米.
+ */
+export function yahooFurusatoSheetKeyword(
+  input: AffiliateBrandInput & { furusatoKeywords?: readonly string[] | null },
+): string {
+  const fromCatalog = input.furusatoKeywords?.[0]?.trim();
+  return qualifyFurusatoQuery(fromCatalog || furusatoQuery(input));
 }
 
 /** Search UIs expect ふるさと納税 in the query; overlay keywords often already include it. */

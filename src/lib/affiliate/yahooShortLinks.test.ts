@@ -67,4 +67,20 @@ describe("Yahoo Shopping official short links", () => {
       recordedAt: null,
     });
   });
+
+  it("keeps a catalogue searchKeyword for ふるさと sheets", () => {
+    const rows = mergeYahooAffiliateSheet(
+      [
+        {
+          id: "yumepirika",
+          name: "ゆめぴりか",
+          prefecture: "北海道",
+          region: "北海道・東北",
+          searchKeyword: "北海道 ゆめぴりか",
+        },
+      ],
+      [],
+    );
+    expect(rows[0].searchKeyword).toBe("北海道 ゆめぴりか");
+  });
 });

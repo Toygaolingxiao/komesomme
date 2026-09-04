@@ -56,6 +56,7 @@
 - [ ] 未登录访问 `/ops` 会到 `/ops/login`（或未配密钥时 404）
 - [ ] 登录后能看到漏斗 / 渠道 / 日趋势，页脚无公开导航
 - [ ] `/ops/yahoo` 能贴推广链；空行仍走普通 Yahoo 搜索
+- [ ] `/ops/yahoo-furusato` 能贴ふるさと短链；空行仍走普通 Yahoo ふるさと搜索
 - [ ] 公开页 HTML / 客户端 bundle 不含该密钥与 `service_role`
 
 ## 記録

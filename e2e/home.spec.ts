@@ -65,6 +65,19 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(page).toHaveURL(/\?brand=/);
   });
 
+  test("TS-HOME-12 slider releases a tapped grain highlight", async ({ page }) => {
+    await waitForHomeReady(page);
+    const map = page.locator("[data-taste-map=desktop]");
+    await map.locator("[aria-current=true]").click();
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
+    await page.locator("#km-sweetness").fill("1");
+    await page.waitForTimeout(300);
+    await page.locator("#km-sweetness").fill("5");
+    await page.waitForTimeout(300);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(map.locator("[aria-current=true]")).toHaveCount(1);
+  });
+
   test("TS-HOME-11 shallow brand query opens detail", async ({ page }) => {
     await waitForHomeReady(page, "/?brand=yumepirika");
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });

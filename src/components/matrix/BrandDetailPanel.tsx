@@ -15,8 +15,6 @@ import {
   FOCUS,
   ICON_WEIGHT,
   LAYER,
-  affinityDisplay,
-  AFFINITY_CAPTION,
   appetiteLine,
   copyEchoes,
   coreTasteMetrics,
@@ -122,14 +120,12 @@ function SoftMetrics({
  */
 export function BrandDetailPanel({
   rice,
-  score,
   neighbours,
   reduceMotion,
   onSelect,
   onClose,
 }: {
   rice: RiceProfileV2;
-  score: number;
   neighbours: RiceMatchResult[];
   reduceMotion: boolean;
   onSelect: (id: string) => void;
@@ -141,7 +137,6 @@ export function BrandDetailPanel({
   const tags = shortTasteTags(rice);
   const appetite = appetiteLine(rice);
   const technical = technicalLine(rice);
-  const shownScore = affinityDisplay(score);
   const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
 
   useEffect(() => {
@@ -212,20 +207,7 @@ export function BrandDetailPanel({
                   ) : null}
                 </div>
 
-                <div className="flex shrink-0 items-start gap-3">
-                  {score > 0 ? (
-                    <span
-                      aria-label={`${AFFINITY_CAPTION} ${shownScore}`}
-                      className="flex shrink-0 flex-col items-center gap-0.5"
-                    >
-                      <span className="whitespace-nowrap text-[9px] leading-none tracking-wide text-[var(--km-muted)]">
-                        {AFFINITY_CAPTION}
-                      </span>
-                      <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
-                        {shownScore}
-                      </span>
-                    </span>
-                  ) : null}
+                <div className="flex shrink-0 items-start">
                   <button
                     ref={closeRef}
                     type="button"
