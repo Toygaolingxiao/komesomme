@@ -5,7 +5,6 @@ import { track } from "@/lib/analytics";
 import {
   FOCUS,
   affinityDisplay,
-  affinityLabel,
   forYouLines,
   suitabilityLine,
 } from "./shared";
@@ -79,7 +78,7 @@ export function SimilarRiceCards({
                 </span>
               </span>
               <span className="shrink-0 text-[11px] text-[var(--km-muted)]">
-                {affinityLabel(neighbour.score)} {affinityDisplay(neighbour.score)}
+                {affinityDisplay(neighbour.score)}
               </span>
             </>
           );

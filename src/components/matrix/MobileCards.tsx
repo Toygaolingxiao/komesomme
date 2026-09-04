@@ -7,7 +7,6 @@ import {
   FOCUS,
   ICON_WEIGHT,
   affinityDisplay,
-  affinityLabel,
   appetiteLine,
   dishTags,
   pairTasteTags,
@@ -18,10 +17,12 @@ import {
 export function MobileTodayCard({
   match,
   loading,
+  semantic = false,
   onOpen,
 }: {
   match: RailMatch | null;
   loading?: boolean;
+  semantic?: boolean;
   onOpen: (id: string) => void;
 }) {
   if (loading) {
@@ -33,8 +34,10 @@ export function MobileTodayCard({
   if (!match) return null;
 
   const dishes = dishTags(match.rice).slice(0, 3);
-  const label = affinityLabel(match.score);
-  const intro = match.reason?.trim() || appetiteLine(match.rice);
+  const shown = affinityDisplay(match.score);
+  const intro = semantic
+    ? match.reason?.trim() || appetiteLine(match.rice)
+    : appetiteLine(match.rice);
 
   return (
     <button
@@ -55,22 +58,13 @@ export function MobileTodayCard({
           </span>
           <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-[var(--km-muted)]">
             <MapPin size={12} weight={ICON_WEIGHT} className="shrink-0" />
-            <span>
-              {match.rice.prefecture}産
-              <span className="text-[var(--km-brown)]">・{label}</span>
-            </span>
+            <span>{match.rice.prefecture}産</span>
           </span>
         </span>
         {match.score > 0 ? (
-          <span
-            aria-label={`${label}、味わい相性 ${affinityDisplay(match.score)}`}
-            className="shrink-0 text-right"
-          >
-            <span className="block text-[9px] leading-tight text-[var(--km-muted)]">
-              {label}
-            </span>
-            <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
-              {affinityDisplay(match.score)}
+          <span aria-label={`味わい相性 ${shown}`} className="shrink-0 text-right">
+            <span className="block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+              {shown}
             </span>
           </span>
         ) : null}

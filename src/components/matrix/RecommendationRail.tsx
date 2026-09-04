@@ -8,7 +8,6 @@ import {
   FOCUS,
   ICON_WEIGHT,
   affinityDisplay,
-  affinityLabel,
   appetiteLine,
   dishTags,
   regionColor,
@@ -20,17 +19,10 @@ import { RailSkeleton, SemanticReading } from "./states";
 
 function AffinitySeal({ score }: { score: number }) {
   const shown = affinityDisplay(score);
-  const label = affinityLabel(score);
 
   return (
-    <span
-      aria-label={`${label}、味わい相性 ${shown}`}
-      className="relative shrink-0 text-right"
-    >
-      <span className="block text-[9px] leading-tight tracking-wide text-[var(--km-muted)]">
-        {label}
-      </span>
-      <span className="mt-0.5 block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
+    <span aria-label={`味わい相性 ${shown}`} className="relative shrink-0 text-right">
+      <span className="block font-serif text-[1.35rem] leading-none text-[var(--km-brown)]">
         {shown}
       </span>
     </span>
@@ -178,10 +170,7 @@ function RunnerUpList({
                       : suitabilityLine(match.rice)}
                   </span>
                 </span>
-                <span className="text-right">
-                  <span className="block text-[9px] text-[var(--km-muted)]">
-                    {affinityLabel(match.score)}
-                  </span>
+                <span aria-label={`味わい相性 ${affinityDisplay(match.score)}`} className="text-right">
                   <span className="font-serif text-sm text-[var(--km-brown)]">
                     {affinityDisplay(match.score)}
                   </span>

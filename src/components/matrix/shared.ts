@@ -145,79 +145,30 @@ export function tastingSummary(rice: RiceProfileV2): string {
   return firstSentence(rice.description) || rice.description;
 }
 
-const SAUCY_DISH = /煮|丼|タレ|カレー|角煮|豚|焼肉|すき焼き|麻婆|治部/;
-const DELICATE_DISH = /刺身|寿司|天ぷら|出汁|白身|繊細/;
+function withPeriod(text: string) {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  return trimmed.endsWith("。") ? trimmed : `${trimmed}。`;
+}
 
 /**
- * Appetite-first line from dishes + scores. Does not invent variety facts.
+ * Recommendation blurb for a brand. Always the brand's own editorial line —
+ * never a grain/sweetness bucket template (those repeated across the catalogue).
  */
 export function appetiteLine(rice: RiceProfileV2): string {
-  const dish = rice.best_match_dishes.find(Boolean)?.trim();
-  const saucy = dish ? SAUCY_DISH.test(dish) : false;
-  const delicate = dish ? DELICATE_DISH.test(dish) : false;
-  const candidates: Array<{ weight: number; text: string }> = [];
-
-  const grain =
-    rice.hardness >= 4 ? "しっかりした粒感" : rice.hardness <= 2 ? "やわらかい口当たり" : "ほどよい粒感";
-  const sweet =
-    rice.sweetness >= 4 ? "ふくよかな甘み" : rice.sweetness <= 2 ? "すっきりした後味" : "穏やかな甘み";
-
-  if (dish && saucy && rice.sauce_absorption >= 4) {
-    candidates.push({
-      weight: rice.sauce_absorption + 1,
-      text: `${grain}と${sweet}が、${dish}や煮物の濃い旨みをふっくら受け止めます。`,
-    });
-  }
-  if (dish && delicate && rice.clarity >= 4) {
-    candidates.push({
-      weight: rice.clarity,
-      text: `${grain}と${sweet}が、${dish}の味をすっきり立てます。`,
-    });
-  }
-  if (dish && rice.sweetness >= 4) {
-    candidates.push({
-      weight: rice.sweetness,
-      text: `${grain}とふくよかな甘みが、${dish}にも白ごはんにも向きます。`,
-    });
-  }
-  if (dish && rice.hardness >= 4) {
-    candidates.push({
-      weight: rice.hardness,
-      text: `しっかりした粒感が、${dish}に食べごたえを添えます。`,
-    });
-  }
-  if (dish && rice.hardness <= 2) {
-    candidates.push({
-      weight: 6 - rice.hardness,
-      text: `やわらかくほどける口当たりが、${dish}に寄り添います。`,
-    });
-  }
-  if (dish && rice.cold_rice_quality >= 4) {
-    candidates.push({
-      weight: rice.cold_rice_quality,
-      text: `${grain}が冷めても続き、${dish}や弁当の日に向きます。`,
-    });
-  }
-  if (dish && rice.stickiness >= 4) {
-    candidates.push({
-      weight: rice.stickiness,
-      text: `もちっとまとまる粘りが、${dish}にも弁当にも向きます。`,
-    });
-  }
-  if (dish && rice.sauce_absorption >= 4 && !saucy) {
-    candidates.push({
-      weight: rice.sauce_absorption,
-      text: `${grain}が${dish}に寄り添い、煮汁やタレもよく含みます。`,
-    });
-  }
-
-  const best = candidates.sort((a, b) => b.weight - a.weight)[0];
-  if (best) return best.text;
+  const short = withPeriod(rice.short_ ?? "");
+  if (short) return short;
 
   const note = firstSentence(rice.sommelier_note);
   if (note) return note;
-  if (rice.pairing_reason.trim()) return rice.pairing_reason.trim();
-  return tastingSummary(rice);
+
+  const pairing = withPeriod(rice.pairing_reason ?? "");
+  if (pairing) return pairing;
+
+  const description = firstSentence(rice.description);
+  if (description) return description;
+
+  return withPeriod(`${rice.prefecture}の${rice.name}`);
 }
 
 /** Technical follow-up. Variety facts stay in the source description. */
@@ -337,14 +288,11 @@ export function forYouLines(rice: RiceProfileV2): string[] {
 
 /** Short “who / which day” line for comparing nearby brands. */
 export function suitabilityLine(rice: RiceProfileV2): string {
-  if (rice.sauce_absorption >= 4 && rice.hardness >= 3.4) return "煮物や肉料理に";
-  if (rice.hardness >= 4) return "丼もの・定食向き";
-  if (rice.hardness <= 2.2) return "軽く食べたい日に";
-  if (rice.cold_rice_quality >= 4) return "弁当の日に";
-  if (rice.sweetness >= 4) return "白ごはんで味わいたい日に";
-  if (rice.clarity >= 4) return "和食を引き立てたい日に";
-  const dish = rice.best_match_dishes.find(Boolean);
-  return dish ? `${dish}の日に` : "日常の食卓に";
+  const short = firstSentence(rice.short_).replace(/。$/, "");
+  if (short) return short;
+  const dish = rice.best_match_dishes.find(Boolean)?.trim();
+  if (dish) return `${rice.prefecture}の${dish}`;
+  return `${rice.prefecture}の${rice.name}`;
 }
 
 export type ContourAxis = { label: string; value: number };

@@ -16,7 +16,6 @@ import {
   ICON_WEIGHT,
   LAYER,
   affinityDisplay,
-  affinityLabel,
   appetiteLine,
   coreTasteMetrics,
   extraTasteMetrics,
@@ -141,7 +140,6 @@ export function BrandDetailPanel({
   const appetite = appetiteLine(rice);
   const technical = technicalLine(rice);
   const shownScore = affinityDisplay(score);
-  const scoreLabel = affinityLabel(score);
   const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
 
   useEffect(() => {
@@ -215,12 +213,9 @@ export function BrandDetailPanel({
                 <div className="flex shrink-0 items-start gap-3">
                   {score > 0 ? (
                     <span
-                      aria-label={`${scoreLabel}、味わい相性 ${shownScore}`}
+                      aria-label={`味わい相性 ${shownScore}`}
                       className="flex shrink-0 flex-col items-center gap-0.5"
                     >
-                      <span className="whitespace-nowrap text-[9px] leading-none tracking-wide text-[var(--km-muted)]">
-                        {scoreLabel}
-                      </span>
                       <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] font-serif text-[1.05rem] leading-none text-[var(--km-brown)]">
                         {shownScore}
                       </span>

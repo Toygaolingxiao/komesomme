@@ -238,43 +238,62 @@ export function calculateDisplayScore(distance: number) {
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
+function withPeriod(text: string) {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  return trimmed.endsWith("。") ? trimmed : `${trimmed}。`;
+}
+
+/**
+ * Copy for a coordinate match. The score already says it is close to the probe —
+ * do not repeat "いちばん近い". Prefer the brand's own short line.
+ */
 export function generateCoordinateReason(
-  target: TasteCoordinate,
+  _target: TasteCoordinate,
   rice: RiceProfileV2
 ) {
-  const hardnessDelta = normalizeTasteValue(rice.hardness) - target.hardness;
-  const sweetnessDelta = normalizeTasteValue(rice.sweetness) - target.sweetness;
+  const short = withPeriod(rice.short_ ?? "");
+  if (short) return short;
 
+  const dish = rice.best_match_dishes.find(Boolean)?.trim();
   const highSweet = rice.sweetness >= 4;
   const highHard = rice.hardness >= 4;
   const soft = rice.hardness <= 2;
   const light = rice.sweetness <= 2;
 
-  if (Math.abs(hardnessDelta) < 0.5 && Math.abs(sweetnessDelta) < 0.5) {
-    return "選んだ粒感と甘みに最も近い、今日の食卓に静かに寄り添う一膳です。";
-  }
-
   if (highSweet && highHard) {
-    return "粒立ちのよさとふくよかな甘みが重なり、満足感のある一膳です。";
+    return dish
+      ? `粒立ちと甘みがしっかりしていて、${dish}にも向きます。`
+      : "粒立ちと甘みがしっかりした一膳です。";
   }
 
   if (highSweet && soft) {
-    return "やわらかな口当たりと豊かな甘みで、ほっとしたい日に向いています。";
+    return dish
+      ? `やわらかく甘みがあり、${dish}の日に向きます。`
+      : "やわらかく、甘みのある一膳です。";
   }
 
   if (highHard && light) {
-    return "すっきりとした後味と粒立ちがあり、料理の輪郭を引き立てます。";
+    return dish
+      ? `粒が立って後味がすっきりし、${dish}を引き立てます。`
+      : "粒が立って、後味がすっきりした一膳です。";
   }
 
   if (highHard) {
-    return "粒立ちのよさで、丼ものや肉料理にも負けない存在感があります。";
+    return dish
+      ? `粒立ちがあり、${dish}や丼ものにも負けにくいです。`
+      : "粒立ちがあり、丼ものにも負けにくい一膳です。";
   }
 
   if (light) {
-    return "重たさを抑えた軽やかな味わいで、和食や魚料理に合わせやすい一膳です。";
+    return dish
+      ? `重たくなく、${dish}や和食に合わせやすいです。`
+      : "重たくなく、和食に合わせやすい一膳です。";
   }
 
-  return "甘みと口当たりのバランスがよく、毎日の食卓に合わせやすい一膳です。";
+  return dish
+    ? `${dish}など、いつもの食卓に合わせやすい一膳です。`
+    : "いつもの食卓に合わせやすい一膳です。";
 }
 
 /**
@@ -351,7 +370,9 @@ export function calculateTasteNeighbours(
         rice,
         distance,
         score: Math.round(100 - normalized * 55),
-        reason: `${rice.texture_label}・${rice.sweetness_label}の傾向が近い一膳です。`,
+        reason:
+          rice.short_?.trim() ||
+          `${rice.texture_label}・${rice.sweetness_label}な一膳です。`,
       };
     })
     .sort((a, b) => a.distance - b.distance)

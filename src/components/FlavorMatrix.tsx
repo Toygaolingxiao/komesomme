@@ -521,6 +521,7 @@ export function FlavorMatrix() {
           <MobileTodayCard
             match={railMatches[0] ?? null}
             loading={loadState === "loading" || semanticState === "pending"}
+            semantic={recommendationMode === "semantic"}
             onOpen={openDetail}
           />
 
