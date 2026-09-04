@@ -87,7 +87,7 @@
 - **期待:** 品鑑ダイアログ / パネルが開く（閉じる操作可能）
 
 #### TS-HOME-10 お店で探す（※PR・Progressive Disclosure）
-- **期待:** ホームに「お店で探す」。初期はモールリンク非表示。展開後は **通販** タブに楽天 / Yahoo / Amazon（縦一列・軟色）と ※PR。**ふるさと納税** タブに楽天ふるさと / Yahoo!ふるさと / さとふる。Amazon 定型文の長文はホームに**無い**。Mobile では地図の後・相談の前
+- **期待:** ホームに「お店で探す」。初期はモールリンク非表示。展開後は **通販** タブに楽天 / Yahoo / Amazon / メルカリ（ホーム compact は 2×2・軟色）と ※PR。**ふるさと納税** タブに楽天ふるさと / Yahoo!ふるさと / さとふる。Amazon 定型文の長文はホームに**無い**。Mobile では地図の後・相談の前
 
 ---
 
@@ -122,7 +122,7 @@
 - **期待:** 200、銘柄名表示
 
 #### TS-BRAND-02 `#km-purchase` と CTA
-- **期待:** 通販タブに楽天 / Yahoo! / Amazon（縦一列・等幅）。ふるさと納税タブに楽天ふるさと / Yahoo!ふるさと / さとふる。ページ内（フッター可）に Amazon 定型 + 「アフィリエイト広告」+ Rakuten Developers。購入カード内は ※PR で足りる（[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)）
+- **期待:** 通販タブに楽天 / Yahoo! / Amazon / メルカリ（ライブラリは縦一列・等幅）。ふるさと納税タブに楽天ふるさと / Yahoo!ふるさと / さとふる。ページ内（フッター可）に Amazon 定型 + 「アフィリエイト広告」+ Rakuten Developers。購入カード内は ※PR で足りる（[15-disclosure-surfaces.md](./15-disclosure-surfaces.md)）
 
 #### TS-BRAND-03 類似銘柄リンク
 - **期待:** 類似があれば内部リンクで他銘柄へ
@@ -165,6 +165,7 @@
 | TS-BUY-01 | 通販 | Amazon | `amazon.co.jp` を含む。tag は env 依存 |
 | TS-BUY-02 | 通販 | 楽天 | `rakuten.co.jp` または `hb.afl.rakuten.co.jp` |
 | TS-BUY-03 | 通販 | Yahoo | `shopping.yahoo.co.jp` または VC |
+| TS-BUY-03b | 通販 | メルカリ | `jp.mercari.com/search` + `afid=` |
 | TS-BUY-04 | ふるさと | さとふる | `satofull.jp` または VC |
 | TS-BUY-05 | ふるさと | 楽天ふるさと | `search.rakuten.co.jp/search/mall` またはアフィ包装 |
 | TS-BUY-06 | ふるさと | Yahoo!ふるさと | `shopping.yahoo.co.jp/search`（クエリにふるさと納税）または VC |
@@ -206,7 +207,7 @@
 
 #### TS-MOBILE-01 今日の一膳が地図より上
 #### TS-MOBILE-02 横溢れなし（ホーム）
-#### TS-MOBILE-03 フルスクリーン地図を開ける（ボタンがあれば）
+#### TS-MOBILE-03 地図のあとにお店で探す、その下に相談
 
 ---
 
@@ -217,7 +218,7 @@
 | TS-UNIT-01 | `clamp` / `normalizeTasteValue` | 境界・NaN |
 | TS-UNIT-02 | `hardnessToDisplayY` 往復 | 表示 Y と硬度の整合 |
 | TS-UNIT-03 | `calculateDisplayScore` | 距離→45〜100 |
-| TS-UNIT-04 | `shopQuery` / `amazonSearchUrl` | クエリ結合・URL |
+| TS-UNIT-04 | `shopQuery` / `amazonSearchUrl` / `mercariSearchUrl` | クエリ結合・URL |
 | TS-UNIT-04b | `parseYahooShoppingShortLink` / `mergeYahooAffiliateSheet` | 短鎖形式・空は検索フォールバック |
 | TS-UNIT-05 | `ops/auth` · `ops/aggregate` | 署名 cookie・JST 日次・ふるさとチャネル |
 

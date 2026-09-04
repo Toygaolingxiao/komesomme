@@ -51,7 +51,6 @@ export const LAYER = {
   probe: 20,
   bestNode: 30,
   selected: 34,
-  fullscreen: 36,
   overlay: 40,
 } as const;
 
@@ -63,6 +62,13 @@ export const REGION_STYLES: Array<{ region: RiceRegion; color: string }> =
 
 export function regionColor(region: RiceRegion | string): string {
   return colorForRegion(region);
+}
+
+/** Map grain body: steamed-rice ivory with a light regional blush (not candy). */
+const MAP_GRAIN_BASE = "#F3DDB4";
+
+export function mapGrainFill(regionHex: string): string {
+  return `color-mix(in srgb, ${regionHex} 18%, ${MAP_GRAIN_BASE} 82%)`;
 }
 
 /** A rail entry. Coordinate and semantic paths produce different scores but render alike. */

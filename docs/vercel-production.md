@@ -26,6 +26,7 @@ Vercel → Project → **Settings → Environment Variables**。
 | `RAKUTEN_AFFILIATE_ID` | アフィリエイト ID | 同左 | API 応答の `affiliateUrl` 用。未設定なら `NEXT_PUBLIC_` 側を使う |
 | `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID` | アフィリエイト ID | **置かない** | リンクに出る公開情報。未登録 Preview への掲載はガイドライン違反になりうる。Production のみ `rakutenAffiliateWrapEnabled` が包む |
 | `NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG` | Amazon アソシエイト tag | 同左 | 検索 URL の `tag=`。未設定なら tag なし |
+| `NEXT_PUBLIC_MERCARI_AFID` | メルカリアンバサダー afid | 同左 | 検索 URL の `afid=`。未設定はコード側フォールバック |
 | `YAHOO_CLIENT_ID` | Yahoo ショッピング appid | 同左 | **Server only**。未設定なら検索 URL。通販は公式短鎖テーブル優先 |
 | `SATOFULL_SEARCH_BASE_URL` | さとふる検索ベース | 同左 | 未設定時は公式 list.php |
 | `NEXT_PUBLIC_SHOP_LINKS_ENABLED` | 購入 CTA | 同左 | 未設定 = 表示。`0` で「お店で探す」全体を隠す |

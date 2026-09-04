@@ -243,7 +243,20 @@ ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検�
 
 ---
 
-## 5. さとふる（プレーン検索）
+## 5. メルカリ（検索結果アフィ）
+
+| 項目 | 内容 |
+| --- | --- |
+| プログラム | [メルカリアンバサダー](https://jp-news.mercari.com/articles/2023/12/05/mercari-ambassador/)（個人向け。検索結果・商品ページともリンク成果の対象） |
+| env | `NEXT_PUBLIC_MERCARI_AFID`（公開クエリ `afid=`。未設定時はコード側フォールバック） |
+| 実装 | `mercariSearchUrl()` → `https://jp.mercari.com/search?keyword=…&afid=…` |
+| UI | 通販タブの 4 本目カプセル。公式ウィジェット HTML は埋め込まない（自前カプセル＋※PR） |
+
+商品ウィジェットではなく**検索リンク**でよい。キーワードは他モールと同じ `shopQuery`（産地・銘柄・白米）。管理画面で発行した afid を本番 env に置く。
+
+---
+
+## 6. さとふる（プレーン検索）
 
 | 項目 | 内容 |
 | --- | --- |
@@ -255,22 +268,23 @@ ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検�
 
 ---
 
-## 6. 景表法（ステマ規制）との関係
+## 7. 景表法（ステマ規制）との関係
 
 Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `full`）。購入 CTA 横は `※PR` のみ。ASP 名の列挙は `/terms`。詳細は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。外链は `rel="noopener noreferrer nofollow"`。「最安」「公式最安」、Amazon / 広告主の後援を示す文言は置かない。
 
 ---
 
-## 7. コード対応表
+## 8. コード対応表
 
 | ファイル | 役割 |
 | --- | --- |
 | `src/lib/rakuten/affiliate.ts` | 検索 URL とアフィ包装。未登録 Preview では包まない |
-| `src/lib/affiliate.ts` | Amazon tag、VC 転鎖とゲート、開示文定数 |
+| `src/lib/affiliate.ts` | Amazon tag、メルカリ afid、VC 転鎖とゲート、開示文定数 |
 | `src/lib/affiliate/yahoo.ts` | ItemSearch。ゲート off なら `affiliate_type=vc` なし |
 | `src/lib/affiliate/yahooPromo.ts` | Supabase の `promo_url`。未記入・表未作成は検索 URL |
-| `src/app/api/rice/shop-links/route.ts` | 4 URL をサーバーで解決 |
+| `src/app/api/rice/shop-links/route.ts` | 通販 4 + ふるさと 3 をサーバーで解決 |
 | `src/components/AffiliateDisclosure.tsx` | `pr` = ※PR。`full` = フッター用（Amazon + 短 PR + 楽天クレジット） |
-| `src/components/RiceProductCard.tsx` | 4 CTA。開示は `pr`（定型はフッター） |
+| `src/components/ShopLinksStrip.tsx` | 通販 4 / ふるさと 3 カプセル。塗りは内側 span |
+| `src/components/RiceProductCard.tsx` | 通販 / ふるさと CTA。開示は `pr`（定型はフッター） |
 | `src/components/SiteFooter.tsx` | サイト全体の `full` 開示 |
 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 表面一覧の正本 |

@@ -15,7 +15,7 @@
 | **托管** | Vercel Production | 旗舰域 `komesomme.jp`；`.com` / `sommeatlas.com` → 301 |
 | **数据** | Supabase PostgreSQL + pgvector + RLS | VIEW `rice_catalog`；migration 0003–0005 |
 | **检索 / AI** | Embedding：Gemini `gemini-embedding-001`（或 OpenAI `text-embedding-3-small`，1536 维）；短回复：Gemini Flash 链（失败 → OpenAI / Flavor Bridge） | **坐标推荐纯客户端**；咨询才打 API |
-| **联盟** | 搜索 CTA + 标签 wrap；UI：`ShopLinksStrip`（通販 \| ふるさと） | 楽天 Item Search 隔离见 [13](./13-affiliate-compliance.md)；VC SID 本番未齐 |
+| **联盟** | 搜索 CTA + 标签 wrap；UI：`ShopLinksStrip`（通販 4 \| ふるさと 3） | 楽天 Item Search 隔离见 [13](./13-affiliate-compliance.md)；メルカリは検索 `afid`（[14](./14-affiliate-programs.md) §5） |
 | **披露** | 文案正本 `src/lib/affiliate.ts`；表面表 [15](./15-disclosure-surfaces.md) | CTA `※PR`；Amazon 定型在页脚 |
 | **观测** | 自建 `access_events` + `track()`；内部 `/ops` 看板；GTM 埋点（ID 可选） | `/ops` 需 `OPS_DASHBOARD_SECRET`；GA4 / Sentry 可选 |
 | **试验** | Vitest · Playwright（Desktop/Mobile Chromium）· `validate:rice` · `assert:client-bundle` | CI 全绿门禁见 workflow |

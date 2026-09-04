@@ -10,6 +10,7 @@ export type AnalyticsEvent =
   | "rakuten_click"
   | "amazon_click"
   | "yahoo_click"
+  | "mercari_click"
   | "furusato_click"
   | "rakuten_furusato_click"
   | "yahoo_furusato_click"

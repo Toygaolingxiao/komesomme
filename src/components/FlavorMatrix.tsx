@@ -4,8 +4,8 @@
  * FlavorMatrix orchestration.
  *
  * Desktop: map + sliders on the left, recommendations on the right, language
- * consultation full-width below. Mobile: recommendation first, compact map,
- * sliders only inside full-screen map exploration.
+ * consultation full-width below. Mobile: recommendation first, then an inline
+ * tasting map with sliders (no separate fullscreen mode).
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -39,18 +39,15 @@ import { TasteMap } from "./matrix/TasteMap";
 import {
   MobileSelectedCard,
   MobileTodayCard,
-  OpenMapButton,
 } from "./matrix/MobileCards";
 import {
   FOCUS,
   INSET,
-  LAYER,
   MATCH_LIMIT,
   NEIGHBOUR_LIMIT,
   type RailMatch,
 } from "./matrix/shared";
 import { ErrorPanel } from "./matrix/states";
-import { X } from "@phosphor-icons/react";
 
 type LoadState = "loading" | "ready" | "error";
 type SemanticState = "idle" | "pending" | "error";
@@ -127,7 +124,6 @@ export function FlavorMatrix() {
   const [coordinate, setCoordinate] = useState<TasteCoordinate>(INITIAL_COORDINATE);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
-  const [mapOpen, setMapOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [showMapHint, setShowMapHint] = useState(false);
@@ -289,24 +285,6 @@ export function FlavorMatrix() {
     window.addEventListener("popstate", applyFromUrl);
     return () => window.removeEventListener("popstate", applyFromUrl);
   }, [loadState, profiles, isLg]);
-
-  useEffect(() => {
-    if (isLg) setMapOpen(false);
-  }, [isLg]);
-
-  useEffect(() => {
-    if (!mapOpen) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !detailOpen) setMapOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previous;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [mapOpen, detailOpen]);
 
   const resetSemantic = useCallback(() => {
     setRecommendationMode("coordinate");
@@ -496,9 +474,6 @@ export function FlavorMatrix() {
               <h2 className="font-serif text-[1.2rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[1.35rem]">
                 味わいの地図
               </h2>
-              <p className="mt-1 text-[11px] leading-relaxed text-[var(--km-muted)]">
-                点に触れると銘柄が出ます。スライダーを動かすと、今日の一膳が変わります。
-              </p>
               <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             </div>
 
@@ -550,34 +525,33 @@ export function FlavorMatrix() {
           />
 
           <div className="flex min-w-0 flex-col gap-3 overflow-x-clip rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.35)]">
-            <div>
-              <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
-                色の点は銘柄です。触ると今日の一膳が変わります。
-              </p>
-              <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
-            </div>
+            <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
             {loadState === "error" ? (
               <ErrorPanel message={loadError} onRetry={() => void loadProfiles()} />
-            ) : mapOpen ? null : (
-              <div className="h-[min(42svh,280px)] min-h-[200px] w-full min-w-0">
-                <TasteMap
-                  {...mapShared}
-                  variant="preview"
-                  runnerUpIds={previewIds}
-                  onSelect={tapOnMap}
-                />
-              </div>
+            ) : (
+              <>
+                <div
+                  data-taste-map-preview
+                  className="mx-auto aspect-square w-full min-h-[240px] max-h-[min(58svh,380px)] min-w-0"
+                >
+                  <TasteMap
+                    {...mapShared}
+                    variant="preview"
+                    runnerUpIds={previewIds}
+                    onSelect={tapOnMap}
+                  />
+                </div>
+                <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
+              </>
             )}
 
-            {selected && !mapOpen && selected.id !== bestMatchId ? (
+            {selected && selected.id !== bestMatchId ? (
               <MobileSelectedCard
                 rice={selected}
                 isBestMatch={false}
                 onOpen={() => openDetail(selected.id)}
               />
             ) : null}
-
-            <OpenMapButton onClick={() => setMapOpen(true)} />
           </div>
 
           {/* After map: quick path to shops (collapsed). Consult stays a second path below. */}
@@ -596,62 +570,6 @@ export function FlavorMatrix() {
           </div>
         </div>
       )}
-
-      {mapOpen && !isLg ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="km-map-title"
-          className="fixed inset-0 flex flex-col bg-[var(--km-bg)]"
-          style={{ zIndex: LAYER.fullscreen }}
-        >
-          <header className="flex shrink-0 items-start justify-between gap-3 px-4 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))]">
-            <div>
-              <h2
-                id="km-map-title"
-                className="font-serif text-xl font-semibold tracking-tight text-[var(--km-ink)]"
-              >
-                味わいの地図
-              </h2>
-              <p className="mt-1 max-w-[36ch] text-[11px] leading-relaxed text-[var(--km-muted)]">
-                点を選ぶと銘柄を表示。スライダーを動かすと、近い一膳が変わります。
-              </p>
-              <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
-            </div>
-            <button
-              type="button"
-              aria-label="閉じる"
-              onClick={() => setMapOpen(false)}
-              className={`grid h-11 w-11 place-items-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] text-[var(--km-muted)] ${FOCUS}`}
-            >
-              <X size={16} weight="bold" />
-            </button>
-          </header>
-
-          <div className="min-h-0 flex-1 px-2">
-            <TasteMap
-              {...mapShared}
-              variant="fullscreen"
-              runnerUpIds={previewIds}
-              onSelect={tapOnMap}
-            />
-          </div>
-
-          <div className="shrink-0 px-4">
-            <TasteControls coordinate={coordinate} onAxisChange={setAxis} />
-          </div>
-
-          <div className="shrink-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2">
-            {selected ? (
-              <MobileSelectedCard
-                rice={selected}
-                isBestMatch={selected.id === bestMatchId}
-                onOpen={() => openDetail(selected.id)}
-              />
-            ) : null}
-          </div>
-        </div>
-      ) : null}
 
       <AnimatePresence>
         {selected && detailOpen ? (

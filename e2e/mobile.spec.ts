@@ -12,15 +12,13 @@ test.describe("TS-MOBILE", () => {
 
   test("TS-MOBILE-03 shop disclosure between map and consult", async ({ page }) => {
     await waitForHomeReady(page);
+    const mapPreview = page.locator("[data-taste-map-preview]");
     const shop = page.locator("[data-shop-strip=disclosure]");
     const consult = page.getByRole("heading", { name: "言葉でえらぶ、今日の一膳" });
-    const mapHint = page.getByText("色の点は銘柄です。触ると今日の一膳が変わります。", {
-      exact: true,
-    });
     await expect(consult).toBeVisible();
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
 
-    const mapBox = await mapHint.boundingBox();
+    const mapBox = await mapPreview.boundingBox();
     const shopBox = await shop.boundingBox();
     const consultBox = await consult.boundingBox();
     expect(mapBox && shopBox && mapBox.y < shopBox.y).toBeTruthy();
@@ -28,5 +26,6 @@ test.describe("TS-MOBILE", () => {
 
     await shop.getByRole("button", { name: /お店で探す/ }).click();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
+    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
   });
 });

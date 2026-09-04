@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, MapPin } from "@phosphor-icons/react";
+import { ArrowRight, MapPin } from "@phosphor-icons/react";
 import { track } from "@/lib/analytics";
 import type { RiceProfileV2 } from "@/types/rice";
 import {
@@ -137,23 +137,5 @@ export function MobileSelectedCard({
         相性を見る
       </button>
     </div>
-  );
-}
-
-export function OpenMapButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex w-full flex-col items-center justify-center gap-0.5 rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)]/70 px-4 py-3 text-[var(--km-ink)] ${FOCUS}`}
-    >
-      <span className="inline-flex items-center gap-2 text-sm">
-        <ArrowUpRight size={16} weight={ICON_WEIGHT} />
-        地図を大きく見る
-      </span>
-      <span className="text-[10px] text-[var(--km-muted)]">
-        ほかの銘柄も探せます
-      </span>
-    </button>
   );
 }

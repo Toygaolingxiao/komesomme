@@ -1,23 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Drop } from "@phosphor-icons/react";
 import { motion, type MotionValue } from "motion/react";
 import { displayYToHardness, positionToValue } from "@/lib/rice/matrix";
 import type { RiceRegionRecord } from "@/lib/rice/regions";
 import type { RiceDisplayPoint } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
-import { AXIS_POLES, FOCUS, INSET, LAYER, type MapDensity } from "./shared";
+import { RiceGrainMark } from "./RiceGrainMark";
+import { AXIS_POLES, FOCUS, INSET, LAYER, mapGrainFill, type MapDensity } from "./shared";
 import { EmptyPanel, MatrixSkeleton } from "./states";
 
-export type TasteMapVariant = "desktop" | "preview" | "fullscreen";
+export type TasteMapVariant = "desktop" | "preview";
 
 const POLES = {
   desktop: { x: 36, y: 26 },
   preview: { x: 28, y: 22 },
-  fullscreen: { x: 36, y: 28 },
 } as const;
 const LEGEND = 28;
+const LEGEND_CHIPS = 44;
 /** Below this short side, shrink non-focus nodes (ProfileNode muted) — never cull the cloud. */
 const SPARSE_MIN = 380;
 
@@ -40,17 +41,17 @@ function MatrixGrid() {
         return (
           <div key={tick}>
             <div
-              className={`absolute top-0 h-full ${emphasis ? "w-[2px]" : "w-px"}`}
+              className={`absolute top-0 h-full ${emphasis ? "w-px" : "w-px"}`}
               style={{
                 left: `${position}%`,
-                background: emphasis ? "var(--km-cross)" : "rgba(112,69,34,0.1)",
+                background: emphasis ? "rgba(112,69,34,0.14)" : "rgba(112,69,34,0.07)",
               }}
             />
             <div
-              className={`absolute left-0 w-full ${emphasis ? "h-[2px]" : "h-px"}`}
+              className={`absolute left-0 w-full ${emphasis ? "h-px" : "h-px"}`}
               style={{
                 top: `${position}%`,
-                background: emphasis ? "var(--km-cross)" : "rgba(112,69,34,0.1)",
+                background: emphasis ? "rgba(112,69,34,0.14)" : "rgba(112,69,34,0.07)",
               }}
             />
           </div>
@@ -60,7 +61,8 @@ function MatrixGrid() {
   );
 }
 
-function PoleCapsule({
+/** Ink-style axis label — serif, no heavy pill. */
+function PoleLabel({
   label,
   vertical = false,
 }: {
@@ -69,9 +71,9 @@ function PoleCapsule({
 }) {
   return (
     <span
-      className={`self-center justify-self-center inline-flex items-center justify-center rounded-full bg-[var(--km-brown)] px-2.5 py-1 text-[10px] font-medium leading-tight text-[#fffdf7] shadow-[0_4px_12px_rgba(112,69,34,0.22)] ${
+      className={`self-center justify-self-center font-serif text-[10px] font-medium leading-tight tracking-wide text-[var(--km-brown)] ${
         vertical
-          ? "[writing-mode:vertical-rl] whitespace-nowrap px-1.5 py-2.5"
+          ? "[writing-mode:vertical-rl] whitespace-nowrap"
           : "whitespace-nowrap"
       }`}
     >
@@ -82,66 +84,107 @@ function PoleCapsule({
 
 function MapLegend({
   regions,
-  activeId,
+  pinnedIds,
+  hoveredId,
   variant,
   onHover,
   onToggle,
+  onClear,
 }: {
   regions: RiceRegionRecord[];
-  activeId: string | null;
+  pinnedIds: ReadonlySet<string>;
+  hoveredId: string | null;
   variant: "wrap" | "chips";
   onHover: (id: string | null) => void;
   onToggle: (id: string) => void;
+  onClear: () => void;
 }) {
+  const focusIds = useMemo(() => {
+    const next = new Set(pinnedIds);
+    if (hoveredId) next.add(hoveredId);
+    return next;
+  }, [pinnedIds, hoveredId]);
+  const hasFocus = focusIds.size > 0;
+  const showClear = pinnedIds.size > 0;
+
   return (
-    <ul
-      aria-label="産地域の色分け"
+    <div
       className={
         variant === "chips"
           ? "flex min-h-10 max-w-full items-center gap-2 overflow-x-auto px-1 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           : "flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-1 py-0.5"
       }
     >
-      {regions.map(({ id, name, color }) => {
-        const idle = activeId !== null && activeId !== id;
-        const pressed = activeId === id;
-        return (
-          <li key={id} className="shrink-0">
-            <button
-              type="button"
-              aria-pressed={pressed}
-              onMouseEnter={() => onHover(id)}
-              onMouseLeave={() => onHover(null)}
-              onFocus={() => onHover(id)}
-              onBlur={() => onHover(null)}
-              onClick={() => onToggle(id)}
-              className={`inline-flex items-center gap-1.5 rounded-full leading-tight transition ${FOCUS} ${
-                idle ? "opacity-40" : "opacity-100"
-              } ${
-                variant === "chips"
-                  ? `min-h-10 border px-3 py-2 text-[11px] ${
-                      pressed
-                        ? "border-[var(--km-gold)] bg-[var(--km-surface-warm)]"
-                        : "border-[var(--km-border)] bg-[var(--km-surface)]"
-                    }`
-                  : "px-1.5 py-0.5 text-[10px]"
-              }`}
-            >
-              <span
-                aria-hidden
-                className="h-2.5 w-2.5 rounded-full border border-white/70 shadow-[0_0_0_1px_rgba(112,69,34,0.12)]"
-                style={{
-                  backgroundColor: color,
-                  transform: pressed ? "scale(1.25)" : "scale(1)",
-                }}
-              />
-              <span className="whitespace-nowrap text-[var(--km-ink-soft)]">{name}</span>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+      {showClear ? (
+        <button
+          type="button"
+          onClick={onClear}
+          className={`shrink-0 text-[10px] font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS} ${
+            variant === "chips" ? "min-h-10 px-2" : "px-1.5 py-0.5"
+          }`}
+        >
+          解除
+        </button>
+      ) : null}
+      <ul
+        aria-label="産地域の色分け"
+        className={
+          variant === "chips"
+            ? "flex min-w-0 flex-1 items-center gap-2"
+            : "contents"
+        }
+      >
+        {regions.map(({ id, name, color }) => {
+          const pressed = pinnedIds.has(id);
+          const idle = hasFocus && !focusIds.has(id);
+          return (
+            <li key={id} className="shrink-0">
+              <button
+                type="button"
+                aria-pressed={pressed}
+                onMouseEnter={() => onHover(id)}
+                onMouseLeave={() => onHover(null)}
+                onFocus={() => onHover(id)}
+                onBlur={() => onHover(null)}
+                onClick={() => onToggle(id)}
+                className={`inline-flex items-center gap-1.5 leading-tight transition ${FOCUS} ${
+                  idle ? "opacity-40" : "opacity-100"
+                } ${
+                  variant === "chips"
+                    ? `min-h-10 border px-3 py-2 text-[11px] ${
+                        pressed
+                          ? "border-[var(--km-gold)]/70 bg-[var(--km-surface-warm)]"
+                          : "border-[var(--km-border)] bg-[var(--km-surface)]"
+                      }`
+                    : `px-1.5 py-0.5 text-[10px] ${
+                        pressed ? "bg-[var(--km-surface-warm)]" : ""
+                      }`
+                }`}
+              >
+                <RiceGrainMark
+                  fill={mapGrainFill(color)}
+                  width={11}
+                  height={7}
+                  tilt={pressed ? -6 : 8}
+                />
+                <span className="whitespace-nowrap text-[var(--km-ink-soft)]">{name}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
+}
+
+function regionMatches(
+  rice: RiceDisplayPoint,
+  regionId: string,
+  regions: RiceRegionRecord[]
+) {
+  if (rice.region_id === regionId) return true;
+  const name = regions.find((region) => region.id === regionId)?.name;
+  return Boolean(name && rice.region === name);
 }
 
 /**
@@ -192,10 +235,17 @@ export function TasteMap({
   const [plot, setPlot] = useState({ w: 0, h: 0 });
   const [engaged, setEngaged] = useState(false);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
-  const [pinnedRegion, setPinnedRegion] = useState<string | null>(null);
-  const focusRegion = hoveredRegion ?? pinnedRegion;
+  const [pinnedRegions, setPinnedRegions] = useState<string[]>([]);
+  const pinnedSet = useMemo(() => new Set(pinnedRegions), [pinnedRegions]);
+  const focusSet = useMemo(() => {
+    const next = new Set(pinnedSet);
+    if (hoveredRegion) next.add(hoveredRegion);
+    return next;
+  }, [pinnedSet, hoveredRegion]);
   const pole = POLES[variant];
-  const showLegend = variant !== "preview";
+  const showLegend = regions.length > 0;
+  const legendVariant = variant === "desktop" ? "wrap" : "chips";
+  const legendReserve = variant === "desktop" ? LEGEND : LEGEND_CHIPS;
   const touchFriendly = variant !== "desktop";
   /** One tasting label at a time: hover/focus → selection → No.1. */
   const activeTooltipId = highlightId ?? selectedId ?? bestMatchId;
@@ -213,9 +263,7 @@ export function TasteMap({
           canvas?.clientHeight ||
             Math.max(
               0,
-              stage.clientHeight -
-                pole.y * 2 -
-                (variant === "desktop" ? LEGEND : variant === "fullscreen" ? 44 : 0)
+              stage.clientHeight - pole.y * 2 - (showLegend ? legendReserve : 0)
             )
         )
       );
@@ -225,7 +273,7 @@ export function TasteMap({
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
     return () => observer.disconnect();
-  }, [pole.x, pole.y, variant]);
+  }, [pole.x, pole.y, showLegend, legendReserve]);
 
   const moveProbe = useCallback(
     (clientX: number, clientY: number) => {
@@ -243,20 +291,28 @@ export function TasteMap({
   const shortSide = Math.min(plot.w, plot.h);
   // Desktop one-screen layouts often measure < 280px short side. Never enter
   // "focus" (hard-cull to Top 4) — that made the home map look empty.
+  // Preview uses the same short-side rule once near-square (not always sparse).
   const density: MapDensity =
-    variant === "preview"
-      ? "sparse"
-      : variant === "fullscreen"
-        ? "full"
-        : shortSide > 0 && shortSide < SPARSE_MIN
-          ? "sparse"
-          : "full";
-  const longPoles = variant === "fullscreen" || (variant === "desktop" && density === "full");
+    shortSide > 0 && shortSide < SPARSE_MIN ? "sparse" : "full";
+  const longPoles = variant === "desktop" && density === "full";
 
-  const visiblePoints = points;
+  const toggleRegion = useCallback((id: string) => {
+    setPinnedRegions((current) =>
+      current.includes(id) ? current.filter((row) => row !== id) : [...current, id]
+    );
+  }, []);
+
+  const clearRegions = useCallback(() => {
+    setPinnedRegions([]);
+    setHoveredRegion(null);
+  }, []);
 
   return (
-    <div ref={stageRef} className="flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden">
+    <div
+      ref={stageRef}
+      data-taste-map={variant}
+      className="flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden"
+    >
       <div
         className="grid h-full min-h-0 w-full min-w-0 max-w-full"
         style={{
@@ -267,10 +323,10 @@ export function TasteMap({
         }}
       >
         <div />
-        <PoleCapsule label={longPoles ? AXIS_POLES.soft : AXIS_POLES.softShort} />
+        <PoleLabel label={longPoles ? AXIS_POLES.soft : AXIS_POLES.softShort} />
         <div />
 
-        <PoleCapsule
+        <PoleLabel
           vertical
           label={longPoles ? AXIS_POLES.sweetLow : AXIS_POLES.sweetLowShort}
         />
@@ -291,14 +347,14 @@ export function TasteMap({
             setEngaged(false);
           }}
           onPointerCancel={() => setEngaged(false)}
-          className="relative min-h-0 min-w-0 w-full touch-none select-none overflow-visible rounded-[1.35rem] shadow-[0_18px_40px_-28px_rgba(112,69,34,0.45)]"
+          className="relative min-h-0 min-w-0 w-full touch-none select-none overflow-visible rounded-[1.1rem] shadow-[0_14px_36px_-30px_rgba(112,69,34,0.4)]"
         >
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.35rem] border border-[var(--km-border)]"
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.1rem] border border-[var(--km-border)]"
             style={{
               background:
-                "radial-gradient(ellipse at 22% 18%, rgba(255,245,229,0.98), transparent 42%), radial-gradient(ellipse at 78% 82%, rgba(226,154,53,0.12), transparent 48%), linear-gradient(180deg, #fffdf7 0%, #fff6ea 100%)",
+                "linear-gradient(180deg, #fffdf7 0%, #fff8ef 55%, #fff5e5 100%)",
             }}
           >
             <MatrixGrid />
@@ -310,15 +366,14 @@ export function TasteMap({
             <EmptyPanel />
           ) : (
             <>
-              {visiblePoints.map((rice) => (
+              {points.map((rice) => (
                 <ProfileNode
                   key={rice.id}
                   rice={rice}
                   density={density}
                   dimmed={
-                    (Boolean(focusRegion) &&
-                      rice.region_id !== focusRegion &&
-                      rice.region !== regions.find((region) => region.id === focusRegion)?.name) ||
+                    (focusSet.size > 0 &&
+                      ![...focusSet].some((id) => regionMatches(rice, id, regions))) ||
                     // Dim the cloud only after an explicit pick — not while the
                     // probe merely has a No.1 (that washed out ~100 grains).
                     (Boolean(selectedId) &&
@@ -350,16 +405,16 @@ export function TasteMap({
                 <div className="relative grid h-11 w-11 place-items-center">
                   <motion.span
                     key={probeKey}
-                    className="absolute inset-0 rounded-full border border-[var(--km-gold)]/40"
+                    className="absolute inset-0 rounded-full border border-[var(--km-gold)]/30"
                     animate={
                       reduceMotion || engaged
-                        ? { scale: 1, opacity: 0.4 }
-                        : { scale: [0.5, 1.7], opacity: [0.45, 0] }
+                        ? { scale: 1, opacity: 0.35 }
+                        : { scale: [0.5, 1.6], opacity: [0.4, 0] }
                     }
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   />
-                  <span className="grid h-5 w-5 place-items-center rounded-full border border-[#704522]/40 bg-[var(--km-brown)] shadow-[0_6px_16px_rgba(112,69,34,0.28)]">
-                    <Drop size={10} weight="fill" className="text-[#fff5e5]" />
+                  <span className="grid h-4 w-4 place-items-center rounded-full border border-[#704522]/35 bg-[var(--km-brown)] shadow-[0_4px_12px_rgba(112,69,34,0.22)]">
+                    <Drop size={9} weight="fill" className="text-[#fff5e5]" />
                   </span>
                 </div>
               </motion.div>
@@ -367,23 +422,25 @@ export function TasteMap({
           )}
         </div>
 
-        <PoleCapsule
+        <PoleLabel
           vertical
           label={longPoles ? AXIS_POLES.sweetHigh : AXIS_POLES.sweetHighShort}
         />
 
         <div />
-        <PoleCapsule label={longPoles ? AXIS_POLES.firm : AXIS_POLES.firmShort} />
+        <PoleLabel label={longPoles ? AXIS_POLES.firm : AXIS_POLES.firmShort} />
         <div />
 
-        {showLegend && regions.length > 0 ? (
+        {showLegend ? (
           <div className="min-w-0 max-w-full" style={{ gridColumn: "1 / -1" }}>
             <MapLegend
               regions={regions}
-              activeId={focusRegion}
-              variant={variant === "fullscreen" ? "chips" : "wrap"}
+              pinnedIds={pinnedSet}
+              hoveredId={hoveredRegion}
+              variant={legendVariant}
               onHover={setHoveredRegion}
-              onToggle={(id) => setPinnedRegion((current) => (current === id ? null : id))}
+              onToggle={toggleRegion}
+              onClear={clearRegions}
             />
           </div>
         ) : null}

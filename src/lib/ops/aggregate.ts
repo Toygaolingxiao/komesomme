@@ -42,19 +42,26 @@ const PURCHASE_EVENTS = new Set([
   "rakuten_click",
   "amazon_click",
   "yahoo_click",
+  "mercari_click",
   "furusato_click",
   "rakuten_furusato_click",
   "yahoo_furusato_click",
   "satofull_click",
 ]);
 
-const RETAIL_CHANNEL_IDS = ["rakuten_click", "yahoo_click", "amazon_click"] as const;
+const RETAIL_CHANNEL_IDS = [
+  "rakuten_click",
+  "yahoo_click",
+  "amazon_click",
+  "mercari_click",
+] as const;
 const FURUSATO_CHANNEL_IDS = ["rakuten_furusato", "yahoo_furusato", "satofull"] as const;
 
 const CHANNEL_LABELS: Record<string, string> = {
   rakuten_click: "楽天市場",
   amazon_click: "Amazon",
   yahoo_click: "Yahoo!ショッピング",
+  mercari_click: "メルカリ",
   satofull: "さとふる",
   rakuten_furusato: "楽天ふるさと",
   yahoo_furusato: "Yahoo!ふるさと",

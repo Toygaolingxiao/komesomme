@@ -21,7 +21,7 @@ export const AFFILIATE_PR_NOTICE =
 
 /** `/terms` only — names the ASPs. Do not paste into CTA chrome. */
 export const AFFILIATE_PR_NOTICE_DETAIL =
-  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト等）。";
+  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト、メルカリアンバサダー等）。";
 
 /** Footer one-liner. */
 export const TASTE_DISCLAIMER =
@@ -78,6 +78,27 @@ export function amazonSearchUrl(query: string): string {
   const tag = amazonAssociateTag();
   if (tag) params.set("tag", tag);
   return `https://www.amazon.co.jp/s?${params.toString()}`;
+}
+
+/** メルカリアンバサダー ID（公開クエリ `afid`）。env 優先、未設定時は登録済み ID。 */
+export function mercariAffiliateId(): string {
+  return (
+    process.env.NEXT_PUBLIC_MERCARI_AFID?.trim() ||
+    process.env.MERCARI_AFID?.trim() ||
+    "7137822833"
+  );
+}
+
+/**
+ * 検索結果ページ向けアフィ URL。
+ * 公式: 検索結果もアンバサダー対象（リンクのみ）。afid は管理画面／ツールバー発行の ID。
+ */
+export function mercariSearchUrl(query: string): string {
+  const url = new URL("https://jp.mercari.com/search");
+  url.searchParams.set("keyword", query);
+  const afid = mercariAffiliateId();
+  if (afid) url.searchParams.set("afid", afid);
+  return url.toString();
 }
 
 export function yahooShoppingSearchUrl(query: string): string {
@@ -173,6 +194,7 @@ export function wrapSatofullSearchUrl(query: string, sid?: string, pid?: string)
 export function clientAffiliateHrefs(input: AffiliateBrandInput): {
   amazon: string;
   yahoo: string;
+  mercari: string;
   satofull: string;
   yahooFurusato: string;
   rakutenFurusato: string;
@@ -182,6 +204,7 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
   return {
     amazon: amazonSearchUrl(shop),
     yahoo: yahooShoppingSearchUrl(shop),
+    mercari: mercariSearchUrl(shop),
     satofull: satofullSearchUrl(furusato),
     yahooFurusato: yahooFurusatoSearchUrl(furusato),
     rakutenFurusato: rakutenFurusatoSearchUrl(furusato),

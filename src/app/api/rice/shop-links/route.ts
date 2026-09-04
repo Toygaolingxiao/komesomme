@@ -3,6 +3,7 @@ import { findRiceProfile } from "@/data/rice/catalog";
 import {
   amazonSearchUrl,
   furusatoQuery,
+  mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
   wrapSatofullSearchUrl,
@@ -34,6 +35,7 @@ export type ShopLinks = {
   amazon: string;
   rakuten: string;
   yahoo: string;
+  mercari: string;
   satofull: string;
   rakutenFurusato: string;
   yahooFurusato: string;
@@ -73,6 +75,7 @@ export async function GET(request: Request) {
     amazon: amazonSearchUrl(shop),
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
     yahoo: resolveYahooShopHref(yahooPromo, yahooSearch),
+    mercari: mercariSearchUrl(shop),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     yahooFurusato: wrapYahooFurusatoSearchUrl(furusato, yahooSid, yahooPid),
@@ -93,6 +96,7 @@ export async function GET(request: Request) {
     amazon: fallback.amazon,
     rakuten: rakuten.url,
     yahoo: resolveYahooShopHref(yahooPromo, yahooItem),
+    mercari: fallback.mercari,
     satofull: fallback.satofull,
     rakutenFurusato: fallback.rakutenFurusato,
     yahooFurusato: fallback.yahooFurusato,

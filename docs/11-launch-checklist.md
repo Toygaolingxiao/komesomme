@@ -1,7 +1,7 @@
 # 本番リリース・チェックリスト（収益化サイト）
 
 対象: **B）アフィリエイト収益を伴う正式サイト**。  
-現状: 体験・防護・自前アクセス記録・法務草案（特商法含む）・購入 UI（通販 / ふるさとタグ＋各 3 店）・独自ドメイン `komesomme.jp`・CI（unit/e2e）は入った。GTM ID 本番接続・VC 本番 SID・branch protection・スモーク人手記録・アフィ突合などが残。番号は [`VERSION`](../VERSION)。  
+現状: 体験・防護・自前アクセス記録・法務草案（特商法含む）・購入 UI（通販 4 / ふるさと 3）・独自ドメイン `komesomme.jp`・CI（unit/e2e）は入った。GTM ID 本番接続・VC 本番 SID・branch protection・スモーク人手記録・アフィ突合などが残。番号は [`VERSION`](../VERSION)。  
 ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。
 
 使い方: 各タスクの `[ ]` を完了したら `[x]`。完了条件（Done）を満たすまで次フェーズへ進まない。
@@ -68,7 +68,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | **手順書:** [smoke-test.md](./smoke-test.md)（実施記録は人手） |
 | P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | `/api/rice/semantic-recommend` |
 | P0-5c | `/library/[id]` と品鑑パネル: 横溢れなし、購入縦一列（スマホ） | 390px 幅で横スクロール無し。旧 `/{id}` は 301 | `ShopLinksStrip`、library dossier |
-| P0-5d | 購入 6 リンクが各 EC / ふるさと検索へ開く | 全ボタン 200 系で検索結果が出る | shared URL helpers |
+| P0-5d | 購入 7 リンクが各 EC / ふるさと検索へ開く（通販 4 + ふるさと 3） | 全ボタン 200 系で検索結果が出る | shared URL helpers |
 | P0-5e | Playwright 等で P0-5b〜d の最低 3 本を CI または手動ランナー化 | 失敗が検知できる | **完了** `e2e/` + Vitest + CI。式样 [test-specification.md](./test-specification.md) |
 
 ### P0-6. 本番環境・デプロイ checklist
@@ -96,6 +96,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P1-1c | Yahoo! / さとふるの ValueCommerce | — | **廃止**（2026-09）。VC 再申請しない。Yahoo は公式短鎖 / プレーン検索。記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) |
 | P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | [07-roadmap.md](./07-roadmap.md) 計測節を更新可 |
 | P1-1e | 楽天 Item Search + クレジット | href のみ（商品名・価格は出さない）。公式クレジット表示 | **コード済** `shop-links` + `src/lib/rakuten/credit.ts`。隔離の次段は [13](./13-affiliate-compliance.md) §4 |
+| P1-1f | メルカリ検索アフィ | 通販 4 本目が `jp.mercari.com/search?…&afid=` | **コード済** 0.14.1。本番は `NEXT_PUBLIC_MERCARI_AFID`（[14](./14-affiliate-programs.md) §5） |
 
 ### P1-2. 分析の本番接続
 
@@ -178,7 +179,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 ### Sprint C — 収益と観測（1.0 同梱推奨）
 
-- [ ] P1-1a〜d Affiliate タグ + 突合手順
+- [ ] P1-1a〜d Affiliate タグ + 突合手順（メルカリ P1-1f はコード済、本番 env は P0-6a と一緒に入れる）
 - [x] P1-2a GTM 埋込 + Supabase `access_events`（GA4 は GTM 側設定が人手）
 - [ ] P1-2b〜c ダッシュボード確認・本番 console 静音確認
 - [ ] P1-3a〜b Sentry
@@ -234,6 +235,6 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | Mobile 横溢れ・購入 1 列・探針ランダム・プレビュー拡大 | 0.2.1 済み |
 | 味わい再校正 + `access_events` / GTM コード | 0.3.0 済み（`NEXT_PUBLIC_GTM_ID` は未設定） |
 | Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap / 独自ドメイン | 実装済み |
-| 購入 UI（通販 / ふるさとタグ）・楽天/Amazon タグ配線 | 実装済み。**VC 本番 SID・成果突合は未** |
+| 購入 UI（通販 4 / ふるさと 3）・楽天/Amazon/メルカリ配線 | 実装済み（0.14.1）。**VC は廃止。成果突合は未** |
 | GTM 埋込 / GA4 実連 / Sentry | コード済み or **未**（GTM ID・GA4・Sentry は人手） |
 | Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |

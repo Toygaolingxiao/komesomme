@@ -10,6 +10,7 @@ import {
   AFFILIATE_PR_LABEL,
   amazonSearchUrl,
   furusatoQuery,
+  mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
   yahooFurusatoSearchUrl,
@@ -26,6 +27,7 @@ export type ShopLinks = {
   amazon: string;
   rakuten: string;
   yahoo: string;
+  mercari: string;
   satofull: string;
   rakutenFurusato: string;
   yahooFurusato: string;
@@ -56,6 +58,7 @@ function fallbackLinks(rice: RiceProfileV2): ShopLinks {
     amazon: amazonSearchUrl(shop),
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
     yahoo: yahooShoppingSearchUrl(shop),
+    mercari: mercariSearchUrl(shop),
     satofull: `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(furusato)}`,
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     yahooFurusato: yahooFurusatoSearchUrl(furusato),
@@ -99,6 +102,7 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           amazon: httpsUrl(data.amazon, next.amazon),
           rakuten: httpsUrl(data.rakuten, next.rakuten),
           yahoo: httpsUrl(data.yahoo, next.yahoo),
+          mercari: httpsUrl(data.mercari, next.mercari),
           satofull: httpsUrl(data.satofull, next.satofull),
           rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
           yahooFurusato: httpsUrl(data.yahooFurusato, next.yahooFurusato),
@@ -122,13 +126,13 @@ function PlatformButton({
   href,
   label,
   event,
-  className,
+  tone,
   compact,
 }: {
   href: string;
   label: string;
   event: AnalyticsEvent;
-  className: string;
+  tone: MallTone;
   compact?: boolean;
 }) {
   return (
@@ -136,12 +140,18 @@ function PlatformButton({
       href={href}
       target="_blank"
       rel={AFFILIATE_LINK_REL}
-      className={`inline-flex w-full items-center justify-center rounded-full text-center font-semibold transition ${FOCUS} ${className} ${
-        compact ? "min-h-9 px-2 py-1.5 text-[11px]" : "min-h-11 px-3 py-2.5 text-[12px]"
-      }`}
+      className={`block w-full no-underline ${FOCUS}`}
       onClick={() => track(event, { label })}
     >
-      {label}
+      {/* Fill lives on a span: :visited on <a> strips background-color (history privacy). */}
+      <span
+        className={`inline-flex w-full items-center justify-center rounded-full text-center font-semibold transition hover:brightness-[0.96] ${
+          compact ? "min-h-9 px-2 py-1.5 text-[11px]" : "min-h-11 px-3 py-2.5 text-[12px]"
+        }`}
+        style={{ backgroundColor: tone.bg, color: tone.fg }}
+      >
+        {label}
+      </span>
     </a>
   );
 }
@@ -240,18 +250,23 @@ type ShopLinksStripProps = {
 
 /**
  * Soft versions of each mall's official hue (not invented colors).
- * Rakuten #bf0000 → muted brick; Yahoo #ff0033 → lighter pink-red; Amazon gold; さとふる green.
+ * Inline colors — Tailwind arbitrary / custom class fills have missed JIT on this strip.
  */
-const MALL_STYLES = {
-  amazon: "bg-[#e8c84a] text-[#1a1510] hover:bg-[#dfbf3a]",
-  rakuten: "bg-[#c05050] text-white hover:bg-[#ad4545]",
-  yahoo: "bg-[#ef6b7e] text-white hover:bg-[#e0556a]",
-  satofull: "bg-[#3a6b56] text-white hover:bg-[#335f4c]",
-} as const;
+type MallTone = { bg: string; fg: string };
+
+const MALL_TONES = {
+  amazon: { bg: "#e8c84a", fg: "#1a1510" },
+  rakuten: { bg: "#c05050", fg: "#ffffff" },
+  yahoo: { bg: "#ef6b7e", fg: "#ffffff" },
+  /** Mercari red family — solid enough for cream rail. */
+  mercari: { bg: "#e04552", fg: "#ffffff" },
+  satofull: { bg: "#3a6b56", fg: "#ffffff" },
+} as const satisfies Record<string, MallTone>;
 
 /**
  * Mall CTAs + optional affiliate disclosure.
- * Equal-width stack: 楽天 → Yahoo → Amazon / さとふる (last is not larger).
+ * Equal-width stack: 楽天 → Yahoo → Amazon → メルカリ / さとふる.
+ * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
   rice,
@@ -278,29 +293,43 @@ export function ShopLinksStrip({
 
   const short = compact || expandMode === "disclosure";
 
+  // Home rail is 100dvh + overflow hidden: a 4-high stack clips メルカリ.
+  // Compact retail uses 2×2 so all malls stay visible without scrolling the strip.
+  const retailGrid = compact
+    ? "mt-1 grid grid-cols-2 gap-1.5"
+    : "mt-2 flex flex-col gap-2";
+  const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
+
   const mallGrid = (
-    <div className={`flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`}>
+    <div className={shopMode === "retail" ? retailGrid : furusatoGrid}>
       {shopMode === "retail" ? (
         <>
           <PlatformButton
             href={links.rakuten}
             label={short ? "楽天市場" : "楽天市場で探す"}
             event="rakuten_click"
-            className={MALL_STYLES.rakuten}
+            tone={MALL_TONES.rakuten}
             compact={compact}
           />
           <PlatformButton
             href={links.yahoo}
             label={short ? "Yahoo!" : "Yahoo!で探す"}
             event="yahoo_click"
-            className={MALL_STYLES.yahoo}
+            tone={MALL_TONES.yahoo}
             compact={compact}
           />
           <PlatformButton
             href={links.amazon}
             label={short ? "Amazon" : "Amazonで探す"}
             event="amazon_click"
-            className={MALL_STYLES.amazon}
+            tone={MALL_TONES.amazon}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.mercari}
+            label={short ? "メルカリ" : "メルカリで探す"}
+            event="mercari_click"
+            tone={MALL_TONES.mercari}
             compact={compact}
           />
         </>
@@ -310,21 +339,21 @@ export function ShopLinksStrip({
             href={links.rakutenFurusato}
             label={short ? "楽天ふるさと" : "楽天でふるさと納税"}
             event="rakuten_furusato_click"
-            className={MALL_STYLES.rakuten}
+            tone={MALL_TONES.rakuten}
             compact={compact}
           />
           <PlatformButton
             href={links.yahooFurusato}
             label={short ? "Yahoo!ふるさと" : "Yahoo!でふるさと納税"}
             event="yahoo_furusato_click"
-            className={MALL_STYLES.yahoo}
+            tone={MALL_TONES.yahoo}
             compact={compact}
           />
           <PlatformButton
             href={links.satofull}
             label={short ? "さとふる" : "さとふるで探す"}
             event="satofull_click"
-            className={MALL_STYLES.satofull}
+            tone={MALL_TONES.satofull}
             compact={compact}
           />
         </>

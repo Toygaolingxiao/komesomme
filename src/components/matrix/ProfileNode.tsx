@@ -3,10 +3,12 @@
 import { motion } from "motion/react";
 import type { RiceDisplayPoint } from "@/types/rice";
 import { valueToPosition } from "@/lib/rice/matrix";
+import { RiceGrainMark, type GrainEmphasis } from "./RiceGrainMark";
 import {
   FOCUS,
   INSET,
   LAYER,
+  mapGrainFill,
   pairTasteTags,
   regionColor,
   type MapDensity,
@@ -21,20 +23,20 @@ function grainHash(id: string) {
   return Math.abs(hash);
 }
 
-function grainShape(id: string) {
+function grainPose(id: string) {
   const hash = grainHash(id);
-  const tilt = (hash % 50) - 25;
+  // Short-grain scatter: gentle tilt + slight plumpness, not long needles.
   return {
-    transform: `rotate(${tilt}deg)`,
-    borderRadius: "50%",
+    tilt: ((hash % 40) - 20) * 0.55,
+    plump: 0.92 + (hash % 7) * 0.02,
   };
 }
 
 /**
  * One brand on the tasting map.
  *
- * Silhouette is a rice-grain oval, varied deterministically by id. Position still
- * comes from display coordinates; only the mark's shape and emphasis change.
+ * Top 4 read clearly against a quieter rice cloud: No.1 largest + harvest ring,
+ * runners gold-rimmed, the rest smaller and softer.
  */
 export function ProfileNode({
   rice,
@@ -70,24 +72,35 @@ export function ProfileNode({
   const connected = featured || isRunnerUp || isHighlighted;
   const muted = density !== "full" && !connected;
   const passThrough = muted || (touchFriendly && dimmed && !connected);
-  const premium = rice.data_confidence === "high" || rice.sweetness >= 4.5;
-  const baseW = touchFriendly ? 13 : 12.5;
-  const baseH = touchFriendly ? 8 : 7.5;
-  const grow = featured ? 1.9 : isRunnerUp || isHighlighted ? 1.35 : muted ? 0.72 : 1;
+  const pose = grainPose(rice.id);
+
+  const emphasis: GrainEmphasis = featured
+    ? "featured"
+    : isRunnerUp || isHighlighted
+      ? "runner"
+      : "rest";
+
+  const baseW = (touchFriendly ? 14 : 12.5) * pose.plump;
+  const baseH = (touchFriendly ? 9.5 : 8.5) * pose.plump;
+  // Strong size ladder so Top 4 leave the beige cloud at a glance.
+  const grow =
+    featured ? 2.05 : isRunnerUp ? 1.55 : isHighlighted ? 1.4 : muted ? 0.78 : 0.92;
   const width = baseW * grow;
   const height = baseH * grow;
   const hit = touchFriendly
     ? featured
-      ? 32
+      ? 38
       : connected
-        ? 24
+        ? 30
         : Math.max(width, 16)
-    : Math.max(width, 18);
+    : Math.max(width, featured ? 28 : connected ? 24 : 18);
   const left = valueToPosition(rice.display_x, INSET);
   const top = 100 - valueToPosition(rice.display_y, INSET);
-  const fill = rice.region_color ?? regionColor(rice.region);
+  const fill = mapGrainFill(regionColor(rice.region_id ?? rice.region));
   const tags = pairTasteTags(rice);
-  const shape = grainShape(rice.id);
+
+  // Cloud stays readable but clearly secondary to the recommendation set.
+  const restOpacity = dimmed ? 0.22 : muted ? 0.4 : 0.48;
 
   return (
     <motion.button
@@ -102,10 +115,10 @@ export function ProfileNode({
       aria-current={isSelected || isBestMatch ? "true" : undefined}
       initial={reduceMotion ? false : { opacity: 0, scale: 0.72 }}
       animate={{
-        opacity: dimmed ? 0.38 : muted ? 0.55 : connected ? 1 : 0.88,
-        scale: isHighlighted && !featured ? 1.08 : 1,
+        opacity: connected ? 1 : restOpacity,
+        scale: isHighlighted && !featured ? 1.05 : 1,
       }}
-      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.1 }}
+      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.06 }}
       transition={{
         duration: reduceMotion ? 0 : 0.18,
         ease: [0.22, 1, 0.36, 1],
@@ -115,7 +128,6 @@ export function ProfileNode({
         top: `${top}%`,
         width: hit,
         height: hit,
-        ["--node-color" as string]: fill,
         zIndex: isSelected || isHighlighted
           ? LAYER.selected
           : isBestMatch
@@ -128,29 +140,15 @@ export function ProfileNode({
         passThrough ? "pointer-events-none" : ""
       }`}
     >
-      <span
-        aria-hidden
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width,
-          height,
-          ...shape,
-          background: `radial-gradient(circle at 28% 24%, rgba(255,253,247,0.42) 0 16%, ${fill} 34%)`,
-          boxShadow: featured
-            ? `0 0 12px ${fill}, 0 0 26px color-mix(in srgb, ${fill} 55%, transparent)`
-            : isRunnerUp
-              ? `0 0 0 1.5px ${fill}, 0 0 10px color-mix(in srgb, ${fill} 35%, transparent)`
-              : "0 0 0 1px rgba(48,40,32,0.2), 0 1px 3px rgba(112,69,34,0.18)",
-        }}
-      />
-
-      {premium && !muted ? (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[32%] h-[18%] w-[22%] -translate-x-1/2 rounded-full bg-[#fffdf7]/80"
-          style={{ transform: shape.transform }}
+      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <RiceGrainMark
+          fill={fill}
+          width={width}
+          height={height}
+          tilt={pose.tilt}
+          emphasis={emphasis}
         />
-      ) : null}
+      </span>
 
       {tooltipOpen && !muted ? (
         <span

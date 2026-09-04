@@ -78,7 +78,7 @@
 | 位置 | 约定 |
 | --- | --- |
 | `e2e/home.spec.ts` | 商店条可见 `※PR`；展开后 Amazon 定型 **0 条** |
-| `e2e/brand.spec.ts` | `#km-purchase`：通販 tab 3 CTA → ふるさと tab 3 CTA；**页面上**（页脚即可）有 Amazon 定型、「アフィリエイト広告」、`Supported by Rakuten Developers` |
+| `e2e/brand.spec.ts` | `#km-purchase`：通販 tab 4 CTA → ふるさと tab 3 CTA；**页面上**（页脚即可）有 Amazon 定型、「アフィリエイト広告」、`Supported by Rakuten Developers` |
 | `docs/test-specification.md` TS-BRAND-02 | 完整披露在页脚，不要求印在购买卡内 |
 
 ---

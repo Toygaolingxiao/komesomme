@@ -6,6 +6,7 @@ import {
   AMAZON_ASSOCIATE_DISCLOSURE,
   amazonSearchUrl,
   furusatoQuery,
+  mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
   yahooFurusatoSearchUrl,
@@ -61,5 +62,13 @@ describe("TS-UNIT-04 shop / amazon URL builders", () => {
     const url = yahooShoppingSearchUrl("ゆめぴりか");
     expect(url).toContain("https://shopping.yahoo.co.jp/search?");
     expect(url).toContain(encodeURIComponent("ゆめぴりか"));
+  });
+
+  it("builds mercari search with afid", () => {
+    vi.stubEnv("NEXT_PUBLIC_MERCARI_AFID", "7137822833");
+    const url = mercariSearchUrl("長野県 風さやか 白米");
+    expect(url).toContain("https://jp.mercari.com/search?");
+    expect(url).toContain("keyword=");
+    expect(url).toContain("afid=7137822833");
   });
 });
