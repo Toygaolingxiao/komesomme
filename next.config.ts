@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     /** Cache optimized variants for 30 days (source files change with deploys). */
     minimumCacheTTL: 60 * 60 * 24 * 30,
-    deviceSizes: [640, 750, 828, 1080, 1200, 1440],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1440],
     imageSizes: [64, 96, 128, 160, 200, 256, 320, 384],
   },
   async redirects() {

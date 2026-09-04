@@ -28,20 +28,21 @@ export function CollectionView({
           {collection.title}
         </p>
 
-        <div className="mt-4 grid items-end gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:gap-10">
+        <div className="mt-4 grid items-end gap-5 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:gap-10">
           {hero ? (
-          <EditorialArt
-            src={hero}
-            alt=""
-            className="aspect-[21/8] w-full md:aspect-[24/8]"
-            sizes="(min-width: 768px) 55vw, 100vw"
-            priority
-            objectPosition="50% 42%"
-          />
+            <EditorialArt
+              src={hero}
+              alt=""
+              className="h-32 w-full md:h-auto md:aspect-[24/8]"
+              sizes="(min-width: 768px) 55vw, 100vw"
+              quality={90}
+              priority
+              objectPosition="50% 42%"
+            />
           ) : (
             <div
               aria-hidden
-              className="aspect-[21/8] w-full bg-[var(--km-surface-warm)] md:aspect-[24/8]"
+              className="h-32 w-full bg-[var(--km-surface-warm)] md:h-auto md:aspect-[24/8]"
             />
           )}
           <div className="min-w-0 pb-1">
@@ -73,14 +74,14 @@ export function CollectionView({
             <li key={entry.id}>
               <Link
                 href={`/library/${entry.id}`}
-                className={`group grid items-center gap-4 py-5 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
+                className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
               >
                 {art ? (
                   <EditorialArt
                     src={art.src}
                     alt=""
                     className={`w-full ${odd ? "aspect-[4/5]" : "aspect-square"}`}
-                    sizes="6.5rem"
+                    sizes="(min-width: 640px) 6.5rem, 5.75rem"
                     objectPosition={odd ? "40% 50%" : "60% 40%"}
                   />
                 ) : (

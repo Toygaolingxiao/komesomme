@@ -130,13 +130,13 @@ Mobile は文書スクロール可。Desktop の `100dvh` ロックは `lg` 以�
 - 購入 UI 全体のゲート: `NEXT_PUBLIC_SHOP_LINKS_ENABLED` / `SHOP_LINKS_ENABLED`（`0` で非表示。未設定は表示）
 - Amazon 定型文は **フッター一箇所**（ホームは 100dvh のためフッターなし、CTA は ※PR のみ）。表面は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)
 - `/library/[id]` が銘柄の正本ページ。ヘッダー・地図・ライブラリ本文は共通の `SITE_COLUMN`（`max-w-[1440px]` + 左右 padding）。ナビ順は常に **味わいの地図 → ライブラリ → ピックアップ**、現在地は `font-semibold` + ink で強調。旧 `/{id}` は `/library/[id]` へ永久リダイレクト
-- ホーム詳細パネルは浅路由 `/?brand=<id>`（History API）。戻るで閉じる。深読みは `/library/[id]`
+- ホーム詳細パネルは浅路由を書かない。地図の操作は history に残さない。共有リンク `/?brand=<id>` は初回ロードだけ読む。深読みは `/library/[id]`
 
 ### ライブラリの発見（検索以外）
 
 正本は [19-editorial-discovery.md](./19-editorial-discovery.md)。ホーム地図の座標推薦とは別系統。Desktop `100dvh` の地図面には特集もイラスト帯も置かない。
 
-- **ピックアップ** `/discover`：きょうの三銘柄 + 特集一覧（`#collections`）。ナビは一級ここだけ
+- **ピックアップ** `/discover`：きょうの三銘柄 + 特集一覧（`#collections`）。ナビは一級ここだけ。特集はモバイルもサムネ＋見出し（通欄の大きな正方形は置かない）
 - **特集誌面** `/collections/[slug]`：人手編集。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/*` も誌面へ
 - `/library` は編集マストヘッド → 品評表のみ
 - 一覧の味わい表示は数字壁より **金の pips**（`TastePips`）を優先。長文 headline は事典側

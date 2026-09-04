@@ -10,11 +10,11 @@ export const DEFAULT_ENCYCLOPEDIA_CHAT_MODEL_CHAIN = [
   "gemini-3.5-flash",
 ] as const;
 
-/** Live consultation reply: Flash first for quality; Lite when quota hits. */
+/** Live consultation reply: Lite first so the guest is not waiting on Flash retries. */
 export const DEFAULT_SOMMELIER_CHAT_MODEL_CHAIN = [
-  "gemini-3.5-flash",
   "gemini-3.5-flash-lite",
   "gemini-3.1-flash-lite",
+  "gemini-3.5-flash",
 ] as const;
 
 /** New API keys get 404 on these; keep out of the chain even if env still names them. */

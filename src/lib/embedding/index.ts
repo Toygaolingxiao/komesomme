@@ -130,18 +130,18 @@ export async function createEmbeddingForConsultation(
 ): Promise<number[]> {
   let lastError: unknown;
 
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
       return await createEmbedding(input, provider);
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
-      if (!isRetryableQuotaError(message) || attempt === 3) break;
+      if (!isRetryableQuotaError(message) || attempt === 2) break;
 
       const retryMatch = message.match(/retry in ([\d.]+)s/i);
       const waitMs = retryMatch
-        ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 500, 10_000)
-        : attempt * 2_000;
+        ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 200, 2_000)
+        : 1_200;
       await sleep(waitMs);
     }
   }

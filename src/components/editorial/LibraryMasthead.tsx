@@ -13,14 +13,15 @@ export function LibraryMasthead({ brandCount }: { brandCount: number }) {
           <EditorialArt
             src={art}
             alt="炊きたての白飯を描いた手描き"
-            className="aspect-[5/4] w-full md:aspect-[4/3]"
+            className="aspect-[16/9] w-full md:aspect-[4/3]"
             sizes="(min-width: 768px) 55vw, 100vw"
+            quality={90}
             priority
           />
         ) : (
           <div
             aria-hidden
-            className="aspect-[5/4] w-full bg-[var(--km-surface-warm)] md:aspect-[4/3]"
+            className="aspect-[16/9] w-full bg-[var(--km-surface-warm)] md:aspect-[4/3]"
           />
         )}
         <div className="max-w-md pb-1">

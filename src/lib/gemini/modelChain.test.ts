@@ -8,10 +8,10 @@ import {
 } from "./modelChain";
 
 describe("resolveGeminiChatModelChain", () => {
-  it("defaults to Flash first for consultation quality", () => {
+  it("defaults to Flash-Lite first for consultation latency", () => {
     const chain = resolveGeminiChatModelChain();
-    expect(chain[0]).toBe("gemini-3.5-flash");
-    expect(chain).toContain("gemini-3.5-flash-lite");
+    expect(chain[0]).toBe("gemini-3.5-flash-lite");
+    expect(chain).toContain("gemini-3.5-flash");
     expect(chain).not.toContain("gemini-3.6-flash");
   });
 

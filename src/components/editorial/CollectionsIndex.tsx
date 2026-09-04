@@ -51,29 +51,15 @@ export function CollectionsIndex({
           {rest.map((collection, index) => {
             const art = collectionArtSrc(collection.artFile);
             const isCurrent = collection.months.includes(month);
-            const flip = index % 2 === 1;
             return (
               <li key={collection.slug}>
                 <EditorialCollectionLink
                   href={`/collections/${collection.slug}`}
                   slug={collection.slug}
-                  className={`group grid items-center gap-4 py-6 sm:gap-6 ${FOCUS} ${
-                    flip
-                      ? "sm:grid-cols-[minmax(0,1fr)_7.5rem]"
-                      : "sm:grid-cols-[7.5rem_minmax(0,1fr)]"
-                  }`}
+                  className={`group grid grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
                 >
-                  {flip ? (
-                    <>
-                      <RowCopy collection={collection} isCurrent={isCurrent} />
-                      <RowThumb art={art} index={index} />
-                    </>
-                  ) : (
-                    <>
-                      <RowThumb art={art} index={index} />
-                      <RowCopy collection={collection} isCurrent={isCurrent} />
-                    </>
-                  )}
+                  <RowThumb art={art} index={index} />
+                  <RowCopy collection={collection} isCurrent={isCurrent} />
                 </EditorialCollectionLink>
               </li>
             );
@@ -96,18 +82,19 @@ function FeaturedRow({
     <EditorialCollectionLink
       href={`/collections/${collection.slug}`}
       slug={collection.slug}
-      className={`group grid items-center gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] ${FOCUS}`}
+      className={`group grid grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-3.5 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-5 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:gap-6 ${FOCUS}`}
     >
       {art ? (
         <EditorialArt
           src={art}
           alt=""
-          className="aspect-[21/8] w-full md:aspect-[24/8]"
-          sizes="(min-width: 768px) 55vw, 100vw"
+          className="aspect-[5/4] w-full md:aspect-[24/8]"
+          sizes="(min-width: 768px) 55vw, 7.5rem"
+          quality={90}
           objectPosition="50% 42%"
         />
       ) : (
-        <div aria-hidden className="aspect-[21/8] w-full bg-[var(--km-surface-warm)] md:aspect-[24/8]" />
+        <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-surface-warm)] md:aspect-[24/8]" />
       )}
       <span className="min-w-0">
         <span className="flex flex-wrap items-baseline gap-x-2 text-[11px] tracking-wide text-[var(--km-muted)]">
@@ -145,7 +132,7 @@ function RowThumb({ art, index }: { art: string | null; index: number }) {
       src={art}
       alt=""
       className={`w-full ${tall ? "aspect-[4/5]" : "aspect-[5/4]"}`}
-      sizes="7.5rem"
+      sizes="(min-width: 640px) 7.5rem, 6.25rem"
       objectPosition={tall ? "50% 40%" : "50% 55%"}
     />
   );

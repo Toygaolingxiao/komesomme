@@ -62,4 +62,14 @@ describe("editorial collections", () => {
       "nabe",
     ]);
   });
+
+  it("prints nabe's first-ship date, not a future November", () => {
+    const nabe = EDITORIAL_COLLECTIONS.find((row) => row.slug === "nabe");
+    expect(nabe?.dateLabel).toBe("2026年9月3日 18時53分");
+  });
+
+  it("prints bento's date in September, not a fake April", () => {
+    const bento = EDITORIAL_COLLECTIONS.find((row) => row.slug === "bento-cold");
+    expect(bento?.dateLabel).toBe("2026年9月2日 0時02分");
+  });
 });

@@ -39,14 +39,14 @@
 | 品鑑オーバーレイ | TS-DETAIL-01〜03 | P0 | ✓ | |
 | 銘柄ページ | TS-BRAND-01〜04 | P0 | ✓ | |
 | 銘柄ライブラリ | TS-LIBRARY-01〜03 | P1 | ✓ | |
-| 編集発見（三銘柄・特集・事典画） | TS-LIBRARY-04〜06 | P2 | ✓ | イラストのロゴ混入は手動 |
+| 編集発見（三銘柄・特集・事典画） | TS-LIBRARY-04〜07 | P2 | ✓ | イラストのロゴ混入は手動 |
 | 購入（通販 / ふるさとタグ） | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
 | 法務ページ | TS-LEGAL-01〜03 | P0 | ✓ | |
 | SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
 | セキュリティ見た目 | TS-SEC-01〜02 | P0 | ✓ | |
 | 解析耐性 | TS-ANALYTICS-01 | P1 | ✓ | |
 | 内部观测台 | TS-OPS-01〜03 | P1 | ✓ | 本番登录は手動 |
-| Mobile レイアウト | TS-MOBILE-01〜04 | P0 | ✓ | |
+| Mobile レイアウト | TS-MOBILE-01〜05 | P0 | ✓ | |
 | 純関数（座標・URL・観測） | TS-UNIT-01〜05 | P0 | ✓ Vitest | |
 
 ---
@@ -76,8 +76,10 @@
 - **手順:** `#km-hardness` を変更  
 - **期待:** 値変更後もページがクラッシュせずレールが残る
 
-#### TS-HOME-06 / TS-HOME-07（スライダー境界）
-- **期待:** min/max 付近でも例外なし（コンソール error の致命的 React crash なし）
+#### TS-HOME-06 / TS-HOME-07（スライダー境界・連打）
+- **手順:** `#km-sweetness` / `#km-hardness` を 100 回以上の `input` で掃く（スマホのドラッグ相当）
+- **期待:** min/max 付近でも例外なし。`Application error` にならない。`writeBrandQuery` は URL が変わらない限り `history` を触らない
+- **自動:** `e2e/home.spec.ts`、`src/lib/navigation/brandQuery.test.ts`
 
 #### TS-HOME-08 レールに近傍銘柄リスト
 - **期待:** 「近い味わいの銘柄」または相談モード相当のリスト領域が存在する（銘柄数 ≥ 1）
@@ -158,6 +160,9 @@
 - **手順:** `/library/koshihikari-uonuma`  
 - **期待:** 手描きヒーロー（`brand-art`）。ロゴ・袋面が無いこと（手動）
 
+#### TS-LIBRARY-07 ピックアップ特集のサムネはモバイルで通欄にしない
+- **自動:** `e2e/mobile.spec.ts`
+
 ---
 
 ### 2.4 購入リンク
@@ -214,8 +219,8 @@
 #### TS-MOBILE-03 地図のあとにお店で探す、その下に相談
 #### TS-MOBILE-04 地図は 1 回目のタップで品鑑を開かない。同じ粒の 2 回目で開き、スライダー後は強調が探針の No.1 のみ
 - **自動:** `e2e/mobile.spec.ts`
-- **手順:** プレビュー地図の銘柄を 1 つ開き、閉じて甘みスライダーを動かす  
-- **期待:** 地図上 `aria-current` は探針の No.1 のみ（2 粒同時に大きく光らない）
+
+#### TS-MOBILE-05 スライダーを連続で動かしても Application error にならない
 - **自動:** `e2e/mobile.spec.ts`
 
 ---
@@ -230,6 +235,7 @@
 | TS-UNIT-04 | `shopQuery` / `amazonSearchUrl` / `mercariSearchUrl` | クエリ結合・URL |
 | TS-UNIT-04b | `parseYahooShoppingShortLink` / `mergeYahooAffiliateSheet` | 短鎖形式・空は検索フォールバック |
 | TS-UNIT-05 | `ops/auth` · `ops/aggregate` | 署名 cookie・JST 日次・ふるさとチャネル |
+| TS-UNIT-06 | `writeBrandQuery` | 同じ URL では history を触らない。WebKit 回数制限でも throw しない |
 
 ---
 

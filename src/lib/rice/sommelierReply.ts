@@ -126,16 +126,12 @@ function extractGeminiText(payload: unknown): string {
 async function generateOnce(
   ai: GoogleGenAI,
   model: string,
-  prompt: string,
-  withThinking: boolean
+  prompt: string
 ): Promise<string> {
-  const base = { temperature: 0.4, maxOutputTokens: 512 };
   const response = await ai.models.generateContent({
     model,
     contents: prompt,
-    config: withThinking
-      ? { ...base, thinkingConfig: { thinkingBudget: 0, includeThoughts: false } }
-      : base,
+    config: { temperature: 0.4, maxOutputTokens: 256 },
   });
   return extractGeminiText(response);
 }
@@ -152,15 +148,9 @@ async function generateWithGemini(prompt: string): Promise<string> {
   for (const model of modelChain) {
     if (exhaustedModels.has(model)) continue;
 
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        let text = "";
-        try {
-          text = await generateOnce(ai, model, prompt, true);
-        } catch (cause) {
-          console.warn(`Gemini thinkingConfig rejected (${model}), retrying without:`, cause);
-          text = await generateOnce(ai, model, prompt, false);
-        }
+        const text = await generateOnce(ai, model, prompt);
         if (!text.trim()) {
           console.warn(`Empty sommelier reply (${model}), trying next…`);
           break;
@@ -179,11 +169,11 @@ async function generateWithGemini(prompt: string): Promise<string> {
           console.warn(`Sommelier daily quota exhausted (${model}), trying next…`);
           break;
         }
-        if (isRetryableQuotaError(message) && attempt < 3) {
+        if (isRetryableQuotaError(message) && attempt < 2) {
           const retryMatch = message.match(/retry in ([\d.]+)s/i);
           const waitMs = retryMatch
-            ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 500, 12_000)
-            : attempt * 3_000;
+            ? Math.min(Math.ceil(Number(retryMatch[1]) * 1000) + 200, 2_000)
+            : 1_200;
           console.warn(
             `Sommelier rate limited (${model}). Waiting ${Math.round(waitMs / 1000)}s…`,
           );

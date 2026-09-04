@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { waitForHomeReady } from "./helpers";
+import { expectHomeAlive, installHistoryQuota, scrubHomeSlider, waitForHomeReady } from "./helpers";
 
 test.describe("TS-HOME Desktop map & rail", () => {
   test.skip(({ isMobile }) => !!isMobile, "desktop project only");
@@ -17,6 +17,14 @@ test.describe("TS-HOME Desktop map & rail", () => {
     // Profile nodes or SVG/canvas children should exist once ready
     const nodes = map.locator('[class*="rounded-full"], circle, button').first();
     await expect(nodes).toBeVisible({ timeout: 30_000 });
+  });
+
+  test("TS-HOME-06/07 rapid slider input does not crash", async ({ page }) => {
+    await installHistoryQuota(page);
+    await waitForHomeReady(page);
+    await scrubHomeSlider(page, "#km-sweetness");
+    await scrubHomeSlider(page, "#km-hardness");
+    await expectHomeAlive(page);
   });
 
   test("TS-HOME-05 hardness slider responds without crash", async ({ page }) => {
@@ -62,7 +70,6 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     await page.getByRole("button", { name: /今日の一膳/ }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
-    await expect(page).toHaveURL(/\?brand=/);
   });
 
   test("TS-HOME-12 slider releases a tapped grain highlight", async ({ page }) => {

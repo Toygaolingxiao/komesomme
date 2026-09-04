@@ -11,6 +11,9 @@ import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
 
+/** Tokyo calendar bowl + featured months. Refresh often enough to cross midnight. */
+export const revalidate = 600;
+
 export const metadata: Metadata = {
   title: "ピックアップ",
   description:

@@ -48,12 +48,20 @@ export function track(event: AnalyticsEvent, payload: AnalyticsPayload = {}) {
   if (typeof window === "undefined") return;
   if (isOpsPath(window.location.pathname)) return;
 
+  // Slider input fires many times per drag — skip GTM and access log.
+  if (event === "slider_change") {
+    if (process.env.NODE_ENV !== "production") {
+      console.debug("[km]", event, payload);
+    }
+    return;
+  }
+
   const entry = { event, ...payload, ts: Date.now() };
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(entry);
 
-  // Skip high-frequency slider noise; page_view is recorded by AnalyticsProvider.
-  if (event !== "page_view" && event !== "slider_change") {
+  // page_view is recorded by AnalyticsProvider.
+  if (event !== "page_view") {
     recordAccess(event, payload);
   }
 

@@ -30,7 +30,7 @@ import type {
 } from "@/types/rice";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { SITE_COLUMN } from "@/components/siteChrome";
-import { readBrandQuery, writeBrandQuery } from "@/lib/navigation/brandQuery";
+import { readBrandQuery } from "@/lib/navigation/brandQuery";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
 import { ConsultForm } from "./matrix/ConsultForm";
@@ -225,13 +225,11 @@ export function FlavorMatrix() {
   );
 
   const openDetail = useCallback(
-    (id: string, opts?: { syncUrl?: boolean; history?: "push" | "replace" }) => {
+    (id: string) => {
       const rice = profiles.find((row) => row.id === id);
       if (rice) prefetchBrandArt(rice.id, rice.region, rice.prefecture);
       setSelectedId(id);
       setDetailOpen(true);
-      if (opts?.syncUrl === false) return;
-      writeBrandQuery(id, opts?.history ?? "push");
     },
     [profiles]
   );
@@ -239,29 +237,18 @@ export function FlavorMatrix() {
   const closeDetail = useCallback(() => {
     setDetailOpen(false);
     setSelectedId(null);
-    writeBrandQuery(null, "replace");
   }, []);
 
-  /** Restore panel from `/?brand=` after catalog load; honor Back/Forward. */
+  /** Shared `/?brand=` still opens the panel once. Map use does not write history. */
   useEffect(() => {
     if (loadState !== "ready" || profiles.length === 0) return;
-
-    const applyFromUrl = () => {
-      const id = readBrandQuery();
-      if (id && profiles.some((row) => row.id === id)) {
-        const rice = profiles.find((row) => row.id === id)!;
-        prefetchBrandArt(rice.id, rice.region, rice.prefecture);
-        setSelectedId(id);
-        setDetailOpen(true);
-        return;
-      }
-      setDetailOpen(false);
-      setSelectedId(null);
-    };
-
-    applyFromUrl();
-    window.addEventListener("popstate", applyFromUrl);
-    return () => window.removeEventListener("popstate", applyFromUrl);
+    const id = readBrandQuery();
+    if (id && profiles.some((row) => row.id === id)) {
+      const rice = profiles.find((row) => row.id === id)!;
+      prefetchBrandArt(rice.id, rice.region, rice.prefecture);
+      setSelectedId(id);
+      setDetailOpen(true);
+    }
   }, [loadState, profiles]);
 
   const resetSemantic = useCallback(() => {
