@@ -4,18 +4,15 @@
 
 ## 1. 技術スタック
 
-正本の層別一覧（コンサル向け）は [16-tech-stack.md](./16-tech-stack.md)。要約:
+詳細な選定理由は [02-tech-retrospective.md](./02-tech-retrospective.md) §2。要約:
 
 - **Web:** Next.js 15 App Router、React 19、TypeScript 5
-- **スタイル:** Tailwind CSS 4
-- **モーション:** Motion（`motion/react`）
-- **アイコン:** Phosphor Icons
+- **スタイル:** Tailwind CSS 4 · Motion · Phosphor Icons
 - **ホスティング:** Vercel（旗艦 `komesomme.jp`）
 - **データ:** Supabase（PostgreSQL、pgvector、RLS）
 - **Embedding / 返事:** Gemini（OpenAI フォールバック）。1536 次元
-- **API:** Next.js Route Handler、Node.js runtime、非 Streaming JSON
+- **観測:** `access_events` + `/ops`；任意で GA4 / Sentry
 - **試験:** Vitest + Playwright（CI）
-- **シード:** `tsx`、embedding 抽象層、service role
 
 チャートは HTML/CSS と Motion。座標推薦はクライアントだけ。相談の短い返事だけ Gemini / OpenAI が書く。
 

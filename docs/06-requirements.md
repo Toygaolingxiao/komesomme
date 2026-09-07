@@ -55,14 +55,14 @@
 
 [11-launch-checklist.md](./11-launch-checklist.md) が実行リスト。ここに「将来」と書いてあっても、チェックリスト側が新しい。
 
-**1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel / `komesomme.jp`）、RLS 0004、匿名 `access_events`、GTM 埋め込み（コンテナ ID は未設定）、法務草案（特商法は運営情報記入済み・住所電話は請求時開示）、Vitest / Playwright / CI、購入タグ UI（通販 / ふるさと）。
+**1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel / `komesomme.jp`）、RLS 0004、匿名 `access_events`、GA4 gtag（測定 ID は env）、Sentry SDK（DSN は env）、法務草案、Vitest / Playwright / CI、購入タグ UI、編集発見。
 
-**まだ残り（1.0 の門に近いもの）:**
+**まだ残り（門禁の詳細は 11）:**
 
-- Affiliate 成果突合、VC 本番 SID、GA4 ダッシュボード実連、Sentry
-- branch protection（CI 必須化）、スモーク試験の人手記録欄
+- Affiliate 成果突合（クリック ↔ 管理画面）
+- branch protection（CI 必須化）
 - Library / 銘柄 URL の Search Console インデックス定着
-- アクセシビリティの人手確認強化
+- Sentry DSN 本番投入と失敗率アラート
 
 **1.0 後（P2）:** Rakuten 商品 API / deep link、お気に入り・履歴・Auth、grounded LLM 長文・炊飯アドバイス、PWA。
 

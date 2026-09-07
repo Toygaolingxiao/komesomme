@@ -4,6 +4,12 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## Unreleased
+
+- E2E: 相談 kill-switch の断言が副文案と二重マッチして CI が落ちるのを直す
+- 文書整理: 索引を正本 / 振り返り / アーカイブに再編。12 日文併置・16 層別表・07 UX 計画をスタブ化。vercel 防護節の重複を削る
+- スモーク A〜F を 2026-09-07 に記録（0.16.1）
+
 ## 0.16.1 — 2026-09-07
 
 - 0.16.0 の `LibraryBrowser` が `SITE_COLUMN` を import しておらず、CI と Production ビルドが落ちた。本番は前版のまま。import を足す

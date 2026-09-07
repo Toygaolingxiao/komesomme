@@ -94,7 +94,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P1-1a | 楽天アフィリエイト: 検索 URL にアフィパラメータ | 管理画面でクリックまたは遷移が確認できる | **コード済** `wrapRakutenAffiliateUrl` + `NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID` |
 | P1-1b | Amazon アソシエイト | タグ付き検索 URL + 第 5 条定型文。未契約なら UI から外す | **コード済** `amazonSearchUrl` + `AMAZON_ASSOCIATE_DISCLOSURE` |
 | P1-1c | Yahoo! / さとふるの ValueCommerce | — | **廃止**（2026-09）。VC 再申請しない。Yahoo は公式短鎖 / プレーン検索。記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) |
-| P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | [07-roadmap.md](./07-roadmap.md) 計測節を更新可 |
+| P1-1d | `track(rakuten_click|…)` とアフィ管理画面の突合方法を文書化 | 週次で「クリック vs 成果」を見られる | `/ops` と各社管理画面 |
 | P1-1e | 楽天 Item Search + クレジット | href のみ（商品名・価格は出さない）。公式クレジット表示 | **コード済** `shop-links` + `src/lib/rakuten/credit.ts`。隔離の次段は [13](./13-affiliate-compliance.md) §4 |
 | P1-1f | メルカリ検索アフィ | 通販 4 本目が `jp.mercari.com/search?…&afid=` | **コード済** 0.14.1。本番は `NEXT_PUBLIC_MERCARI_AFID`（[14](./14-affiliate-programs.md) §5） |
 
@@ -142,7 +142,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | P2-3 | Auth / お気に入り / 履歴 | [06-requirements.md](./06-requirements.md) |
 | P2-4 | Affiliate 商品検索 API・deep link | `RakutenAffiliateClient` 本実装 |
 | P2-5 | grounded LLM 長文・炊飯アドバイス | 推薦式は変えない |
-| P2-6 | CTA A/B、初見スコア再評価 | [07-roadmap.md](./07-roadmap.md) |
+| P2-6 | CTA A/B、初見スコア再評価 | [08-ui-design.md](./08-ui-design.md) · 計測後に判断 |
 | P2-7 | PWA / インストール体験 | 任意 |
 | P2-8 | 構造化ログ、レート制限の高度化（ユーザー単位等） | 運用規模に応じる |
 | P2-9 | きょうの三銘柄（日付シード） | **一部完了**（0.12.0 `/discover`）。[19](./19-editorial-discovery.md)。地図の「今日の一膳」とは別 |
@@ -215,10 +215,10 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | 文書 | 役割 |
 | --- | --- |
-| [06-requirements.md](./06-requirements.md) | 将来要件の正本 |
+| [06-requirements.md](./06-requirements.md) | 現行 MVP 要件 |
 | [04-database.md](./04-database.md) | スキーマ・マイグレーション |
 | [05-semantic-search.md](./05-semantic-search.md) | 相談 API 仕様 |
-| [07-roadmap.md](./07-roadmap.md) | UX・計測イベント |
+| [08-ui-design.md](./08-ui-design.md) | UI 正本（旧 UX roadmap は [07](./07-roadmap.md)） |
 | [01-versioning.md](./01-versioning.md) | 1.0.0 の意味 |
 | [03-system-design.md](./03-system-design.md) | env・データフロー |
 | ルート [README.md](../README.md) | ローカル起動・seed |

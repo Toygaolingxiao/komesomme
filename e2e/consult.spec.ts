@@ -12,9 +12,10 @@ test.describe("TS-CONSULT", () => {
     await waitForHomeReady(page);
     await page.locator("#km-query").fill("ハイボールと唐揚げに合う米");
     await page.getByRole("button", { name: /侍米師に相談|もう一度聞く/ }).click();
-    await expect(
-      page.getByText(/一時停止|味わいの地図から|うまく読み取れませんでした/),
-    ).toBeVisible({ timeout: 20_000 });
+    // Prefer 一時停止 — 「味わいの地図から」also appears in the failed subtitle.
+    await expect(page.locator("#consult").getByText(/一時停止/)).toBeVisible({
+      timeout: 20_000,
+    });
     // Map shell still present
     await expect(page.locator("#matrix")).toBeVisible();
     await expect(page.locator("body")).not.toContainText("GEMINI_API_KEY");

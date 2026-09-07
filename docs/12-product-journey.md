@@ -1,6 +1,6 @@
 # KomeSomme 历程回顾（构想 → 现行）
 
-本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。日语版是 [12-product-journey.ja.md](./12-product-journey.ja.md)。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。未完成的上线任务见 [11-launch-checklist.md](./11-launch-checklist.md)。
+本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。日语并置版已废止（旧链接见 [12.ja  stub](./12-product-journey.ja.md)）。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。未完成的上线任务见 [11-launch-checklist.md](./11-launch-checklist.md)。
 
 读者：产品主理人 GAO，以及之后接手的开发者 / 顾问。
 
@@ -126,7 +126,7 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 5. `NEXT_PUBLIC_GA_MEASUREMENT_ID` / Sentry（可选但便宜）  
 6. Library / 铭柄 URL 的 GSC 索引定着  
 
-独自ドメイン与特商法草案已落地。不要在这之前展开 Auth、收藏、煮饭建议、商品搜索 API。那是另一条产品曲线。技术栈分层见 [16-tech-stack.md](./16-tech-stack.md)。
+独自ドメイン与特商法草案已落地。不要在这之前展开 Auth、收藏、煮饭建议、商品搜索 API。那是另一条产品曲线。
 
 ---
 
@@ -144,6 +144,6 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 ## 7. 和 02 的分工
 
 - **02（日文）:** 为什么选 Next / Supabase / Gemini，RAG 层怎么切，生成式开发怎么用。
-- **12（本文，中文） / [12.ja](./12-product-journey.ja.md):** 为什么做这个产品、商业上还差什么、开发过程里哪些约束真的提高了效率。
+- **12（本文，中文）:** 为什么做这个产品、商业上还差什么、开发过程里哪些约束真的提高了效率。
 
 两者不要互相抄表格。改技术决策时改 02；改「我们怎么走到这里」时改 12 的两种语言。

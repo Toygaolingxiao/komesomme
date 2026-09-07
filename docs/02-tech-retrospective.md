@@ -1,6 +1,6 @@
 # 技術振り返り — 侍米師をゼロから
 
-KomeSomme を一から組み立てたときの技術選定、システム設計、生成 AI 活用、RAG 試行の記録。構想から現行までの経緯（コンサル / 開発）は [12-product-journey.ja.md](./12-product-journey.ja.md)（[中国語](./12-product-journey.md)）。現行実装の入口は [03-system-design.md](./03-system-design.md)、RAG 詳細は [05-semantic-search.md](./05-semantic-search.md)。
+KomeSomme を一から組み立てたときの技術選定、システム設計、生成 AI 活用、RAG 試行の記録。構想から現行までの経緯は [12-product-journey.md](./12-product-journey.md)（中文）。現行実装の入口は [03-system-design.md](./03-system-design.md)、RAG 詳細は [05-semantic-search.md](./05-semantic-search.md)。
 
 ## 1. プロジェクトの出発点
 
@@ -44,10 +44,17 @@ KomeSomme を一から組み立てたときの技術選定、システム設計�
 | --- | --- | --- |
 | Gemini `gemini-embedding-001` | 既定 embedding（1536 次元） | コストと品質のバランス |
 | OpenAI `text-embedding-3-small` | 代替 embedding | プロバイダ切替の検証 |
-| Gemini `gemini-3.6-flash` | 相談の短い返事（2 文） | 候補確定後のみ。失敗時は reason にフォールバック |
+| Gemini Flash 系 | 相談の短い返事 | 候補確定後のみ。失敗時は reason にフォールバック |
 | Flavor Bridge（非 LLM） | 推薦理由文 | 酒種・場面ルールで安定。幻覚を避ける |
 
-層別の正本（ホスティング・試験・アフィ・SC 向け交付模式）は [16-tech-stack.md](./16-tech-stack.md)。
+### 観測・アフィ・試験（要約）
+
+| 層 | 选型 |
+| --- | --- |
+| 托管 | Vercel Production（`komesomme.jp`） |
+| 观测 | `access_events` + `/ops`；GA4 gtag（任意）；Sentry（DSN 未设则关） |
+| 联盟 | 搜索 CTA + wrap；楽天隔离见 [13](./13-affiliate-compliance.md)；披露见 [15](./15-disclosure-surfaces.md) |
+| 试验 | Vitest · Playwright · `validate:rice` · CI |
 
 ### 開発環境
 
@@ -167,4 +174,4 @@ sources/（手書き打分・文案）
 | [01-versioning.md](./01-versioning.md) | SemVer ルール |
 | [10-changelog.md](./10-changelog.md) | バージョン別の変更履歴 |
 | [11-launch-checklist.md](./11-launch-checklist.md) | 1.0.0 までの実行タスク |
-| [12-product-journey.ja.md](./12-product-journey.ja.md) | 構想〜現行の経緯（日本語。[中国語](./12-product-journey.md)） |
+| [12-product-journey.md](./12-product-journey.md) | 構想〜現行の経緯（中文） |

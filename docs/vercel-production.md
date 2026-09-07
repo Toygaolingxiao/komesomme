@@ -321,61 +321,25 @@ CF **安全性 → 事件** 可看到被拦请求。异常时: Vercel `SEMANTIC_
 
 `clientIp.ts` 已读 `cf-connecting-ip`，CF 代理后 IP 限流仍有效。
 
+**预算（手动）:** Gemini / 楽天 / Vercel Spend Management にアラート。異常時は `SEMANTIC_RECOMMEND_ENABLED=false` → Redeploy。
 
-```mermaid
-flowchart TB
-  CF[Cloudflare エッジ<br/>Bot / WAF / Rate Limit]
-  Vercel[Vercel CDN + DDoS]
-  App[Next.js API<br/>semanticGuard + takeToken]
-  Kill[Kill switch env]
-  Provider[Gemini / 楽天 予算アラート]
+### 7.2 何を心配しなくてよいか
 
-  CF --> Vercel --> App --> Provider
-  Kill -.-> App
-```
+- **ライブラリ + 地図 SSG**: 通常のクロールやバズ程度では帯域で足りる
+- **shop-links 超過**: 楽天を叩かず検索 URL を返す設計済み
 
-1. **エッジ（最優先・コード不要）**
-   - **komesomme.jp を Cloudflare に載せる**（レジストラで NS を CF に変更。CF Registrar 不要）。Orange cloud プロキシ ON。
-   - CF **Security → Settings**: Bot Fight Mode ON（無料）。
-   - CF **WAF / Rate limiting rules**（有料プランまたは無料枠内）例:
-     - `POST */api/rice/semantic-recommend` → 同一 IP **10 req/min**（アプリ 8/min より少し緩くて可）
-     - `POST */api/*` → **30 req/min**
-     - 全世界 → **300 req/min/IP**（静的 GET 洪水の足切り）
-   - `.com` / `sommeatlas.com` は既に CF。301 前に CF が吸うので、攻撃者が `.com` を叩いても Vercel 負荷は小さい。
+### 7.3 実装優先度
 
-2. **アプリ（実装済み + 後続）**
-   - 相談: 現行閾値のまま維持。本番 env で `SEMANTIC_RECOMMEND_ENABLED=false` を **1 クリック停止** 手順を覚える。
-   - **Upstash Redis**（P0-1a 後続）: `@upstash/ratelimit` で **全リージョン共有** の IP 上限。トラフィックが isolate 限界を超えたら実装。
-   - 任意: `middleware.ts` で `/api/*` 全体に粗い上限（例 120/min/IP）— CF と二重化。
-
-3. **プロバイダ予算（必須・手動）**
-   - **Google AI Studio / Cloud**: 日次・月次 **予算アラート + ハード cap**（Gemini embedding + chat）。
-   - **楽天 API**: 利用上限・エラー率をダッシュボードで監視。
-   - **Vercel**: Billing → **Spend Management** アラート（Unexpected traffic 検知）。
-
-4. **観測**
-   - Vercel **Analytics / Logs**: 429・503 急増、`/api/rice/semantic-recommend` の 5xx。
-   - CF **Security Events**（.jp を CF 化後）。
-   - 異常時: ① `SEMANTIC_RECOMMEND_ENABLED=false` Redeploy → ② CF で該当国/ASN チャallenge → ③ 閾値引き下げ。
-
-### 7.3 何を心配しなくてよいか
-
-- **ライブラリ 106 ページ + 地図 SSG**: ビルド済み HTML。通常のクロールやバズ程度では Vercel 無料〜Pro 帯で足りる。
-- **shop-links レート超過**: 楽天を叩かず検索 URL を返す設計済み。
-
-### 7.4 実装優先度（2026-08 時点）
-
-| 優先 | 作業 | 工数 |
-| --- | --- | --- |
-| P0 | CF `.jp` DNS 橙云 + SSL 严格 + Bot Fight + 相談 POST 限速（Pro）或 WAF 质询（Free） | 运维 §7.5 |
-| P0 | Gemini / Vercel 予算アラート設定 | 運用 30m |
-| P1 | Upstash 全局限流（semantic + 任意 `/api/*`） | コード 半日 |
-| P2 | Vercel Firewall（Pro）または CF 有料 WAF ルール拡張 | プラン次第 |
+| 優先 | 作業 |
+| --- | --- |
+| P0 | CF 橙云 + Bot Fight +（Free なら規則 B / Pro なら相談 POST 限速）+ 予算アラート |
+| P1 | Upstash 全局限流 |
+| P2 | CF / Vercel 有料 WAF 拡張 |
 
 チェックリスト: [11-launch-checklist.md](./11-launch-checklist.md) **P0-1a / P0-1b**。
 
 ## 関連
 
-- 相談防護: [03-system-design.md](./03-system-design.md) §4–5  
+- 相談防護: [03-system-design.md](./03-system-design.md)  
 - RLS 実測: [rls-verify.md](./rls-verify.md)  
 - 全体: [11-launch-checklist.md](./11-launch-checklist.md)
