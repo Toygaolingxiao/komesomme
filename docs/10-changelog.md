@@ -4,6 +4,13 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 0.16.1 — 2026-09-07
+
+- 0.16.0 の `LibraryBrowser` が `SITE_COLUMN` を import しておらず、CI と Production ビルドが落ちた。本番は前版のまま。import を足す
+- Google アナリティクス（`G-YS0M3YF38P`）を gtag 直连。ページ切替でも `page_view` を送る。管理画面の script は貼らない
+- 任意の Sentry。DSN が無いときは送らない。相談 API の 5xx だけ上げる（相談文は付けない）
+- `main` の CI 失敗と Production デプロイ失敗で GitHub Issue を開く
+
 ## 0.16.0 — 2026-09-05
 
 - 相談で「晴天的霹雳」など中国語の呼び方が、青天の霹靂に当たらず Gemini 待ちのまま固まる不具合。別名は手元のカタログで引き、モデル呼び出しに上限を付ける

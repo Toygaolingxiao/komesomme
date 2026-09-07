@@ -17,7 +17,7 @@
 | **检索 / AI** | Embedding：Gemini `gemini-embedding-001`（或 OpenAI `text-embedding-3-small`，1536 维）；短回复：Gemini Flash 链（失败 → OpenAI / Flavor Bridge） | **坐标推荐纯客户端**；咨询才打 API |
 | **联盟** | 搜索 CTA + 标签 wrap；UI：`ShopLinksStrip`（通販 4 \| ふるさと 3） | 楽天 Item Search 隔离见 [13](./13-affiliate-compliance.md)；メルカリは検索 `afid`（[14](./14-affiliate-programs.md) §5） |
 | **披露** | 文案正本 `src/lib/affiliate.ts`；表面表 [15](./15-disclosure-surfaces.md) | CTA `※PR`；Amazon 定型在页脚 |
-| **观测** | 自建 `access_events` + `track()`；内部 `/ops` 看板；GTM 埋点（ID 可选） | `/ops` 需 `OPS_DASHBOARD_SECRET`；GA4 / Sentry 可选 |
+| **观测** | 自建 `access_events` + `track()`；内部 `/ops` 看板；GA4 gtag（任意）+ Sentry（DSN 未设则关） | `/ops` 需 `OPS_DASHBOARD_SECRET`；GTM 与直连 GA4 不要同时开 |
 | **试验** | Vitest · Playwright（Desktop/Mobile Chromium）· `validate:rice` · `assert:client-bundle` | CI 全绿门禁见 workflow |
 | **CI / 协作** | GitHub Actions · Issue/PR 模板 · Cursor rules（SemVer / 工作流 / 披露） | branch protection 仍要手动开 |
 
@@ -87,8 +87,8 @@
 | [#20](https://github.com/Toygaolingxiao/komesomme/issues/20) | `[P0-6a] Vercel env 突合` | 域名已上；Dashboard 再确认 |
 | [#28](https://github.com/Toygaolingxiao/komesomme/issues/28) | `[P0-5] スモーク A–E 留档` | Desktop+Mobile（#19 已并入） |
 | [#27](https://github.com/Toygaolingxiao/komesomme/issues/27) | `[P1-1] VC SID + アフィ突合` | 収益门禁 |
-| [#29](https://github.com/Toygaolingxiao/komesomme/issues/29) | `[P1-2] GTM/GA4` | 第一方看板已在 `/ops`；GA4 仍要 GTM 容器 ID |
-| [#30](https://github.com/Toygaolingxiao/komesomme/issues/30) | `[P1-3] Sentry` | 咨询 5xx |
+| [#29](https://github.com/Toygaolingxiao/komesomme/issues/29) | `[P1-2] GTM/GA4` | 第一方看板已在 `/ops`；GA4 直连 `G-YS0M3YF38P`（Vercel env） |
+| [#30](https://github.com/Toygaolingxiao/komesomme/issues/30) | `[P1-3] Sentry` | SDK 已接；DSN 仍要人手 |
 | [#31](https://github.com/Toygaolingxiao/komesomme/issues/31) | `[P1-4] GSC /library 索引` | スニペット更新 |
 
 ### 本轮已关

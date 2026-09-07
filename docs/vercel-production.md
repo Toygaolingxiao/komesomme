@@ -18,7 +18,10 @@ Vercel → Project → **Settings → Environment Variables**。
 | `SEMANTIC_RECOMMEND_ENABLED` | `true` | `true` | 異常時は `false` で相談だけ止める |
 | `SEMANTIC_RATE_LIMIT_PER_MIN` | `8`（目安） | 同左 | |
 | `SEMANTIC_RATE_LIMIT_PER_DAY` | `80`（目安） | 同左 | |
-| `NEXT_PUBLIC_GTM_ID` | `GTM-…`（任意） | 任意 | 未設定なら GTM スクリプトを出さない。GA4 は GTM 内で接続 |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `G-YS0M3YF38P` | 任意 | GA4 直连（gtag.js）。未設定ならスクリプトを出さない。**GTM と同時に入れない**（page_view が二重になる） |
+| `NEXT_PUBLIC_GTM_ID` | `GTM-…`（任意） | 任意 | 直连 GA4 を使うなら空。容器で GA4 を繋ぐときだけ |
+| `NEXT_PUBLIC_SENTRY_DSN` | `https://…@….ingest.sentry.io/…`（任意） | 任意 | 未設定なら SDK は無効。DSN は公開情報。相談文は送らない |
+| `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` | source map 用（任意） | 任意 | 無くてもエラーは届く。スタックを読みやすくするときだけ |
 | `ACCESS_LOG_ENABLED` | `true` | `true` | `false` で Supabase `access_events` 書き込みを止める |
 | `OPS_DASHBOARD_SECRET` | 16 文字以上の乱数 | **置かない**（または別秘密） | 内部 `/ops` 观测台。未設定なら 404。`NEXT_PUBLIC_` 禁止。cookie のみブラウザへ |
 | `RAKUTEN_APPLICATION_ID` | 楽天アプリ ID | 同左 | Item Search 用。未設定ならキーワード検索にフォールバック |
@@ -42,6 +45,37 @@ Vercel → Project → **Settings → Environment Variables**。
 3. 看板只读 `access_events`（service_role）。anon SELECT 依然不可。Yahoo 短鎖表 `yahoo_shopping_affiliate_links` も anon 不可（0006）  
 4. 公开导航・sitemap 不出。`robots.txt` Disallow `/ops`。响应 `Cache-Control: private, no-store`  
 5. 密钥禁止 `NEXT_PUBLIC_`。浏览器只持有 12h HttpOnly 签名 cookie。门禁在 Node（layout / Route Handler），不依赖 Edge middleware  
+
+### 1.2 GA4（直连 gtag）
+
+測定 ID は **`G-YS0M3YF38P`**。コードは `GaSnippet` が同じ gtag.js を出すので、管理画面の `<script>` を `layout` に貼らない。
+
+Vercel Production に `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-YS0M3YF38P` を入れて Redeploy。Preview は任意（テスト用プロパティなら別 ID）。
+
+GA4 管理画面で確認すること:
+
+1. **データストリーム** のウェブサイト URL が `https://komesomme.jp`
+2. **レポート → リアルタイム** で本番を数ページ遷移し、表示回数とカスタムイベント（`rakuten_click` など）が出ること
+3. SPA のため `gtag('config')` の自動 page_view はコード側で切ってある。切替は `AnalyticsProvider` が `page_view` を送る
+4. カスタムイベント名は製品の `track()` と同じ（`language_search_submit` 等）。GA4 で「カスタム定義」に登録するとレポートで使いやすい
+
+GTM 容器は今は不要。後から GTM に移すなら測定 ID を外し、容器側で GA4 設定タグを載せる。
+
+### 1.3 Sentry（任意）
+
+1. プロジェクトを作り **DSN** を Production の `NEXT_PUBLIC_SENTRY_DSN` に入れる  
+2. 相談 API の 500/502 は `reportServerError` が送る（相談文は付けない）  
+3. 失敗率アラートは Sentry Alerts で人手（例: `semantic-recommend` が短時間に複数）  
+4. source map が要るときだけ `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT`
+
+### 1.4 デプロイ失敗の知らせ
+
+`.github/workflows/ops-alert.yml` が次のとき GitHub Issue を開く（または同じタイトルへコメント）:
+
+- `main` 上の CI（`lint · typecheck · validate · build · unit · e2e`）失敗
+- Vercel **Production** デプロイ失敗（Preview は対象外）
+
+`main` への直接 push は変えない。Vercel の Git 設定に「GitHub check を待ってから Production」があれば付ける（プランによる）。`next build` 自体が typecheck 相当を含むので、今回の `SITE_COLUMN` 欠落のような壊れた TS は本番に乗らない。
 
 ## 2. 分離の目安
 

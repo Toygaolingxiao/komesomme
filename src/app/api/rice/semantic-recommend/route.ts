@@ -7,6 +7,7 @@ import { buildSemanticReason } from "@/lib/rice/flavorBridge";
 import { calculateTasteNeighbours } from "@/lib/rice/matrix";
 import { nameMatch, semanticDisplayScore, brandCoreQuery, canonicalBrandName } from "@/lib/rice/semanticScore";
 import { generateSommelierReply } from "@/lib/rice/sommelierReply";
+import { reportServerError } from "@/lib/observability/report";
 import { guardSemanticRecommend } from "@/lib/security/semanticGuard";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { RiceProfileV2 } from "@/types/rice";
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
     provider = resolveProvider();
     embeddingModel = getEmbeddingModel(provider);
   } catch (cause) {
-    console.error("Embedding provider is not configured:", cause);
+    reportServerError(cause, { route: "semantic-recommend", kind: "provider", status: 500 });
     return NextResponse.json(
       { message: "埋め込みプロバイダーが設定されていません。" },
       { status: 500 }
@@ -99,7 +100,7 @@ export async function POST(request: Request) {
   try {
     embedding = await createEmbeddingForConsultation(searchText, provider);
   } catch (cause) {
-    console.error("Failed to embed consultation query:", cause);
+    reportServerError(cause, { route: "semantic-recommend", kind: "embed", status: 502 });
     return NextResponse.json(
       { message: "検索ベクトルの生成に失敗しました。" },
       { status: 502 }
@@ -168,7 +169,7 @@ export async function POST(request: Request) {
       matches: ranked,
     });
   } catch (cause) {
-    console.error("Failed to match rice profiles:", cause);
+    reportServerError(cause, { route: "semantic-recommend", kind: "match", status: 502 });
     return NextResponse.json({ message: "銘柄の照合に失敗しました。" }, { status: 502 });
   }
 }

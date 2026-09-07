@@ -1,4 +1,5 @@
 import { recordAccess } from "@/lib/analytics/accessClient";
+import { analyticsLayerEntry, gtagEventParams } from "@/lib/analytics/layer";
 import { isOpsPath } from "@/lib/ops/paths";
 
 export type AnalyticsEvent =
@@ -35,12 +36,14 @@ type AnalyticsPayload = Record<string, string | number | boolean | null | undefi
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
 /**
  * Lightweight event bus.
  * - Pushes to dataLayer for GTM/GA4 when present
+ * - Mirrors custom events to gtag.js when NEXT_PUBLIC_GA_MEASUREMENT_ID is set
  * - Mirrors to Supabase access_events via /api/analytics/event
  * Never blocks UI.
  */
@@ -56,9 +59,22 @@ export function track(event: AnalyticsEvent, payload: AnalyticsPayload = {}) {
     return;
   }
 
-  const entry = { event, ...payload, ts: Date.now() };
+  const pagePath = window.location.pathname;
+  const entry = {
+    ...analyticsLayerEntry(event, payload, pagePath),
+    ts: Date.now(),
+  };
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(entry);
+
+  if (typeof window.gtag === "function") {
+    const params = gtagEventParams(
+      event,
+      event === "page_view" ? { ...payload, page_title: document.title } : payload,
+      pagePath
+    );
+    window.gtag("event", event, params);
+  }
 
   // page_view is recorded by AnalyticsProvider.
   if (event !== "page_view") {

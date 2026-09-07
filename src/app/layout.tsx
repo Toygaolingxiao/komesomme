@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { GaSnippet } from "@/components/analytics/GaSnippet";
 import { GtmSnippet } from "@/components/analytics/GtmSnippet";
 import { SkipOnOps } from "@/components/analytics/SkipOnOps";
 import { GUIDE_ROLE } from "@/lib/brand/guideRole";
@@ -79,6 +80,7 @@ export default function RootLayout({
         />
         <SkipOnOps>
           <GtmSnippet />
+          <GaSnippet />
         </SkipOnOps>
         <AnalyticsProvider>{children}</AnalyticsProvider>
       </body>

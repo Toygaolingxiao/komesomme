@@ -64,7 +64,7 @@
 | 页 | 文件 | 写什么 |
 | --- | --- | --- |
 | 利用规约 §3–4 | `src/app/terms/page.tsx` | §3 味わい声明（他页可链来）。§4 DETAIL + Amazon 定型 + 不赞助 / 非乐天站；委托细节链 privacy |
-| 隐私 §4 | `src/app/privacy/page.tsx` | 计量方名单。Amazon Art.5 全文不重复，链 terms |
+| 隐私 §4 | `src/app/privacy/page.tsx` | 计量方名单（GA4 / Sentry）。Amazon Art.5 全文不重复，链 terms |
 | 特商法 | `src/app/tokushoho/page.tsx` | 必填表格式字段；味わい注意链 terms §3 |
 
 品味 overlay / 事典末的 `DISCLAIMER` 与 encyclopedia JSON 的 `caveats` 是**产品诚实**，不是 ASP 规则。不要删 tasting 免责去「少显示广告字」。

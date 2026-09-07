@@ -51,8 +51,8 @@ KomeSomme は「米のデータベースサイト」でも、「LLM と雑談し
 
 - 特商法: 運営情報は記入済み。詳細住所・電話は請求時開示
 - 楽天 / Amazon のタグ配線はコード済み。**VC 本番 SID とクリック↔管理画面の突合**が未
-- GTM ID 未設定。GA4 に初週の CVR が無い
-- Sentry が無い。相談の 502 は Vercel のログを開くしかない
+- GA4 直连はコード済み（`G-YS0M3YF38P`）。出数には Vercel Production へ ID を入れる
+- Sentry SDK はコード済み。相談の 5xx を送る。DSN 未設定なら無効
 - Search Console: sitemap 送信済み。`/library` のスニペット更新は継続監視
 
 コンサルとしての提案: 1.0.0 は Auth、お気に入り、炊飯アドバイスを待たない。待つのは **アフィが少なくとも 1 本で突合できること + スモーク試験の記録 +（推奨）branch protection**。観測はまず `access_events` で足りる。GTM は加点であり、公開の門ではない。
@@ -123,7 +123,7 @@ Cursor の rule / 文書に書き、何度も実行したもの:
 2. VC 本番 SID（Yahoo / さとふる）
 3. [smoke-test.md](./smoke-test.md) に沿った Desktop + Mobile の記録
 4. GitHub branch protection（CI 必須）
-5. `NEXT_PUBLIC_GTM_ID` / Sentry（任意だが安い）
+5. `NEXT_PUBLIC_GA_MEASUREMENT_ID` / Sentry（任意だが安い）
 6. Library / 銘柄 URL の GSC インデックス定着
 
 独自ドメインと特商法草案は完了済み。この前に Auth、お気に入り、炊飯アドバイス、商品検索 API を広げない。それは別の製品曲線である。技術スタックの層別は [16-tech-stack.md](./16-tech-stack.md)。

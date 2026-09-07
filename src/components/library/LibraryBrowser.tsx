@@ -8,6 +8,7 @@ import { FOCUS } from "@/components/matrix/shared";
 import { brandI18nSearchBlob } from "@/data/rice/brandI18n";
 import { isTokuA } from "@/data/rice/tokuA";
 import { TokuABadge } from "@/components/rice/TokuABadge";
+import { SITE_COLUMN } from "@/components/siteChrome";
 
 const REGIONS = [
   "すべて",

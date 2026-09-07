@@ -48,3 +48,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Sentry source-map upload
+.env.sentry-build-plugin

@@ -1,6 +1,6 @@
 import Script from "next/script";
 
-/** Loads GTM only when NEXT_PUBLIC_GTM_ID is set. */
+/** Optional GTM. Leave unset when using GaSnippet (direct GA4) to avoid double page_view. */
 export function GtmSnippet() {
   const id = process.env.NEXT_PUBLIC_GTM_ID?.trim();
   if (!id) return null;

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 /**
  * Baseline response headers for a public Vercel deployment.
@@ -77,4 +78,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const sentryAuth = process.env.SENTRY_AUTH_TOKEN?.trim();
+
+export default sentryAuth
+  ? withSentryConfig(nextConfig, {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      silent: true,
+      sourcemaps: { disable: false },
+      disableLogger: true,
+    })
+  : nextConfig;

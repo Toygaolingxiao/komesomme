@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <LegalShell title="プライバシーポリシー">
-      <p>最終更新: 2026年9月3日</p>
+      <p>最終更新: 2026年9月7日</p>
 
       <section className="space-y-2">
         <h2 className="font-serif text-lg font-semibold text-[var(--km-ink)]">
@@ -44,8 +44,7 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-[var(--km-ink)]">利用状況:</strong>
             ページ閲覧、地図操作、相談送信、購入リンククリック等のイベント。個人を特定しないセッション ID
-            と経路・イベント名を、当サービスのデータベースおよび（導入時）Google タグマネージャ /
-            Google アナリティクスへ記録・集計します。
+            と経路・イベント名を、当サービスのデータベースおよび Google アナリティクスへ記録・集計します。
           </li>
         </ul>
         <p>会員登録・氏名・住所・決済情報は、現時点では取得しません。</p>
@@ -72,7 +71,8 @@ export default function PrivacyPage() {
           <li>ホスティング（例: Vercel）</li>
           <li>データベース（例: Supabase）</li>
           <li>埋め込み・文章生成 API（例: Google Gemini / OpenAI）</li>
-          <li>アクセス解析（Google タグマネージャ / Google アナリティクス。設定時）</li>
+          <li>アクセス解析（Google アナリティクス。設定時は Google タグマネージャ）</li>
+          <li>障害監視（Sentry。導入時）</li>
           <li>利用イベントの保管（Supabase 上の access_events。匿名）</li>
           <li>
             アフィリエイト計測（Amazon アソシエイト、楽天、Yahoo!ショッピング公式アフィリエイト等）。特別リンクのクリックにより各社が参照元を記録することがあります。Amazon
@@ -105,8 +105,9 @@ export default function PrivacyPage() {
           5. Cookie 等
         </h2>
         <p>
-          初回ヒント表示のためブラウザの localStorage を使うことがあります。分析タグ導入後は
-          Cookie 等を用いる場合があり、その際は本ページを更新します。
+          初回ヒント表示のためブラウザの localStorage を使うことがあります。Google
+          アナリティクス導入後は Cookie 等を用いることがあります。Sentry
+          を導入している場合は、障害調査のためスタックトレース等の技術情報を同社へ送ることがあります。
         </p>
       </section>
 

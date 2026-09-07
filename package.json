@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
@@ -23,12 +23,12 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:report": "node --import tsx scripts/write-test-report.ts",
-    "test": "npm run test:unit && npm run test:e2e && npm run test:report",
-    "brand-art:sync-prefs": "node --import tsx scripts/sync-prefecture-art-ids.ts"
+    "test": "npm run test:unit && npm run test:e2e && npm run test:report"
   },
   "dependencies": {
     "@google/genai": "^2.19.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@sentry/nextjs": "^10.73.0",
     "@supabase/supabase-js": "^2.49.8",
     "cross-env": "^10.1.0",
     "dotenv": "^16.5.0",

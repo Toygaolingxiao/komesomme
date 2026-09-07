@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
+import { track } from "@/lib/analytics";
 import { recordAccess } from "@/lib/analytics/accessClient";
 import { isOpsPath } from "@/lib/ops/paths";
 
@@ -16,9 +17,14 @@ function PageViewBeacon() {
     if (!pathname || last.current === key) return;
     if (isOpsPath(pathname)) return;
     last.current = key;
+    const hasQuery = Boolean(qs);
     recordAccess("page_view", {
       // Keep query out of stored path; only flag presence for funnel debug.
-      has_query: Boolean(qs),
+      has_query: hasQuery,
+    });
+    track("page_view", {
+      page_path: pathname,
+      has_query: hasQuery,
     });
   }, [pathname, searchParams]);
 

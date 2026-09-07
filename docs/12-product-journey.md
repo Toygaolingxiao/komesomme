@@ -51,8 +51,8 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 
 - 特商法：运营信息已填；详细住所・电话按请求披露（不是空白页）
 - 楽天 / Amazon 标签代码已接；**VC 本番 SID 与点击↔后台对账**仍缺
-- GTM ID 未配，GA4 没有第一周 CVR
-- 没有 Sentry，咨询 502 只能翻 Vercel 日志
+- GA4 直连代码已接（`G-YS0M3YF38P`）。要出数还得把该 ID 写进 Vercel Production
+- Sentry SDK 已接。咨询 5xx 会上报；DSN 未设则关闭
 - Search Console：sitemap 已交；`/library` 摘要刷新需持续盯
 
 顾问式的建议：1.0.0 不要等 Auth、收藏、煮饭建议。等 **至少一个アフィ渠道能对账 + 烟雾测试按 smoke-test 留档 +（建议）branch protection**。观测可以先靠 `access_events`，GTM 是加分不是挡路。
@@ -123,7 +123,7 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 2. VC 本番 SID（Yahoo / さとふる）  
 3. 烟雾测试按 `smoke-test.md` 留档（Desktop + Mobile）  
 4. GitHub branch protection（CI 必绿）  
-5. `NEXT_PUBLIC_GTM_ID` / Sentry（可选但便宜）  
+5. `NEXT_PUBLIC_GA_MEASUREMENT_ID` / Sentry（可选但便宜）  
 6. Library / 铭柄 URL 的 GSC 索引定着  
 
 独自ドメイン与特商法草案已落地。不要在这之前展开 Auth、收藏、煮饭建议、商品搜索 API。那是另一条产品曲线。技术栈分层见 [16-tech-stack.md](./16-tech-stack.md)。

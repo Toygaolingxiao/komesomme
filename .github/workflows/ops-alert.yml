@@ -1,0 +1,85 @@
+# Open or comment on a GitHub issue when main CI or a Vercel Production
+# deployment fails. Does not change how origin/main is pushed.
+name: Ops alerts
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  deployment_status:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  ci-failure:
+    name: Issue on main CI failure
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open or update ops issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { upsertOpsIssue } = require('${{ github.workspace }}/.github/scripts/upsert-ops-issue.js');
+            const run = context.payload.workflow_run;
+            const title = "[ops] CI failed on main";
+            const body = [
+              "GitHub Actions **CI** on `main` failed.",
+              "",
+              `- Run: ${run.html_url}`,
+              `- SHA: \`${run.head_sha}\``,
+              `- Event: ${run.event}`,
+              "",
+              "Fix, push `main`, then close this issue when green.",
+            ].join("\n");
+            const comment = [
+              "Another CI failure on `main`.",
+              "",
+              `- Run: ${run.html_url}`,
+              `- SHA: \`${run.head_sha}\``,
+            ].join("\n");
+            await upsertOpsIssue({ github, context, title, body, comment });
+
+  vercel-failure:
+    name: Issue on Production deploy failure
+    if: >-
+      github.event_name == 'deployment_status' &&
+      github.event.deployment_status.state == 'failure' &&
+      !contains(github.event.deployment.environment, 'Preview') &&
+      !contains(github.event.deployment.environment, 'preview')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open or update ops issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { upsertOpsIssue } = require('${{ github.workspace }}/.github/scripts/upsert-ops-issue.js');
+            const deployment = context.payload.deployment;
+            const status = context.payload.deployment_status;
+            const envName = deployment.environment || "unknown";
+            const title = "[ops] Vercel Production deploy failed";
+            const target = status.target_url || status.environment_url || "(no URL)";
+            const body = [
+              "A **Production** (non-Preview) GitHub deployment failed.",
+              "",
+              `- Environment: \`${envName}\``,
+              `- SHA: \`${deployment.sha}\``,
+              `- Status: ${target}`,
+              "",
+              "Vercel still typechecks during `next build`, so a bad TS ship should not go live. Check the deploy log, fix, push `main`.",
+            ].join("\n");
+            const comment = [
+              "Another Production deploy failure.",
+              "",
+              `- Environment: \`${envName}\``,
+              `- SHA: \`${deployment.sha}\``,
+              `- Status: ${target}`,
+            ].join("\n");
+            await upsertOpsIssue({ github, context, title, body, comment });

@@ -102,7 +102,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | **コード済** `GtmSnippet` + `track()`。本番は `NEXT_PUBLIC_GTM_ID` を入れ GTM 内で GA4 接続 |
+| P1-2a | GTM または GA4（または Vercel Analytics + 同等）を本番に埋設 | `dataLayer` イベントがレポートに出る | **コード済** `GaSnippet` + SPA `page_view`。測定 ID `G-YS0M3YF38P` を Vercel Production に入れる。GTM は使わない |
 | P1-2b | 必須イベントのダッシュボード: map / detail / purchase_* / language_search | 初週の CVR 概算が取れる | **内部完了** `/ops`（`OPS_DASHBOARD_SECRET`）。GA4 看板は P1-2a 後 |
 | P1-2c | 本番では `console.debug` に依存しない | ユーザー向けコンソールが静か | `src/lib/analytics/` |
 
@@ -110,8 +110,8 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P1-3a | Sentry（または同等）を Next フロント + API Route に接続 | 意図的 500 がダッシュボードに出る | SDK 設定、env |
-| P1-3b | 相談 API 失敗率のアラート | 閾値超過で通知 | Sentry / Vercel |
+| P1-3a | Sentry（または同等）を Next フロント + API Route に接続 | 意図的 500 がダッシュボードに出る | **コード済** `@sentry/nextjs`。DSN 未設定なら無効。本番は `NEXT_PUBLIC_SENTRY_DSN` |
+| P1-3b | 相談 API 失敗率のアラート | 閾値超過で通知 | **コード済** 相談 5xx を Sentry へ。率アラートは Sentry 画面で人手 |
 
 ### P1-4. SEO・シェア
 
@@ -180,9 +180,10 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 ### Sprint C — 収益と観測（1.0 同梱推奨）
 
 - [ ] P1-1a〜d Affiliate タグ + 突合手順（メルカリ P1-1f はコード済、本番 env は P0-6a と一緒に入れる）
-- [x] P1-2a GTM 埋込 + Supabase `access_events`（GA4 は GTM 側設定が人手）
+- [x] P1-2a GTM 埋込 + Supabase `access_events`（GA4 は直连 gtag。測定 ID を Vercel に入れる）
 - [ ] P1-2b〜c ダッシュボード確認・本番 console 静音確認
-- [ ] P1-3a〜b Sentry
+- [x] P1-3a Sentry SDK（DSN は Vercel に入れる）
+- [ ] P1-3b 相談失敗率アラート（Sentry 画面）
 - [x] P1-4a〜b SEO/OG/sitemap（銘柄 OG の SNS 人手確認はスモーク時）
 - [x] P1-5a〜b env 検証・ヘッダ
 - [x] P1-5c `npm audit` 方針記録（Critical なし。next 同梱 postcss High は Next 16 強制アップを見送り）
@@ -236,5 +237,5 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | 味わい再校正 + `access_events` / GTM コード | 0.3.0 済み（`NEXT_PUBLIC_GTM_ID` は未設定） |
 | Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap / 独自ドメイン | 実装済み |
 | 購入 UI（通販 4 / ふるさと 3）・楽天/Amazon/メルカリ配線 | 実装済み（0.14.1）。**VC は廃止。成果突合は未** |
-| GTM 埋込 / GA4 実連 / Sentry | コード済み or **未**（GTM ID・GA4・Sentry は人手） |
+| GTM 埋込 / GA4 実連 / Sentry | **コード済**。GA4 は `G-YS0M3YF38P` を Vercel へ。Sentry DSN は人手 |
 | Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |
