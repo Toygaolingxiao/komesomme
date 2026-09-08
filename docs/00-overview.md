@@ -12,11 +12,13 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 - 粒感・甘みから新しい銘柄を探したい人
 - 酒・ふるさと納税返礼品を比較したい人
 
-## 現行 MVP
+## 現行（本番）
 
-番号は [`VERSION`](../VERSION)。約 106 銘柄の座標推薦、意味検索 Top 4、`/library/[id]` 事典、購入導線（通販 / ふるさと）、編集発見（ピックアップ / 特集）。匿名イベントは `access_events` + GA4（env 設定時）。本番は `komesomme.jp`。
+番号は [`VERSION`](../VERSION)。旗艦ホストは **`https://komesomme.jp`**。
 
-**1.0.0 前の残り**は [11-launch-checklist.md](./11-launch-checklist.md)（アフィ成果突合・スモーク人手・branch protection・Sentry DSN 等）。
+約 106 銘柄の味わい地図と座標推薦、「侍米師に相談」の意味検索 Top 4、`/library/[id]` 銘柄事典、購入導線（通販 / ふるさと納税）、編集発見（ピックアップ / 特集）。防護（レート制限・RLS・法務頁・CI）とスモーク記録済み。匿名利用は `access_events`、任意で GA4 / Sentry。
+
+公開後 1〜2 週の運用（アフィ成果突合・GA4 出数確認・Sentry DSN 等）は [11-launch-checklist.md](./11-launch-checklist.md) の P1。Auth / お気に入りなどは P2。
 
 ## 関連
 

@@ -1,8 +1,18 @@
 # 本番リリース・チェックリスト（収益化サイト）
 
 対象: **B）アフィリエイト収益を伴う正式サイト**。  
-現状: 体験・防護・自前アクセス記録・法務草案（特商法含む）・購入 UI（通販 4 / ふるさと 3）・独自ドメイン `komesomme.jp`・CI（unit/e2e）は入った。GTM ID 本番接続・VC 本番 SID・branch protection・スモーク人手記録・アフィ突合などが残。番号は [`VERSION`](../VERSION)。  
+現状: **P0 公開門禁は 2026-09-08 判定で充足**（下記メモ）。番号は [`VERSION`](../VERSION)。  
 ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。
+
+### 1.0.0 判定メモ（2026-09-08 · GAO）
+
+| 項目 | 判定 |
+| --- | --- |
+| P0-1b 云側予算アラート | **適用外（記録済）** Gemini = 無料枠、Vercel = Hobby。課金しない限り Spend Cap / Spend Management は不要。アプリ日限 + kill switch で足りる。有料化したら再設定 |
+| P0-3b branch protection | **豁免（記録済）** GitHub 有料が必要。開発者 1 名のため status check 必須化は当面しない。CI は push 後に確認 |
+| P0-5 スモーク | **完了** [smoke-test.md](./smoke-test.md) 2026-09-07 A〜F |
+| P0-6a/b Production env | **完了（人手確認）** GAO 2026-09-08 |
+| P1（アフィ突合・GA4 出数確認・Sentry DSN） | **1.0 同梱ではない**。公開後 1〜2 週の運用タスクとして残す |
 
 使い方: 各タスクの `[ ]` を完了したら `[x]`。完了条件（Done）を満たすまで次フェーズへ進まない。
 
@@ -32,7 +42,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P0-1a | `POST /api/rice/semantic-recommend` にレート制限（IP または匿名トークン） | 閾値超過で 429。正常クエリは通る | **一部完了** `src/lib/security/semanticGuard.ts`（isolate 単位の best-effort。Upstash は後続） |
-| P0-1b | 日次 / 月次の呼び出し上限またはプロバイダ予算アラート | 上限到達時に相談を安全に劣化（Top4 なし or 固定メッセージ）。課金爆発しない | **一部完了** 日次 IP 上限 + `SEMANTIC_RECOMMEND_ENABLED` kill switch。プロバイダ側予算アラートは手動設定 |
+| P0-1b | 日次 / 月次の呼び出し上限またはプロバイダ予算アラート | 上限到達時に相談を安全に劣化（Top4 なし or 固定メッセージ）。課金爆発しない | **完了（2026-09-08）** 日次 IP 上限 + kill switch。Gemini/Vercel は**無料枠**のため云側予算は適用外。有料化時に Spend Cap / Spend Management を設定 |
 | P0-1c | エラー時に内部例外を返さないことを再確認 | 本番相当で 4xx/5xx ボディに stack / 鍵が出ない | **確認済** JSON は日本語 `message` のみ。詳細は `console.error` |
 
 ### P0-2. 本番 Supabase RLS / 権限の実測
@@ -49,7 +59,7 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
 | P0-3a | GitHub Actions: `npm ci` → `lint` → `typecheck` → `build` | `main` / PR で必須チェックが緑 | **完了** `.github/workflows/ci.yml`（+ `validate:rice`） |
-| P0-3b | CI 失敗時は merge / 本番デプロイしない運用 | branch protection またはチーム合意を文書化 | **要手動** GitHub → Settings → Branches で `main` に status check を必須化 |
+| P0-3b | CI 失敗時は merge / 本番デプロイしない運用 | branch protection またはチーム合意を文書化 | **豁免（2026-09-08）** 有料 branch protection は使わない。solo 開発。CI 失敗は Ops alerts Issue + 人手確認 |
 
 ### P0-4. 法務ページ（収益サイト最低限）
 
@@ -65,18 +75,18 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | **手順書:** [smoke-test.md](./smoke-test.md)（実施記録は人手） |
-| P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | `/api/rice/semantic-recommend` |
-| P0-5c | `/library/[id]` と品鑑パネル: 横溢れなし、購入縦一列（スマホ） | 390px 幅で横スクロール無し。旧 `/{id}` は 301 | `ShopLinksStrip`、library dossier |
-| P0-5d | 購入 7 リンクが各 EC / ふるさと検索へ開く（通販 4 + ふるさと 3） | 全ボタン 200 系で検索結果が出る | shared URL helpers |
+| P0-5a | 手順書: Desktop / Mobile で地図・スライダー・今日の一膳 | 本番 URL で操作確認し結果を記録 | **完了** [smoke-test.md](./smoke-test.md) 2026-09-07 |
+| P0-5b | 相談「ハイボールと唐揚げに合う米」→ Top 4 + 短い返事 or フォールバック | 502 連発しない。探針が 1 位へ | **完了** 同上 |
+| P0-5c | `/library/[id]` と品鑑パネル: 横溢れなし、購入縦一列（スマホ） | 390px 幅で横スクロール無し。旧 `/{id}` は 301 | **完了** 同上 |
+| P0-5d | 購入 7 リンクが各 EC / ふるさと検索へ開く（通販 4 + ふるさと 3） | 全ボタン 200 系で検索結果が出る | **完了** 同上 |
 | P0-5e | Playwright 等で P0-5b〜d の最低 3 本を CI または手動ランナー化 | 失敗が検知できる | **完了** `e2e/` + Vitest + CI。式样 [test-specification.md](./test-specification.md) |
 
 ### P0-6. 本番環境・デプロイ checklist
 
 | ID | タスク | Done 条件 | 主な場所 |
 | --- | --- | --- | --- |
-| P0-6a | Vercel Production と Preview の env 分離 | Production のみ本番 Supabase / 本番鍵 | **手順書:** [vercel-production.md](./vercel-production.md)（Dashboard 作業は人手） |
-| P0-6b | `.env.example` と本番必須変数の突合 | 欠落で起動失敗または明確な 500 | **手順書あり** `.env.example` + vercel-production |
+| P0-6a | Vercel Production と Preview の env 分離 | Production のみ本番 Supabase / 本番鍵 | **完了（2026-09-08）** GAO 人手突合 |
+| P0-6b | `.env.example` と本番必須変数の突合 | 欠落で起動失敗または明確な 500 | **完了（2026-09-08）** 同上 |
 | P0-6c | `EMBEDDING_PROVIDER` と DB の `embedding_model` 一致 | 相談が Top4 を返す。混在モデルで 0 件にならない | 相談が既に通っていれば実質 OK。切替時は再 seed |
 | P0-6d | 独自ドメイン接続 + HTTPS | 本番ホストで証明書エラー無し | **完了** `komesomme.jp`（[vercel-production.md](./vercel-production.md) §5） |
 | P0-6e | 障害時ロールバック手順（直前デプロイへ戻す） | 1 ページの runbook | **文書化済** vercel-production §4 + 本ファイル「運用」 |
@@ -158,13 +168,13 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 ### Sprint A — 安全に公開できる骨格
 
 - [x] P0-1a レート制限（best-effort / isolate 単位）
-- [x] P0-1b 日次上限 + kill switch（プロバイダ予算アラートは別途）
+- [x] P0-1b 日次上限 + kill switch（云側予算は無料枠のため適用外・2026-09-08）
 - [x] P0-2a/b/c anon 実測完了（0004 + 地図・相談 OK）
 - [x] P0-2d CI で client bundle をスキャン（本番 Network は Redeploy 後）
 - [x] P0-3a CI workflow
-- [ ] P0-3b branch protection（GitHub で status check 必須化）
+- [x] P0-3b branch protection → **豁免**（solo / 有料不可・2026-09-08）
 - [x] P0-6 手順書 + ロールバック文書（[vercel-production.md](./vercel-production.md)）
-- [ ] P0-6a/b Dashboard で env を Production に投入・突合（`NEXT_PUBLIC_SITE_URL` 含む）
+- [x] P0-6a/b Dashboard env 突合（2026-09-08）
 - [x] P0-6d 独自ドメイン `komesomme.jp`
 - [x] P1-5a/b env fail-fast + 基本セキュリティヘッダ
 - [x] （推奨）Vercel に `SEMANTIC_RECOMMEND_ENABLED` / `NEXT_PUBLIC_SITE_URL` を設定（本番運用中）
@@ -174,27 +184,28 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 - [x] P0-4a〜c,e 法務草案 + アフィ表記 + DISCLAIMER
 - [x] P0-4d 特商法の事業者情報を確定して記入
 - [x] P0-5a 手順書（[smoke-test.md](./smoke-test.md)）
-- [ ] P0-5b〜d スモーク実施と記録（人手）
+- [x] P0-5b〜d スモーク実施と記録（2026-09-07）
 - [x] P0-5e 最低限の自動テスト（推奨）
 
-### Sprint C — 収益と観測（1.0 同梱推奨）
+### Sprint C — 収益と観測（1.0 **後** 1〜2 週でも可・合意済）
 
-- [ ] P1-1a〜d Affiliate タグ + 突合手順（メルカリ P1-1f はコード済、本番 env は P0-6a と一緒に入れる）
-- [x] P1-2a GTM 埋込 + Supabase `access_events`（GA4 は直连 gtag。測定 ID を Vercel に入れる）
-- [ ] P1-2b〜c ダッシュボード確認・本番 console 静音確認
-- [x] P1-3a Sentry SDK（DSN は Vercel に入れる）
-- [ ] P1-3b 相談失敗率アラート（Sentry 画面）
-- [x] P1-4a〜b SEO/OG/sitemap（銘柄 OG の SNS 人手確認はスモーク時）
+- [ ] P1-1a〜d Affiliate タグ + 突合手順（メルカリ P1-1f はコード済）
+- [x] P1-2a GA4 gtag + `access_events`（測定 ID は Production へ）
+- [ ] P1-2b〜c GA4 出数・本番 console 静音の人手確認
+- [x] P1-3a Sentry SDK（DSN は任意・未設定なら無効）
+- [ ] P1-3b 相談失敗率アラート（Sentry 画面・DSN 後）
+- [x] P1-4a〜b SEO/OG/sitemap
 - [x] P1-5a〜b env 検証・ヘッダ
-- [x] P1-5c `npm audit` 方針記録（Critical なし。next 同梱 postcss High は Next 16 強制アップを見送り）
+- [x] P1-5c `npm audit` 方針記録
 
 ### リリース作業
 
-- [ ] 全 P0 + 合意した P1 が Done
-- [ ] `VERSION` / `package.json` → **1.0.0**
-- [ ] [10-changelog.md](./10-changelog.md) に 1.0.0 節を追加
-- [ ] [00-overview.md](./00-overview.md) の「現行 MVP」を本番表現に更新
-- [ ] 本番 URL で最終スモーク再実施
+- [x] 全 P0 Done（豁免・適用外を含む・2026-09-08）
+- [x] 合意: P1 残りは 1.0 後でも可
+- [x] `VERSION` / `package.json` → **1.0.0**（2026-09-08）
+- [x] [10-changelog.md](./10-changelog.md) に 1.0.0 節を追加
+- [x] [00-overview.md](./00-overview.md) を本番表現に更新
+- [x] 本番スモーク（2026-09-07）
 - [ ] （任意）社内 / 友人クローズド公開 48h → 問題なければ告知
 
 ---
@@ -228,14 +239,14 @@ P0 公開ブロッカー → P1 公開直後必須 → P2 成長・深化
 
 ---
 
-## 現状スナップショット（2026-08）
+## 現状スナップショット（2026-09-08）
 
 | 領域 | 状態 |
 | --- | --- |
-| 味わい地図・座標推薦・意味検索・銘柄詳細・購入 CTA UI | 実装済み |
-| Mobile 横溢れ・購入 1 列・探針ランダム・プレビュー拡大 | 0.2.1 済み |
-| 味わい再校正 + `access_events` / GTM コード | 0.3.0 済み（`NEXT_PUBLIC_GTM_ID` は未設定） |
-| Rate limit / CI / 法務草案 / RLS 0004 / セキュリティヘッダ / OG・sitemap / 独自ドメイン | 実装済み |
-| 購入 UI（通販 4 / ふるさと 3）・楽天/Amazon/メルカリ配線 | 実装済み（0.14.1）。**VC は廃止。成果突合は未** |
-| GTM 埋込 / GA4 実連 / Sentry | **コード済**。GA4 は `G-YS0M3YF38P` を Vercel へ。Sentry DSN は人手 |
-| Auth / お気に入り / Affiliate 商品 API | 1.0 後（P2） |
+| 味わい地図・座標推薦・意味検索・銘柄詳細・購入 CTA・編集発見 | 実装済み・本番稼働 |
+| Rate limit / CI / 法務 / RLS / ヘッダ / OG・sitemap / `komesomme.jp` | 実装済み |
+| スモーク A〜F | 2026-09-07 記録済 |
+| P0 門禁 | **充足**（予算云告警=無料枠適用外、branch protection=豁免） |
+| 購入 UI・アフィ配線 | 実装済み。**成果突合は P1 残**（VC 廃止） |
+| GA4 / Sentry | コード済。出数確認・DSN は 1.0 後でも可 |
+| Auth / お気に入り / 商品 API | P2（1.0 後） |
