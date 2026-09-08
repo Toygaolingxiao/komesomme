@@ -3,9 +3,11 @@ import { LibraryBrowser } from "@/components/library/LibraryBrowser";
 import { LibraryChrome } from "@/components/library/LibraryChrome";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
 import { LibraryMasthead } from "@/components/editorial/LibraryMasthead";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { mastheadArtSrc } from "@/lib/editorial/art";
+import { itemListLd } from "@/lib/seo/jsonLd";
 
 export function generateMetadata(): Metadata {
   const count = encyclopediaManifest().length;
@@ -17,6 +19,7 @@ export function generateMetadata(): Metadata {
   return {
     title: "銘柄ライブラリ",
     description,
+    alternates: { canonical: "/library" },
     openGraph: { description },
     twitter: { description },
   };
@@ -28,6 +31,17 @@ export default function LibraryPage() {
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
+      {entries.length > 0 ? (
+        <JsonLd
+          data={itemListLd({
+            name: "銘柄ライブラリ",
+            items: entries.map((entry) => ({
+              name: entry.name,
+              path: `/library/${entry.id}`,
+            })),
+          })}
+        />
+      ) : null}
       {masthead ? <EditorialArtPreloads hrefs={[masthead]} /> : null}
       <LibraryChrome />
 

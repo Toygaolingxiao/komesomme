@@ -22,6 +22,7 @@
 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 披露表面一覧（中文） |
 | [18-brand-illustration.md](./18-brand-illustration.md) | 銘柄イラスト方針 |
 | [19-editorial-discovery.md](./19-editorial-discovery.md) | 編集発見（三銘柄・特集） |
+| [20-growth-plan.md](./20-growth-plan.md) | **1.x 成長計画** 曝光・転化・SOP（中文） |
 | [vercel-production.md](./vercel-production.md) | 本番 env・ドメイン・GSC・CF 防護 |
 | [smoke-test.md](./smoke-test.md) | 本番スモーク手順と記録 |
 | [test-specification.md](./test-specification.md) | 試験式样（TS-*） |

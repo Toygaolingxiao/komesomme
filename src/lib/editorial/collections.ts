@@ -36,6 +36,20 @@ export function featuredCollections(
     .slice(0, cap);
 }
 
+/**
+ * `dateLabel` is Tokyo display copy ("2026年9月2日 0時02分"). Article JSON-LD needs
+ * ISO 8601, so parse that one shape and give up rather than guess.
+ */
+export function collectionPublishedIso(dateLabel: string): string | undefined {
+  const match = /^(\d{4})年(\d{1,2})月(\d{1,2})日(?:\s*(\d{1,2})時(\d{1,2})分)?$/.exec(
+    dateLabel.trim()
+  );
+  if (!match) return undefined;
+  const [, year, month, day, hour = "0", minute = "0"] = match;
+  const pad = (value: string) => value.padStart(2, "0");
+  return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`;
+}
+
 /** Index order: this month's features first, then the rest. */
 export function collectionsForIndex(
   knownIds: Set<string>,

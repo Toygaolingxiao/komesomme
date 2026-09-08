@@ -42,7 +42,7 @@
 | 編集発見（三銘柄・特集・事典画） | TS-LIBRARY-04〜07 | P2 | ✓ | イラストのロゴ混入は手動 |
 | 購入（通販 / ふるさとタグ） | TS-BUY-01〜04 | P0 | ✓ | ✓ 実クリック |
 | 法務ページ | TS-LEGAL-01〜03 | P0 | ✓ | |
-| SEO / robots | TS-SEO-01〜02 | P1 | ✓ | |
+| SEO / robots / 構造化データ | TS-SEO-01〜06 | P1 | ✓ | |
 | セキュリティ見た目 | TS-SEC-01〜02 | P0 | ✓ | |
 | 解析耐性 | TS-ANALYTICS-01 | P1 | ✓ | |
 | 内部观测台 | TS-OPS-01〜03 | P1 | ✓ | 本番登录は手動 |
@@ -189,6 +189,10 @@
 
 #### TS-SEO-01 `/sitemap.xml` に `/` と銘柄 URL
 #### TS-SEO-02 `/robots.txt` が sitemap を指し `/api/` を拒否
+#### TS-SEO-03 銘柄ページに `Article` + `BreadcrumbList` + `WebSite` の JSON-LD
+#### TS-SEO-04 `max-image-preview:large` があり、`og:image` が銘柄別ルートを指す
+#### TS-SEO-05 銘柄 OG 画像が 1200×630 の PNG（Discover の大画像カード条件）
+#### TS-SEO-06 銘柄ページにパンくず（表示と JSON-LD が同じ経路）
 
 #### TS-SEC-01 応答ヘッダ
 - `X-Frame-Options: SAMEORIGIN`（または同等）  

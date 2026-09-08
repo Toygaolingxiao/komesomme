@@ -3,6 +3,7 @@ import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import {
   allCollections,
   collectionBySlug,
+  collectionPublishedIso,
   collectionsForIndex,
   featuredCollections,
 } from "@/lib/editorial/collections";
@@ -83,5 +84,31 @@ describe("editorial collections", () => {
   it("features toku-a when the ranking is news", () => {
     const february = Date.UTC(2026, 1, 27, 3, 0);
     expect(featuredCollections(KNOWN, february).map((row) => row.slug)).toContain("toku-a");
+  });
+});
+
+describe("collectionPublishedIso", () => {
+  it("reads a Tokyo label into ISO 8601 with the +09:00 offset", () => {
+    expect(collectionPublishedIso("2026年9月2日 0時02分")).toBe("2026-09-02T00:02:00+09:00");
+  });
+
+  it("pads two-digit months and days", () => {
+    expect(collectionPublishedIso("2026年11月10日 18時53分")).toBe(
+      "2026-11-10T18:53:00+09:00"
+    );
+  });
+
+  it("falls back to midnight when the label has no time", () => {
+    expect(collectionPublishedIso("2026年9月5日")).toBe("2026-09-05T00:00:00+09:00");
+  });
+
+  it("gives up on an unexpected shape", () => {
+    expect(collectionPublishedIso("2026/09/05")).toBeUndefined();
+  });
+
+  it("parses every shipped collection label", () => {
+    for (const row of EDITORIAL_COLLECTIONS) {
+      expect(collectionPublishedIso(row.dateLabel)).toBeDefined();
+    }
   });
 });

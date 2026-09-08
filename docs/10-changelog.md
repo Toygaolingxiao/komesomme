@@ -4,6 +4,19 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.1.0 — 2026-09-08
+
+検索とシェアの土台。新しい銘柄文は書いていない。既存の全ページに効く。
+
+- 銘柄ページと特集ページに `Article` + `BreadcrumbList` の JSON-LD。`/library` と `/discover` に `ItemList`。組み立ては `src/lib/seo/jsonLd.ts` に集約
+- パンくずを表示に追加（JSON-LD と同じ経路を出す）
+- 銘柄ごとの OG 画像（1200×630）。銘柄名・産地・味わいラベル・地図上の位置を刷る。ビルド時に全銘柄ぶん生成するので、描画が壊れたらビルドが落ちる
+- `max-image-preview:large` を全公開ページへ。Discover の大画像カードの前提条件（`/ops` は noindex のまま）
+- トップの OG 画像に日本語フォントを積んでいなかったため、`侍米師（じべいし）` などが空箱で出ていたのを修正。フォント読み込みは `src/lib/og/fonts.ts` に寄せ、分享卡 API も同じものを使う
+- 銘柄・特集・`/library` に `canonical` を明示
+- 1.x の成長計画を [20-growth-plan.md](./20-growth-plan.md) に追加（曝光・転化・週次 SOP）
+- 試験: TS-SEO-03〜06 を追加。`jsonLd` と特集の公開日パースに単体試験
+
 ## 1.0.0 — 2026-09-08
 
 - **本番正式版。** P0 公開門禁を充足（スモーク 2026-09-07、Production env 突合、無料枠のため云予算は適用外、solo のため branch protection は豁免）

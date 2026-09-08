@@ -1,0 +1,235 @@
+# 1.x 成長計画（曝光と転化）
+
+1.0.0 已上线。本文是**之后做什么、按什么顺序做、怎么验收**的正本。中文，对 GAO。
+上线门禁看 [11-launch-checklist.md](./11-launch-checklist.md)，升号规则看 `.cursor/rules/semver.mdc`。
+
+**一句话:** 不去和比价站抢「還元率 / コスパ」，把 106 銘柄 × 味わい一次データ 做成日本「**按口味选米**」的标准答案，靠 料理別 / 県別 / 比較 三类数据驱动页拿曝光，靠 比較表 + 商品直リンク + 診断シェア 拿转化。
+
+---
+
+## 1. 方向设计
+
+### 1.1 对手在哪个战场
+
+搜「米 ランキング」「ふるさと納税 米」出来的是这批：
+
+| 类型 | 代表 | 武器 | 我们能不能赢 |
+| --- | --- | --- | --- |
+| 比价聚合 | furu-sato.com（横断 22 サイト・返礼品 39,658 件）、ふるとく | 每日更新的价格・還元率・g/1000円 | **不能。** 需要长期爬价格库，且与 [13](./13-affiliate-compliance.md) 的隔离约束冲突 |
+| 媒体排行 | ザイ・オンライン、コメボウ | 编辑部人力、既有域名权威 | 不能硬拼产出量 |
+| 官方数据 | 日本穀物検定協会 食味ランキング | 権威 | 引用即可，不复制 |
+
+这三类都在回答「**哪个便宜 / 哪个有名**」。**没有一家在回答「我家这顿饭该配哪个米」**——因为那需要逐銘柄的味覚評価，人力太贵。
+
+### 1.2 我们的护城河
+
+`RiceProfileV2` 里每个銘柄已有手写的一次データ:
+
+- 12 味わい指標 + 二维座標（甘み・粘り軸）
+- `best_match_dishes` / `avoid_pairings`
+- `spring/summer/autumn/winter_pairings`
+- `sake / beer / wine / whisky / tea_pairings`
+- `mood / occasion / lifestyle_scenes`、`pairing_reason`
+
+2026 年的检索现实（AI Overviews / AI Mode 已吃掉大量零点击）里，这正好是唯一还有效的东西:**AI 生成不出来、又能被 AI 引用的一次情報 + 结构化表格**。方向就是把这些字段从「详情页里的装饰」变成「独立的着陆页」。
+
+同时 `avoid_pairings`（不推荐的搭配）是稀缺的负面信息——比较类内容里写缺点能显著提高信任与点击，这个别人抄不了。
+
+### 1.3 三条曲线
+
+| 曲线 | 现状 | 目标 |
+| --- | --- | --- |
+| **曝光** | 可索引页 ≈ 106 銘柄 + 4 特集 + 首页。只覆盖「銘柄名」这一种检索意图 | 覆盖「〜に合う米」「〇〇県の米」「A と B の違い」三类高意图检索 |
+| **転化** | 「お店で探す」多数指向**搜索结果页**（楽天已是商品直リンク）。全站无比較表 | 商品直リンク化 + 比較表 + CTA 位置最优化 |
+| **再訪** | 无。無 shareable 診断結果、無 LINE / メール、share card 关着 | 診断結果パーマリンク + シェア + 自前チャネル 1 本 |
+
+---
+
+## 2. 技术选型
+
+原则:**不加月费、不加运维面、solo 一个人能维护**。
+
+| 需求 | 选型 | 不选什么 · 为什么 |
+| --- | --- | --- |
+| 新页面内容 | 沿用 Git 内 typed TS/JSON（`src/data/editorial/`）。每类新页手写リード文与 FAQ | 不引 headless CMS（月费 + 又一个后台）。不引 MDX 管线（现有渲染够用） |
+| 构造化データ | 自写 `src/lib/seo/jsonLd.ts`，输出 `Article` / `BreadcrumbList` / `ItemList` / `FAQPage` | 不装 schema 库。JSON-LD 就是对象字面量 |
+| OG / Discover 图 | 各面 `opengraph-image.tsx`（已有 `next/og`），统一 1200×630 | 不用外部图片服务 |
+| 渲染 | 数据驱动页全部 `generateStaticParams` + SSG，`revalidate` 只给会变的面 | 不用 `force-dynamic`，不引 CDN 缓存层 |
+| A/B 检证 | 客户端 deterministic bucket（session id hash）→ 变体写进 `access_events` | Hobby 无 Edge Config；不引 Optimize 系 SaaS |
+| 效果计测 | 一次パーティ `access_events` + `/ops` 为主，GA4 / GSC 为辅 | Cookie 规制下三方计测只会更差，主指标必须在自家库里 |
+| 自前チャネル | LINE 公式アカウント **コミュニケーションプラン（0 円・200 通/月）** 起步 | 先不做邮件系统（需要 ASP + 特商法表記 + 退订流程）。友だち超 200 人再评估 5,000 円/月 |
+| 検索・埋め込み | 现有 Supabase pgvector + Gemini 不变 | 不换 |
+
+新增依赖预算:**0**。Phase 1–4 不需要装任何 npm 包。
+
+---
+
+## 3. 环境与配置
+
+| 项 | 动作 | 备注 |
+| --- | --- | --- |
+| `metadata.robots` | 在 `src/app/layout.tsx` 加 `max-image-preview:large`（`/ops` 的 noindex 不动） | Discover 大图卡的前提条件之一，现在没设 |
+| GSC | 提交扩容后的 sitemap；开始每周看 **Discover 报表**（30 天 <100 表示 = 还在起步期） | 已注册 |
+| GA4 | 建 `page_type` 自定义维度（`brand` / `pair` / `prefecture` / `compare` / `collection`） | 事件已在发，只是没有这个维度 |
+| `/ops` | 漏斗按 `page_type` 拆分 | 现在只有总量 |
+| Vercel | 无新增 env（LINE 只是外链，不需要 token） | 免费额度内 |
+| `.env.example` | LINE 导线做了之后加 `NEXT_PUBLIC_LINE_ADD_URL`（公开值） | |
+
+---
+
+## 4. 开发路线
+
+每个 Phase = 一个 minor。做完一个推一个，不要攒。
+
+### Phase 1 — 検索基盤（→ `1.1.0`）
+
+**为什么先做:** 不写一个字新内容，只补技术欠债，对现有 106 页全体生效。风险最低、见效最快。
+
+| 交付 | 文件 |
+| --- | --- |
+| `Article` + `BreadcrumbList` JSON-LD 上銘柄页 / 特集页 | 新 `src/lib/seo/jsonLd.ts`、改 `src/app/library/[id]/page.tsx`、`src/app/collections/[slug]/page.tsx` |
+| `ItemList` 上 `/library`、`/discover`、`/collections` | 同上 |
+| `max-image-preview:large` | `src/app/layout.tsx` |
+| 銘柄別 OG 图（1200×630，含銘柄名 + 座標位置） | 新 `src/app/library/[id]/opengraph-image.tsx` |
+| 面包屑 UI（トップ › ライブラリ › 銘柄） | 新 `src/components/nav/Breadcrumbs.tsx` |
+| `/library`、`/` 补 `generateMetadata` | 现在这两面吃 layout 默认值 |
+
+**验收:** Rich Results Test 对 3 个代表 URL 全 pass；`npm run test:unit` 有 jsonLd 单测；OG 图在 X / LINE 预览正确。
+
+### Phase 2 — 料理・シーン別着陆页（→ `1.2.0`）
+
+**这是曝光的主引擎。** 「Yに最适なX」是 AI 检索时代仍然稳的 query 形状。
+
+- 新路由 `/pair/[dish]`（romaji slug: `curry`、`sashimi`、`bento`、`nabe`、`donburi`、`chahan`、`sushi`、`karaage`…）
+- **首发 20〜25 个，人手挑选**，不做全量组合。每面必须有:
+  1. 从 `best_match_dishes` + 味わい座標 算出的 Top 5 銘柄（一次データ排序，写明排序依据）
+  2. **HTML 比較表**：銘柄 / 甘み / 粘り / 向いている人 / 気をつける点 / お店で探す
+  3. 人手写的リード文 2〜3 段（遵守 `japanese-copy.mdc`；不要「様々な」「〜することができます」）
+  4. `avoid_pairings` 反查出来的「この料理には向かない米」——差异化的核心
+  5. FAQ 3 问 + `FAQPage` JSON-LD
+- 数据落在新 `src/data/editorial/pairings.ts`（typed，`validate:rice` 同类校验脚本要扩展）
+- 与 [19-editorial-discovery.md](./19-editorial-discovery.md) 的关系:**特集（`/collections`）继续人手 3 本、不量产**；`/pair` 是另一个面，由一次データ导出 + 人手リード文，不算量产特集。这条要写进 19。
+
+**验收:** 25 面全部 SSG；sitemap 收录；每面内部链接 ≥3 条（銘柄 / 別料理 / 特集）；Lighthouse SEO 100。
+
+### Phase 3 — 転化（→ `1.3.0`）
+
+| 交付 | 说明 |
+| --- | --- |
+| 商品直リンク扩大 | 楽天已经用 `recommendRakutenItem` 出商品页。Amazon / Yahoo 现在还是**搜索结果 URL**——这是当前最大的 CVR 漏点。Yahoo 已有 `yahooShoppingItemUrl`，先接 Yahoo，Amazon 视 PA-API 审査状况 |
+| `ComparisonTable` 组件 | 复用到 `/pair`、`/compare`、銘柄页。第一行 = 最推荐（点击最集中的位置）；必须有「気をつける点」列 |
+| CTA 位置 | 从「说明前」移到**比較表之后 / 章末**。微文案由「詳しくはこちら」改成具体动作（例:「お店で価格を見る」） |
+| `/compare/[a]-vs-[b]` | 人手挑 30〜50 对现实存在的比较（コシヒカリ vs つや姫 等）。「X対Y」是明确的高意图形状。**不做 106×106 组合** |
+| A/B 基盤 | `src/lib/experiment/`：deterministic bucket + 变体记入 `access_events`。首个实验只测 CTA 位置 |
+| `page_type` 维度 | GA4 + `/ops` 漏斗按页型拆分，否则无法判断哪类页在转化 |
+
+**验收:** `/ops` 能分页型看 表示 → 詳細 → shop_click；A/B 有单测（同一 session 恒定分桶）；披露 `※PR` 在所有新 CTA 面出现（对照 [15](./15-disclosure-surfaces.md)）。
+
+### Phase 4 — 再訪と拡散（→ `1.4.0`）
+
+- **診断結果パーマリンク**：相談 / 地图的结果变成可分享 URL（带銘柄 + 理由），配 OG 图。診断→結果→シェア 是日本转化率最高的形状之一（有 CPA 降到 1/3、CVR 1.8 倍的公开事例）
+- **share card 开启**：把 `SHARE_CARD_ENABLED` 从默认关改成默认开，图里带座標位置
+- **LINE 公式アカウント导线**：结果页下方一个「友だち追加」入口。0 円起步。**上之前必须改 [privacy](../src/app/privacy/page.tsx) 与 [terms](../src/app/terms/page.tsx)**
+- 新米シーズン（9〜11 月）的季节页，用 `autumn_pairings`
+
+**验收:** 分享链接在 X / LINE 预览正常；LINE 导线的隐私记述已上线；`/ops` 能看到 share / line_click 事件。
+
+### Phase 5 — 持续运营
+
+不再是开发 Phase，是第 6 节的 SOP 常态化。
+
+---
+
+## 5. 测试策略
+
+新页型全部走同一套门禁，不新增框架。
+
+| 层 | 内容 |
+| --- | --- |
+| `validate:rice` 系 | 扩展成也校验 `pairings.ts` / `compare` 对:slug 唯一、引用的銘柄 id 存在、Top N 不为空、リード文非空 |
+| Vitest | `jsonLd.ts` 输出快照；比較表排序函数；`avoid_pairings` 反查；A/B 分桶恒定性；`pair` slug ↔ 料理名 映射 |
+| Playwright | 每类新页 1 条 smoke：能打开、比較表可见、CTA 可点、`※PR` 可见、`body` 不含 `service_role` / `GEMINI_API_KEY` |
+| 手动（每次 Production 后） | [smoke-test.md](./smoke-test.md) 记录栏。新增一项：抽 1 个新页型跑 Rich Results Test |
+
+CI 不变（lint / typecheck / validate / unit / build / client-bundle / e2e）。
+
+---
+
+## 6. SOP
+
+### 6.1 一次改动（开发）
+
+1. 读 [11-launch-checklist.md](./11-launch-checklist.md) 与本文，确认属于哪个 Phase
+2. 开 Issue（`.github/ISSUE_TEMPLATE/`，标题带 `[1.x-P2]` 之类）
+3. 写代码 + 测试。日文文案对照 `japanese-copy.mdc` 自查
+4. `npm run test:unit` → `npm run build` → `npm run test:e2e`
+5. 用户可感知 → 同一 commit 升 `VERSION` + `package.json` + `docs/10-changelog.md`，再 `npm install --package-lock-only`
+6. `git push origin HEAD`（被 Auto-review 拦是预期，走审批卡，见 `ship-main.mdc`）
+7. 等 CI 绿 → 等 Vercel 绿 → 填 `docs/smoke-test.md`
+
+### 6.2 新页型上线 checklist
+
+任何新增可索引页，缺一项不推:
+
+- [ ] `generateStaticParams` + `generateMetadata`（title / description / canonical）
+- [ ] `opengraph-image` 1200×630，图内容与页内容一致（不用站 logo 当 OG 图）
+- [ ] JSON-LD：`Article` 或 `ItemList` + `BreadcrumbList`（有 FAQ 则加 `FAQPage`）
+- [ ] 面包屑 UI
+- [ ] 内部链接 ≥3 条出去，且至少 1 条从既有页链进来（不能是孤岛）
+- [ ] 人手写的リード文（不是纯模板填空）
+- [ ] 一次データ的排序依据写在页面上（这是被 AI 引用的理由）
+- [ ] 有联盟 CTA → `※PR` 披露，对照 [15](./15-disclosure-surfaces.md)
+- [ ] 进 `sitemap.ts`
+- [ ] Playwright smoke 1 条
+
+### 6.3 每周（30 分钟）
+
+| 顺序 | 看什么 | 判断 |
+| --- | --- | --- |
+| 1 | GSC 検索パフォーマンス：表示回数 / CTR / 平均順位，按页型分 | 表示涨但 CTR 低 → 改 title / OG 图。表示不涨 → 内容或内部链接不够 |
+| 2 | GSC Discover 报表 | 30 天 <100 表示 = 仍在起步，别急着改策略 |
+| 3 | GSC インデックス | 新页 48h 内未收录 → 检查内部链接与 sitemap |
+| 4 | `/ops` 漏斗（按页型） | 找 CTR 与 CVR 分开看:CTR 低改 CTA / 比較表；CVR 低改リンク先 |
+| 5 | Sentry | 有新 issue 就当周处理 |
+| 6 | 「KomeSomme」指名検索数 | 品牌增长的唯一硬指标 |
+
+**一周只改一件事。** 同时改两处就无法归因——这是研究里反复出现的失败模式。改动与要看的数字要一一对应，记在 changelog 里。
+
+### 6.4 每月
+
+- 联盟管理画面成果 ↔ `/ops` 的 shop_click 突合（P1 遗留项）
+- 依赖更新 + `npm audit`
+- 内容盘点：表示回数最低的 5 面，判断改写还是 noindex
+- 若开始产生收益，去开 Vercel Spend Management 与 Gemini Spend Cap（现在免费额度所以适用外，见 checklist 判定备忘）
+
+---
+
+## 7. KPI
+
+以 1.0.0 上线时为基线，**不设绝对值目标**（新站样本太小），只看方向:
+
+| 指标 | 来源 | 期望 |
+| --- | --- | --- |
+| 可索引页数 | sitemap | 111 → 约 190（Phase 2 + 3 后） |
+| GSC 表示回数 | GSC | Phase 2 完成后 4 周内单调上升 |
+| 収録率 | GSC | 新页 90% 以上被索引（未收录 = 内容太薄的信号） |
+| 页型別 shop_click 率 | `/ops` | `/pair` 应高于銘柄页（意图更明确） |
+| 指名検索 | GSC | 缓慢上升即可 |
+| 再訪率 | `access_events` | Phase 4 后可测 |
+
+---
+
+## 8. 不做清单
+
+写下来，防止以后手痒:
+
+- **不做価格・還元率比较。** 需要持续爬价格，且与联盟隔离约束冲突。这是对手的战场
+- **不做全组合程序化页面。** `/pair` 上限 ~30、`/compare` 上限 ~50，都人手挑。薄内容量产在 2026 年只会招来评价下调
+- **不改推薦式 / 座標軸含義**，除非 GAO 明确同意（见 `semver.mdc`）
+- **不引 CMS、不引 A/B SaaS、不引 schema 库**
+- **不做 Auth / お気に入り / PWA / 长文生成**，直到曝光曲线站住（原 P2）
+- **不用 AI 批量写日文页面正文。** リード文人手写，这恰恰是被引用的理由
+
+---
+
+关联:方向与经纬 [12-product-journey.md](./12-product-journey.md)、技术选型史 [02-tech-retrospective.md](./02-tech-retrospective.md)、画面 [08-ui-design.md](./08-ui-design.md)、联盟 [13](./13-affiliate-compliance.md)–[15](./15-disclosure-surfaces.md)。

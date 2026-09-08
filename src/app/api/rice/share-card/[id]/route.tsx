@@ -6,6 +6,7 @@ import { ShareCardImage } from "@/lib/brand/shareCardImage";
 import { SHARE_CARD_SIZE, shareCardInkArtFile } from "@/lib/brand/shareCard";
 import { isShareCardEnabled } from "@/lib/brand/shareCardEnabled";
 import { shareCardQrDataUrl } from "@/lib/brand/shareCardQr";
+import { loadOgFonts } from "@/lib/og/fonts";
 import { getSiteUrl } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -14,32 +15,9 @@ type RouteProps = {
   params: Promise<{ id: string }>;
 };
 
-type FontPack = { sans: ArrayBuffer; serif: ArrayBuffer };
-
-let fontPackPromise: Promise<FontPack> | null = null;
 const inkArtCache = new Map<string, Promise<string | null>>();
 
 const SHARE_DIR = path.join(process.cwd(), "public", "share");
-
-async function readArrayBuffer(filePath: string): Promise<ArrayBuffer> {
-  const buf = await readFile(filePath);
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-}
-
-function getFonts(): Promise<FontPack> {
-  if (!fontPackPromise) {
-    fontPackPromise = Promise.all([
-      readArrayBuffer(path.join(SHARE_DIR, "fonts", "NotoSansJP-500.ttf")),
-      readArrayBuffer(path.join(SHARE_DIR, "fonts", "NotoSerifJP-700.ttf")),
-    ])
-      .then(([sans, serif]) => ({ sans, serif }))
-      .catch((error) => {
-        fontPackPromise = null;
-        throw error;
-      });
-  }
-  return fontPackPromise;
-}
 
 function getInkArtDataUrl(riceId: string): Promise<string | null> {
   const file = shareCardInkArtFile(riceId);
@@ -100,8 +78,8 @@ export async function GET(request: Request, { params }: RouteProps) {
   const withQr = wantsQr(request);
   const { hostLine, absoluteUrl } = publicPageUrl(rice.id);
 
-  const [{ sans, serif }, heroPhotoDataUrl] = await Promise.all([
-    getFonts(),
+  const [fonts, heroPhotoDataUrl] = await Promise.all([
+    loadOgFonts(),
     getInkArtDataUrl(rice.id),
   ]);
   const qrDataUrl = withQr ? shareCardQrDataUrl(absoluteUrl) : null;
@@ -117,10 +95,7 @@ export async function GET(request: Request, { params }: RouteProps) {
     ),
     {
       ...SHARE_CARD_SIZE,
-      fonts: [
-        { name: "Noto Sans JP", data: sans, style: "normal", weight: 500 },
-        { name: "Noto Serif JP", data: serif, style: "normal", weight: 700 },
-      ],
+      fonts,
       headers: {
         "Content-Type": "image/png",
         "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",

@@ -6,12 +6,15 @@ import {
   ORBIT_PATH,
   PROBE,
 } from "@/components/brand/markGeometry";
+import { loadOgFonts } from "@/lib/og/fonts";
 
 export const alt = "KomeSomme | 侍米師（じべいし）";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const fonts = await loadOgFonts();
+
   return new ImageResponse(
     (
       <div
@@ -24,6 +27,7 @@ export default function OpenGraphImage() {
           justifyContent: "space-between",
           background: "#FFF5E5",
           padding: "64px 72px",
+          fontFamily: "Noto Sans JP",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
@@ -65,6 +69,7 @@ export default function OpenGraphImage() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div
               style={{
+                fontFamily: "Noto Serif JP",
                 fontSize: 64,
                 fontWeight: 700,
                 letterSpacing: "-0.04em",
@@ -98,6 +103,6 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    size
+    { ...size, fonts }
   );
 }

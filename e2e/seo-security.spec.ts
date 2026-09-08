@@ -17,6 +17,46 @@ test("TS-SEO-02 robots points to sitemap and blocks api", async ({ request }) =>
   expect(text).toMatch(/disallow:\s*\/api/i);
 });
 
+test("TS-SEO-03 brand page carries Article and BreadcrumbList JSON-LD", async ({ request }) => {
+  const html = await (await request.get(`/library/${STABLE_BRAND_ID}`)).text();
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(
+    (match) => JSON.parse(match[1]!) as unknown
+  );
+  const types = blocks
+    .flatMap((block) => (Array.isArray(block) ? block : [block]))
+    .map((node) => (node as { "@type"?: string })["@type"]);
+
+  expect(types).toContain("Article");
+  expect(types).toContain("BreadcrumbList");
+  expect(types).toContain("WebSite");
+});
+
+test("TS-SEO-04 large image previews are allowed and OG image is per brand", async ({
+  request,
+}) => {
+  const html = await (await request.get(`/library/${STABLE_BRAND_ID}`)).text();
+  expect(html).toMatch(/name="robots"[^>]*max-image-preview:large/);
+  expect(html).toMatch(
+    new RegExp(`og:image"\\s+content="[^"]*/library/${STABLE_BRAND_ID}/opengraph-image`)
+  );
+});
+
+test("TS-SEO-05 brand OG image renders at 1200x630", async ({ request }) => {
+  const response = await request.get(`/library/${STABLE_BRAND_ID}/opengraph-image`);
+  expect(response.ok()).toBeTruthy();
+  expect(response.headers()["content-type"]).toContain("image/png");
+  // PNG IHDR: width and height are big-endian uint32 at byte 16 and 20.
+  const png = await response.body();
+  expect(png.readUInt32BE(16)).toBe(1200);
+  expect(png.readUInt32BE(20)).toBe(630);
+});
+
+test("TS-SEO-06 brand page shows a breadcrumb trail", async ({ page }) => {
+  await page.goto(`/library/${STABLE_BRAND_ID}`);
+  const trail = page.getByRole("navigation", { name: "現在の位置" });
+  await expect(trail.getByRole("link", { name: "銘柄ライブラリ" })).toBeVisible();
+});
+
 test("TS-SEC-01 security headers on document", async ({ request }) => {
   const response = await request.get("/");
   expect(response.ok()).toBeTruthy();

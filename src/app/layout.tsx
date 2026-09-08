@@ -4,7 +4,9 @@ import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GaSnippet } from "@/components/analytics/GaSnippet";
 import { GtmSnippet } from "@/components/analytics/GtmSnippet";
 import { SkipOnOps } from "@/components/analytics/SkipOnOps";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { GUIDE_ROLE } from "@/lib/brand/guideRole";
+import { websiteLd } from "@/lib/seo/jsonLd";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
@@ -35,6 +37,13 @@ export const metadata: Metadata = {
     template: "%s | KomeSomme",
   },
   description: SITE_DESCRIPTION,
+  // Large previews are a precondition for Discover image cards. /ops overrides this.
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+  },
   icons: {
     icon: [{ url: "/icon", type: "image/png", sizes: "48x48" }],
     apple: [{ url: "/apple-icon", type: "image/png", sizes: "180x180" }],
@@ -64,20 +73,7 @@ export default function RootLayout({
       className={`${geist.variable} ${geistMono.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
     >
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "KomeSomme",
-              alternateName: ["コメソムメ", GUIDE_ROLE],
-              url: siteMetadataBase().origin,
-              description: SITE_DESCRIPTION,
-              inLanguage: "ja-JP",
-            }),
-          }}
-        />
+        <JsonLd data={websiteLd(SITE_DESCRIPTION)} />
         <SkipOnOps>
           <GtmSnippet />
           <GaSnippet />

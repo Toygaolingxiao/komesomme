@@ -4,12 +4,14 @@ import { CollectionsIndex } from "@/components/editorial/CollectionsIndex";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { TodaysBowl } from "@/components/editorial/TodaysBowl";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
+import { itemListLd } from "@/lib/seo/jsonLd";
 
 /** Tokyo calendar bowl + featured months. Refresh often enough to cross midnight. */
 export const revalidate = 600;
@@ -38,6 +40,17 @@ export default function DiscoverPage() {
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
+      {collections.length > 0 ? (
+        <JsonLd
+          data={itemListLd({
+            name: "特集",
+            items: collections.map((row) => ({
+              name: row.title,
+              path: `/collections/${row.slug}`,
+            })),
+          })}
+        />
+      ) : null}
       <EditorialArtPreloads hrefs={preloadHrefs} />
       <DiscoverChrome />
 
