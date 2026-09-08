@@ -19,9 +19,10 @@ test("TS-SEO-02 robots points to sitemap and blocks api", async ({ request }) =>
 
 test("TS-SEO-03 brand page carries Article and BreadcrumbList JSON-LD", async ({ request }) => {
   const html = await (await request.get(`/library/${STABLE_BRAND_ID}`)).text();
-  const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(
-    (match) => JSON.parse(match[1]!) as unknown
-  );
+  // `[\s\S]` instead of `/s` — tsconfig target is ES2017 (dotAll needs ES2018+).
+  const blocks = [
+    ...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
+  ].map((match) => JSON.parse(match[1]!) as unknown);
   const types = blocks
     .flatMap((block) => (Array.isArray(block) ? block : [block]))
     .map((node) => (node as { "@type"?: string })["@type"]);

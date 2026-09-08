@@ -4,6 +4,10 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.1.1 — 2026-09-08
+
+- CI typecheck 修正。`e2e/seo-security.spec.ts` の `/gs`（dotAll）が `tsconfig` の ES2017 target と合わず落ちていた。`[\s\S]` に差し替え
+
 ## 1.1.0 — 2026-09-08
 
 検索とシェアの土台。新しい銘柄文は書いていない。既存の全ページに効く。
