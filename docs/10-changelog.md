@@ -9,6 +9,7 @@
 - **本番正式版。** P0 公開門禁を充足（スモーク 2026-09-07、Production env 突合、無料枠のため云予算は適用外、solo のため branch protection は豁免）
 - 旗艦は `komesomme.jp`。地図・相談・銘柄事典・購入導線・編集発見まで一通り公開できる状態
 - P1（アフィ成果突合、GA4 出数の人手確認、Sentry DSN）は公開後 1〜2 週の運用として残す
+- 発版記念図: [docs/assets/komesomme-1.0.0-launch.png](./assets/komesomme-1.0.0-launch.png)
 
 ## 0.16.1 — 2026-09-07
 
