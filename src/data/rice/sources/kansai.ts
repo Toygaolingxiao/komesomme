@@ -52,7 +52,7 @@ export const kansai: RiceSource[] = [
     oil_compatibility: 3,
     best_match_dishes: ["おにぎり", "煮物", "和風の朝食"],
     good_with: ["醤油", "海苔", "梅干し"],
-    avoid_pairings: ["カレーライス", "繊細な白身の刺身"],
+    avoid_pairings: ["カレーライス", "あっさりした白身魚の刺身"],
     sake_pairings: ["旨口の純米", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
     short_: "低アミロースのやわらかさと強い甘み。",

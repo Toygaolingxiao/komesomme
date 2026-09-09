@@ -21,7 +21,7 @@ export const national: RiceSource[] = [
     oil_compatibility: 3,
     best_match_dishes: ["おにぎり", "お赤飯", "お粥"],
     good_with: ["醤油", "海苔", "小豆"],
-    avoid_pairings: ["カレーライス", "繊細な白身の刺身"],
+    avoid_pairings: ["カレーライス", "あっさりした白身魚の刺身"],
     sake_pairings: ["旨口の純米", "ぬる燗"],
     whisky_pairings: ["シェリー樽のウイスキー"],
     short_: "低アミロースのもちもち感と強い甘み。冷めても硬くなりにくい。",
