@@ -58,8 +58,8 @@ function avoidLabel(
 }
 
 /**
- * Stage magazine layout (promoted from /prototypes/pair Stage):
- * sticky art on lg+, single scrolling editorial column.
+ * Stage magazine layout: sticky art accent on lg+ (narrow),
+ * wider scrolling editorial column for the decision work.
  */
 export function PairView({ resolved }: { resolved: ResolvedPairing }) {
   const { page, top, avoid, avoidSource } = resolved;
@@ -75,37 +75,38 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
 
   return (
     <article className="pb-16 text-[var(--km-ink)]">
-      <div className="lg:grid lg:min-h-[calc(100dvh-3rem)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-        <aside className="relative isolate min-h-[40dvh] overflow-hidden bg-[var(--km-surface-warm)] lg:sticky lg:top-0 lg:h-[calc(100dvh-3rem)] lg:min-h-0">
+      {/* ~38 / 62 — art is atmosphere, copy is the job */}
+      <div className="lg:grid lg:min-h-[calc(100dvh-3rem)] lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+        <aside className="relative isolate min-h-[28dvh] overflow-hidden bg-[var(--km-surface-warm)] sm:min-h-[32dvh] lg:sticky lg:top-0 lg:h-[calc(100dvh-3rem)] lg:min-h-0">
           {hero ? (
             <EditorialArt
               src={hero}
               alt=""
               className="absolute inset-0 h-full w-full"
-              sizes="(min-width: 1024px) 48vw, 100vw"
-              quality={90}
+              sizes="(min-width: 1280px) 22rem, (min-width: 1024px) 38vw, 100vw"
+              quality={88}
               priority
               objectPosition="48% 42%"
             />
           ) : (
             <div className="absolute inset-0 flex items-end bg-[var(--km-surface-warm)] px-6 pb-6">
-              <BowlMark className="h-14 w-14 opacity-80" />
+              <BowlMark className="h-12 w-12 opacity-80" />
             </div>
           )}
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.35)]"
+            className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.28)]"
           />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:hidden">
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 lg:hidden">
             <p className="text-[12px] tracking-[0.14em] text-white/75">料理で選ぶ</p>
-            <h1 className="mt-2 font-serif text-[2.05rem] font-semibold text-white">
+            <h1 className="mt-2 font-serif text-[1.85rem] font-semibold text-white sm:text-[2.05rem]">
               {page.dishLabel}に合う米
             </h1>
           </div>
         </aside>
 
-        <div className="pair-stage-enter bg-[var(--km-bg)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-          <div className="mx-auto max-w-[34rem]">
+        <div className="pair-stage-enter bg-[var(--km-bg)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 xl:px-14">
+          <div className="mx-auto max-w-[40rem] lg:mx-0 lg:max-w-[42rem]">
             <p className="hidden text-[12px] tracking-[0.14em] text-[var(--km-muted)] lg:block">
               料理で選ぶ
             </p>
@@ -131,12 +132,12 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
               ))}
             </div>
 
-            <div className="mt-8 bg-[var(--km-surface)] px-4 py-3.5">
+            <aside className="mt-8 border-l-2 border-[var(--km-gold)]/55 pl-4">
               <p className="text-[11px] tracking-wide text-[var(--km-muted)]">並びの根拠</p>
               <p className="mt-1.5 text-[13px] leading-[1.85] text-[var(--km-ink-soft)]">
                 {page.sortNote}
               </p>
-            </div>
+            </aside>
 
             <section className="mt-12" aria-labelledby="pair-top-heading">
               <div className="flex items-end justify-between gap-3">
@@ -256,15 +257,15 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
 
             <nav className="mt-12 border-t border-[var(--km-border)] pt-8" aria-label="関連リンク">
               <h2 className="font-serif text-[1.1rem] font-semibold">ほかの料理</h2>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              <ul className="mt-4 grid gap-x-6 sm:grid-cols-2">
                 {related.map((other) => {
                   if (!other) return null;
                   const thumb = pairingArtSrc(other.artFile);
                   return (
-                    <li key={other.slug}>
+                    <li key={other.slug} className="border-b border-[var(--km-border)]">
                       <Link
                         href={`/pair/${other.slug}`}
-                        className={`group grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2.5 border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-1.5 transition-transform duration-150 ease-out active:scale-[0.98] hover:border-[var(--km-brown)]/35 ${FOCUS}`}
+                        className={`group grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2.5 py-3 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/40 active:scale-[0.98] ${FOCUS}`}
                       >
                         {thumb ? (
                           <EditorialArt
@@ -285,11 +286,11 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                   );
                 })}
               </ul>
-              <ul className="mt-3 flex flex-wrap gap-2.5">
+              <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px]">
                 <li>
                   <Link
                     href="/library"
-                    className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
+                    className={`text-[var(--km-brown)] underline-offset-2 hover:underline active:scale-[0.97] ${FOCUS}`}
                   >
                     銘柄ライブラリ
                   </Link>
@@ -297,7 +298,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                 <li>
                   <Link
                     href="/discover"
-                    className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
+                    className={`text-[var(--km-brown)] underline-offset-2 hover:underline active:scale-[0.97] ${FOCUS}`}
                   >
                     ピックアップ
                   </Link>
