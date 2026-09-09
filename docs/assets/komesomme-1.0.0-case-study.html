@@ -226,6 +226,17 @@
     @media (prefers-reduced-motion: reduce) {
       .ev-card.is-todo .led { animation: none; }
     }
+    .issue-card {
+      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
+      border-radius: .85rem; padding: .9rem 1rem;
+    }
+    .issue-card.is-nongoal {
+      border-style: dashed; background: transparent;
+    }
+    .issue-card .eyebrow {
+      font-size: 11px; letter-spacing: .14em; color: #766658; margin-bottom: .35rem;
+    }
+    .issue-card .body { font-size: .875rem; line-height: 1.55; color: #302820; }
     .concept-chips { display: flex; flex-direction: column; gap: .55rem; }
     .concept-chip {
       background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
@@ -910,7 +921,7 @@
       <div class="max-w-6xl mx-auto w-full">
         <p class="sec-label mb-2">7 · ロードマップ</p>
         <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">1.x 以降の計画</h2>
-        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い仕事は米のプレイブック完成（Phase 2）。その先に、同じ型を他食材へ広げる製品マトリクス（Phase 3・構想）を置きます。</p>
+        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い順は、米の型完成（Phase 2）→ 再訪（Phase 3）→ その先の製品マトリクス構想。横展開は米のループが回ってから考えます。</p>
         <div class="sheet p-3 sm:p-6 overflow-x-auto">
           <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[780px]" aria-label="これからの道">
             <defs>
@@ -952,51 +963,51 @@
               <text x="320" y="411" text-anchor="middle" font-size="11" fill="#704522" font-family="Zen Kaku Gothic New">県の地図の直し</text>
             </g>
 
-            <g class="road-pin" id="road-pin-next">
-              <text x="500" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 2</text>
-              <text x="500" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#4A7A5D" font-weight="700">NEXT · 型を完成</text>
-              <path d="M500 155 C500 135 516 123 500 107 C484 123 500 135 500 155 Z" fill="#7BB894" filter="url(#pinSoft)"/>
-              <circle cx="500" cy="135" r="9" fill="#FFFDF7"/>
-              <line x1="500" y1="155" x2="500" y2="248" stroke="#7BB894" stroke-width="1.25" stroke-dasharray="3 3"/>
-              <rect x="390" y="252" width="220" height="128" rx="10" fill="#FFFDF7" stroke="rgba(123,184,148,.55)"/>
-              <text x="500" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米でプレイブックを固める</text>
-              <text x="500" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">料理別入口 · 銘柄比較 · SEO</text>
-              <text x="500" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">長尾クエリと内部リンク設計</text>
-              <text x="500" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">比較表後の CTA · 直リンク</text>
-              <text x="500" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">季節面 · 人手の特集リード</text>
-              <text x="500" y="368" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">計測をページ型で分解する</text>
+                        <g class="road-pin" id="road-pin-next">
+              <text x="480" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 2</text>
+              <text x="480" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#4A7A5D" font-weight="700">NEXT · 型を完成</text>
+              <path d="M480 155 C480 135 496 123 480 107 C464 123 480 135 480 155 Z" fill="#7BB894" filter="url(#pinSoft)"/>
+              <circle cx="480" cy="135" r="9" fill="#FFFDF7"/>
+              <line x1="480" y1="155" x2="480" y2="248" stroke="#7BB894" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="370" y="252" width="220" height="112" rx="10" fill="#FFFDF7" stroke="rgba(123,184,148,.55)"/>
+              <text x="480" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米でプレイブックを固める</text>
+              <text x="480" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">料理入口 · 比較 · SEO</text>
+              <text x="480" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">直リンク · CTA · 計測</text>
+              <text x="480" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">季節面 · 人手の特集</text>
+              <text x="480" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">見つかる → 比べる → 買う</text>
             </g>
 
             <g class="road-pin" id="road-pin-phase3">
-              <text x="700" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 3</text>
-              <text x="700" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#704522" font-weight="700">構想 · 製品マトリクス</text>
-              <path d="M700 155 C700 135 716 123 700 107 C684 123 700 135 700 155 Z" fill="#D49A2A" filter="url(#pinSoft)"/>
-              <circle cx="700" cy="135" r="9" fill="#FFFDF7"/>
-              <line x1="700" y1="155" x2="700" y2="248" stroke="#D49A2A" stroke-width="1.25" stroke-dasharray="3 3"/>
-              <rect x="590" y="252" width="220" height="128" rx="10" fill="#FFFDF7" stroke="rgba(212,154,42,.5)"/>
-              <text x="700" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">同じ型を他カテゴリへ</text>
-              <text x="700" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">盤面 × 相談 × 事典の再利用</text>
-              <text x="700" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">桃Somme · 和牛Somme …</text>
-              <text x="700" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">共通: 座標軸 / 埋め込み / CTA</text>
-              <text x="700" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">差分: 一次データと専門家編集</text>
-              <text x="700" y="368" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">約束ではなく、拡張の見通し</text>
+              <text x="680" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 3</text>
+              <text x="680" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#704522" font-weight="700">再訪 · また来てもらう</text>
+              <path d="M680 155 C680 135 696 123 680 107 C664 123 680 135 680 155 Z" fill="#D49A2A" filter="url(#pinSoft)"/>
+              <circle cx="680" cy="135" r="9" fill="#FFFDF7"/>
+              <line x1="680" y1="155" x2="680" y2="248" stroke="#D49A2A" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="570" y="252" width="220" height="112" rx="10" fill="#FFFDF7" stroke="rgba(212,154,42,.5)"/>
+              <text x="680" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米のループを閉じる</text>
+              <text x="680" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">診断結果の共有 URL</text>
+              <text x="680" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">share card · OG</text>
+              <text x="680" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">LINE 公式への導線</text>
+              <text x="680" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">横展開の前に、再訪を測る</text>
             </g>
 
-            <g class="road-pin" id="road-pin-later">
-              <path d="M860 125 C860 105 876 93 860 77 C844 93 860 105 860 125 Z" fill="#9A8B7A" filter="url(#pinSoft)"/>
-              <circle cx="860" cy="105" r="8" fill="#FFFDF7"/>
-              <text x="860" y="62" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#766658">LATER</text>
-              <line x1="860" y1="77" x2="860" y2="36" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
-              <rect x="755" y="8" width="210" height="28" rx="8" fill="none" stroke="rgba(48,40,32,.22)" stroke-dasharray="3 2"/>
-              <text x="860" y="26" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">未確約：画像認識・機器連携</text>
-              <line x1="860" y1="125" x2="860" y2="200" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
-              <rect x="755" y="204" width="210" height="58" rx="10" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
-              <text x="860" y="228" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#302820">また来てもらう</text>
-              <text x="860" y="248" text-anchor="middle" font-size="11" fill="#766658" font-family="Zen Kaku Gothic New">共有と LINE。ログインは別件</text>
+            <g class="road-pin" id="road-pin-horizon">
+              <text x="880" y="70" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#302820">構想</text>
+              <text x="880" y="88" text-anchor="middle" font-size="10" font-family="IBM Plex Mono" fill="#766658" font-weight="700">製品マトリクス</text>
+              <path d="M880 135 C880 115 896 103 880 87 C864 103 880 115 880 135 Z" fill="#9A8B7A" filter="url(#pinSoft)"/>
+              <circle cx="880" cy="115" r="8" fill="#FFFDF7"/>
+              <line x1="880" y1="87" x2="880" y2="40" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
+              <rect x="775" y="8" width="210" height="28" rx="8" fill="none" stroke="rgba(48,40,32,.22)" stroke-dasharray="3 2"/>
+              <text x="880" y="26" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">未確約：画像認識・機器連携</text>
+              <line x1="880" y1="135" x2="880" y2="200" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
+              <rect x="775" y="204" width="210" height="72" rx="10" fill="none" stroke="rgba(48,40,32,.2)" stroke-dasharray="4 3"/>
+              <text x="880" y="228" text-anchor="middle" font-size="12" font-family="Shippori Mincho" fill="#302820">桃 / 和牛 / 酒 Somme</text>
+              <text x="880" y="248" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">米の型が回ってから</text>
+              <text x="880" y="264" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">確約ではない見通し</text>
             </g>
 
             <circle id="road-traveler" r="6" fill="#E56B3F" stroke="#FFFDF7" stroke-width="2" opacity="0"/>
-            <text x="500" y="545" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">Phase 2 は米で型を固める仕事。Phase 3 は同じ型の横展開構想。破線は未確約</text>
+            <text x="500" y="545" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">Phase 2 で見つかる・買う。Phase 3 でまた来てもらう。構想は製品マトリクス。破線は未確約</text>
           </svg>
         </div>
       </div>
@@ -1005,30 +1016,39 @@
 
   <section class="px-5 sm:px-10 pb-[var(--sec-y)]">
     <div class="max-w-6xl mx-auto">
-      <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
         <article class="issue-card">
-          <p class="eyebrow">Phase 2 · 米の型を完成させる</p>
-          <p class="body" style="margin-bottom:.55rem">1.0 で通した「味わいで選ぶ」を、検索に見つかって、比較できて、買えるところまで通す段階です。米だけでプレイブックを閉じる仕事です。</p>
+          <p class="eyebrow">Phase 2 · 米の型を完成</p>
+          <p class="body" style="margin-bottom:.55rem">見つかって、比べて、買えるところまで通します。露出と転化の playbook です。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
-            <li>· 料理・シーン別の入口で「この一膳に合う米」を取る</li>
-            <li>· 銘柄比較と「向かない組み合わせ」で一次情報を前面に出す</li>
-            <li>· 構造化データ・sitemap・内部リンクで入口を設計する</li>
-            <li>· 比較のあとに直リンクと CTA。計測はページ型で分ける</li>
-            <li>· 季節面と人手の特集リード。量産ブログはしない</li>
+            <li>· 料理・シーン別の入口</li>
+            <li>· 銘柄比較と「向かない」</li>
+            <li>· SEO と内部リンク</li>
+            <li>· 比較後の直リンクと CTA</li>
+            <li>· 季節面 · 人手の特集</li>
           </ul>
         </article>
         <article class="issue-card">
-          <p class="eyebrow">Phase 3 · 製品マトリクス（構想）</p>
-          <p class="body" style="margin-bottom:.55rem">米で型が回ったら、同じエンジンを他の食材へ広げる見通しです。桃Somme、和牛Somme、酒Sommeのように、カテゴリごとにブランドを立てる案です。確約ではなく、拡張の地図です。</p>
+          <p class="eyebrow">Phase 3 · 再訪</p>
+          <p class="body" style="margin-bottom:.55rem">一度選んだ人が、また戻ってこられるようにします。横展開の前に、米のループを閉じます。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
-            <li>· 共通: 二次元の味わい盤面、相談、事典、買う出口</li>
-            <li>· 差し替え: 座標軸の意味、専門家編集、一次データ</li>
-            <li>· 毎回やり直すもの: 非目標の切り方と監修の仕方</li>
-            <li>· 米の運用と転化が安定してから、横展開を検討する</li>
+            <li>· 診断結果の共有 URL</li>
+            <li>· share card と OG</li>
+            <li>· LINE 公式への導線</li>
+            <li>· 再訪率を測れるようにする</li>
+          </ul>
+        </article>
+        <article class="issue-card is-nongoal">
+          <p class="eyebrow">構想 · 製品マトリクス</p>
+          <p class="body" style="margin-bottom:.55rem">桃Somme / 和牛Somme / 酒Somme。同じエンジンの横展見通しです。Phase 2–3 のあとに検討します。</p>
+          <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
+            <li>· 共通: 盤面 · 相談 · 事典 · 出口</li>
+            <li>· 差し替え: 軸と一次データ</li>
+            <li>· 未確約: 画像認識 · 機器連携</li>
           </ul>
         </article>
       </div>
-      <p class="text-xs text-muted mb-6 leading-relaxed">破線の LATER（共有・LINE・画像認識など）は再訪と仮説です。Phase 3 の製品マトリクスは、いまの成長計画の外側にある構想として分けています。</p>
+      <p class="text-xs text-muted mb-6 leading-relaxed">順序を取り違えないこと。再訪より先に製品マトリクスへ進むと、まだ閉じきっていない米の型を複製することになります。</p>
 
 <div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
         <div>
@@ -1520,7 +1540,7 @@
       document.getElementById('road-pin-now'),
       document.getElementById('road-pin-next'),
       document.getElementById('road-pin-phase3'),
-      document.getElementById('road-pin-later'),
+      document.getElementById('road-pin-horizon'),
     ].filter(Boolean);
 
     if (!stage) return;
@@ -1548,9 +1568,9 @@
           const p = self.progress;
           if (p < 0.25) phaseEl.textContent = 'DONE · 1.0.0 公開判定';
           else if (p < 0.5) phaseEl.textContent = 'NOW · 1.1.x の保守と改善';
-          else if (p < 0.62) phaseEl.textContent = 'Phase 2 · 米で型を完成させる';
-          else if (p < 0.82) phaseEl.textContent = 'Phase 3 · 桃Somme / 和牛Somme 構想';
-          else phaseEl.textContent = 'LATER · 未確約の仮説を含む';
+          else if (p < 0.62) phaseEl.textContent = 'Phase 2 · 見つかる・比べる・買う';
+          else if (p < 0.82) phaseEl.textContent = 'Phase 3 · また来てもらう（再訪）';
+          else phaseEl.textContent = '構想 · 製品マトリクス（未確約を含む）';
         },
       },
     });
