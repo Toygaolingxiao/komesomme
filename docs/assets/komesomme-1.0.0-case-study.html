@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KomeSomme 1.0.0 - Delivery Lab</title>
-  <meta name="description" content="KomeSomme の技術実験とデリバリー記録。データ、推薦、公開運用を一人で組み立てた過程を、実装と判断の境界ごとに示します。" />
+  <title>KomeSomme 1.0.0 — 技術実験の記録</title>
+  <meta name="description" content="KomeSomme の技術実験の記録。味わい地図と相談、推薦の境界、公開判定までを一人で組み立てた過程を示します。" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -167,10 +167,6 @@
     @media (min-width: 720px) {
       .adr-grid { grid-template-columns: 1fr 1fr; }
     }
-    .adr-card {
-      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
-      border-radius: .85rem; padding: .85rem .95rem;
-    }
     .adr-card h3 {
       font-family: "Shippori Mincho", serif; font-size: .95rem;
       font-weight: 500; margin: 0 0 .45rem;
@@ -188,7 +184,9 @@
     }
     .split-ev .sheet h3 {
       font-family: "Shippori Mincho", serif; font-size: 1rem;
-      font-weight: 500; margin: 0 0 .55rem;
+      font-weight: 500; margin: 0 0 .75rem;
+      padding-bottom: .55rem;
+      border-bottom: 1px solid rgba(48,40,32,.1);
     }
     .viz-caption {
       margin-top: .85rem;
@@ -197,118 +195,400 @@
       line-height: 1.55;
       max-width: 42rem;
     }
-    .ev-dash {
-      display: grid;
-      gap: .65rem;
-      grid-template-columns: 1fr;
+    .ev-list { margin: 0; padding: 0; list-style: none; }
+    .ev-row {
+      padding: .7rem 0;
+      border-bottom: 1px solid rgba(48,40,32,.08);
     }
-    @media (min-width: 560px) {
-      .ev-dash { grid-template-columns: 1fr 1fr; }
-    }
-    @media (min-width: 900px) {
-      .ev-dash { grid-template-columns: 1fr 1fr 1fr; }
-    }
-    .ev-card {
-      background: #FFFDF7;
-      border: 1px solid rgba(48,40,32,.1);
-      border-radius: .85rem;
-      padding: .85rem .9rem .9rem;
-      position: relative;
-      min-height: 7.2rem;
-    }
-    .ev-card .led-row {
-      display: flex; align-items: center; gap: .45rem;
-      margin-bottom: .45rem;
-    }
-    .ev-card .led {
-      width: 10px; height: 10px; border-radius: 50%;
-      box-shadow: 0 0 0 3px rgba(229,107,63,.12);
-      flex-shrink: 0;
-    }
-    .ev-card.is-ok .led { background: #E56B3F; box-shadow: 0 0 0 3px rgba(229,107,63,.14); }
-    .ev-card.is-run .led { background: #7BB894; box-shadow: 0 0 0 3px rgba(123,184,148,.18); }
-    .ev-card.is-todo .led {
-      background: #D49A2A;
-      box-shadow: 0 0 0 3px rgba(212,154,42,.18);
-      animation: led-pulse 1.8s ease-in-out infinite;
-    }
-    .ev-card.is-mute .led {
-      background: #B5A99A;
-      box-shadow: 0 0 0 3px rgba(48,40,32,.06);
-    }
-    .ev-card.is-mute { opacity: .88; border-style: dashed; }
-    @media (min-width: 900px) {
-      .ev-card.is-span { grid-column: 1 / -1; min-height: auto; }
-    }
-    .ev-card .led-label {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px; letter-spacing: .04em; color: #766658;
-    }
-    .ev-card .ev-title {
+    .ev-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .ev-row .ev-title {
       font-family: "Shippori Mincho", serif;
-      font-size: 1rem; font-weight: 500; margin: 0 0 .3rem;
+      font-size: .95rem; font-weight: 500; margin: 0 0 .25rem; color: #302820;
     }
-    .ev-card .ev-proof {
-      font-size: .78rem; color: #766658; line-height: 1.45; margin: 0;
-    }
-    @keyframes led-pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .45; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .ev-card.is-todo .led { animation: none; }
+    .ev-row .ev-proof {
+      font-size: .78rem; color: #766658; line-height: 1.5; margin: 0;
     }
     .issue-card {
-      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
-      border-radius: .85rem; padding: .9rem 1rem;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid rgba(48,40,32,.12);
+      border-radius: 0;
+      padding: .85rem 0 1rem;
+    }
+    .grid > .issue-card {
+      border-bottom: 0;
+      border-top: 1px solid rgba(48,40,32,.12);
+      padding: .9rem 0 0;
     }
     .issue-card.is-nongoal {
-      border-style: dashed; background: transparent;
+      border-style: dashed; opacity: .92;
+    }
+    .grid > .issue-card.is-nongoal {
+      border-top-style: dashed;
     }
     .issue-card .eyebrow {
       font-size: 11px; letter-spacing: .14em; color: #766658; margin-bottom: .35rem;
     }
     .issue-card .body { font-size: .875rem; line-height: 1.55; color: #302820; }
-    .summary-grid {
-      display: grid; gap: .65rem;
+    .read-spine {
+      display: flex; flex-wrap: wrap; gap: .35rem .85rem;
+      margin: 0; padding: .85rem 0 0;
+      border-top: 1px solid rgba(48,40,32,.12);
+      list-style: none;
+    }
+    .read-spine a {
+      text-decoration: none; color: #704522; font-size: .82rem;
+      border-bottom: 1px solid rgba(112,69,34,.28);
+      padding-bottom: 1px;
+    }
+    .read-spine a:hover { color: #E56B3F; border-bottom-color: rgba(229,107,63,.45); }
+    .wedge-story {
+      display: grid; gap: 1.1rem;
+      margin-bottom: 1.35rem;
+    }
+    @media (min-width: 900px) {
+      .wedge-story {
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: stretch;
+        gap: .55rem;
+      }
+    }
+    .wedge-beat {
+      background: #FFFDF7;
+      border: 1px solid rgba(48,40,32,.1);
+      border-radius: .75rem;
+      padding: 1rem 1.05rem 1.1rem;
+      min-width: 0;
+    }
+    .wedge-beat .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px; letter-spacing: .1em; color: #E56B3F;
+      margin: 0 0 .45rem;
+    }
+    .wedge-beat h3 {
+      font-family: "Shippori Mincho", serif;
+      font-size: 1.05rem; font-weight: 500; margin: 0 0 .45rem; color: #302820;
+    }
+    .wedge-beat p {
+      margin: 0; font-size: .82rem; line-height: 1.55; color: #766658;
+    }
+    .wedge-beat.is-focus {
+      border-color: rgba(229,107,63,.38);
+      background: linear-gradient(180deg, #FFFDF7 0%, #FFF5E5 100%);
+    }
+    .wedge-arrow {
+      display: none;
+      width: 1.4rem;
+      align-self: center;
+      color: #E56B3F;
+      opacity: .7;
+    }
+    @media (min-width: 900px) {
+      .wedge-arrow { display: flex; align-items: center; justify-content: center; }
+    }
+    .wedge-alts {
+      display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .7rem;
+    }
+    .wedge-alts span {
+      font-size: .72rem; color: #9A8B7A;
+      border: 1px dashed rgba(48,40,32,.22);
+      border-radius: .4rem; padding: .2rem .45rem;
+      text-decoration: line-through;
+      text-decoration-color: rgba(154,139,122,.55);
+    }
+    .wedge-chain {
+      display: grid;
       grid-template-columns: 1fr;
+      gap: .4rem;
+      margin-top: .75rem;
+    }
+    @media (min-width: 520px) {
+      .wedge-chain { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; }
+    }
+    .wedge-chain span {
+      display: block;
+      text-align: center;
+      font-size: .72rem;
+      line-height: 1.35;
+      color: #704522;
+      background: rgba(255,253,247,.85);
+      border: 1px solid rgba(229,107,63,.28);
+      border-radius: .45rem;
+      padding: .45rem .3rem;
+    }
+    .wedge-commerce {
+      display: grid; gap: .55rem;
+      grid-template-columns: 1fr;
+      margin: 0 0 1.35rem;
+      padding: .85rem 0 0;
+      border-top: 1px solid rgba(48,40,32,.1);
     }
     @media (min-width: 720px) {
-      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .wedge-commerce { grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
     }
-    @media (min-width: 1000px) {
-      .summary-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .wedge-commerce dt {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px; letter-spacing: .08em; color: #766658; margin: 0 0 .25rem;
     }
-    .summary-card {
-      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
-      border-radius: .85rem; padding: .85rem .95rem;
+    .wedge-commerce dd {
+      margin: 0; font-size: .8rem; line-height: 1.5; color: #302820;
     }
-    .summary-card .eyebrow {
-      font-size: 11px; letter-spacing: .14em; color: #E56B3F; margin-bottom: .35rem;
+    .bound-panel {
+      display: grid; gap: 0;
+      grid-template-columns: 1fr;
+      border: 1px solid rgba(48,40,32,.12);
+      border-radius: .75rem;
+      overflow: hidden;
+      background: #FFFDF7;
+      margin-bottom: .85rem;
     }
-    .summary-card p {
-      font-size: .82rem; line-height: 1.5; color: #302820; margin: 0;
+    @media (min-width: 800px) {
+      .bound-panel { grid-template-columns: 1fr 1fr; }
     }
-    .concept-chips { display: flex; flex-direction: column; gap: .55rem; }
+    .bound-side { padding: 1rem 1.05rem 1.15rem; }
+    .bound-side.in {
+      background: #FFF5E5;
+      border-bottom: 1px solid rgba(48,40,32,.08);
+    }
+    @media (min-width: 800px) {
+      .bound-side.in {
+        border-bottom: 0;
+        border-right: 1px solid rgba(48,40,32,.1);
+      }
+    }
+    .bound-side.out {
+      background: transparent;
+    }
+    .bound-side .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px; letter-spacing: .1em; margin: 0 0 .4rem;
+    }
+    .bound-side.in .eyebrow { color: #E56B3F; }
+    .bound-side.out .eyebrow { color: #9A8B7A; }
+    .bound-side h3 {
+      font-family: "Shippori Mincho", serif;
+      font-size: 1rem; font-weight: 500; margin: 0 0 .55rem; color: #302820;
+    }
+    .bound-side ul {
+      margin: 0; padding: 0; list-style: none;
+    }
+    .bound-side li {
+      position: relative;
+      padding: .28rem 0 .28rem 1rem;
+      font-size: .8rem; line-height: 1.45; color: #302820;
+    }
+    .bound-side.in li::before {
+      content: "";
+      position: absolute; left: 0; top: .72rem;
+      width: .4rem; height: .4rem; border-radius: 50%;
+      background: #E56B3F;
+    }
+    .bound-side.out li {
+      color: #766658;
+    }
+    .bound-side.out li::before {
+      content: "";
+      position: absolute; left: 0; top: .85rem;
+      width: .55rem; height: 1px;
+      background: #9A8B7A;
+    }
+    .bound-update {
+      margin: 0 0 .35rem;
+      padding: .75rem 0 0;
+      border-top: 1px dashed rgba(48,40,32,.14);
+      font-size: .8rem; line-height: 1.55; color: #766658;
+    }
+    .bound-update strong {
+      font-family: "Shippori Mincho", serif;
+      font-weight: 500; color: #302820;
+    }
+    .judge-legend {
+      display: flex; flex-wrap: wrap; gap: .65rem 1.25rem;
+      margin: 0 0 .85rem; padding: 0;
+      list-style: none; font-size: .78rem; color: #766658;
+    }
+    .judge-legend span {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.1rem; height: 1.1rem; margin-right: .35rem;
+      vertical-align: -2px;
+    }
+    .judge-legend span svg { width: 100%; height: 100%; }
+    .judge-legend .mark-o { color: #E56B3F; }
+    .judge-legend .mark-x { color: #9A8B7A; }
+    .judge-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      background: #FFFDF7;
+      border: 1px solid rgba(48,40,32,.12);
+      border-radius: .75rem;
+      overflow: hidden;
+      font-size: .82rem;
+    }
+    .judge-matrix thead th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: #766658;
+      background: #FFF5E5;
+      padding: .65rem .9rem;
+      border-bottom: 1px solid rgba(48,40,32,.12);
+    }
+    .judge-matrix thead th:nth-child(1),
+    .judge-matrix thead th:nth-child(2),
+    .judge-matrix thead th:nth-child(3) {
+      text-align: center;
+    }
+    .judge-matrix tbody th,
+    .judge-matrix tbody td {
+      vertical-align: middle;
+      padding: .7rem .9rem;
+      border-bottom: 1px solid rgba(48,40,32,.08);
+      line-height: 1.45;
+    }
+    .judge-matrix tbody tr:last-child th,
+    .judge-matrix tbody tr:last-child td { border-bottom: 0; }
+    .judge-matrix .layer {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .04em;
+      color: #704522;
+      white-space: nowrap;
+      width: 5.8rem;
+      text-align: center;
+    }
+    .judge-cell {
+      position: relative;
+      width: 28%;
+      min-width: 0;
+      text-align: center;
+    }
+    .judge-mark {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.6rem;
+      padding: .15rem .1rem;
+      margin: 0 auto;
+    }
+    .judge-mark .sym {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 3.5rem;
+      height: 3.5rem;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+    .judge-mark .sym svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .judge-mark.is-keep .sym { color: #E56B3F; opacity: .28; }
+    .judge-mark.is-drop .sym { color: #704522; opacity: .2; }
+    .judge-mark .copy {
+      position: relative;
+      z-index: 1;
+      max-width: 11.5rem;
+      text-align: center;
+    }
+    .judge-mark .name {
+      display: block;
+      font-size: .84rem;
+      font-weight: 500;
+      color: #302820;
+      margin: 0;
+    }
+    .judge-mark.is-drop .name { color: #766658; font-weight: 400; }
+    .judge-mark .note {
+      display: block;
+      font-size: .72rem;
+      color: #9A8B7A;
+      line-height: 1.4;
+      margin-top: .2rem;
+    }
+    .judge-why {
+      font-size: .78rem;
+      color: #766658;
+      max-width: 15rem;
+      text-align: left;
+    }
+    @media (max-width: 719px) {
+      .judge-matrix thead { display: none; }
+      .judge-matrix,
+      .judge-matrix tbody,
+      .judge-matrix tr,
+      .judge-matrix th,
+      .judge-matrix td {
+        display: block;
+        width: 100%;
+      }
+      .judge-matrix .layer {
+        width: auto;
+        padding-bottom: .35rem;
+        border-bottom: 0;
+        background: #FFF5E5;
+      }
+      .judge-matrix tbody td {
+        border-bottom: 0;
+        padding-top: .45rem;
+        padding-bottom: .45rem;
+      }
+      .judge-matrix tbody tr {
+        border-bottom: 1px solid rgba(48,40,32,.1);
+        padding-bottom: .35rem;
+        margin-bottom: .15rem;
+      }
+      .judge-mark {
+        min-height: 3.4rem;
+        justify-content: center;
+      }
+      .judge-mark .copy { max-width: 85%; text-align: center; }
+      .judge-mark .sym { width: 3.8rem; height: 3.8rem; }
+      .judge-why { max-width: none; }
+    }
+    .adr-card {
+      background: transparent;
+      border: 0;
+      border-top: 1px solid rgba(48,40,32,.1);
+      border-radius: 0;
+      padding: .85rem 0 .2rem;
+    }
+    .concept-chips { display: flex; flex-direction: column; gap: 0; }
     .concept-chip {
-      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
-      border-radius: .75rem; padding: .7rem .85rem;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid rgba(48,40,32,.1);
+      border-radius: 0;
+      padding: .7rem 0;
     }
+    .concept-chip:last-child { border-bottom: 0; }
     .concept-chip strong {
       display: block; font-family: "Shippori Mincho", serif;
       font-weight: 500; font-size: .95rem; margin-bottom: .2rem;
     }
     .concept-chip span { font-size: .8rem; color: #766658; line-height: 1.45; }
     .rice-dot { will-change: transform, opacity; }
-    .lab-strip {
-      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem;
-      margin: 1.25rem 0 0; padding: .65rem; border: 1px solid rgba(48,40,32,.14);
-      border-radius: .9rem; background: rgba(255,253,247,.62);
+    .hero-spine {
+      margin: 1.15rem 0 0; padding: .75rem 0 0;
+      border-top: 1px solid rgba(48,40,32,.12);
+      list-style: none;
     }
-    .lab-strip span { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10px;
-      letter-spacing: .08em; color: #766658; }
-    .lab-strip strong { display: block; margin-top: .25rem; font-size: .8rem; font-weight: 500; color: #302820; }
-    .lab-strip b { color: #E56B3F; font-weight: 500; }
+    .hero-spine li {
+      display: grid; grid-template-columns: 4.5rem 1fr; gap: .65rem;
+      padding: .4rem 0; font-size: .82rem; line-height: 1.45; color: #302820;
+      border-bottom: 1px solid rgba(48,40,32,.06);
+    }
+    .hero-spine li:last-child { border-bottom: 0; }
+    .hero-spine span {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .06em; color: #766658; padding-top: .15rem;
+    }
     .hero-mark {
       position: absolute; right: 0; bottom: 0; width: min(34vw, 360px); aspect-ratio: 1;
       border: 1px solid rgba(229,107,63,.32); border-radius: 50%;
@@ -319,8 +599,8 @@
       border: 1px dashed rgba(212,154,42,.42); border-radius: 50%; }
     .hero-mark::after { inset: 28%; border-style: solid; border-color: rgba(48,40,32,.12); }
     @media (max-width: 719px) {
-      .lab-strip { grid-template-columns: 1fr; }
       .hero-mark { width: 230px; right: -70px; bottom: 3rem; opacity: .55; }
+      .hero-spine li { grid-template-columns: 3.6rem 1fr; }
     }
 
 
@@ -345,9 +625,9 @@
     @media (prefers-reduced-motion: reduce) {
       .swim-node, .swim-path, .swim-anno, .road-pin, .reveal-static,
       .scope-ring, .scope-core, .scope-label, .scope-chip,
-      .stack-row, .pipe-stage, .pipe-gate { opacity: 1 !important; }
+      .judge-row, .pipe-stage, .pipe-gate { opacity: 1 !important; }
       .close-node { opacity: 1 !important; }
-      .ev-card { opacity: 1 !important; transform: none !important; }
+      .ev-row { opacity: 1 !important; transform: none !important; }
       .progress-bar { transition: none; }
     }
   </style>
@@ -360,17 +640,10 @@
     <a href="#top" data-nav="top" class="!text-ink font-display text-sm !pl-0">KomeSomme</a>
     <div class="hidden md:flex items-center">
       <a href="#summary" data-nav="summary">要点</a>
-      <a href="#lifecycle" data-nav="lifecycle">流れ</a>
-      <a href="#context" data-nav="context">背景</a>
       <a href="#concept" data-nav="concept">体験</a>
       <a href="#wedge" data-nav="wedge">独自性</a>
-      <a href="#decision" data-nav="decision">選定</a>
       <a href="#design" data-nav="design">設計</a>
-      <a href="#ranking" data-nav="ranking">処理</a>
-      <a href="#delivery" data-nav="delivery">実装</a>
-      <a href="#threat" data-nav="threat">脅威</a>
       <a href="#validate" data-nav="validate">検証</a>
-      <a href="#roadmap" data-nav="roadmap">道筋</a>
       <a href="#closing" data-nav="closing">結論</a>
     </div>
     <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">公開サイト ↗</a>
@@ -380,7 +653,7 @@
   <header id="top" class="px-5 sm:px-10 pt-24 pb-10 relative overflow-hidden">
     <span class="ghost-num" data-speed="0.08">01</span>
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-4">DELIVERY LAB · 技術実験の記録</p>
+      <p class="sec-label mb-4">技術実験の記録 · 1.0.0</p>
       <div class="grid lg:grid-cols-12 gap-8 items-end">
         <div class="lg:col-span-8">
           <span class="hero-mark" aria-hidden="true"></span>
@@ -394,13 +667,13 @@
             米の銘柄を「産地・価格」だけでなく、「甘み」「粒感」「料理との相性」から選べるようにするための推薦サービスです。
           </p>
           <p class="mt-3 text-sm text-muted leading-relaxed max-w-xl">
-            これは、意味検索と決定的な推薦を一つの体験にまとめる技術実験です。構想、設計、実装、データ整備、公開判定までを一人で進めました。
+            意味検索と決定的な推薦を一つの体験にまとめる技術実験です。構想から公開判定までを一人で進めました。
           </p>
-          <div class="lab-strip" aria-label="実験の現在地">
-            <div><span><b>01</b> 問い</span><strong>味の言葉を比較可能にする</strong></div>
-            <div><span><b>02</b> 判断</span><strong>候補はデータと規則で決める</strong></div>
-            <div><span><b>03</b> 次の観測</span><strong>使われ方を公開後に測る</strong></div>
-          </div>
+          <ul class="hero-spine" aria-label="実験の現在地">
+            <li><span>問い</span>味の言葉を比較可能にする</li>
+            <li><span>判断</span>候補はデータと規則で決める</li>
+            <li><span>次</span>使われ方を公開後に測る</li>
+          </ul>
         </div>
         <div class="lg:col-span-4">
           <p class="sec-label mb-3">この事例で示すこと</p>
@@ -422,26 +695,16 @@
     <div class="max-w-6xl mx-auto">
       <p class="sec-label mb-2">読む順番</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">実験を、交付できる形にする</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">問題設定、設計判断、実装、公開条件、次の観測を一つの流れで追えます。</p>
-      <div class="summary-grid mb-5">
-        <article class="summary-card">
-          <p class="eyebrow">01</p>
-          <p>一人でプロダクトの構想から公開判定までを完了したこと</p>
-        </article>
-        <article class="summary-card">
-          <p class="eyebrow">02</p>
-          <p>技術選定とスコープの判断を文書化して残したこと</p>
-        </article>
-        <article class="summary-card">
-          <p class="eyebrow">03</p>
-          <p>LLM に候補決定を任せず、構造化したカタログを推薦の正本としたこと</p>
-        </article>
-        <article class="summary-card">
-          <p class="eyebrow">04</p>
-          <p>技術実験の証拠と、公開後に測る利用結果を分けていること</p>
-        </article>
-      </div>
-      <p class="paper-note max-w-3xl">完成した機能だけでなく、採用しなかった案、守った境界、次に検証する仮説まで残します。商業化は、この実験を使う人が見つかったあとに自然に検討します。</p>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">問題設定、設計判断、実装、公開条件、次の観測を一つの流れで追えます。商業化は、この実験を使う人が見つかったあとに検討します。</p>
+      <nav class="read-spine" aria-label="章の順">
+        <a href="#lifecycle">流れ</a>
+        <a href="#concept">体験</a>
+        <a href="#wedge">独自性</a>
+        <a href="#design">設計</a>
+        <a href="#validate">検証</a>
+        <a href="#roadmap">道筋</a>
+        <a href="#closing">結論</a>
+      </nav>
     </div>
   </section>
 
@@ -454,8 +717,8 @@
       <p class="sec-label mb-2">0 · プロジェクトの進め方</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">背景から公開判定まで</h2>
       <p class="text-muted text-sm max-w-2xl mb-5 leading-relaxed">背景整理から公開判定までを一連の流れとして扱いました。公開後の利用状況は、次の課題定義に戻す前提です。</p>
-      <div class="overflow-x-auto sheet p-3 sm:p-4" id="lifecycle-stage">
-        <svg viewBox="0 0 1080 170" class="w-full min-w-[780px] h-auto" aria-label="ライフサイクル関係図">
+      <div class="sheet p-3 sm:p-4" id="lifecycle-stage">
+        <svg viewBox="0 0 1080 170" class="w-full h-auto" aria-label="ライフサイクル関係図">
           <defs>
             <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#704522"/></marker>
             <marker id="arrHarvest" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#E56B3F"/></marker>
@@ -514,7 +777,7 @@
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">今夜の料理や好みに合う米を選ぶ</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">店頭や通販では産地・価格・還元率が並びますが、甘みや粒立ち、おかずとの相性は比較可能な形になっていません。同心円は「どこに集中し、何を捨てたか」を示します。</p>
       <div class="viz-sheet">
-        <svg id="scope-svg" viewBox="0 0 920 460" class="w-full min-w-[720px]" role="img" aria-label="スコープの同心円。中心は今夜のご飯に合う米、第1環はデータ資産、外周は非目標">
+        <svg id="scope-svg" viewBox="0 0 920 460" class="w-full" role="img" aria-label="スコープの同心円。中心は今夜のご飯に合う米、第1環はデータ資産、外周は非目標">
           <defs>
             <radialGradient id="scopeGlow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#FFF5E5"/>
@@ -597,16 +860,16 @@
         <div class="grid lg:grid-cols-12 gap-5 items-stretch">
           <div class="lg:col-span-4">
             <div class="concept-chips">
-              <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元盤。探針で好みの位置を指す</span></div>
+              <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元盤。探針が好みの位置を示す</span></div>
               <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄。案内文は LLM、候補は規則と距離</span></div>
-              <div class="concept-chip"><strong>二本立て</strong><span>地図は端末内。相談だけサーバ。結果は混ぜない</span></div>
+              <div class="concept-chip"><strong>二本立て</strong><span>地図の順位は端末内。一覧は catalog。相談だけサーバ。結果は混ぜない</span></div>
               <div class="concept-chip"><strong>購入</strong><span>銘柄から通販・ふるさとへ。SKU 突合は未完</span></div>
             </div>
-            <p id="matrix-phase" class="mt-3 text-xs font-mono text-brown min-h-[1.25rem]">デモ：探針が銘柄付近をなぞります（座標は固定）</p>
+            <p id="matrix-phase" class="mt-3 text-xs font-mono text-brown min-h-[1.25rem]">スクロールで探針が銘柄付近をなぞります</p>
           </div>
           <div class="lg:col-span-8">
             <div class="sheet p-2.5 sm:p-4">
-              <div id="interactive-matrix" class="matrix relative h-[min(52vh,420px)] min-h-[280px] rounded-lg border border-ink/10 select-none overflow-hidden cursor-crosshair">
+              <div id="interactive-matrix" class="matrix relative h-[min(52vh,420px)] min-h-[280px] rounded-lg border border-ink/10 select-none overflow-hidden">
                 <span class="absolute left-3 top-3 text-[10px] text-muted tracking-widest">ほどける</span>
                 <span class="absolute left-3 bottom-9 text-[10px] text-muted tracking-widest">粒立ち</span>
                 <span class="absolute left-11 bottom-2 text-[10px] text-muted">すっきり</span>
@@ -632,42 +895,81 @@
     <div class="max-w-6xl mx-auto">
       <p class="sec-label mb-2">3 · 独自性と商業上の位置づけ</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">構造化カタログが現時点の特徴</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">この実験の差分は、LLM に順位を預けず、根拠を持つカタログと比較 UI を先に置いたことです。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">LLM に順位を預けず、根拠のあるカタログと比較 UI を先に置く。差分はそこです。</p>
 
-      <div class="sheet overflow-x-auto mb-5">
-        <table class="grid-doc">
-          <thead>
-            <tr><th>項目</th><th>内容</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>想定利用者</td><td>産地や価格は見られるが、今夜のおかずとの相性が比較できない人</td></tr>
-            <tr><td>片付ける仕事</td><td>料理や口感の言葉から、候補銘柄を四つに絞る</td></tr>
-            <tr><td>いまの代替</td><td>EC の人気順、価格・産地フィルタ、口コミ、汎用チャット</td></tr>
-            <tr><td>痛み</td><td>味覚と「向かない」が表に出てこない</td></tr>
-            <tr><td>くさび</td><td>二次元の味わい地図 + 相談 + 比較表 + 買う出口</td></tr>
-            <tr><td>現時点の特徴</td><td>Git の構造化カタログ。LLM は事実と順位を持たない</td></tr>
-            <tr><td>収益</td><td>アフィリエイト導線（楽天直リンク等）。成果突合は次フェーズ課題</td></tr>
-            <tr><td>見る指標</td><td>推薦後の CTA、ページ型別 shop_click、再訪（計画）</td></tr>
-            <tr><td>銘柄と SKU</td><td>推薦は銘柄単位。袋の産年・精米日までは保証しない</td></tr>
-          </tbody>
-        </table>
+      <div class="wedge-story" aria-label="独自性の流れ">
+        <article class="wedge-beat">
+          <p class="eyebrow">01 · 痛み</p>
+          <h3>相性が、表に出ない</h3>
+          <p>産地や価格は見られるのに、今夜のおかずとの相性は比較できない。味覚と「向かない」が検索面に現れない。</p>
+          <div class="wedge-alts" aria-label="いまの代替">
+            <span>人気順</span>
+            <span>価格・産地</span>
+            <span>口コミ</span>
+            <span>汎用チャット</span>
+          </div>
+        </article>
+        <div class="wedge-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h11M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <article class="wedge-beat is-focus">
+          <p class="eyebrow">02 · くさび</p>
+          <h3>四つに絞って、買える</h3>
+          <p>料理や口感の言葉から候補を四つに絞り、比較して買う出口までつなぐ。</p>
+          <div class="wedge-chain" aria-label="くさびの構成">
+            <span>味わい地図</span>
+            <span>相談</span>
+            <span>比較表</span>
+            <span>買う出口</span>
+          </div>
+        </article>
+        <div class="wedge-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h11M10 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <article class="wedge-beat">
+          <p class="eyebrow">03 · 正本</p>
+          <h3>カタログが順位を決める</h3>
+          <p>正本は Git 上の構造化カタログ。LLM は案内文だけを書き、事実と順位は持たない。</p>
+        </article>
       </div>
+
+      <dl class="wedge-commerce" aria-label="商業上の位置づけ">
+        <div>
+          <dt>収益</dt>
+          <dd>アフィリエイト導線（楽天直リンク等）。成果突合は次フェーズ</dd>
+        </div>
+        <div>
+          <dt>見る指標</dt>
+          <dd>推薦後の CTA、ページ型別 shop_click、再訪（計画）</dd>
+        </div>
+        <div>
+          <dt>銘柄と SKU</dt>
+          <dd>推薦は銘柄単位。袋の産年・精米日までは保証しない</dd>
+        </div>
+      </dl>
 
       <h3 class="font-display text-lg text-ink mb-3 font-medium">データ境界（銘柄近似）</h3>
-      <div class="grid md:grid-cols-3 gap-4 mb-2">
-        <article class="issue-card">
-          <p class="eyebrow">定義</p>
-          <p class="body">甘み・粒感はカタログ上の相対座標。相性は料理タグと人手メモ。向かない組み合わせも同じ正本に置く。</p>
-        </article>
-        <article class="issue-card">
-          <p class="eyebrow">覆わないこと</p>
-          <p class="body">産年バッチ、精米日、炊飯器、水量、浸水。銘柄級の近似であり、SKU 級の味保証ではない。</p>
-        </article>
-        <article class="issue-card">
-          <p class="eyebrow">更新</p>
-          <p class="body">正本は Git。validate:rice で必須フィールドと範囲を検査し、公開銘柄は 80 件以上。埋め込みは同一モデル版で全量再計算する。</p>
-        </article>
+      <div class="bound-panel" aria-label="データ境界">
+        <div class="bound-side in">
+          <p class="eyebrow">IN · 定義する</p>
+          <h3>カタログに置くもの</h3>
+          <ul>
+            <li>甘み・粒感の相対座標</li>
+            <li>料理タグと人手の相性メモ</li>
+            <li>向かない組み合わせ</li>
+          </ul>
+        </div>
+        <div class="bound-side out">
+          <p class="eyebrow">OUT · 覆わない</p>
+          <h3>銘柄近似の外側</h3>
+          <ul>
+            <li>産年バッチ・精米日</li>
+            <li>炊飯器・水量・浸水</li>
+            <li>SKU 級の味保証</li>
+          </ul>
+        </div>
       </div>
+      <p class="bound-update"><strong>更新</strong> — 正本は Git。validate:rice で必須フィールドと範囲を検査し、公開銘柄は 80 件以上。埋め込みは同一モデル版で全量再計算する。</p>
       <p class="viz-caption">人手カタログは短期の特徴にも、メンテ負債にもなります。カテゴリ展開の前に「銘柄 100 件あたりの工数」を見積もる前提です。</p>
     </div>
   </section>
@@ -677,117 +979,89 @@
   <!-- 3 TECH -->
   <section id="decision" class="px-5 sm:px-10 sec-y flow-block" data-chapter="decision">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">5 · 技術選定</p>
+      <p class="sec-label mb-2">4 · 技術選定</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤー別のトレードオフ</h2>
-      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">上から画面、下へデータと商流。各層で左が採用、右が破線の見送りです。データ投入は Node（tsx）、銘柄カタログの正本は Git に置いています。</p>
-      <div class="viz-sheet">
-        <svg id="stack-svg" viewBox="0 0 900 610" class="w-full min-w-[760px]" role="img" aria-label="技術選定のレイヤー別トレードオフ">
-          <defs>
-            <linearGradient id="stackSpine" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#E56B3F" stop-opacity="0.55"/>
-              <stop offset="100%" stop-color="#D49A2A" stop-opacity="0.35"/>
-            </linearGradient>
-          </defs>
-          <text x="128" y="28" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F" letter-spacing="0.08em">KEEP · 採用</text>
-          <text x="488" y="28" font-family="IBM Plex Mono" font-size="11" fill="#9A8B7A" letter-spacing="0.08em">DROP · 見送り</text>
-          <line x1="108" y1="36" x2="108" y2="590" stroke="url(#stackSpine)" stroke-width="2" stroke-dasharray="3 5"/>
-          <g class="stack-row" id="stack-app">
-            <text x="28" y="74" font-family="IBM Plex Mono" font-size="12" fill="#766658">App</text>
-            <line x1="108" y1="52" x2="108" y2="120" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="48" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="48" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="68" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="86" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Next.js 15 App Router</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="48" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="68" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="86" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別立ての API サーバ</text>
-            </g>
-            <text class="stack-why" x="128" y="118" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">画面と相談 API を同一リポジトリで閉じるため</text>
-          </g>
-          <g class="stack-row" id="stack-vector">
-            <text x="28" y="166" font-family="IBM Plex Mono" font-size="12" fill="#766658">Vector</text>
-            <line x1="108" y1="144" x2="108" y2="212" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="140" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="140" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="160" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="178" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Supabase pgvector</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="140" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="160" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="178" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">Pinecone / Qdrant 単独</text>
-            </g>
-            <text class="stack-why" x="128" y="210" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">リレーショナルと同一基盤・同一権限に揃えるため</text>
-          </g>
-          <g class="stack-row" id="stack-embed">
-            <text x="28" y="258" font-family="IBM Plex Mono" font-size="12" fill="#766658">Embed</text>
-            <line x1="108" y1="236" x2="108" y2="304" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="232" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="232" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="252" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="270" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Gemini 既定 / OpenAI 切替 · 1536d</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="232" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="252" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="270" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">モデル混在比較</text>
-            </g>
-            <text class="stack-why" x="128" y="302" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">次元やモデルを混在させると類似度が成立しないため</text>
-          </g>
-          <g class="stack-row" id="stack-rec">
-            <text x="28" y="350" font-family="IBM Plex Mono" font-size="12" fill="#766658">Recommend</text>
-            <line x1="108" y1="328" x2="108" y2="396" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="324" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="324" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="344" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="362" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">二本立て（座標 + 意味）</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="324" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="344" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="362" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">操作のたびに LLM</text>
-            </g>
-            <text class="stack-why" x="128" y="394" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">地図は低遅延。相談時だけ埋め込みを使うため</text>
-          </g>
-          <g class="stack-row" id="stack-ingest">
-            <text x="28" y="442" font-family="IBM Plex Mono" font-size="12" fill="#766658">Ingest</text>
-            <line x1="108" y1="420" x2="108" y2="488" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="416" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="416" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="436" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="454" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">TS catalog → seed:rice</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="416" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="436" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="454" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別言語の常設スクレイパ</text>
-            </g>
-            <text class="stack-why" x="128" y="486" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">銘柄の正本を Git に置き、DB は配信用の控えにするため</text>
-          </g>
-          <g class="stack-row" id="stack-commerce">
-            <text x="28" y="534" font-family="IBM Plex Mono" font-size="12" fill="#766658">Commerce</text>
-            <line x1="108" y1="512" x2="108" y2="580" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
-            <g class="stack-keep">
-              <rect x="128" y="508" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="508" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="528" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="546" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">検索 CTA + 楽天直リンク</text>
-            </g>
-            <g class="stack-drop">
-              <rect x="488" y="508" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="528" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="546" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">全モール API 必須</text>
-            </g>
-            <text class="stack-why" x="128" y="578" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">横断 API 必須化は規約対応と運用負荷が増えるため</text>
-          </g>
-        </svg>
+      <p class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">上から画面、下へデータと商流。各層で採用と見送りを記号で示します。データ投入は Node（tsx）、銘柄カタログの正本は Git です。</p>
+      <ul class="judge-legend" aria-label="凡例">
+        <li><span class="mark-o" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span>採用</li>
+        <li><span class="mark-x" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span>見送り</li>
+      </ul>
+      <div class="sheet" style="padding:0;overflow:hidden">
+        <table class="judge-matrix" id="judge-matrix">
+          <thead>
+            <tr>
+              <th scope="col">層</th>
+              <th scope="col">採用</th>
+              <th scope="col">見送り</th>
+              <th scope="col">判断</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="judge-row">
+              <th class="layer" scope="row">App</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy"><span class="name">Next.js 15 App Router</span></span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">別立ての API サーバ</span></span></div>
+              </td>
+              <td class="judge-why">画面と相談 API を同一リポジトリで閉じる</td>
+            </tr>
+            <tr class="judge-row">
+              <th class="layer" scope="row">Vector</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy"><span class="name">Supabase pgvector</span></span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">Pinecone / Qdrant 単独</span></span></div>
+              </td>
+              <td class="judge-why">リレーショナルと同一基盤・同一権限に揃える</td>
+            </tr>
+            <tr class="judge-row">
+              <th class="layer" scope="row">Embed</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy">
+                    <span class="name">Gemini 既定 / OpenAI 切替 · 1536d</span>
+                    <span class="note">同一モデル版のみ。混在しない</span>
+                  </span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">モデル混在比較</span></span></div>
+              </td>
+              <td class="judge-why">次元が同じでもベクトル空間は別物</td>
+            </tr>
+            <tr class="judge-row">
+              <th class="layer" scope="row">Recommend</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy"><span class="name">二本立て（座標 + 意味）</span></span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">操作のたびに LLM</span></span></div>
+              </td>
+              <td class="judge-why">地図は低遅延。相談時だけ埋め込み</td>
+            </tr>
+            <tr class="judge-row">
+              <th class="layer" scope="row">Ingest</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy"><span class="name">TS catalog → seed:rice</span></span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">別言語の常設スクレイパ</span></span></div>
+              </td>
+              <td class="judge-why">正本は Git。DB は配信用の控え</td>
+            </tr>
+            <tr class="judge-row">
+              <th class="layer" scope="row">Commerce</th>
+              <td class="judge-cell">
+                <div class="judge-mark is-keep" aria-label="採用"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="7"/></svg></span><span class="copy"><span class="name">検索 CTA + 楽天直リンク</span></span></div>
+              </td>
+              <td class="judge-cell">
+                <div class="judge-mark is-drop" aria-label="見送り"><span class="sym" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M16 16l32 32M48 16L16 48" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></span><span class="copy"><span class="name">全モール API 必須</span></span></div>
+              </td>
+              <td class="judge-why">横断 API 必須化は規約と運用負荷が増える</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <p class="viz-caption">モデル混在や別 API サーバを見送ったのは、類似度の一貫性と一人運用の境界を守るためです。</p>
 
@@ -843,11 +1117,11 @@
   <section id="design" data-chapter="design">
     <div class="pin-stage" id="swim-stage">
       <div class="max-w-[1100px] mx-auto w-full">
-        <p class="sec-label mb-2">6 · 処理の流れ</p>
+        <p class="sec-label mb-2">5 · 処理の流れ</p>
         <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤ別のデータフロー</h2>
-        <p id="swim-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">画面・サーバ・データベース・外部モデルの役割分担と、地図／相談の二系統を示します。</p>
-        <div class="sheet overflow-x-auto p-3 sm:p-5">
-          <svg id="swimlane-svg" viewBox="0 0 1060 460" class="w-full min-w-[860px]" aria-label="処理の流れ">
+        <p id="swim-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。二つの結果は混ぜません。</p>
+        <div class="sheet p-3 sm:p-5">
+          <svg id="swimlane-svg" viewBox="0 0 1060 460" class="w-full" aria-label="処理の流れ">
             <defs>
               <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#E56B3F"/></marker>
               <marker id="ahGray" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#766658"/></marker>
@@ -869,12 +1143,12 @@
               <text x="118" y="368" font-size="14">外部モデル</text>
               <text x="118" y="386" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">Gemini / OpenAI</text>
             </g>
-            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">左が入力、右が結果</text>
+            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">左が入力、右が結果 · 二系統は混ぜない</text>
 
             <g class="swim-node" data-phase="ui">
               <rect x="160" y="52" width="108" height="44" rx="22" fill="#FFFDF7" stroke="#302820" stroke-width="1.4"/>
               <text x="214" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#302820" font-weight="600">地図を動かす</text>
-              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">端末内だけで計算</text>
+              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">距離で上位四件</text>
             </g>
             <g class="swim-node" data-phase="ui">
               <rect x="300" y="52" width="108" height="44" rx="22" fill="#FFFDF7" stroke="#302820" stroke-width="1.4"/>
@@ -884,7 +1158,7 @@
             <g class="swim-node" data-phase="result">
               <rect x="860" y="52" width="120" height="44" rx="22" fill="#E56B3F"/>
               <text x="920" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#FFFDF7" font-weight="600">候補を四つ出す</text>
-              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">短い一言つき</text>
+              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">理由文 ± 案内</text>
             </g>
 
             <g class="swim-node" data-phase="api">
@@ -895,28 +1169,28 @@
             <g class="swim-node" data-phase="api">
               <rect x="440" y="152" width="110" height="44" rx="8" fill="#302820"/>
               <text x="495" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">文を数値化</text>
-              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">1536 次元</text>
+              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">名指し以外</text>
             </g>
             <g class="swim-node" data-phase="bridge">
               <rect x="600" y="152" width="120" height="44" rx="8" fill="#302820"/>
               <text x="660" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">相性の整理</text>
-              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">規則のみ・モデルなし</text>
+              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">理由文のみ・順位なし</text>
             </g>
             <g class="swim-node" data-phase="bridge">
               <rect x="760" y="152" width="110" height="44" rx="8" fill="#302820"/>
               <text x="815" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">返事をまとめる</text>
-              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">候補＋文言</text>
+              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">候補＋案内</text>
             </g>
 
             <g class="swim-node" data-phase="db">
               <rect x="170" y="252" width="120" height="44" rx="8" fill="#7BB894"/>
               <text x="230" y="272" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">銘柄一覧</text>
-              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">公開用の見え方</text>
+              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">catalog · 埋込なし</text>
             </g>
             <g class="swim-node" data-phase="db">
-              <rect x="480" y="252" width="130" height="44" rx="8" fill="#7BB894"/>
-              <text x="545" y="272" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">近い銘柄を探す</text>
-              <text x="545" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">類似度で並べる</text>
+              <rect x="560" y="252" width="130" height="44" rx="8" fill="#7BB894"/>
+              <text x="625" y="272" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">近い銘柄を探す</text>
+              <text x="625" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">RPC · モデル版必須</text>
             </g>
 
             <g class="swim-node" data-phase="llm">
@@ -930,26 +1204,28 @@
               <text x="760" y="386" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">書けなくても候補は返す</text>
             </g>
 
-            <path class="swim-path" id="path-coord" d="M214 96 V 252" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
-            <path class="swim-path" id="path-coord2" d="M170 274 H 150 V 74 H 160" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
-            <text class="swim-anno" x="248" y="236" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">地図だけ（サーバを通さない）</text>
+            <!-- 地図：一覧読込 → 端末内順位 → 候補 -->
+            <path class="swim-path" id="path-coord" d="M230 252 V 110 H 214 V 96" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
+            <path class="swim-path" id="path-coord2" d="M268 52 V 40 H 860 V 52" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
+            <text class="swim-anno" x="248" y="236" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">一覧は読む · 順位は端末内</text>
 
+            <!-- 相談：制限 → 埋め込み → 検索 → 相性理由 → まとめ → 候補 -->
             <path class="swim-path" id="path1" d="M354 96 V 152" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
             <path class="swim-path" id="path2" d="M400 174 H 440" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
             <path class="swim-path" id="path3a" d="M495 196 V 352" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
-            <path class="swim-path" id="path3b" d="M495 352 H 545 V 296" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
-            <path class="swim-path" id="path4" d="M545 252 V 220 H 660 V 196" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path3b" d="M550 374 H 625 V 296" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path4" d="M625 252 V 220 H 660 V 196" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
             <path class="swim-path" id="path4b" d="M720 174 H 760" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
             <path class="swim-path" id="path7" d="M815 152 V 96 H 860" fill="none" stroke="#E56B3F" stroke-width="2.25" marker-end="url(#ah)"/>
             <path class="swim-path" id="path5" d="M835 196 V 374 H 820" fill="none" stroke="#D49A2A" stroke-width="1.75" marker-end="url(#ahGold)"/>
             <path class="swim-path" id="path6" d="M760 352 V 196" fill="none" stroke="#D49A2A" stroke-width="1.75" marker-end="url(#ahGold)"/>
             <path class="swim-path" id="path-fb" d="M820 374 H 990 V 90 H 980" fill="none" stroke="#E56B3F" stroke-width="1.4" stroke-dasharray="3 5" marker-end="url(#ah)"/>
-                      </svg>
+          </svg>
           <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-muted">
-            <span>灰の点線：地図</span>
+            <span>灰の点線：地図（一覧読込＋端末内順位）</span>
             <span>橙の実線：相談</span>
-            <span>金の線：任意の一言</span>
-            <span>橙の破線：一言なしでも候補を返す</span>
+            <span>金の線：任意の案内文</span>
+            <span>橙の破線：案内失敗でも候補を返す</span>
           </div>
         </div>
       </div>
@@ -987,7 +1263,7 @@
             <tr><th>経路</th><th>候補の出し方</th><th>順位の決め方</th><th>出力</th></tr>
           </thead>
           <tbody>
-            <tr><td>地図</td><td>甘み・粒感の二次元距離（端末内）</td><td>近い順。多様性なし</td><td>上位四件。文言なし</td></tr>
+            <tr><td>地図</td><td>甘み・粒感の二次元距離（端末内）</td><td>近い順。多様性なし</td><td>上位四件 + 短い理由文（規則）。LLM 案内なし</td></tr>
             <tr><td>相談</td><td>銘柄名ヒット、または埋め込み → pgvector</td><td>類似度（モデル版でフィルタ）</td><td>上位四件 + 理由 + 案内</td></tr>
             <tr><td>相性整理レイヤー</td><td>なし</td><td>順位は変えない</td><td>カード理由文（決定的）</td></tr>
             <tr><td>案内文</td><td>なし</td><td>LLM は説明のみ</td><td>失敗しても上位四件は返す</td></tr>
@@ -1021,11 +1297,11 @@
   <!-- 5 DELIVERY -->
   <section id="delivery" class="px-5 sm:px-10 sec-y flow-block" data-chapter="delivery">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">8 · 実装と公開判定</p>
+      <p class="sec-label mb-2">7 · 実装と公開判定</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">段階ごとの公開条件</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">段階はベルトのように繋がっています。菱形の Gate を満たさないと、次の箱へ進めません。</p>
       <div class="viz-sheet mb-5">
-        <svg id="pipe-svg" viewBox="0 0 1040 210" class="w-full min-w-[860px]" role="img" aria-label="実装から公開までの品質パイプライン">
+        <svg id="pipe-svg" viewBox="0 0 1040 210" class="w-full" role="img" aria-label="実装から公開までの品質パイプライン">
           <g class="pipe-belt">
             <line x1="40" y1="118" x2="1000" y2="118" stroke="rgba(48,40,32,.1)" stroke-width="10" stroke-linecap="round"/>
             <line x1="40" y1="118" x2="1000" y2="118" stroke="#FFF5E5" stroke-width="4" stroke-dasharray="8 10" stroke-linecap="round"/>
@@ -1125,7 +1401,7 @@
   <!-- 5b THREAT -->
   <section id="threat" class="px-5 sm:px-10 sec-y flow-block" data-chapter="threat">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">9 · 脅威と運用上のリスク</p>
+      <p class="sec-label mb-2">8 · 脅威と運用上のリスク</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">公開サイトと、この HTML は別物</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">本ページはケーススタディ表示用の HTML であり、CDN 上の Tailwind / GSAP / Lenis / フォントを利用しています。実際の公開サイトは Next.js のビルド成果物です。以下は公開サイト側のリスクを主に書きます。</p>
       <div class="sheet overflow-x-auto mb-5">
@@ -1151,60 +1427,52 @@
   <!-- 6 VALIDATE -->
   <section id="validate" class="px-5 sm:px-10 sec-y flow-block" data-chapter="validate">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">10 · 検証状況</p>
+      <p class="sec-label mb-2">9 · 検証状況</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">実験で確かめたこと、次に測ること</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">公開判定は工程の結果です。利用データは次の実験で取得します。二つを混ぜずに扱います。</p>
 
       <div class="split-ev">
         <div class="sheet p-4 sm:p-5">
           <h3>今回の実験で確かめたこと</h3>
-          <div class="ev-dash" style="grid-template-columns:1fr">
-            <article class="ev-card is-ok">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">公開条件 · PASS</span></div>
+          <ul class="ev-list">
+            <li class="ev-row">
               <p class="ev-title">公開判定</p>
               <p class="ev-proof">初期公開条件チェックリスト · smoke 2026-09-07（地図・相談上位四件・購入リンク）</p>
-            </article>
-            <article class="ev-card is-run">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">LIVE</span></div>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">カタログ検証</p>
               <p class="ev-proof">validate:rice が必須フィールドとスコア範囲を検査。80 件以上は MVP 表示確認の下限（市場網羅ではない）。現在約 106</p>
-            </article>
-            <article class="ev-card is-ok">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SPEC</span></div>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">推薦の粒度</p>
               <p class="ev-proof">座標も相談も Top 4。案内文失敗時も候補は返す</p>
-            </article>
-            <article class="ev-card is-ok">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SECURE</span></div>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">権限の骨格</p>
               <p class="ev-proof">RLS · embedding 非公開 · RPC にモデル名必須</p>
-            </article>
-          </div>
+            </li>
+          </ul>
         </div>
         <div class="sheet p-4 sm:p-5">
           <h3>公開後に測ること</h3>
-          <div class="ev-dash" style="grid-template-columns:1fr">
-            <article class="ev-card is-mute">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">UNPUBLISHED</span></div>
+          <ul class="ev-list">
+            <li class="ev-row">
               <p class="ev-title">転換・再訪の実測</p>
               <p class="ev-proof">訪問数、CTA 率、再訪率の公開値なし</p>
-            </article>
-            <article class="ev-card is-todo">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · 次フェーズ</span></div>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">計測値の取得確認</p>
-              <p class="ev-proof">GA4 / access_events のページ型分解 · Sentry DSN 確認</p>
-            </article>
-            <article class="ev-card is-todo">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · 次フェーズ</span></div>
+              <p class="ev-proof">GA4 / access_events のページ型分解 · Sentry DSN 確認（次フェーズ）</p>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">アフィ突合</p>
               <p class="ev-proof">shop_click と管理画面成果の突合は未完</p>
-            </article>
-            <article class="ev-card is-mute">
-              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">BOUNDARY</span></div>
+            </li>
+            <li class="ev-row">
               <p class="ev-title">銘柄と SKU</p>
               <p class="ev-proof">推薦は銘柄。袋面の産年までは保証しない</p>
-            </article>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -1253,11 +1521,11 @@
   <section id="roadmap" data-chapter="roadmap">
     <div class="pin-stage" id="road-stage">
       <div class="max-w-6xl mx-auto w-full">
-        <p class="sec-label mb-2">12 · ロードマップ</p>
+        <p class="sec-label mb-2">10 · ロードマップ</p>
         <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">米カテゴリ内で運用手順を固める</h2>
         <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い順は、米の運用手順を閉じる（Phase 2）→ 再訪（Phase 3）→ 将来的なカテゴリ展開の仮説。進入条件を満たす前に構想を約束しません。</p>
-        <div class="sheet p-3 sm:p-6 overflow-x-auto">
-          <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[780px]" aria-label="これからの道">
+        <div class="sheet p-3 sm:p-6">
+          <svg id="road-svg" viewBox="0 0 1000 560" class="w-full" aria-label="これからの道">
             <defs>
               <linearGradient id="roadFill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stop-color="#3A3228"/>
@@ -1406,11 +1674,11 @@
       <p class="sec-label mb-2">結論</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">派手さではなく、判断を残す</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">
-        KomeSomme は、味わい地図と相談 API を備えた米推薦サービスです。見せたいのは、インタラクションの派手さではなく、実験を安全に公開し、次の判断につなげる設計です。
+        見せたいのはインタラクションの派手さではなく、実験を安全に公開し、次の判断につなげる設計です。
       </p>
 
       <div class="viz-sheet mb-5">
-        <svg id="close-svg" viewBox="0 0 960 280" class="w-full min-w-[720px]" role="img" aria-label="まとめの三点。カタログ正本、文書化された判断、工程と事業の切り分け">
+        <svg id="close-svg" viewBox="0 0 960 280" class="w-full" role="img" aria-label="まとめの三点。カタログ正本、文書化された判断、工程と事業の切り分け">
           <defs>
             <filter id="closeSoft" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#302820" flood-opacity="0.08"/>
@@ -1442,23 +1710,8 @@
             <text x="780" y="168" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">工程 ≠ 事業価値</text>
           </g>
 
-          <text x="480" y="236" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">三点が揃って、はじめてデリバリー事例として読める</text>
+          <text x="480" y="236" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">三点が揃って、はじめて技術実験の記録として読める</text>
         </svg>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-4 mb-5">
-        <article class="issue-card">
-          <p class="eyebrow">要点 1</p>
-          <p class="body">候補決定を LLM に任せず、構造化されたカタログを正本にしたこと</p>
-        </article>
-        <article class="issue-card">
-          <p class="eyebrow">要点 2</p>
-          <p class="body">技術選定、見送った選択肢、公開条件を文書化したこと</p>
-        </article>
-        <article class="issue-card">
-          <p class="eyebrow">要点 3</p>
-          <p class="body">実験の証拠と、公開後に測る利用結果を分けたこと</p>
-        </article>
       </div>
 
       <p class="text-sm text-muted leading-relaxed max-w-2xl mb-3">
@@ -1481,7 +1734,7 @@
 
   <footer class="px-5 sm:px-10 pb-12">
     <div class="max-w-6xl mx-auto rule pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
-      <p>KomeSomme 1.0.0 · Delivery Lab · 技術実験の記録</p>
+      <p>KomeSomme 1.0.0 · 技術実験の記録</p>
       <p class="font-mono">docs/05 · 08 · 11 · 20 · 21 · pj/reviews</p>
     </div>
   </footer>
@@ -1493,9 +1746,9 @@
   const isDesktopProgress = matchMedia('(min-width: 1024px)');
 
   const CFG = {
-    matrixVh: () => (mobile.matches ? 0.75 : 1.0),
-    swimVh: () => (mobile.matches ? 1.4 : 2.8),
-    roadVh: () => (mobile.matches ? 1.2 : 2.2),
+    matrixVh: () => (mobile.matches ? 0.7 : 0.9),
+    swimVh: () => (mobile.matches ? 1.2 : 2.0),
+    roadVh: () => (mobile.matches ? 1.0 : 1.6),
     scrub: 0.65,
   };
 
@@ -1740,7 +1993,7 @@
       glowAmount = 1;
       interactive = true;
       setProbe(52, 48);
-      if (phaseEl) phaseEl.textContent = '探針を動かし、近い四銘柄を確認できます';
+      if (phaseEl) phaseEl.textContent = '近い四銘柄を強調しています';
       updateVectors();
       return;
     }
@@ -1757,7 +2010,7 @@
       { at: 0.28, text: '近い四銘柄が強調され、線が付く' },
       { at: 0.55, text: '甘み寄り（例: コシヒカリ付近）' },
       { at: 0.82, text: 'ふくよか右上（例: ゆめぴりか付近）' },
-      { at: 0.92, text: '下へスクロールで続き · 探針はドラッグ可' },
+      { at: 0.92, text: '下へスクロールで続き' },
     ];
     const probeState = { x: tour[0].x, y: tour[0].y };
     let lastLabel = '';
@@ -1798,13 +2051,13 @@
             lastLabel = next;
           }
           interactive = p >= 0.86;
-          container.style.cursor = interactive ? 'crosshair' : 'default';
+          container.style.cursor = 'default';
         },
         onLeave: () => {
           interactive = true;
-          container.style.cursor = 'crosshair';
+          container.style.cursor = 'default';
           if (phaseEl) {
-            phaseEl.textContent = '探針をドラッグして試せます';
+            phaseEl.textContent = '下へスクロールで続き';
             lastLabel = phaseEl.textContent;
           }
         },
@@ -1930,11 +2183,11 @@
           if (!phaseEl) return;
           const p = self.progress;
           if (p < 0.15) phaseEl.textContent = '画面層：地図操作と相談の入口';
-          else if (p < 0.3) phaseEl.textContent = '地図経路：サーバを経由しません';
-          else if (p < 0.5) phaseEl.textContent = '相談経路：制限 → 埋め込み要求';
-          else if (p < 0.7) phaseEl.textContent = '類似検索のあと、規則で相性を整理します';
+          else if (p < 0.3) phaseEl.textContent = '地図経路：一覧を読み、順位は端末内';
+          else if (p < 0.5) phaseEl.textContent = '相談経路：制限のあと、銘柄名ヒットまたは埋め込み';
+          else if (p < 0.7) phaseEl.textContent = '類似検索のあと、規則で理由文だけを付ける';
           else if (p < 0.88) phaseEl.textContent = '案内文は任意。失敗しても候補は返します';
-          else phaseEl.textContent = '右側の破線は失敗時の退避経路です';
+          else phaseEl.textContent = '右側の破線は案内失敗時の退避経路です';
           paths.forEach(syncPathMarker);
         },
       },
@@ -2075,7 +2328,7 @@
 
     const vizGroups = [
       ['#scope-svg', '.scope-ring, .scope-core, .scope-chip, .scope-label'],
-      ['#stack-svg', '.stack-row'],
+      ['#judge-matrix', '.judge-row'],
       ['#pipe-svg', '.pipe-belt, .pipe-stage, .pipe-gate'],
       ['#close-svg', '.close-node'],
     ];
@@ -2097,17 +2350,17 @@
       });
     });
 
-    gsap.utils.toArray('.ev-card').forEach((card, i) => {
-      gsap.fromTo(card,
-        { opacity: 0, y: 12 },
+    gsap.utils.toArray('.ev-row').forEach((row, i) => {
+      gsap.fromTo(row,
+        { opacity: 0, y: 10 },
         {
           opacity: 1,
           y: 0,
-          delay: i * 0.04,
+          delay: i * 0.03,
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: card,
-            start: 'top 88%',
+            trigger: row,
+            start: 'top 90%',
             once: true,
           },
         }
