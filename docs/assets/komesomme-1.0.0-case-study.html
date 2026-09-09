@@ -162,9 +162,6 @@
       line-height: 1.55;
       max-width: 42rem;
     }
-    .scope-ring, .scope-core, .scope-label, .scope-chip { transform-box: fill-box; transform-origin: center; }
-    .stack-row, .stack-keep, .stack-drop, .stack-why { transform-box: fill-box; transform-origin: center; }
-    .pipe-stage, .pipe-gate, .pipe-belt { transform-box: fill-box; transform-origin: center; }
     .ev-dash {
       display: grid;
       gap: .65rem;
@@ -270,7 +267,8 @@
     @media (prefers-reduced-motion: reduce) {
       .swim-node, .swim-path, .swim-anno, .road-pin, .reveal-static,
       .scope-ring, .scope-core, .scope-label, .scope-chip,
-      .stack-row, .pipe-stage, .pipe-gate, .ev-card { opacity: 1 !important; transform: none !important; }
+      .stack-row, .pipe-stage, .pipe-gate { opacity: 1 !important; }
+      .ev-card { opacity: 1 !important; transform: none !important; }
       .progress-bar { transition: none; }
     }
   </style>
@@ -522,101 +520,101 @@
           <text x="128" y="28" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F" letter-spacing="0.08em">KEEP · 採用</text>
           <text x="488" y="28" font-family="IBM Plex Mono" font-size="11" fill="#9A8B7A" letter-spacing="0.08em">DROP · 見送り</text>
           <line x1="108" y1="36" x2="108" y2="590" stroke="url(#stackSpine)" stroke-width="2" stroke-dasharray="3 5"/>
-          <g class="stack-row" id="stack-app" transform="translate(0 48)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">App</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-app">
+            <text x="28" y="74" font-family="IBM Plex Mono" font-size="12" fill="#766658">App</text>
+            <line x1="108" y1="52" x2="108" y2="120" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Next.js 15 App Router</text>
+              <rect x="128" y="48" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="48" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="68" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="86" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Next.js 15 App Router</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別立ての API サーバ</text>
+              <rect x="488" y="48" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="68" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="86" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別立ての API サーバ</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">画面と相談 API を同一リポジトリで閉じるため</text>
+            <text class="stack-why" x="128" y="118" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">画面と相談 API を同一リポジトリで閉じるため</text>
           </g>
-          <g class="stack-row" id="stack-vector" transform="translate(0 140)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Vector</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-vector">
+            <text x="28" y="166" font-family="IBM Plex Mono" font-size="12" fill="#766658">Vector</text>
+            <line x1="108" y1="144" x2="108" y2="212" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Supabase pgvector</text>
+              <rect x="128" y="140" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="140" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="160" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="178" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Supabase pgvector</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">Pinecone / Qdrant 単独</text>
+              <rect x="488" y="140" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="160" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="178" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">Pinecone / Qdrant 単独</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">リレーショナルと同一基盤・同一権限に揃えるため</text>
+            <text class="stack-why" x="128" y="210" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">リレーショナルと同一基盤・同一権限に揃えるため</text>
           </g>
-          <g class="stack-row" id="stack-embed" transform="translate(0 232)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Embed</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-embed">
+            <text x="28" y="258" font-family="IBM Plex Mono" font-size="12" fill="#766658">Embed</text>
+            <line x1="108" y1="236" x2="108" y2="304" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Gemini 既定 / OpenAI 切替 · 1536d</text>
+              <rect x="128" y="232" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="232" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="252" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="270" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Gemini 既定 / OpenAI 切替 · 1536d</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">モデル混在比較</text>
+              <rect x="488" y="232" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="252" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="270" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">モデル混在比較</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">次元やモデルを混在させると類似度が成立しないため</text>
+            <text class="stack-why" x="128" y="302" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">次元やモデルを混在させると類似度が成立しないため</text>
           </g>
-          <g class="stack-row" id="stack-rec" transform="translate(0 324)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Recommend</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-rec">
+            <text x="28" y="350" font-family="IBM Plex Mono" font-size="12" fill="#766658">Recommend</text>
+            <line x1="108" y1="328" x2="108" y2="396" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">二本立て（座標 + 意味）</text>
+              <rect x="128" y="324" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="324" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="344" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="362" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">二本立て（座標 + 意味）</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">操作のたびに LLM</text>
+              <rect x="488" y="324" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="344" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="362" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">操作のたびに LLM</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">地図は低遅延。相談時だけ埋め込みを使うため</text>
+            <text class="stack-why" x="128" y="394" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">地図は低遅延。相談時だけ埋め込みを使うため</text>
           </g>
-          <g class="stack-row" id="stack-ingest" transform="translate(0 416)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Ingest</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-ingest">
+            <text x="28" y="442" font-family="IBM Plex Mono" font-size="12" fill="#766658">Ingest</text>
+            <line x1="108" y1="420" x2="108" y2="488" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">TS catalog → seed:rice</text>
+              <rect x="128" y="416" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="416" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="436" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="454" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">TS catalog → seed:rice</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別言語の常設スクレイパ</text>
+              <rect x="488" y="416" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="436" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="454" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別言語の常設スクレイパ</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">銘柄の正本を Git に置き、DB は配信用の控えにするため</text>
+            <text class="stack-why" x="128" y="486" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">銘柄の正本を Git に置き、DB は配信用の控えにするため</text>
           </g>
-          <g class="stack-row" id="stack-commerce" transform="translate(0 508)">
-            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Commerce</text>
-            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+          <g class="stack-row" id="stack-commerce">
+            <text x="28" y="534" font-family="IBM Plex Mono" font-size="12" fill="#766658">Commerce</text>
+            <line x1="108" y1="512" x2="108" y2="580" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
             <g class="stack-keep">
-              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
-              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
-              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
-              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">検索 CTA + 楽天直リンク</text>
+              <rect x="128" y="508" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="508" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="528" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="546" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">検索 CTA + 楽天直リンク</text>
             </g>
             <g class="stack-drop">
-              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
-              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
-              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">全モール API 必須</text>
+              <rect x="488" y="508" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="528" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="546" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">全モール API 必須</text>
             </g>
-            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">横断 API 必須化は規約対応と運用負荷が増えるため</text>
+            <text class="stack-why" x="128" y="578" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">横断 API 必須化は規約対応と運用負荷が増えるため</text>
           </g>
         </svg>
       </div>
@@ -1646,10 +1644,9 @@
       if (!svg) return;
       const parts = svg.querySelectorAll(sel);
       if (!parts.length) return;
-      gsap.set(parts, { opacity: 0, y: 10 });
+      gsap.set(parts, { opacity: 0 });
       gsap.to(parts, {
         opacity: 1,
-        y: 0,
         stagger: 0.06,
         ease: 'power2.out',
         scrollTrigger: {
