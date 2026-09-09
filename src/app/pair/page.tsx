@@ -43,6 +43,7 @@ function artFor(resolved: ResolvedPairing): string | null {
 export default function PairIndexPage() {
   const pages = allResolvedPairings();
   const [first, ...rest] = pages;
+  const firstArt = first ? artFor(first) : null;
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
@@ -58,7 +59,7 @@ export default function PairIndexPage() {
           }),
         ]}
       />
-      <SiteHeader active="discover" />
+      <SiteHeader active="pair" />
       <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={TRAIL} />
 
       <div className={`${SITE_COLUMN} pb-20 pt-4`}>
@@ -73,32 +74,32 @@ export default function PairIndexPage() {
         {first ? (
           <Link
             href={`/pair/${first.page.slug}`}
-            className={`group mt-10 grid items-center gap-4 border border-[var(--km-border)] bg-[var(--km-surface)] p-3 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] sm:gap-6 sm:p-4 ${FOCUS}`}
+            className={`group mt-10 block overflow-hidden border border-[var(--km-border)] transition-colors duration-150 ease-out hover:border-[var(--km-brown)]/35 active:scale-[0.995] ${FOCUS}`}
           >
-            {artFor(first) ? (
+            {firstArt ? (
               <EditorialArt
-                src={artFor(first)!}
+                src={firstArt}
                 alt=""
-                className="aspect-[21/9] w-full sm:aspect-[24/11]"
-                sizes="(min-width: 640px) 55vw, 100vw"
-                quality={86}
+                className="aspect-[21/9] w-full sm:aspect-[24/9]"
+                sizes="(min-width: 768px) 1100px, 100vw"
+                quality={88}
                 priority
                 objectPosition="50% 42%"
               />
             ) : (
               <div
                 aria-hidden
-                className="flex aspect-[21/9] items-end bg-[var(--km-surface-warm)] px-4 pb-3 sm:aspect-[24/11]"
+                className="flex aspect-[21/9] items-end bg-[var(--km-surface-warm)] px-4 pb-3 sm:aspect-[24/9]"
               >
                 <BowlMark className="h-10 w-10 opacity-80" />
               </div>
             )}
-            <span className="min-w-0 px-1 pb-1 sm:pr-2">
-              <span className="text-[12px] text-[var(--km-muted)]">ピックアップ</span>
+            <span className="block bg-[var(--km-surface-warm)]/50 px-4 py-4 sm:px-5">
+              <span className="text-[12px] text-[var(--km-muted)]">いちばん上の献立</span>
               <span className="mt-1 block font-serif text-[1.45rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)] sm:text-[1.6rem]">
                 {first.page.dishLabel}に合う米
               </span>
-              <span className="mt-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+              <span className="mt-2 block max-w-2xl text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
                 {first.page.dek}
               </span>
             </span>
@@ -106,39 +107,37 @@ export default function PairIndexPage() {
         ) : null}
 
         {rest.length > 0 ? (
-          <ul className="mt-8 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
-            {rest.map((resolved, index) => {
+          <ul className="mt-10 grid gap-x-8 gap-y-0 sm:grid-cols-2">
+            {rest.map((resolved) => {
               const art = artFor(resolved);
               return (
-                <li key={resolved.page.slug}>
+                <li key={resolved.page.slug} className="border-t border-[var(--km-border)]">
                   <Link
                     href={`/pair/${resolved.page.slug}`}
-                    className={`group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
+                    className={`group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.25rem_minmax(0,1fr)] sm:gap-4 ${FOCUS}`}
                   >
                     {art ? (
                       <EditorialArt
                         src={art}
                         alt=""
-                        className={`w-full ${index % 2 === 0 ? "aspect-[4/5]" : "aspect-square"}`}
-                        sizes="6.5rem"
+                        className="aspect-[5/4] w-full"
+                        sizes="6.25rem"
                         quality={74}
                         objectPosition="50% 42%"
                       />
                     ) : (
                       <div
                         aria-hidden
-                        className={`flex w-full items-center justify-center bg-[var(--km-surface-warm)] ${
-                          index % 2 === 0 ? "aspect-[4/5]" : "aspect-square"
-                        }`}
+                        className="flex aspect-[5/4] w-full items-center justify-center bg-[var(--km-surface-warm)]"
                       >
                         <BowlMark className="h-8 w-8 opacity-70" />
                       </div>
                     )}
                     <span className="min-w-0">
-                      <span className="font-serif text-[1.2rem] font-semibold text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+                      <span className="font-serif text-[1.15rem] font-semibold text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
                         {resolved.page.dishLabel}に合う米
                       </span>
-                      <span className="mt-1 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+                      <span className="mt-1 line-clamp-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
                         {resolved.page.dek}
                       </span>
                     </span>

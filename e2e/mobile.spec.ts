@@ -14,7 +14,7 @@ test.describe("TS-MOBILE", () => {
     await waitForHomeReady(page);
     const mapPreview = page.locator("[data-taste-map-preview]");
     const shop = page.locator("[data-shop-strip=disclosure]");
-    const consult = page.getByRole("heading", { name: "言葉でえらぶ、今日の一膳" });
+    const consult = page.getByRole("heading", { name: "侍米師に聞く" });
     await expect(consult).toBeVisible();
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
 

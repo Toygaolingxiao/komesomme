@@ -6,10 +6,11 @@ import { FOCUS } from "@/components/matrix/shared";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 
 /** Primary nav. Collection magazine pages highlight ピックアップ. */
-export type SiteNavActive = "map" | "library" | "discover";
+export type SiteNavActive = "map" | "pair" | "library" | "discover";
 
 const NAV = [
   { id: "map" as const, href: "/", label: "味わいの地図" },
+  { id: "pair" as const, href: "/pair", label: "料理で選ぶ" },
   { id: "library" as const, href: "/library", label: "ライブラリ" },
   { id: "discover" as const, href: "/discover", label: "ピックアップ" },
 ] as const;
@@ -26,10 +27,10 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
       <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
         <BrandLockup subtitle={GUIDE_ROLE_ANNOTATED} />
       </Link>
-      <div className="flex max-w-[62%] shrink-0 flex-col items-end gap-0.5">
+      <div className="flex max-w-[68%] shrink-0 flex-col items-end gap-0.5">
         <nav
           aria-label="主要ナビ"
-          className="flex flex-wrap items-center justify-end gap-x-2.5 gap-y-0.5 sm:gap-x-3.5"
+          className="flex flex-wrap items-center justify-end gap-x-2 gap-y-0.5 sm:gap-x-3"
         >
           {NAV.map((item) => {
             const isActive = item.id === active;
@@ -38,7 +39,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
                 key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`font-serif text-[11px] tracking-wide transition sm:text-[12px] ${FOCUS} ${
+                className={`font-serif text-[11px] tracking-wide transition-colors duration-150 ease-out active:scale-[0.97] sm:text-[12px] ${FOCUS} ${
                   isActive
                     ? "font-semibold text-[var(--km-ink)]"
                     : "text-[var(--km-muted)] hover:text-[var(--km-gold)]"

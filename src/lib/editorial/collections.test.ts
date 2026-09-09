@@ -56,13 +56,12 @@ describe("editorial collections", () => {
     );
   });
 
-  it("indexes September features before the rest", () => {
-    const september = Date.UTC(2026, 8, 3, 3, 0);
-    expect(collectionsForIndex(KNOWN, september).map((row) => row.slug)).toEqual([
-      "bento-cold",
-      "shinmai",
+  it("indexes newest dateLabel first", () => {
+    expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
       "toku-a",
       "nabe",
+      "shinmai",
+      "bento-cold",
     ]);
   });
 

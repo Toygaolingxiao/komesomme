@@ -86,7 +86,7 @@ export default async function PairDishPage({ params }: PageProps) {
           }),
         ]}
       />
-      <SiteHeader active="discover" />
+      <SiteHeader active="pair" />
       <Breadcrumbs
         className="mx-auto w-full min-w-0 max-w-[1440px] px-4 pt-5 sm:px-5"
         crumbs={trail}

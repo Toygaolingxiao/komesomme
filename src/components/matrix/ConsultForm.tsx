@@ -44,14 +44,14 @@ export function ConsultForm({
   const title = (
     <div className={wide ? "min-w-0 self-center" : undefined}>
       <h3 className="font-serif text-[15px] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[15px]">
-        言葉でえらぶ、今日の一膳
+        侍米師に聞く
       </h3>
       <p className="mt-0.5 text-[11px] leading-snug text-[var(--km-muted)]">
         {failed
           ? "言葉を変えるか、味わいの地図から探してみてください。"
           : reply
             ? "言葉を変えて、続けて聞けます。"
-            : "料理の名前でも、今夜の気分でも構いません。今日の一膳を探します。"}
+            : "料理の名前でも、今夜の気分でも構いません。触る地図と、読む比較のあいだの道です。"}
       </p>
     </div>
   );

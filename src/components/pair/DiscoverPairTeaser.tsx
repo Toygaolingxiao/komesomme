@@ -39,7 +39,7 @@ export function DiscoverPairTeaser() {
         </Link>
       </div>
 
-      <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-5 grid gap-0 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3">
         {PAIRING_PAGES.map((page) => {
           let art = pairingArtSrc(page.artFile);
           if (!art && page.collectionSlug) {
@@ -59,7 +59,7 @@ export function DiscoverPairTeaser() {
             <li key={page.slug}>
               <Link
                 href={`/pair/${page.slug}`}
-                className={`group grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-3 border border-[var(--km-border)] bg-[var(--km-surface)] p-2.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] ${FOCUS}`}
+                className={`group grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-3 border-b border-[var(--km-border)] py-3 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/40 sm:grid-cols-[5.5rem_minmax(0,1fr)] ${FOCUS}`}
               >
                 {art ? (
                   <EditorialArt

@@ -10,6 +10,14 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(page.locator("#km-hardness")).toBeVisible();
   });
 
+  test("TS-HOME-13 home shows 地図のほか links", async ({ page }) => {
+    await waitForHomeReady(page);
+    const explore = page.getByRole("navigation", { name: "地図のほか" });
+    await expect(explore.getByRole("link", { name: "料理で選ぶ" })).toBeVisible();
+    await expect(explore.getByRole("link", { name: "ピックアップ" })).toBeVisible();
+    await expect(explore.getByRole("link", { name: "ライブラリ" })).toBeVisible();
+  });
+
   test("TS-HOME-02 map has plot content", async ({ page }) => {
     await waitForHomeReady(page);
     const map = page.locator("#matrix");

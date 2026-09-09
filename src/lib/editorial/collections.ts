@@ -24,18 +24,6 @@ export function allCollections(knownIds: Set<string>): EditorialCollection[] {
   );
 }
 
-/** Collections whose months include the Tokyo calendar month. */
-export function featuredCollections(
-  knownIds: Set<string>,
-  now: Date | number = Date.now(),
-  cap = 2
-): EditorialCollection[] {
-  const month = jstMonth(now);
-  return allCollections(knownIds)
-    .filter((row) => row.months.includes(month))
-    .slice(0, cap);
-}
-
 /**
  * `dateLabel` is Tokyo display copy ("2026年9月2日 0時02分"). Article JSON-LD needs
  * ISO 8601, so parse that one shape and give up rather than guess.
@@ -50,14 +38,33 @@ export function collectionPublishedIso(dateLabel: string): string | undefined {
   return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`;
 }
 
-/** Index order: this month's features first, then the rest. */
-export function collectionsForIndex(
+function publishedMs(dateLabel: string): number {
+  const iso = collectionPublishedIso(dateLabel);
+  if (!iso) return 0;
+  const t = Date.parse(iso);
+  return Number.isFinite(t) ? t : 0;
+}
+
+function byPublishedDesc(a: EditorialCollection, b: EditorialCollection): number {
+  const delta = publishedMs(b.dateLabel) - publishedMs(a.dateLabel);
+  if (delta !== 0) return delta;
+  return a.slug.localeCompare(b.slug);
+}
+
+/** Index / discover order: newest first (by dateLabel). */
+export function collectionsForIndex(knownIds: Set<string>): EditorialCollection[] {
+  return [...allCollections(knownIds)].sort(byPublishedDesc);
+}
+
+/** Seasonal picks, newest first within the month. */
+export function featuredCollections(
   knownIds: Set<string>,
-  now: Date | number = Date.now()
+  now: Date | number = Date.now(),
+  cap = 2
 ): EditorialCollection[] {
   const month = jstMonth(now);
-  const all = allCollections(knownIds);
-  const featured = all.filter((row) => row.months.includes(month));
-  const rest = all.filter((row) => !row.months.includes(month));
-  return [...featured, ...rest];
+  return allCollections(knownIds)
+    .filter((row) => row.months.includes(month))
+    .sort(byPublishedDesc)
+    .slice(0, cap);
 }

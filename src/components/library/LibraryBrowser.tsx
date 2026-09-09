@@ -21,6 +21,15 @@ const REGIONS = [
   "全国銘柄",
 ] as const;
 
+type SortKey = "default" | "sweetness" | "hardness" | "stickiness";
+
+const SORT_OPTIONS: { id: SortKey; label: string }[] = [
+  { id: "default", label: "五十音" },
+  { id: "sweetness", label: "甘みが高い順" },
+  { id: "hardness", label: "粒立ちが強い順" },
+  { id: "stickiness", label: "粘りが強い順" },
+];
+
 /** Desktop: name | 甘み | 粒感 | 粘り — columns align like a tasting sheet. */
 const ROW_GRID =
   "grid grid-cols-1 gap-2.5 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem] sm:items-center sm:gap-x-4";
@@ -44,6 +53,13 @@ function MetricPips({
   );
 }
 
+function metricValue(entry: RiceEncyclopediaManifestEntry, key: SortKey): number {
+  if (key === "sweetness") return entry.sweetness;
+  if (key === "hardness") return entry.hardness;
+  if (key === "stickiness") return entry.stickiness;
+  return 0;
+}
+
 export function LibraryBrowser({
   entries,
   showPageTitle = true,
@@ -54,17 +70,28 @@ export function LibraryBrowser({
 }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<(typeof REGIONS)[number]>("すべて");
+  const [sort, setSort] = useState<SortKey>("default");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return entries.filter((entry) => {
+    const matched = entries.filter((entry) => {
       if (region !== "すべて" && entry.region !== region) return false;
       if (!q) return true;
       const hay =
         `${entry.name}${entry.reading}${entry.prefecture}${entry.headline}${brandI18nSearchBlob(entry.id)}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [entries, query, region]);
+
+    if (sort === "default") {
+      return [...matched].sort((a, b) => a.name.localeCompare(b.name, "ja"));
+    }
+
+    return [...matched].sort((a, b) => {
+      const delta = metricValue(b, sort) - metricValue(a, sort);
+      if (delta !== 0) return delta;
+      return a.name.localeCompare(b.name, "ja");
+    });
+  }, [entries, query, region, sort]);
 
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
@@ -95,11 +122,11 @@ export function LibraryBrowser({
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="銘柄名・県名・中国語・英語"
+              placeholder="銘柄名・県名"
               className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] placeholder:text-[var(--km-muted)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
             />
           </label>
-          <label className="sm:w-48">
+          <label className="sm:w-44">
             <span className="text-[12px] text-[var(--km-muted)]">地域</span>
             <select
               value={region}
@@ -111,6 +138,20 @@ export function LibraryBrowser({
               {REGIONS.map((item) => (
                 <option key={item} value={item}>
                   {item}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="sm:w-48">
+            <span className="text-[12px] text-[var(--km-muted)]">並び</span>
+            <select
+              value={sort}
+              onChange={(event) => setSort(event.target.value as SortKey)}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+            >
+              {SORT_OPTIONS.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -136,7 +177,7 @@ export function LibraryBrowser({
             <li key={entry.id}>
               <Link
                 href={`/library/${entry.id}`}
-                className={`group ${ROW_GRID} py-3.5 transition hover:bg-[var(--km-surface-warm)]/50 sm:py-3 ${FOCUS}`}
+                className={`group ${ROW_GRID} py-3.5 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/50 sm:py-3 ${FOCUS}`}
               >
                 <span className="min-w-0">
                   <span className="block text-[11px] text-[var(--km-muted)]">

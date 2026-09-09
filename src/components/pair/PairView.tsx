@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { BowlMark, SteamMark } from "@/components/brand/EditorialMarks";
+import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { ComparisonTable, type ComparisonRow } from "@/components/pair/ComparisonTable";
 import { FOCUS } from "@/components/matrix/shared";
-import { SITE_COLUMN } from "@/components/siteChrome";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { pairingPageBySlug } from "@/data/editorial/pairings";
 import {
@@ -15,6 +14,7 @@ import {
 } from "@/lib/editorial/art";
 import type { ResolvedPairing } from "@/lib/editorial/pairings";
 import type { RiceProfileV2 } from "@/types/rice";
+import "@/components/home/sommelier-motion.css";
 
 function suitedFor(rice: RiceProfileV2): string {
   const dishes = rice.best_match_dishes.slice(0, 2).join("、");
@@ -57,6 +57,10 @@ function avoidLabel(
   return `${hit}には向きにくい`;
 }
 
+/**
+ * Stage magazine layout (promoted from /prototypes/pair Stage):
+ * sticky art on lg+, single scrolling editorial column.
+ */
 export function PairView({ resolved }: { resolved: ResolvedPairing }) {
   const { page, top, avoid, avoidSource } = resolved;
   const rows: ComparisonRow[] = top.map((rice) => ({
@@ -65,38 +69,47 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
     caution: caution(rice),
   }));
 
-  const related = page.relatedSlugs
-    .map((slug) => pairingPageBySlug(slug))
-    .filter(Boolean);
+  const related = page.relatedSlugs.map((slug) => pairingPageBySlug(slug)).filter(Boolean);
   const lead = top[0];
   const hero = heroSrc(page, lead);
 
   return (
-    <article className="pb-20">
-      <div className={`${SITE_COLUMN} pt-2`}>
-        <div className="grid items-end gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:gap-10">
+    <article className="pb-16 text-[var(--km-ink)]">
+      <div className="lg:grid lg:min-h-[calc(100dvh-3rem)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <aside className="relative isolate min-h-[40dvh] overflow-hidden bg-[var(--km-surface-warm)] lg:sticky lg:top-0 lg:h-[calc(100dvh-3rem)] lg:min-h-0">
           {hero ? (
             <EditorialArt
               src={hero}
               alt=""
-              className="h-36 w-full md:h-auto md:aspect-[24/9]"
-              sizes="(min-width: 768px) 58vw, 100vw"
+              className="absolute inset-0 h-full w-full"
+              sizes="(min-width: 1024px) 48vw, 100vw"
               quality={90}
               priority
-              objectPosition="50% 40%"
+              objectPosition="48% 42%"
             />
           ) : (
-            <div
-              aria-hidden
-              className="flex h-36 w-full items-end bg-[var(--km-surface-warm)] px-5 pb-4 md:h-auto md:aspect-[24/9]"
-            >
-              <BowlMark className="h-12 w-12 opacity-80" />
+            <div className="absolute inset-0 flex items-end bg-[var(--km-surface-warm)] px-6 pb-6">
+              <BowlMark className="h-14 w-14 opacity-80" />
             </div>
           )}
-          <div className="min-w-0 pb-1">
-            <SteamMark className="h-7 w-7" />
-            <p className="mt-3 text-[12px] tracking-wide text-[var(--km-muted)]">料理で選ぶ</p>
-            <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.15rem]">
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.35)]"
+          />
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:hidden">
+            <p className="text-[12px] tracking-[0.14em] text-white/75">料理で選ぶ</p>
+            <h1 className="mt-2 font-serif text-[2.05rem] font-semibold text-white">
+              {page.dishLabel}に合う米
+            </h1>
+          </div>
+        </aside>
+
+        <div className="pair-stage-enter bg-[var(--km-bg)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          <div className="mx-auto max-w-[34rem]">
+            <p className="hidden text-[12px] tracking-[0.14em] text-[var(--km-muted)] lg:block">
+              料理で選ぶ
+            </p>
+            <h1 className="mt-2 hidden font-serif text-[2.35rem] font-semibold leading-[1.12] tracking-tight lg:block">
               {page.dishLabel}に合う米
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">{page.dek}</p>
@@ -111,264 +124,189 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                 </Link>
               </p>
             ) : null}
+
+            <div className="mt-8 space-y-3 text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
+              {page.lead.map((paragraph) => (
+                <p key={paragraph.slice(0, 28)}>{paragraph}</p>
+              ))}
+            </div>
+
+            <div className="mt-8 bg-[var(--km-surface)] px-4 py-3.5">
+              <p className="text-[11px] tracking-wide text-[var(--km-muted)]">並びの根拠</p>
+              <p className="mt-1.5 text-[13px] leading-[1.85] text-[var(--km-ink-soft)]">
+                {page.sortNote}
+              </p>
+            </div>
+
+            <section className="mt-12" aria-labelledby="pair-top-heading">
+              <div className="flex items-end justify-between gap-3">
+                <h2
+                  id="pair-top-heading"
+                  className="font-serif text-[1.3rem] font-semibold tracking-tight"
+                >
+                  今夜の候補
+                </h2>
+                <AffiliateDisclosure variant="pr" />
+              </div>
+              <ol className="mt-5">
+                {top.map((rice, index) => {
+                  const art = resolveBrandArt(rice.id, rice.region, rice.prefecture);
+                  return (
+                    <li
+                      key={rice.id}
+                      className="pair-stage-enter border-b border-[var(--km-border)]"
+                      style={{ animationDelay: `${50 + index * 40}ms` }}
+                    >
+                      <Link
+                        href={`/library/${rice.id}`}
+                        className={`group grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-3 py-3.5 transition-transform duration-150 ease-out active:scale-[0.985] sm:grid-cols-[4rem_minmax(0,1fr)] ${FOCUS}`}
+                      >
+                        <span className="font-serif text-[1.35rem] tabular-nums text-[var(--km-gold)]">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="flex min-w-0 items-center gap-3">
+                          {art ? (
+                            <EditorialArt
+                              src={art.src}
+                              alt=""
+                              className="hidden aspect-square w-12 shrink-0 sm:block"
+                              sizes="3rem"
+                              quality={72}
+                            />
+                          ) : null}
+                          <span className="min-w-0">
+                            <span className="block font-serif text-[1.1rem] font-semibold group-hover:text-[var(--km-brown)]">
+                              {rice.name}
+                              {index === 0 ? (
+                                <span className="ml-2 text-[11px] font-normal text-[var(--km-accent)]">
+                                  いちばん近い
+                                </span>
+                              ) : null}
+                            </span>
+                            <span className="mt-0.5 block text-[12px] text-[var(--km-muted)]">
+                              {rice.prefecture} · {rice.sweetness_label} · {rice.texture_label}
+                            </span>
+                            <span className="mt-1 line-clamp-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+                              {rice.short_}
+                            </span>
+                          </span>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+
+            <div className="mt-12">
+              <ComparisonTable rows={rows} />
+            </div>
+
+            <section className="mt-12" aria-labelledby="pair-avoid-heading">
+              <h2
+                id="pair-avoid-heading"
+                className="font-serif text-[1.2rem] font-semibold tracking-tight"
+              >
+                この料理には向かない米
+              </h2>
+              {avoidSource === "axis" && page.axisAvoidNote ? (
+                <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
+                  {page.axisAvoidNote}
+                </p>
+              ) : (
+                <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
+                  カタログの「向かない組み合わせ」から拾っています。
+                </p>
+              )}
+              <ul className="mt-4 space-y-3">
+                {avoid.map((rice) => (
+                  <li key={rice.id} className="flex gap-3">
+                    <span
+                      aria-hidden
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--km-plum)]"
+                    />
+                    <Link href={`/library/${rice.id}`} className={`min-w-0 ${FOCUS}`}>
+                      <span className="font-serif text-[1.02rem] font-semibold hover:text-[var(--km-brown)]">
+                        {rice.name}
+                      </span>
+                      <span className="mt-0.5 block text-[13px] text-[var(--km-ink-soft)]">
+                        {avoidLabel(rice, page, avoidSource)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="mt-12" aria-labelledby="pair-faq-heading">
+              <h2 id="pair-faq-heading" className="font-serif text-[1.2rem] font-semibold">
+                よくある質問
+              </h2>
+              <dl className="mt-4 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
+                {page.faq.map((item) => (
+                  <div key={item.q} className="py-4">
+                    <dt className="text-[14px] font-medium">{item.q}</dt>
+                    <dd className="mt-1.5 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
+                      {item.a}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
+            <nav className="mt-12 border-t border-[var(--km-border)] pt-8" aria-label="関連リンク">
+              <h2 className="font-serif text-[1.1rem] font-semibold">ほかの料理</h2>
+              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                {related.map((other) => {
+                  if (!other) return null;
+                  const thumb = pairingArtSrc(other.artFile);
+                  return (
+                    <li key={other.slug}>
+                      <Link
+                        href={`/pair/${other.slug}`}
+                        className={`group grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2.5 border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-1.5 transition-transform duration-150 ease-out active:scale-[0.98] hover:border-[var(--km-brown)]/35 ${FOCUS}`}
+                      >
+                        {thumb ? (
+                          <EditorialArt
+                            src={thumb}
+                            alt=""
+                            className="aspect-[5/4] w-full"
+                            sizes="4rem"
+                            quality={70}
+                          />
+                        ) : (
+                          <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-bg-soft)]" />
+                        )}
+                        <span className="pr-2 font-serif text-[14px] font-semibold group-hover:text-[var(--km-brown)]">
+                          {other.dishLabel}
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <ul className="mt-3 flex flex-wrap gap-2.5">
+                <li>
+                  <Link
+                    href="/library"
+                    className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
+                  >
+                    銘柄ライブラリ
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/discover"
+                    className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
+                  >
+                    ピックアップ
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </div>
-
-      <div
-        className={`${SITE_COLUMN} mt-8 max-w-3xl space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]`}
-      >
-        {page.lead.map((paragraph) => (
-          <p key={paragraph.slice(0, 28)}>{paragraph}</p>
-        ))}
-      </div>
-
-      {hero ? (
-        <div className={`${SITE_COLUMN} mt-10`}>
-          <EditorialArt
-            src={hero}
-            alt=""
-            className="aspect-[21/8] w-full md:aspect-[24/7]"
-            sizes="(min-width: 768px) 1100px, 100vw"
-            quality={88}
-            objectPosition="62% 48%"
-          />
-        </div>
-      ) : null}
-
-      <div className={`${SITE_COLUMN} mt-10`}>
-        <div className="border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-4 py-4 sm:px-5">
-          <h2 className="font-serif text-[1.05rem] font-semibold text-[var(--km-ink)]">
-            並びの根拠
-          </h2>
-          <p className="mt-2 text-[13px] leading-[1.85] text-[var(--km-ink-soft)]">{page.sortNote}</p>
-        </div>
-      </div>
-
-      <section className={`${SITE_COLUMN} mt-12`} aria-labelledby="pair-top-heading">
-        <div className="flex items-end justify-between gap-3">
-          <h2
-            id="pair-top-heading"
-            className="font-serif text-[1.35rem] font-semibold tracking-tight text-[var(--km-ink)]"
-          >
-            今夜の候補
-          </h2>
-          <p className="text-[12px] text-[var(--km-muted)]">近い順 · {top.length}銘柄</p>
-        </div>
-        <ol className="mt-5 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
-          {top.map((rice, index) => {
-            const art = resolveBrandArt(rice.id, rice.region, rice.prefecture);
-            const odd = index % 2 === 0;
-            return (
-              <li key={rice.id}>
-                <Link
-                  href={`/library/${rice.id}`}
-                  className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
-                >
-                  {art ? (
-                    <EditorialArt
-                      src={art.src}
-                      alt=""
-                      className={`w-full ${odd ? "aspect-[4/5]" : "aspect-square"}`}
-                      sizes="(min-width: 640px) 6.5rem, 5.75rem"
-                      objectPosition={odd ? "40% 50%" : "60% 40%"}
-                      quality={78}
-                    />
-                  ) : (
-                    <div
-                      aria-hidden
-                      className={`flex w-full items-center justify-center bg-[var(--km-surface-warm)] ${
-                        odd ? "aspect-[4/5]" : "aspect-square"
-                      }`}
-                    >
-                      <span className="font-serif text-[1.4rem] text-[var(--km-gold)]">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                  )}
-                  <span className="min-w-0">
-                    <span className="text-[12px] text-[var(--km-muted)]">
-                      {String(index + 1).padStart(2, "0")}
-                      <span className="mx-2">{rice.prefecture}</span>
-                      {index === 0 ? (
-                        <span className="text-[var(--km-brown)]">いちばん近い</span>
-                      ) : null}
-                    </span>
-                    <span className="mt-1 block font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)] sm:text-[1.35rem]">
-                      {rice.name}
-                    </span>
-                    <span className="mt-1.5 line-clamp-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
-                      {rice.short_}
-                    </span>
-                    <span className="mt-2 block text-[11px] tracking-wide text-[var(--km-muted)]">
-                      {rice.sweetness_label} · {rice.texture_label}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
-      </section>
-
-      <div className={`${SITE_COLUMN} mt-12`}>
-        <ComparisonTable rows={rows} />
-      </div>
-
-      <section className={`${SITE_COLUMN} mt-14 max-w-3xl`} aria-labelledby="pair-avoid-heading">
-        <div className="border-l-[3px] border-l-[var(--km-plum)] pl-4 sm:pl-5">
-          <h2
-            id="pair-avoid-heading"
-            className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]"
-          >
-            この料理には向かない米
-          </h2>
-          {avoidSource === "axis" && page.axisAvoidNote ? (
-            <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
-              {page.axisAvoidNote}
-            </p>
-          ) : (
-            <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
-              カタログの「向かない組み合わせ」から拾っています。右の一文は、その米が避けたい献立です。
-            </p>
-          )}
-        </div>
-        <ul className="mt-5 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
-          {avoid.map((rice) => {
-            const art = resolveBrandArt(rice.id, rice.region, rice.prefecture);
-            return (
-              <li key={rice.id}>
-                <Link
-                  href={`/library/${rice.id}`}
-                  className={`group grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3.5 py-3.5 sm:grid-cols-[5.25rem_minmax(0,1fr)] ${FOCUS}`}
-                >
-                  {art ? (
-                    <EditorialArt
-                      src={art.src}
-                      alt=""
-                      className="aspect-square w-full opacity-90"
-                      sizes="5.25rem"
-                      quality={72}
-                      objectPosition="50% 45%"
-                    />
-                  ) : (
-                    <div
-                      aria-hidden
-                      className="aspect-square w-full bg-[var(--km-bg-soft)]"
-                    />
-                  )}
-                  <span className="min-w-0">
-                    <span className="font-serif text-[1.05rem] font-semibold text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
-                      {rice.name}
-                      <span className="ml-2 text-[12px] font-normal text-[var(--km-muted)]">
-                        {rice.prefecture}
-                      </span>
-                    </span>
-                    <span className="mt-1 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
-                      {avoidLabel(rice, page, avoidSource)}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <section className={`${SITE_COLUMN} mt-14 max-w-3xl`} aria-labelledby="pair-faq-heading">
-        <h2
-          id="pair-faq-heading"
-          className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]"
-        >
-          よくある質問
-        </h2>
-        <dl className="mt-5 space-y-3">
-          {page.faq.map((item) => (
-            <div
-              key={item.q}
-              className="border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3.5 sm:px-5"
-            >
-              <dt className="text-[14px] font-medium text-[var(--km-ink)]">{item.q}</dt>
-              <dd className="mt-1.5 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-                {item.a}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <nav
-        className={`${SITE_COLUMN} mt-14 border-t border-[var(--km-border)] pt-10`}
-        aria-label="関連リンク"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 className="font-serif text-[1.15rem] font-semibold text-[var(--km-ink)]">
-            ほかの料理
-          </h2>
-          <AffiliateDisclosure variant="pr" className="sm:hidden" />
-        </div>
-        <ul className="mt-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-          {related.map((other) => {
-            if (!other) return null;
-            const thumb = pairingArtSrc(other.artFile);
-            return (
-              <li key={other.slug}>
-                <Link
-                  href={`/pair/${other.slug}`}
-                  className={`group grid grid-cols-[4.25rem_minmax(0,1fr)] items-center gap-2.5 border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-1.5 hover:border-[var(--km-brown)]/35 ${FOCUS}`}
-                >
-                  {thumb ? (
-                    <EditorialArt
-                      src={thumb}
-                      alt=""
-                      className="aspect-[5/4] w-full"
-                      sizes="4.25rem"
-                      quality={70}
-                      objectPosition="50% 42%"
-                    />
-                  ) : (
-                    <div
-                      aria-hidden
-                      className="aspect-[5/4] w-full bg-[var(--km-bg-soft)]"
-                    />
-                  )}
-                  <span className="pr-2 font-serif text-[14px] font-semibold text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
-                    {other.dishLabel}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <ul className="mt-3 flex flex-wrap gap-2.5">
-          <li>
-            <Link
-              href="/library"
-              className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] ${FOCUS}`}
-            >
-              銘柄ライブラリ
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/discover"
-              className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] ${FOCUS}`}
-            >
-              ピックアップ
-            </Link>
-          </li>
-          {page.collectionSlug ? (
-            <li>
-              <Link
-                href={`/collections/${page.collectionSlug}`}
-                className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 py-2 text-[13px] text-[var(--km-brown)] ${FOCUS}`}
-              >
-                関連特集
-              </Link>
-            </li>
-          ) : null}
-        </ul>
-      </nav>
     </article>
   );
 }

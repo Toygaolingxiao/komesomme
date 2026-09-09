@@ -14,6 +14,14 @@ test.describe("TS-PAIR cuisine landings", () => {
     await expect(page.getByRole("heading", { name: "よくある質問" })).toBeVisible();
   });
 
+  test("TS-PAIR-03 nav highlights 料理で選ぶ", async ({ page }) => {
+    await page.goto("/pair");
+    await expect(page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "料理で選ぶ" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+  });
+
   test("TS-PAIR-02 sitemap lists pair routes", async ({ request }) => {
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml).toContain("/pair/curry");
