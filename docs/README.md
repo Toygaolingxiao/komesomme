@@ -57,3 +57,15 @@
 | `/ops` | 内部观测台（`OPS_DASHBOARD_SECRET`。公開ナビに出さない） |
 
 作業リズムは `.cursor/rules/project-workflow.mdc`。WBS/甘特は兄弟倉 `pmo-kit`。
+
+## PJ 文档柜（卷宗 / 备份 / 锐评）
+
+正本以外の留档。对 GAO：**调研备份、锐评原文、固定提示词、对外工件索引**。
+
+| 入口 | 内容 |
+| --- | --- |
+| [pj/README.md](./pj/README.md) | 构成与用法 |
+| [pj/prompts/](./pj/prompts/) | 红队锐评提示词等 |
+| [pj/reviews/](./pj/reviews/) | 外部锐评留档（模板 + 每次原文） |
+| [pj/research/](./pj/research/) | SEO 等调研快照备份 |
+| [pj/artifacts/](./pj/artifacts/) | Case Study 等索引（实体多在 `assets/`） |

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KomeSomme 1.0.0 — Delivery Case Study</title>
-  <meta name="description" content="KomeSomme Ver 1.0.0 のデリバリー事例。課題定義から公開判定、その先の計画までを一本にまとめたものです。" />
+  <meta name="description" content="KomeSomme 1.0.0 のデリバリー事例。構想から公開判定まで一人で進めた記録と、事業価値の検証が未充足である境界を分けて示します。" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -155,6 +155,41 @@
     @media (min-width: 640px) {
       .viz-sheet { padding: 1.1rem 1.25rem 1.25rem; }
     }
+    .paper-note {
+      background: #FFF5E5; border: 1px solid rgba(48,40,32,.1);
+      border-radius: .85rem; padding: .85rem 1rem; font-size: .82rem;
+      line-height: 1.55; color: #704522; margin-bottom: 1rem;
+    }
+    .adr-grid {
+      display: grid; gap: .65rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px) {
+      .adr-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .adr-card {
+      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
+      border-radius: .85rem; padding: .85rem .95rem;
+    }
+    .adr-card h3 {
+      font-family: "Shippori Mincho", serif; font-size: .95rem;
+      font-weight: 500; margin: 0 0 .45rem;
+    }
+    .adr-card dl { margin: 0; font-size: .78rem; color: #766658; line-height: 1.5; }
+    .adr-card dt { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: #E56B3F; margin-top: .35rem; }
+    .adr-card dd { margin: .1rem 0 0; }
+    .split-ev {
+      display: grid; gap: 1rem;
+      grid-template-columns: 1fr;
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 800px) {
+      .split-ev { grid-template-columns: 1fr 1fr; }
+    }
+    .split-ev .sheet h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1rem;
+      font-weight: 500; margin: 0 0 .55rem;
+    }
     .viz-caption {
       margin-top: .85rem;
       font-size: .8rem;
@@ -234,6 +269,26 @@
       font-size: 11px; letter-spacing: .14em; color: #766658; margin-bottom: .35rem;
     }
     .issue-card .body { font-size: .875rem; line-height: 1.55; color: #302820; }
+    .summary-grid {
+      display: grid; gap: .65rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1000px) {
+      .summary-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+    .summary-card {
+      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
+      border-radius: .85rem; padding: .85rem .95rem;
+    }
+    .summary-card .eyebrow {
+      font-size: 11px; letter-spacing: .14em; color: #E56B3F; margin-bottom: .35rem;
+    }
+    .summary-card p {
+      font-size: .82rem; line-height: 1.5; color: #302820; margin: 0;
+    }
     .concept-chips { display: flex; flex-direction: column; gap: .55rem; }
     .concept-chip {
       background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
@@ -280,43 +335,47 @@
   <nav class="nav" aria-label="章">
     <a href="#top" data-nav="top" class="!text-ink font-display text-sm !pl-0">KomeSomme</a>
     <div class="hidden md:flex items-center">
+      <a href="#summary" data-nav="summary">要点</a>
       <a href="#lifecycle" data-nav="lifecycle">流れ</a>
       <a href="#context" data-nav="context">背景</a>
-      <a href="#concept" data-nav="concept">概念</a>
+      <a href="#concept" data-nav="concept">体験</a>
+      <a href="#wedge" data-nav="wedge">独自性</a>
       <a href="#decision" data-nav="decision">選定</a>
       <a href="#design" data-nav="design">設計</a>
+      <a href="#ranking" data-nav="ranking">処理</a>
       <a href="#delivery" data-nav="delivery">実装</a>
+      <a href="#threat" data-nav="threat">脅威</a>
       <a href="#validate" data-nav="validate">検証</a>
       <a href="#roadmap" data-nav="roadmap">道筋</a>
     </div>
-    <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">本番 ↗</a>
+    <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">公開サイト ↗</a>
   </nav>
 
   <!-- HERO -->
   <header id="top" class="px-5 sm:px-10 pt-24 pb-10 relative overflow-hidden">
     <span class="ghost-num" data-speed="0.08">01</span>
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-4">CASE STUDY · Ver 1.0.0</p>
+      <p class="sec-label mb-4">KOMESOMME 1.0.0 — DELIVERY CASE STUDY</p>
       <div class="grid lg:grid-cols-12 gap-8 items-end">
         <div class="lg:col-span-8">
           <h1 id="hero-title" class="font-display text-[clamp(2rem,5vw,3.4rem)] leading-[1.18] text-ink font-medium">
-            味わいを、選べる形にする。
+            味わいを、選べる形にする
           </h1>
           <p class="mt-4 text-base sm:text-lg text-brown font-display leading-relaxed max-w-xl">
-            構想から本番公開までを一人で閉じた、フルスタックのデリバリー事例です。
+            米の銘柄を「産地・価格」だけでなく、「甘み」「粒感」「料理との相性」から選べるようにするための推薦サービスです。
           </p>
           <p class="mt-3 text-sm text-muted leading-relaxed max-w-xl">
-            採用した技術だけでなく、見送った選択肢と公開の判断基準も、同じリポジトリに残しています。
+            本事例は、構想、設計、実装、データ整備、公開判定までを一人で進めたデリバリー記録です。いま示せているのは、公開可能な状態まで持っていったことです。購買行動、再訪、アフィリエイト成果などの事業価値については、まだ十分な実測データを持っていません。
           </p>
-          <p class="mt-5 text-sm text-muted">End-to-End Delivery · komesomme.jp</p>
+          <p class="mt-5 text-sm text-muted">作品集 / 技術レビュー向け · 事業価値の検証は未充足 · komesomme.jp</p>
         </div>
         <div class="lg:col-span-4">
           <p class="sec-label mb-3">この事例で示すこと</p>
           <ul class="space-y-2.5 text-sm text-ink/85 leading-relaxed list-none m-0 p-0 border-t border-ink/10 pt-3">
-            <li class="border-b border-ink/10 pb-2.5">課題が画面設計を決めたこと</li>
-            <li class="border-b border-ink/10 pb-2.5">トレードオフを文書とコードに残したこと</li>
-            <li class="border-b border-ink/10 pb-2.5">公開条件（P0）を自分で定義し満たしたこと</li>
-            <li>次の施策が同じ銘柄データの延長にあること</li>
+            <li class="border-b border-ink/10 pb-2.5">一人で構想から公開判定までを完了したこと</li>
+            <li class="border-b border-ink/10 pb-2.5">技術選定とスコープの判断を文書化したこと</li>
+            <li class="border-b border-ink/10 pb-2.5">LLM に候補決定を任せないこと</li>
+            <li>工程上の公開判定と事業価値の未検証を分けたこと</li>
           </ul>
         </div>
       </div>
@@ -325,13 +384,43 @@
 
   <div class="rule max-w-6xl mx-auto"></div>
 
+  <!-- SUMMARY -->
+  <section id="summary" class="px-5 sm:px-10 sec-y flow-block" data-chapter="summary">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">この事例で示すこと</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">作品集および技術レビュー向け</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">投資家向けの成長実績資料ではありません。示したい内容は、主に以下の四点です。</p>
+      <div class="summary-grid mb-5">
+        <article class="summary-card">
+          <p class="eyebrow">01</p>
+          <p>一人でプロダクトの構想から公開判定までを完了したこと</p>
+        </article>
+        <article class="summary-card">
+          <p class="eyebrow">02</p>
+          <p>技術選定とスコープの判断を文書化して残したこと</p>
+        </article>
+        <article class="summary-card">
+          <p class="eyebrow">03</p>
+          <p>LLM に候補決定を任せず、構造化したカタログを推薦の正本としたこと</p>
+        </article>
+        <article class="summary-card">
+          <p class="eyebrow">04</p>
+          <p>工程上の公開判定と、事業価値の検証不足を明確に分けて扱っていること</p>
+        </article>
+      </div>
+      <p class="paper-note max-w-3xl">実装した機能だけでなく、採用しなかった選択肢、スコープの境界、未検証の領域もあわせて整理します。事業価値が実証された状態としては読まないでください。</p>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
   <!-- 0 LIFECYCLE -->
   <section id="lifecycle" class="px-5 sm:px-10 sec-y flow-block" data-chapter="lifecycle">
     <div class="max-w-6xl mx-auto relative">
       <span class="ghost-num" data-speed="0.06">0</span>
-      <p class="sec-label mb-2">0 · ライフサイクル</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">案件の進め方</h2>
-      <p class="text-muted text-sm max-w-2xl mb-5 leading-relaxed">背景から公開判定までを横並びにし、前工程の成果が次工程の入力になる関係を示します。</p>
+      <p class="sec-label mb-2">0 · プロジェクトの進め方</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">背景から公開判定まで</h2>
+      <p class="text-muted text-sm max-w-2xl mb-5 leading-relaxed">背景整理から公開判定までを一連の流れとして扱いました。公開後の利用状況は、次の課題定義に戻す前提です。</p>
       <div class="overflow-x-auto sheet p-3 sm:p-4" id="lifecycle-stage">
         <svg viewBox="0 0 1080 170" class="w-full min-w-[780px] h-auto" aria-label="ライフサイクル関係図">
           <defs>
@@ -388,8 +477,8 @@
   <!-- 1 CONTEXT -->
   <section id="context" class="px-5 sm:px-10 sec-y flow-block" data-chapter="context">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">1 · 課題定義</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">スコープの境界</h2>
+      <p class="sec-label mb-2">1 · 課題定義とスコープ</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">今夜の料理や好みに合う米を選ぶ</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">店頭や通販では産地・価格・還元率が並びますが、甘みや粒立ち、おかずとの相性は比較可能な形になっていません。同心円は「どこに集中し、何を捨てたか」を示します。</p>
       <div class="viz-sheet">
         <svg id="scope-svg" viewBox="0 0 920 460" class="w-full min-w-[720px]" role="img" aria-label="スコープの同心円。中心は今夜のご飯に合う米、第1環はデータ資産、外周は非目標">
@@ -417,7 +506,7 @@
           <!-- mid ring: data moat -->
           <g class="scope-ring" id="scope-mid">
             <circle cx="390" cy="230" r="112" fill="#FFFDF7" stroke="rgba(212,154,42,.45)" stroke-width="1.75" filter="url(#scopeSoft)"/>
-            <text x="390" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#D49A2A" letter-spacing="0.08em">RING · データ資産</text>
+            <text x="390" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#D49A2A" letter-spacing="0.08em">RING · 構造化カタログ</text>
             <text x="390" y="148" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#704522">人手の相性 · 合わない組み合わせ</text>
           </g>
 
@@ -458,7 +547,7 @@
           <text x="390" y="422" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">中心に寄せるほど、1.0 で約束する範囲。破線の外は意図的に捨てた領域です。</text>
         </svg>
       </div>
-      <p class="viz-caption">模倣しにくい点は第1環に置いています。味わい・料理・酒の相性に加え、「合わない組み合わせ」まで人手で整理した一次データが、モデル丸投げでは得られない差になります。</p>
+      <p class="viz-caption">第1環は現時点の特徴です。Git 管理の構造化カタログ（相性・向かない組み合わせ）を人手で積んでいます。完成された参入障壁ではなく、更新を止めれば運用負債になります。</p>
     </div>
   </section>
 
@@ -468,16 +557,17 @@
   <section id="concept" data-chapter="concept">
     <div class="pin-stage" id="matrix-stage">
       <div class="max-w-6xl mx-auto w-full">
-        <p class="sec-label mb-2">2 · プロダクト概念</p>
-        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">利用者が触る体験</h2>
-        <p class="text-muted text-sm max-w-2xl mb-4 leading-relaxed">画面は和紙の味わい地図として見せ、ベクトル検索は裏側に置きます（docs/08）。横軸は甘み、縦軸は粒感です。</p>
+        <p class="sec-label mb-2">2 · プロダクト体験</p>
+        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">味わい地図と相談</h2>
+        <p class="text-muted text-sm max-w-2xl mb-3 leading-relaxed">画面は和紙の味わい地図として見せ、ベクトル検索は裏側に置きます（docs/08）。横軸は甘み、縦軸は粒感です。</p>
+        <p class="paper-note max-w-2xl">ChatGPT に「カレー向きの米は？」と聞く差は、言語の上手さではありません。こちらは構造化した味覚・相性・向かない組み合わせを正本に持ち、比較できる UI と買う出口までつなぎます。LLM は案内文だけを担当し、候補の順位は決めません。</p>
         <div class="grid lg:grid-cols-12 gap-5 items-stretch">
           <div class="lg:col-span-4">
             <div class="concept-chips">
               <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元盤。探針で好みの位置を指す</span></div>
-              <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄と短い案内文を返す</span></div>
-              <div class="concept-chip"><strong>二本立て</strong><span>座標探索は端末内。相談だけサーバ経由</span></div>
-              <div class="concept-chip"><strong>購入</strong><span>通販とふるさと納税への導線</span></div>
+              <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄。案内文は LLM、候補は規則と距離</span></div>
+              <div class="concept-chip"><strong>二本立て</strong><span>地図は端末内。相談だけサーバ。結果は混ぜない</span></div>
+              <div class="concept-chip"><strong>購入</strong><span>銘柄から通販・ふるさとへ。SKU 突合は未完</span></div>
             </div>
             <p id="matrix-phase" class="mt-3 text-xs font-mono text-brown min-h-[1.25rem]">デモ：探針が銘柄付近をなぞります（座標は固定）</p>
           </div>
@@ -492,7 +582,7 @@
                 <div id="rice-points"></div>
                 <div id="smart-probe" class="smart-probe" style="left:52%;top:48%" role="slider" aria-label="味わいの点" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
-              <p class="mt-2 text-xs text-muted">各銘柄の座標はカタログ上の固定値です。動くのは探針だけで、近い四銘柄を本番と同じ粒度で強調します。</p>
+              <p class="mt-2 text-xs text-muted">各銘柄の座標はカタログ上の固定値です。動くのは探針だけで、近い四銘柄を公開サイトと同じ粒度で強調します。</p>
               <p id="knn-readout" class="mt-1 text-xs font-mono text-brown"></p>
             </div>
           </div>
@@ -501,12 +591,60 @@
     </div>
   </section>
 
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 2b WEDGE / BUSINESS / DATA -->
+  <section id="wedge" class="px-5 sm:px-10 sec-y flow-block" data-chapter="wedge">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">3 · 独自性と商業上の位置づけ</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">構造化カタログが現時点の特徴</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">投資家向けの実績表ではありません。独自性の一点と、商業成果が未充足であることを同じ紙面に置きます。</p>
+
+      <div class="sheet overflow-x-auto mb-5">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>項目</th><th>内容</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>想定利用者</td><td>産地や価格は見られるが、今夜のおかずとの相性が比較できない人</td></tr>
+            <tr><td>片付ける仕事</td><td>料理や口感の言葉から、候補銘柄を四つに絞る</td></tr>
+            <tr><td>いまの代替</td><td>EC の人気順、価格・産地フィルタ、口コミ、汎用チャット</td></tr>
+            <tr><td>痛み</td><td>味覚と「向かない」が表に出てこない</td></tr>
+            <tr><td>くさび</td><td>二次元の味わい地図 + 相談 + 比較表 + 買う出口</td></tr>
+            <tr><td>現時点の特徴</td><td>Git の構造化カタログ。LLM は事実と順位を持たない</td></tr>
+            <tr><td>収益</td><td>アフィリエイト導線（楽天直リンク等）。成果突合は次フェーズ課題</td></tr>
+            <tr><td>見る指標</td><td>推薦後の CTA、ページ型別 shop_click、再訪（計画）</td></tr>
+            <tr><td>銘柄と SKU</td><td>推薦は銘柄単位。袋の産年・精米日までは保証しない</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="font-display text-lg text-ink mb-3 font-medium">データ境界（銘柄近似）</h3>
+      <div class="grid md:grid-cols-3 gap-4 mb-2">
+        <article class="issue-card">
+          <p class="eyebrow">定義</p>
+          <p class="body">甘み・粒感はカタログ上の相対座標。相性は料理タグと人手メモ。向かない組み合わせも同じ正本に置く。</p>
+        </article>
+        <article class="issue-card">
+          <p class="eyebrow">覆わないこと</p>
+          <p class="body">産年バッチ、精米日、炊飯器、水量、浸水。銘柄級の近似であり、SKU 級の味保証ではない。</p>
+        </article>
+        <article class="issue-card">
+          <p class="eyebrow">更新</p>
+          <p class="body">正本は Git。validate:rice で必須フィールドと範囲を検査し、公開銘柄は 80 件以上。埋め込みは同一モデル版で全量再計算する。</p>
+        </article>
+      </div>
+      <p class="viz-caption">人手カタログは短期の特徴にも、メンテ負債にもなります。カテゴリ展開の前に「銘柄 100 件あたりの工数」を見積もる前提です。</p>
+    </div>
+  </section>
+
   <div class="rule max-w-6xl mx-auto"></div>
 
   <!-- 3 TECH -->
   <section id="decision" class="px-5 sm:px-10 sec-y flow-block" data-chapter="decision">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">3 · 技術選定</p>
+      <p class="sec-label mb-2">5 · 技術選定</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤー別のトレードオフ</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">上から画面、下へデータと商流。各層で左が採用、右が破線の見送りです。データ投入は Node（tsx）、銘柄カタログの正本は Git に置いています。</p>
       <div class="viz-sheet">
@@ -618,7 +756,51 @@
           </g>
         </svg>
       </div>
-      <p class="viz-caption">モデル混在や別 API サーバを見送ったのは、類似度の一貫性と一人運用の境界を守るためです。層が分かれて見えるほど、混在コストが読み取れます。</p>
+      <p class="viz-caption">モデル混在や別 API サーバを見送ったのは、類似度の一貫性と一人運用の境界を守るためです。</p>
+
+      <h3 class="font-display text-lg text-ink mt-6 mb-2 font-medium">埋め込み切替の原則</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">Gemini 既定 / OpenAI 切替はどちらも 1536 次元です。次元が同じでもベクトル空間は別物です。docs/04 の <span class="font-mono text-xs">embedding_model</span> で版を持ち、RPC はモデル名必須です。</p>
+      <ul class="text-sm text-muted space-y-1.5 mb-5 list-none m-0 p-0 max-w-2xl">
+        <li>· 問い合わせとカタログは、必ず同じモデル版で埋める</li>
+        <li>· provider を変えるときは seed で全量を入れ直す</li>
+        <li>· 異モデルのベクトルを同じ match_rice_profiles に入れない</li>
+      </ul>
+
+      <h3 class="font-display text-lg text-ink mb-3 font-medium">選定メモ（短い ADR）</h3>
+      <div class="adr-grid mb-2">
+        <article class="adr-card">
+          <h3>Next.js 同一リポジトリ</h3>
+          <dl>
+            <dt>制約</dt><dd>一人運用。画面と相談 API を分けない</dd>
+            <dt>捨てたもの</dt><dd>別立て API サーバのスケール境界</dd>
+            <dt>移る条件</dt><dd>チーム分割や API 公開が必要になったとき</dd>
+          </dl>
+        </article>
+        <article class="adr-card">
+          <h3>Supabase pgvector</h3>
+          <dl>
+            <dt>制約</dt><dd>件数は百前後。権限とメタデータを同庫にしたい</dd>
+            <dt>捨てたもの</dt><dd>大規模ベクトル専用基盤の性能余地</dd>
+            <dt>移る条件</dt><dd>プロファイル数万、p95 悪化、多テナント隔離</dd>
+          </dl>
+        </article>
+        <article class="adr-card">
+          <h3>二本立て（座標 / 意味）</h3>
+          <dl>
+            <dt>制約</dt><dd>地図操作は低遅延。相談だけ外部モデル費用が発生する</dd>
+            <dt>捨てたもの</dt><dd>操作のたびに LLM / 埋め込み</dd>
+            <dt>移る条件</dt><dd>両系統の一貫性評価と融合が必須になったとき</dd>
+          </dl>
+        </article>
+        <article class="adr-card">
+          <h3>Top 4 固定</h3>
+          <dl>
+            <dt>制約</dt><dd>画面と API の粒度を揃える。選び直しの負荷を抑える</dd>
+            <dt>捨てたもの</dt><dd>可変件数や無限スクロール推薦</dd>
+            <dt>移る条件</dt><dd>多様性実験や評価指標が揃ったとき</dd>
+          </dl>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -628,7 +810,7 @@
   <section id="design" data-chapter="design">
     <div class="pin-stage" id="swim-stage">
       <div class="max-w-[1100px] mx-auto w-full">
-        <p class="sec-label mb-2">4 · 処理設計</p>
+        <p class="sec-label mb-2">6 · 処理の流れ</p>
         <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤ別のデータフロー</h2>
         <p id="swim-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">画面・サーバ・データベース・外部モデルの役割分担と、地図／相談の二系統を示します。</p>
         <div class="sheet overflow-x-auto p-3 sm:p-5">
@@ -759,13 +941,55 @@
     </div>
   </section>
 
+
+  <section id="ranking" class="px-5 sm:px-10 pb-[var(--sec-y)] flow-block" data-chapter="ranking">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">6 · 推薦処理の設計</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">候補は距離と検索、文は LLM</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">地図経路と相談経路は分けて扱います。二つの経路を無理に混ぜず、入力に応じて候補を決めます。1.0.0 では diversity rerank は未実装で、近い候補が似る可能性は残ります。</p>
+
+      <div class="sheet overflow-x-auto mb-5">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>経路</th><th>候補の出し方</th><th>順位の決め方</th><th>出力</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>地図</td><td>甘み・粒感の二次元距離（端末内）</td><td>近い順。多様性なし</td><td>上位四件。文言なし</td></tr>
+            <tr><td>相談</td><td>銘柄名ヒット、または埋め込み → pgvector</td><td>類似度（モデル版でフィルタ）</td><td>上位四件 + 理由 + 案内</td></tr>
+            <tr><td>相性整理レイヤー</td><td>—</td><td>順位は変えない</td><td>カード理由文（決定的）</td></tr>
+            <tr><td>案内文</td><td>—</td><td>LLM は説明のみ</td><td>失敗しても上位四件は返す</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <article class="issue-card mb-5">
+        <p class="eyebrow">相性整理レイヤー（料理相性ルール）</p>
+        <p class="body">相談文と銘柄から、カード用の理由文を決定的な規則で組み立てる層です。候補の順位は埋め込み（または銘柄名ヒット）が先に決めます。LLM はこの規則にも順位にも関与しません。案内文が失敗したときの退避にも使います。</p>
+      </article>
+
+      <div class="sheet overflow-x-auto mb-2">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>場面</th><th>地図</th><th>相談</th><th>どちらが正か</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>探針だけ動かす</td><td>座標の上位四件</td><td>使わない</td><td>座標</td></tr>
+            <tr><td>一文だけ送る</td><td>使わない</td><td>意味検索の上位四件</td><td>相談</td></tr>
+            <tr><td>相談のあと地図が寄る</td><td>1 位付近へ移動（表示）</td><td>相談結果が先</td><td>相談。地図は追従</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="viz-caption">地図推薦と相談推薦の一致率は、まだ公開していません。必要になった段階で、ログと人手評価によって確認します。</p>
+    </div>
+  </section>
+
   <div class="rule max-w-6xl mx-auto"></div>
 
   <!-- 5 DELIVERY -->
   <section id="delivery" class="px-5 sm:px-10 sec-y flow-block" data-chapter="delivery">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">5 · 実装と公開</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">品質ゲートのパイプライン</h2>
+      <p class="sec-label mb-2">8 · 実装と公開判定</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">段階ごとの公開条件</h2>
       <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">段階はベルトのように繋がっています。菱形の Gate を満たさないと、次の箱へ進めません。</p>
       <div class="viz-sheet mb-5">
         <svg id="pipe-svg" viewBox="0 0 1040 210" class="w-full min-w-[860px]" role="img" aria-label="実装から公開までの品質パイプライン">
@@ -777,10 +1001,10 @@
           <g class="pipe-stage" id="pipe-stage-0">
             <rect x="48" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
             <text x="62" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">01</text>
-            <text x="62" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">データ地基</text>
+            <text x="62" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">データ基盤</text>
             <text x="62" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">RiceSource → catalog</text>
             <rect x="58" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
-            <text x="122" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">validate ≥ 80</text>
+            <text x="122" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">≥80 · MVP下限</text>
           </g>
           <g class="pipe-gate" id="pipe-gate-0">
             <line x1="196" y1="118" x2="238" y2="118" stroke="#E56B3F" stroke-width="2.5"/>
@@ -833,12 +1057,12 @@
           <g class="pipe-stage" id="pipe-stage-4">
             <rect x="808" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
             <text x="822" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">05</text>
-            <text x="822" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">本番</text>
+            <text x="822" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">公開</text>
             <text x="822" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">Vercel · CI · RLS</text>
             <rect x="818" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
-            <text x="882" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">P0 → 1.0.0</text>
+            <text x="882" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">公開条件→1.0</text>
           </g>
-          <text x="520" y="196" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">各 Gate は docs / CI / checklist に対応。飛ばして本番へは行けません。</text>
+          <text x="520" y="196" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">各 Gate は docs / CI / checklist に対応。飛ばして公開へは行けません。</text>
         </svg>
       </div>
       <div class="grid md:grid-cols-2 gap-4 text-sm">
@@ -846,7 +1070,7 @@
           <p class="sec-label mb-2">公開時の運用条件</p>
           <ul class="space-y-1.5 text-muted leading-relaxed list-none m-0 p-0">
             <li>· CI で lint・型検査・試験・ビルドを通す</li>
-            <li>· 本番は origin/main からデプロイする</li>
+            <li>· 公開環境は origin/main からデプロイする</li>
             <li>· 埋め込みと照合 RPC は一般公開しない</li>
             <li>· 相談 API には日次上限と緊急停止を入れる</li>
           </ul>
@@ -855,8 +1079,8 @@
           <p class="sec-label mb-2">一人体制での進め方</p>
           <ul class="space-y-1.5 text-muted leading-relaxed list-none m-0 p-0">
             <li>· 判断根拠は docs と Cursor rules に残す</li>
-            <li>· 未計測の効率指標は記載しない</li>
-            <li>· 設計から公開までを閉じ、文書と CI を再現可能な形で残す</li>
+            <li>· 未計測の数値は成果として書かない。仮説と判断基準を先に置く</li>
+            <li>· 初期公開条件はアクセス可能と安全側。次フェーズで週次の計測運用へ</li>
           </ul>
         </div>
       </div>
@@ -865,49 +1089,128 @@
 
   <div class="rule max-w-6xl mx-auto"></div>
 
+  <!-- 5b THREAT -->
+  <section id="threat" class="px-5 sm:px-10 sec-y flow-block" data-chapter="threat">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">9 · 脅威と運用上のリスク</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">公開サイトと、この HTML は別物</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">本ページはケーススタディ表示用の HTML であり、CDN 上の Tailwind / GSAP / Lenis / フォントを利用しています。実際の公開サイトは Next.js のビルド成果物です。以下は公開サイト側のリスクを主に書きます。</p>
+      <div class="sheet overflow-x-auto mb-5">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>リスク</th><th>いまの制御（粒度）</th><th>残る穴</th><th>次</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>相談 API の乱用</td><td>IP 単位の分・日上限 · 環境変数の緊急停止 · タイムアウト</td><td>IP ローテで迂回されうる</td><td>必要時にボット対策</td></tr>
+            <tr><td>プロンプト注入</td><td>LLM は候補を決めない</td><td>案内文の汚染</td><td>出力スキーマと監視</td></tr>
+            <tr><td>データ漏洩</td><td>RLS · 埋め込み非公開 · RPC はサーバ権限 + モデル名一致</td><td>権限設定ミス</td><td>権限テストの継続</td></tr>
+            <tr><td>費用の暴走</td><td>タイムアウト・緊急停止</td><td>高頻度の正規利用</td><td>コスト監視の計測確認（次フェーズ）</td></tr>
+            <tr><td>展示 HTML の CDN</td><td>版付き URL</td><td>SRI / CSP は未整備</td><td>展示用途のまま明示</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="paper-note max-w-2xl">公開判定では、アクセス可能であることと主要機能の安全側を優先しました。GA4 / Sentry / access_events を週次で運用する状態にはまだ到達していません。アクセス可能と可観測は分けて扱います。ログ方針や CSP の実装粒度は本資料では省略します。</p>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
   <!-- 6 VALIDATE -->
   <section id="validate" class="px-5 sm:px-10 sec-y flow-block" data-chapter="validate">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">6 · 検証</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">監査ダッシュボード</h2>
-      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">未計測のレイテンシや一致率は掲げません。公開チェックリストと、設計で固定した値だけをランプ付きで示します。</p>
-      <div class="ev-dash" aria-label="検証エビデンス">
-        <article class="ev-card is-ok">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">P0 · PASS</span></div>
-          <p class="ev-title">公開判定</p>
-          <p class="ev-proof">P0 checklist · smoke 2026-09-07</p>
-        </article>
-        <article class="ev-card is-run">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">LIVE</span></div>
-          <p class="ev-title">カタログ</p>
-          <p class="ev-proof">約 106 銘柄 · validate ≥ 80</p>
-        </article>
-        <article class="ev-card is-ok">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SPEC</span></div>
-          <p class="ev-title">推薦粒度</p>
-          <p class="ev-proof">座標 / 相談とも Top 4</p>
-        </article>
-        <article class="ev-card is-ok">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">READY</span></div>
-          <p class="ev-title">相談耐性</p>
-          <p class="ev-proof">embed / 返信 5s · 失敗時も Top4</p>
-        </article>
-        <article class="ev-card is-ok">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SECURE</span></div>
-          <p class="ev-title">セキュリティ</p>
-          <p class="ev-proof">RLS · embedding 非公開 · RPC 制限</p>
-        </article>
-        <article class="ev-card is-todo">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · P1</span></div>
-          <p class="ev-title">P1 運用</p>
-          <p class="ev-proof">アフィ突合 · GA4 · Sentry</p>
-        </article>
-        <article class="ev-card is-mute is-span">
-          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">UNPUBLISHED</span></div>
-          <p class="ev-title">体感遅延の公開値</p>
-          <p class="ev-proof">公開数値なし（未計測の指標は出さない）</p>
-        </article>
+      <p class="sec-label mb-2">10 · 検証状況</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">工程上の証拠と、事業上の未充足</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">公開できたことと、事業価値が実証されたことを分けます。未計測の数値を成果として埋めません。</p>
+
+      <div class="split-ev">
+        <div class="sheet p-4 sm:p-5">
+          <h3>工程上の証拠（ある）</h3>
+          <div class="ev-dash" style="grid-template-columns:1fr">
+            <article class="ev-card is-ok">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">公開条件 · PASS</span></div>
+              <p class="ev-title">公開判定</p>
+              <p class="ev-proof">初期公開条件チェックリスト · smoke 2026-09-07（地図・相談上位四件・購入リンク）</p>
+            </article>
+            <article class="ev-card is-run">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">LIVE</span></div>
+              <p class="ev-title">カタログ検証</p>
+              <p class="ev-proof">validate:rice が必須フィールドとスコア範囲を検査。80 件以上は MVP 表示確認の下限（市場網羅ではない）。現在約 106</p>
+            </article>
+            <article class="ev-card is-ok">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SPEC</span></div>
+              <p class="ev-title">推薦の粒度</p>
+              <p class="ev-proof">座標も相談も Top 4。案内文失敗時も候補は返す</p>
+            </article>
+            <article class="ev-card is-ok">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SECURE</span></div>
+              <p class="ev-title">権限の骨格</p>
+              <p class="ev-proof">RLS · embedding 非公開 · RPC にモデル名必須</p>
+            </article>
+          </div>
+        </div>
+        <div class="sheet p-4 sm:p-5">
+          <h3>事業上の証拠（まだ足りない）</h3>
+          <div class="ev-dash" style="grid-template-columns:1fr">
+            <article class="ev-card is-mute">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">UNPUBLISHED</span></div>
+              <p class="ev-title">転換・再訪の実測</p>
+              <p class="ev-proof">訪問数、CTA 率、再訪率の公開値なし</p>
+            </article>
+            <article class="ev-card is-todo">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · 次フェーズ</span></div>
+              <p class="ev-title">計測値の取得確認</p>
+              <p class="ev-proof">GA4 / access_events のページ型分解 · Sentry DSN 確認</p>
+            </article>
+            <article class="ev-card is-todo">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · 次フェーズ</span></div>
+              <p class="ev-title">アフィ突合</p>
+              <p class="ev-proof">shop_click と管理画面成果の突合は未完</p>
+            </article>
+            <article class="ev-card is-mute">
+              <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">BOUNDARY</span></div>
+              <p class="ev-title">銘柄と SKU</p>
+              <p class="ev-proof">推薦は銘柄。袋面の産年までは保証しない</p>
+            </article>
+          </div>
+        </div>
       </div>
+
+      <h3 class="font-display text-lg text-ink mb-3 font-medium">今後の検証計画</h3>
+      <p class="paper-note max-w-3xl mb-4">未計測の数値を成果として記載することはしません。次の主仮説は、<strong style="color:#E56B3F;font-weight:600">推薦のあと、購入導線（shop_click）が起きるか</strong>です。地図操作や相談送信は診断用の副指標とします。</p>
+      <div class="sheet overflow-x-auto mb-2">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>仮説</th><th>指標</th><th>継続の目安</th><th>弱いときの動き</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>推薦は買う意思を作る（主）</td>
+              <td>推薦後の shop_click</td>
+              <td>4 週連続で発生が続く</td>
+              <td>比較・価格・SKU 情報を厚くし、直リンクを見直す</td>
+            </tr>
+            <tr>
+              <td>料理・味覚の入口は使われる</td>
+              <td>consult_submit · 料理別入口</td>
+              <td>4 週連続で発生</td>
+              <td>地図より料理入口を上に置く</td>
+            </tr>
+            <tr>
+              <td>再訪の価値がある</td>
+              <td>share / LINE / revisit</td>
+              <td>再訪施策着手後に観測</td>
+              <td>SEO 一回訪問型へ寄せる</td>
+            </tr>
+            <tr>
+              <td>カタログ運用が回る</td>
+              <td>100 銘柄追加の工数見積</td>
+              <td>カテゴリ展開前に語れる</td>
+              <td>展開を止める</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="viz-caption">絶対 MAU / CVR 目標はサンプル不足のため置きません。測る項目と、測ったあとの動作を先に固定します。</p>
     </div>
   </section>
 
@@ -917,9 +1220,9 @@
   <section id="roadmap" data-chapter="roadmap">
     <div class="pin-stage" id="road-stage">
       <div class="max-w-6xl mx-auto w-full">
-        <p class="sec-label mb-2">7 · ロードマップ</p>
-        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">1.x 以降の計画</h2>
-        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い順は、米の型完成（Phase 2）→ 再訪（Phase 3）→ その先の製品マトリクス構想。横展開は米のループが回ってから考えます。</p>
+        <p class="sec-label mb-2">12 · ロードマップ</p>
+        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">米カテゴリ内で運用手順を固める</h2>
+        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い順は、米の運用手順を閉じる（Phase 2）→ 再訪（Phase 3）→ 将来的なカテゴリ展開の仮説。進入条件を満たす前に構想を約束しません。</p>
         <div class="sheet p-3 sm:p-6 overflow-x-auto">
           <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[780px]" aria-label="これからの道">
             <defs>
@@ -968,7 +1271,7 @@
               <circle cx="480" cy="135" r="9" fill="#FFFDF7"/>
               <line x1="480" y1="155" x2="480" y2="248" stroke="#7BB894" stroke-width="1.25" stroke-dasharray="3 3"/>
               <rect x="370" y="252" width="220" height="112" rx="10" fill="#FFFDF7" stroke="rgba(123,184,148,.55)"/>
-              <text x="480" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米でプレイブックを固める</text>
+              <text x="480" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米で運用手順を固める</text>
               <text x="480" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">料理入口 · 比較 · SEO</text>
               <text x="480" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">直リンク · CTA · 計測</text>
               <text x="480" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">季節面 · 人手の特集</text>
@@ -991,7 +1294,7 @@
 
             <g class="road-pin" id="road-pin-horizon">
               <text x="880" y="70" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#302820">構想</text>
-              <text x="880" y="88" text-anchor="middle" font-size="10" font-family="IBM Plex Mono" fill="#766658" font-weight="700">製品マトリクス</text>
+              <text x="880" y="88" text-anchor="middle" font-size="10" font-family="IBM Plex Mono" fill="#766658" font-weight="700">カテゴリ展開仮説</text>
               <path d="M880 135 C880 115 896 103 880 87 C864 103 880 115 880 135 Z" fill="#9A8B7A" filter="url(#pinSoft)"/>
               <circle cx="880" cy="115" r="8" fill="#FFFDF7"/>
               <line x1="880" y1="87" x2="880" y2="40" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
@@ -1005,7 +1308,7 @@
             </g>
 
             <circle id="road-traveler" r="6" fill="#E56B3F" stroke="#FFFDF7" stroke-width="2" opacity="0"/>
-            <text x="500" y="545" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">Phase 2 で見つかる・買う。Phase 3 でまた来てもらう。構想は製品マトリクス。破線は未確約</text>
+            <text x="500" y="545" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">Phase 2 で見つかる・買う。Phase 3 で再訪。構想は仮説。破線は未確約</text>
           </svg>
         </div>
       </div>
@@ -1014,44 +1317,56 @@
 
   <section class="px-5 sm:px-10 pb-[var(--sec-y)]">
     <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="grid md:grid-cols-3 gap-4 mb-4">
         <article class="issue-card">
-          <p class="eyebrow">Phase 2 · 米の型を完成</p>
-          <p class="body" style="margin-bottom:.55rem">見つかって、比べて、買えるところまで通します。露出と転化の playbook です。</p>
+          <p class="eyebrow">Phase 2 · 運用手順を閉じる</p>
+          <p class="body" style="margin-bottom:.55rem">見つかって、比べて、買えるところまで。完成の目安は /pair と /compare、CTA 可測、ページ型の漏斗です。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
             <li>· 料理・シーン別の入口</li>
             <li>· 銘柄比較と「向かない」</li>
             <li>· SEO と内部リンク</li>
             <li>· 比較後の直リンクと CTA</li>
-            <li>· 季節面 · 人手の特集</li>
           </ul>
         </article>
         <article class="issue-card">
           <p class="eyebrow">Phase 3 · 再訪</p>
-          <p class="body" style="margin-bottom:.55rem">一度選んだ人が、また戻ってこられるようにします。横展開の前に、米のループを閉じます。</p>
+          <p class="body" style="margin-bottom:.55rem">横展開の前に、米のループを閉じます。再訪が測れてから次を考えます。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
             <li>· 診断結果の共有 URL</li>
             <li>· share card と OG</li>
             <li>· LINE 公式への導線</li>
-            <li>· 再訪率を測れるようにする</li>
+            <li>· 再訪イベントが見えること</li>
           </ul>
         </article>
         <article class="issue-card is-nongoal">
-          <p class="eyebrow">構想 · 製品マトリクス</p>
-          <p class="body" style="margin-bottom:.55rem">桃Somme / 和牛Somme / 酒Somme。同じエンジンの横展見通しです。Phase 2–3 のあとに検討します。</p>
+          <p class="eyebrow">構想 · 将来的なカテゴリ展開の仮説</p>
+          <p class="body" style="margin-bottom:.55rem">桃 / 和牛 / 酒などは仮説です。Phase 2–3 の信号と、専門家データ・軸の再定義が揃うまで着手しません。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
-            <li>· 共通: 盤面 · 相談 · 事典 · 出口</li>
-            <li>· 差し替え: 軸と一次データ</li>
-            <li>· 未確約: 画像認識 · 機器連携</li>
+            <li>· 進入: 4 週の観測で信号が続く</li>
+            <li>· 進入: 銘柄追加の工数が見積もれる</li>
+            <li>· 未確約: 画像認識・機器連携</li>
           </ul>
         </article>
       </div>
-      <p class="text-xs text-muted mb-6 leading-relaxed">順序を取り違えないこと。再訪より先に製品マトリクスへ進むと、まだ閉じきっていない米の型を複製することになります。</p>
+      <div class="sheet overflow-x-auto mb-6">
+        <table class="grid-doc">
+          <thead>
+            <tr><th>進入条件（時間つき）</th><th>まだ置かないもの</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>少なくとも 4 週間、shop_click / consult_submit / revisit のいずれかが継続的に発生し、かつカタログ更新工数が見積もれたあと。費用が収益仮説を壊さないこと</td>
+              <td>サンプル不足の絶対 MAU・CVR 目標。達成前のカテゴリ横断の約束</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-muted mb-6 leading-relaxed">順序を取り違えないこと。再訪より先に横展開すると、閉じていない運用を複製します。</p>
 
-<div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+      <div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
         <div>
           <p class="sec-label mb-2">まとめ</p>
-          <p class="font-display text-lg sm:text-xl text-ink max-w-lg leading-snug">インタラクティブな味わい地図と相談 API は表層です。見送った選択肢と公開条件が、同じリポジトリに残っていることが、この事例の要点です。</p>
+          <p class="font-display text-lg sm:text-xl text-ink max-w-lg leading-snug">要点は、候補決定を LLM に任せないこと、見送った選択肢と公開条件を文書化したこと、そして事業価値の未検証を明確に分けたことです。</p>
         </div>
         <a href="https://komesomme.jp" class="cta shrink-0" target="_blank" rel="noopener">komesomme.jp ↗</a>
       </div>
@@ -1060,8 +1375,8 @@
 
   <footer class="px-5 sm:px-10 pb-12">
     <div class="max-w-6xl mx-auto rule pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
-      <p>KomeSomme · Delivery Case Study · Ver 1.0.0</p>
-      <p class="font-mono">docs/08 · 11 · 12 · 20 · package.json</p>
+      <p>KomeSomme 1.0.0 · Delivery Case Study · 作品集 / 技術レビュー向け</p>
+      <p class="font-mono">docs/05 · 08 · 11 · 20 · 21 · pj/reviews</p>
     </div>
   </footer>
 
@@ -1072,7 +1387,7 @@
   const isDesktopProgress = matchMedia('(min-width: 1024px)');
 
   const CFG = {
-    matrixVh: () => (mobile.matches ? 1.6 : 2.8),
+    matrixVh: () => (mobile.matches ? 0.75 : 1.0),
     swimVh: () => (mobile.matches ? 1.4 : 2.8),
     roadVh: () => (mobile.matches ? 1.2 : 2.2),
     scrub: 0.65,
@@ -1146,8 +1461,8 @@
     });
     if (reduce || !window.ScrollTrigger) return;
     const chapters = [
-      'top', 'lifecycle', 'context', 'concept', 'decision',
-      'design', 'delivery', 'validate', 'roadmap',
+      'top', 'summary', 'lifecycle', 'context', 'concept', 'wedge', 'decision',
+      'design', 'ranking', 'delivery', 'threat', 'validate', 'roadmap',
     ];
     chapters.forEach((id) => {
       const el = document.getElementById(id);
@@ -1324,17 +1639,22 @@
       return;
     }
 
-    // デモ軌道：銘柄付近をなぞって使い方を見せる（銘柄座標は動かさない）
+    // 少ない錨点で左下→右上。線と上位銘柄の強調は最初から出す
     const tour = [
-      { x: 26, y: 74, label: 'すっきり寄りを探る（例: ササニシキ付近）' },
-      { x: 45, y: 54, label: '盤面の中央へ滑らせる' },
-      { x: 58, y: 56, label: '近い四銘柄へ線が付く' },
-      { x: 70, y: 46, label: '甘み寄りを見る（例: コシヒカリ付近）' },
-      { x: 80, y: 30, label: 'ふくよか寄り（例: ゆめぴりか付近）' },
-      { x: 54, y: 50, label: '探針をドラッグして試せます' },
+      { x: 26, y: 74, at: 0 },
+      { x: 48, y: 56, at: 0.28 },
+      { x: 68, y: 46, at: 0.55 },
+      { x: 84, y: 26, at: 0.82 },
+    ];
+    const labels = [
+      { at: 0, text: 'すっきり寄り（例: ササニシキ付近）' },
+      { at: 0.28, text: '近い四銘柄が強調され、線が付く' },
+      { at: 0.55, text: '甘み寄り（例: コシヒカリ付近）' },
+      { at: 0.82, text: 'ふくよか右上（例: ゆめぴりか付近）' },
+      { at: 0.92, text: '下へスクロールで続き · 探針はドラッグ可' },
     ];
     const probeState = { x: tour[0].x, y: tour[0].y };
-    const state = { lines: 0, glow: 0 };
+    let lastLabel = '';
 
     function syncProbeFromState() {
       if (dragging || interactive) return;
@@ -1342,6 +1662,16 @@
       updateVectors();
     }
 
+    function labelForProgress(p) {
+      let text = labels[0].text;
+      for (let i = 0; i < labels.length; i++) {
+        if (p >= labels[i].at) text = labels[i].text;
+      }
+      return text;
+    }
+
+    lineAmount = 1;
+    glowAmount = 1;
     setProbe(tour[0].x, tour[0].y);
     updateVectors();
 
@@ -1351,36 +1681,39 @@
         start: 'top top',
         end: () => '+=' + innerHeight * CFG.matrixVh(),
         pin: true,
-        scrub: 0.85,
+        scrub: 0.35,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          const idx = Math.min(tour.length - 1, Math.floor(p * tour.length));
-          if (phaseEl) phaseEl.textContent = tour[idx].label;
-          interactive = p >= 0.88;
+          const next = labelForProgress(p);
+          if (phaseEl && next !== lastLabel) {
+            phaseEl.textContent = next;
+            lastLabel = next;
+          }
+          interactive = p >= 0.86;
           container.style.cursor = interactive ? 'crosshair' : 'default';
+        },
+        onLeave: () => {
+          interactive = true;
+          container.style.cursor = 'crosshair';
+          if (phaseEl) {
+            phaseEl.textContent = '探針をドラッグして試せます';
+            lastLabel = phaseEl.textContent;
+          }
         },
       },
     });
 
-    const step = 0.12;
     tour.forEach((pt, i) => {
       if (i === 0) return;
+      const prev = tour[i - 1];
+      const dur = Math.max(0.08, pt.at - prev.at);
       tl.to(probeState, {
-        x: pt.x, y: pt.y, duration: step, ease: 'none',
+        x: pt.x, y: pt.y, duration: dur, ease: 'none',
         onUpdate: syncProbeFromState,
-      }, (i - 1) * step);
+      }, prev.at);
     });
-    tl.to(state, {
-      lines: 1, duration: 0.18, ease: 'none',
-      onUpdate: () => { lineAmount = state.lines; updateVectors(); },
-    }, 0.08);
-    tl.to(state, {
-      glow: 1, duration: 0.16, ease: 'none',
-      onUpdate: () => { glowAmount = state.glow; updateVectors(); },
-    }, 0.55);
-    tl.to({}, { duration: 0.12 }, 0.88);
   }
 
   /* ---------- Swimlane ---------- */
@@ -1568,7 +1901,7 @@
           else if (p < 0.5) phaseEl.textContent = 'NOW · 1.1.x の保守と改善';
           else if (p < 0.62) phaseEl.textContent = 'Phase 2 · 見つかる・比べる・買う';
           else if (p < 0.82) phaseEl.textContent = 'Phase 3 · また来てもらう（再訪）';
-          else phaseEl.textContent = '構想 · 製品マトリクス（未確約を含む）';
+          else phaseEl.textContent = '構想 · 将来的なカテゴリ展開の仮説（未確約）';
         },
       },
     });
