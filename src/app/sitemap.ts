@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
+import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { getSiteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/library",
     "/discover",
+    "/pair",
     "/privacy",
     "/terms",
     "/tokushoho",
@@ -18,9 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${origin}${path || "/"}`,
     lastModified,
     changeFrequency:
-      path === "" || path === "/library" || path === "/discover" ? "weekly" : "yearly",
+      path === "" || path === "/library" || path === "/discover" || path === "/pair"
+        ? "weekly"
+        : "yearly",
     priority:
-      path === "" ? 1 : path === "/library" || path === "/discover" ? 0.8 : 0.3,
+      path === ""
+        ? 1
+        : path === "/library" || path === "/discover" || path === "/pair"
+          ? 0.8
+          : 0.3,
   }));
 
   const collections: MetadataRoute.Sitemap = EDITORIAL_COLLECTIONS.map((row) => ({
@@ -28,6 +36,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified,
     changeFrequency: "monthly",
     priority: 0.65,
+  }));
+
+  const pairings: MetadataRoute.Sitemap = PAIRING_PAGES.map((row) => ({
+    url: `${origin}/pair/${encodeURIComponent(row.slug)}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.75,
   }));
 
   /** Canonical brand URLs live under /library/[id]. Legacy /{id} redirects permanently. */
@@ -38,5 +53,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...collections, ...libraryArticles];
+  return [...staticRoutes, ...collections, ...pairings, ...libraryArticles];
 }

@@ -1,6 +1,7 @@
 import { riceProfiles } from "../src/data/rice/catalog";
 import { buildRiceSearchText } from "../src/lib/rice/buildRiceSearchText";
 import type { RiceProfileV2 } from "../src/types/rice";
+import { collectPairingErrors } from "./validate-pairings";
 
 /**
  * Guards the catalogue before it reaches the embedding step.
@@ -217,4 +218,14 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`\nAll checks passed.\n`);
+console.log(`\nAll rice profile checks passed.`);
+
+const pairingErrors = collectPairingErrors();
+if (pairingErrors.length > 0) {
+  console.error(`\nPairing validation: ${pairingErrors.length} error(s):`);
+  for (const error of pairingErrors) {
+    console.error(`  - ${error}`);
+  }
+  process.exit(1);
+}
+console.log(`Pairing pages ok.\n`);

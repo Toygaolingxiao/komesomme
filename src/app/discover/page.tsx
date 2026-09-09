@@ -4,10 +4,12 @@ import { CollectionsIndex } from "@/components/editorial/CollectionsIndex";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { TodaysBowl } from "@/components/editorial/TodaysBowl";
+import { DiscoverPairTeaser } from "@/components/pair/DiscoverPairTeaser";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
+import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
@@ -51,6 +53,17 @@ export default function DiscoverPage() {
           })}
         />
       ) : null}
+      {PAIRING_PAGES.length > 0 ? (
+        <JsonLd
+          data={itemListLd({
+            name: "料理で選ぶ",
+            items: PAIRING_PAGES.map((row) => ({
+              name: `${row.dishLabel}に合う米`,
+              path: `/pair/${row.slug}`,
+            })),
+          })}
+        />
+      ) : null}
       <EditorialArtPreloads hrefs={preloadHrefs} />
       <DiscoverChrome />
 
@@ -70,6 +83,8 @@ export default function DiscoverPage() {
         <div className="mt-10">
           <TodaysBowl items={bowl} />
         </div>
+
+        <DiscoverPairTeaser />
 
         <div className="mt-14 border-t border-[var(--km-border)] pt-12">
           <CollectionsIndex collections={collections} embedded />

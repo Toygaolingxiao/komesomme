@@ -122,3 +122,22 @@ export function itemListLd(input: {
     })),
   };
 }
+
+export function faqPageLd(
+  faqs: Array<{ q: string; a: string }>,
+  origin: string = getSiteUrl()
+): JsonLdObject {
+  void origin;
+  return {
+    "@context": CONTEXT,
+    "@type": "FAQPage",
+    mainEntity: faqs.map((item) => ({
+      "@type": "Question",
+      name: item.q.trim(),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a.trim(),
+      },
+    })),
+  };
+}

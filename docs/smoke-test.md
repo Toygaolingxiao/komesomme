@@ -56,6 +56,7 @@
 - [x] クライアント JS / 応答に `service_role` 文字列が無い
 - [x] `/sitemap.xml` にトップと銘柄 URL が並ぶ
 - [x] `/robots.txt` が sitemap を指す
+- [ ] `/pair/curry`（または任意の料理ページ）が開き、比較表と ※PR、向かない欄がある（Wave 2A）
 
 
 

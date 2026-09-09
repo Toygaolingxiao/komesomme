@@ -3,6 +3,7 @@ import {
   absoluteUrl,
   articleLd,
   breadcrumbListLd,
+  faqPageLd,
   itemListLd,
 } from "@/lib/seo/jsonLd";
 
@@ -132,6 +133,31 @@ describe("itemListLd", () => {
         position: 2,
         name: "つや姫",
         url: `${ORIGIN}/library/tsuyahime`,
+      },
+    ]);
+  });
+});
+
+describe("faqPageLd", () => {
+  it("maps questions to schema.org FAQPage", () => {
+    const ld = faqPageLd(
+      [
+        { q: " なぜ味で選ぶ？ ", a: " 献立の印象が変わるから。 " },
+        { q: "特Aと同じ？", a: "違います。" },
+      ],
+      ORIGIN
+    );
+    expect(ld["@type"]).toBe("FAQPage");
+    expect(ld.mainEntity).toEqual([
+      {
+        "@type": "Question",
+        name: "なぜ味で選ぶ？",
+        acceptedAnswer: { "@type": "Answer", text: "献立の印象が変わるから。" },
+      },
+      {
+        "@type": "Question",
+        name: "特Aと同じ？",
+        acceptedAnswer: { "@type": "Answer", text: "違います。" },
       },
     ]);
   });

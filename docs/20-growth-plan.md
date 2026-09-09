@@ -137,23 +137,24 @@
 
 下面按波次排；每波一个 minor，做完再推。
 
-#### Wave 2A — 料理・シーン別着陆（→ 约 `1.2.0`）
+#### Wave 2A — 料理・シーン別着陆（→ 约 `1.2.0`）· **首发 5 面已交付**
 
 意图库存、EEAT 大纲、权威 URL 锚点与 AI 引用门禁见 [21-seo-intent-content.md](./21-seo-intent-content.md)。
 
 **曝光的主引擎。** 「Yに最适なX」是 AI 检索时代仍然稳的 query 形状。
 
-- 新路由 `/pair/[dish]`（romaji slug: `curry`、`sashimi`、`bento`、`nabe`、`donburi`、`chahan`、`sushi`、`karaage`…）
-- **首发 20〜25 个，人手挑选**，不做全量组合。每面必须有:
+- 新路由 `/pair/[dish]`（romaji slug: `curry`、`sashimi`、`bento`、`nabe`、`sushi`…）
+- **`1.2.0` 首发 5 面:** `curry` · `sashimi` · `bento` · `nabe` · `sushi`。其余 Wave 2A slug 在后续 `1.2.x` 续写人手リード
+- 每面必须有:
   1. 从 `best_match_dishes` + 味わい座標 算出的 Top 5 銘柄（一次データ排序，写明排序依据）
   2. **HTML 比較表**：銘柄 / 甘み / 粘り / 向いている人 / 気をつける点 / お店で探す
   3. 人手写的リード文 2〜3 段（遵守 `japanese-copy.mdc`）
-  4. `avoid_pairings` 反查出来的「この料理には向かない米」——差异化的核心
+  4. `avoid_pairings` 反查出来的「この料理には向かない米」——差异化的核心（忌避が薄い面は座標対立を明示）
   5. FAQ 3 问 + `FAQPage` JSON-LD
-- 数据落在新 `src/data/editorial/pairings.ts`（typed；`validate:rice` 同类校验要扩展）
+- 数据落在 `src/data/editorial/pairings.ts`（typed；`validate:rice` が pairings も検証）
 - 与 [19-editorial-discovery.md](./19-editorial-discovery.md):**特集（`/collections`）继续人手、不量产**；`/pair` 是另一面，由一次データ导出 + 人手リード，不算量产特集
 
-**验收:** 首发面全部 SSG；sitemap 收录；每面内部链接 ≥3 条（銘柄 / 別料理 / 特集）；Lighthouse SEO 100。
+**验收（首发）:** 5 面 SSG；sitemap 收录；每面内部链接 ≥3；Playwright TS-PAIR-*。
 
 #### Wave 2B — 比較と転化（→ 约 `1.3.0`）
 
