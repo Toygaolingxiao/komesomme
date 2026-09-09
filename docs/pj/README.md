@@ -46,3 +46,4 @@ docs/assets/*-case-study   artifacts/ 索引
 | SEO 权威锚点 + 意图库存快照（与 21 同步起始） | [research/2026-09-09-seo-intent-snapshot.md](./research/2026-09-09-seo-intent-snapshot.md) |
 | Case Study 1.0.0 | [artifacts/README.md](./artifacts/README.md) → `docs/assets/` |
 | 锐评 | [reviews/2026-09-09-gpt-5.5-case-study.md](./reviews/2026-09-09-gpt-5.5-case-study.md)（`triaged`） |
+| 技术实验前提下的锐评 | [reviews/2026-09-09-copilot-case-study-red-team.md](./reviews/2026-09-09-copilot-case-study-red-team.md)（`triaged`） |

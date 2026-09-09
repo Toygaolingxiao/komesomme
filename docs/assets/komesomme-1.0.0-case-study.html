@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KomeSomme 1.0.0 — Delivery Case Study</title>
-  <meta name="description" content="KomeSomme 1.0.0 のデリバリー事例。構想から公開判定まで一人で進めた記録と、事業価値の検証が未充足である境界を分けて示します。" />
+  <title>KomeSomme 1.0.0 - Delivery Lab</title>
+  <meta name="description" content="KomeSomme の技術実験とデリバリー記録。データ、推薦、公開運用を一人で組み立てた過程を、実装と判断の境界ごとに示します。" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -300,6 +300,28 @@
     }
     .concept-chip span { font-size: .8rem; color: #766658; line-height: 1.45; }
     .rice-dot { will-change: transform, opacity; }
+    .lab-strip {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem;
+      margin: 1.25rem 0 0; padding: .65rem; border: 1px solid rgba(48,40,32,.14);
+      border-radius: .9rem; background: rgba(255,253,247,.62);
+    }
+    .lab-strip span { display: block; font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .08em; color: #766658; }
+    .lab-strip strong { display: block; margin-top: .25rem; font-size: .8rem; font-weight: 500; color: #302820; }
+    .lab-strip b { color: #E56B3F; font-weight: 500; }
+    .hero-mark {
+      position: absolute; right: 0; bottom: 0; width: min(34vw, 360px); aspect-ratio: 1;
+      border: 1px solid rgba(229,107,63,.32); border-radius: 50%;
+      background: radial-gradient(circle, rgba(229,107,63,.12), transparent 62%);
+      pointer-events: none;
+    }
+    .hero-mark::before, .hero-mark::after { content: ""; position: absolute; inset: 13%;
+      border: 1px dashed rgba(212,154,42,.42); border-radius: 50%; }
+    .hero-mark::after { inset: 28%; border-style: solid; border-color: rgba(48,40,32,.12); }
+    @media (max-width: 719px) {
+      .lab-strip { grid-template-columns: 1fr; }
+      .hero-mark { width: 230px; right: -70px; bottom: 3rem; opacity: .55; }
+    }
 
 
     .pin-stage {
@@ -312,6 +334,7 @@
     }
     .swim-node, .swim-path, .swim-anno { opacity: 0; }
     .road-pin { opacity: 0; }
+    .close-node { opacity: 0; }
     .ghost-num {
       position: absolute; right: 4%; top: 18%;
       font-family: "Shippori Mincho", serif;
@@ -323,6 +346,7 @@
       .swim-node, .swim-path, .swim-anno, .road-pin, .reveal-static,
       .scope-ring, .scope-core, .scope-label, .scope-chip,
       .stack-row, .pipe-stage, .pipe-gate { opacity: 1 !important; }
+      .close-node { opacity: 1 !important; }
       .ev-card { opacity: 1 !important; transform: none !important; }
       .progress-bar { transition: none; }
     }
@@ -347,6 +371,7 @@
       <a href="#threat" data-nav="threat">脅威</a>
       <a href="#validate" data-nav="validate">検証</a>
       <a href="#roadmap" data-nav="roadmap">道筋</a>
+      <a href="#closing" data-nav="closing">結論</a>
     </div>
     <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">公開サイト ↗</a>
   </nav>
@@ -355,19 +380,27 @@
   <header id="top" class="px-5 sm:px-10 pt-24 pb-10 relative overflow-hidden">
     <span class="ghost-num" data-speed="0.08">01</span>
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-4">KOMESOMME 1.0.0 — DELIVERY CASE STUDY</p>
+      <p class="sec-label mb-4">DELIVERY LAB · 技術実験の記録</p>
       <div class="grid lg:grid-cols-12 gap-8 items-end">
         <div class="lg:col-span-8">
-          <h1 id="hero-title" class="font-display text-[clamp(2rem,5vw,3.4rem)] leading-[1.18] text-ink font-medium">
-            味わいを、選べる形にする
+          <span class="hero-mark" aria-hidden="true"></span>
+          <h1 id="hero-title" class="font-display text-[clamp(2.6rem,7vw,4.6rem)] leading-[1.05] text-ink font-medium tracking-tight">
+            KomeSomme
           </h1>
-          <p class="mt-4 text-base sm:text-lg text-brown font-display leading-relaxed max-w-xl">
+          <p class="mt-3 font-display text-[clamp(1.15rem,2.4vw,1.65rem)] leading-snug text-brown max-w-xl">
+            味わいを、選べる形にする
+          </p>
+          <p class="mt-4 text-sm sm:text-base text-ink/85 leading-relaxed max-w-xl">
             米の銘柄を「産地・価格」だけでなく、「甘み」「粒感」「料理との相性」から選べるようにするための推薦サービスです。
           </p>
           <p class="mt-3 text-sm text-muted leading-relaxed max-w-xl">
-            本事例は、構想、設計、実装、データ整備、公開判定までを一人で進めたデリバリー記録です。いま示せているのは、公開可能な状態まで持っていったことです。購買行動、再訪、アフィリエイト成果などの事業価値については、まだ十分な実測データを持っていません。
+            これは、意味検索と決定的な推薦を一つの体験にまとめる技術実験です。構想、設計、実装、データ整備、公開判定までを一人で進めました。
           </p>
-          <p class="mt-5 text-sm text-muted">作品集 / 技術レビュー向け · 事業価値の検証は未充足 · komesomme.jp</p>
+          <div class="lab-strip" aria-label="実験の現在地">
+            <div><span><b>01</b> 問い</span><strong>味の言葉を比較可能にする</strong></div>
+            <div><span><b>02</b> 判断</span><strong>候補はデータと規則で決める</strong></div>
+            <div><span><b>03</b> 次の観測</span><strong>使われ方を公開後に測る</strong></div>
+          </div>
         </div>
         <div class="lg:col-span-4">
           <p class="sec-label mb-3">この事例で示すこと</p>
@@ -375,7 +408,7 @@
             <li class="border-b border-ink/10 pb-2.5">一人で構想から公開判定までを完了したこと</li>
             <li class="border-b border-ink/10 pb-2.5">技術選定とスコープの判断を文書化したこと</li>
             <li class="border-b border-ink/10 pb-2.5">LLM に候補決定を任せないこと</li>
-            <li>工程上の公開判定と事業価値の未検証を分けたこと</li>
+            <li>実験結果と、まだ測っていない利用結果を分けたこと</li>
           </ul>
         </div>
       </div>
@@ -387,9 +420,9 @@
   <!-- SUMMARY -->
   <section id="summary" class="px-5 sm:px-10 sec-y flow-block" data-chapter="summary">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">この事例で示すこと</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">作品集および技術レビュー向け</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">投資家向けの成長実績資料ではありません。示したい内容は、主に以下の四点です。</p>
+      <p class="sec-label mb-2">読む順番</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">実験を、交付できる形にする</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">問題設定、設計判断、実装、公開条件、次の観測を一つの流れで追えます。</p>
       <div class="summary-grid mb-5">
         <article class="summary-card">
           <p class="eyebrow">01</p>
@@ -405,10 +438,10 @@
         </article>
         <article class="summary-card">
           <p class="eyebrow">04</p>
-          <p>工程上の公開判定と、事業価値の検証不足を明確に分けて扱っていること</p>
+          <p>技術実験の証拠と、公開後に測る利用結果を分けていること</p>
         </article>
       </div>
-      <p class="paper-note max-w-3xl">実装した機能だけでなく、採用しなかった選択肢、スコープの境界、未検証の領域もあわせて整理します。事業価値が実証された状態としては読まないでください。</p>
+      <p class="paper-note max-w-3xl">完成した機能だけでなく、採用しなかった案、守った境界、次に検証する仮説まで残します。商業化は、この実験を使う人が見つかったあとに自然に検討します。</p>
     </div>
   </section>
 
@@ -599,7 +632,7 @@
     <div class="max-w-6xl mx-auto">
       <p class="sec-label mb-2">3 · 独自性と商業上の位置づけ</p>
       <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">構造化カタログが現時点の特徴</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">投資家向けの実績表ではありません。独自性の一点と、商業成果が未充足であることを同じ紙面に置きます。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">この実験の差分は、LLM に順位を預けず、根拠を持つカタログと比較 UI を先に置いたことです。</p>
 
       <div class="sheet overflow-x-auto mb-5">
         <table class="grid-doc">
@@ -956,8 +989,8 @@
           <tbody>
             <tr><td>地図</td><td>甘み・粒感の二次元距離（端末内）</td><td>近い順。多様性なし</td><td>上位四件。文言なし</td></tr>
             <tr><td>相談</td><td>銘柄名ヒット、または埋め込み → pgvector</td><td>類似度（モデル版でフィルタ）</td><td>上位四件 + 理由 + 案内</td></tr>
-            <tr><td>相性整理レイヤー</td><td>—</td><td>順位は変えない</td><td>カード理由文（決定的）</td></tr>
-            <tr><td>案内文</td><td>—</td><td>LLM は説明のみ</td><td>失敗しても上位四件は返す</td></tr>
+            <tr><td>相性整理レイヤー</td><td>なし</td><td>順位は変えない</td><td>カード理由文（決定的）</td></tr>
+            <tr><td>案内文</td><td>なし</td><td>LLM は説明のみ</td><td>失敗しても上位四件は返す</td></tr>
           </tbody>
         </table>
       </div>
@@ -1119,12 +1152,12 @@
   <section id="validate" class="px-5 sm:px-10 sec-y flow-block" data-chapter="validate">
     <div class="max-w-6xl mx-auto">
       <p class="sec-label mb-2">10 · 検証状況</p>
-      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">工程上の証拠と、事業上の未充足</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">公開できたことと、事業価値が実証されたことを分けます。未計測の数値を成果として埋めません。</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">実験で確かめたこと、次に測ること</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">公開判定は工程の結果です。利用データは次の実験で取得します。二つを混ぜずに扱います。</p>
 
       <div class="split-ev">
         <div class="sheet p-4 sm:p-5">
-          <h3>工程上の証拠（ある）</h3>
+          <h3>今回の実験で確かめたこと</h3>
           <div class="ev-dash" style="grid-template-columns:1fr">
             <article class="ev-card is-ok">
               <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">公開条件 · PASS</span></div>
@@ -1149,7 +1182,7 @@
           </div>
         </div>
         <div class="sheet p-4 sm:p-5">
-          <h3>事業上の証拠（まだ足りない）</h3>
+          <h3>公開後に測ること</h3>
           <div class="ev-dash" style="grid-template-columns:1fr">
             <article class="ev-card is-mute">
               <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">UNPUBLISHED</span></div>
@@ -1340,7 +1373,7 @@
         </article>
         <article class="issue-card is-nongoal">
           <p class="eyebrow">構想 · 将来的なカテゴリ展開の仮説</p>
-          <p class="body" style="margin-bottom:.55rem">桃 / 和牛 / 酒などは仮説です。Phase 2–3 の信号と、専門家データ・軸の再定義が揃うまで着手しません。</p>
+          <p class="body" style="margin-bottom:.55rem">桃 / 和牛 / 酒などは仮説です。Phase 2-3 の観測と、専門家データ、軸の再定義が揃うまで着手しません。</p>
           <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
             <li>· 進入: 4 週の観測で信号が続く</li>
             <li>· 進入: 銘柄追加の工数が見積もれる</li>
@@ -1361,12 +1394,85 @@
           </tbody>
         </table>
       </div>
-      <p class="text-xs text-muted mb-6 leading-relaxed">順序を取り違えないこと。再訪より先に横展開すると、閉じていない運用を複製します。</p>
+      <p class="text-xs text-muted mb-6 leading-relaxed">順序を取り違えないこと。再訪より先にカテゴリ展開すると、閉じていない運用を複製します。</p>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 13 CLOSING -->
+  <section id="closing" class="px-5 sm:px-10 sec-y flow-block" data-chapter="closing">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">結論</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">派手さではなく、判断を残す</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">
+        KomeSomme は、味わい地図と相談 API を備えた米推薦サービスです。見せたいのは、インタラクションの派手さではなく、実験を安全に公開し、次の判断につなげる設計です。
+      </p>
+
+      <div class="viz-sheet mb-5">
+        <svg id="close-svg" viewBox="0 0 960 280" class="w-full min-w-[720px]" role="img" aria-label="まとめの三点。カタログ正本、文書化された判断、工程と事業の切り分け">
+          <defs>
+            <filter id="closeSoft" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#302820" flood-opacity="0.08"/>
+            </filter>
+          </defs>
+          <rect x="24" y="24" width="912" height="232" rx="16" fill="#FFF5E5" stroke="rgba(48,40,32,.08)"/>
+
+          <!-- spine -->
+          <line x1="160" y1="140" x2="800" y2="140" stroke="rgba(229,107,63,.35)" stroke-width="2" stroke-dasharray="4 6"/>
+
+          <g class="close-node" id="close-catalog">
+            <circle cx="180" cy="140" r="54" fill="#FFFDF7" stroke="#E56B3F" stroke-width="1.75" filter="url(#closeSoft)"/>
+            <text x="180" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">01</text>
+            <text x="180" y="148" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#302820">カタログ正本</text>
+            <text x="180" y="168" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">LLM は順位を持たない</text>
+          </g>
+
+          <g class="close-node" id="close-docs">
+            <circle cx="480" cy="140" r="54" fill="#FFFDF7" stroke="#D49A2A" stroke-width="1.75" filter="url(#closeSoft)"/>
+            <text x="480" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#D49A2A">02</text>
+            <text x="480" y="148" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#302820">判断の文書化</text>
+            <text x="480" y="168" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">採用と見送りを残す</text>
+          </g>
+
+          <g class="close-node" id="close-split">
+            <circle cx="780" cy="140" r="54" fill="#FFFDF7" stroke="#7BB894" stroke-width="1.75" filter="url(#closeSoft)"/>
+            <text x="780" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#4A7A5D">03</text>
+            <text x="780" y="148" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#302820">証拠の切り分け</text>
+            <text x="780" y="168" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">工程 ≠ 事業価値</text>
+          </g>
+
+          <text x="480" y="236" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">三点が揃って、はじめてデリバリー事例として読める</text>
+        </svg>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 mb-5">
+        <article class="issue-card">
+          <p class="eyebrow">要点 1</p>
+          <p class="body">候補決定を LLM に任せず、構造化されたカタログを正本にしたこと</p>
+        </article>
+        <article class="issue-card">
+          <p class="eyebrow">要点 2</p>
+          <p class="body">技術選定、見送った選択肢、公開条件を文書化したこと</p>
+        </article>
+        <article class="issue-card">
+          <p class="eyebrow">要点 3</p>
+          <p class="body">実験の証拠と、公開後に測る利用結果を分けたこと</p>
+        </article>
+      </div>
+
+      <p class="text-sm text-muted leading-relaxed max-w-2xl mb-3">
+        現時点の KomeSomme は、技術実験を公開可能な形にしたプロダクトです。
+        課題定義、スコープ設計、データ構造、推薦処理、公開運用の境界を一人で組み立てました。
+      </p>
+      <p class="text-sm text-muted leading-relaxed max-w-2xl mb-6">
+        次の段階では、実際の利用データをもとに、推薦後の行動、購入導線、再訪、データ更新コストを検証します。商業化は、その観測から判断します。
+      </p>
 
       <div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
         <div>
-          <p class="sec-label mb-2">まとめ</p>
-          <p class="font-display text-lg sm:text-xl text-ink max-w-lg leading-snug">要点は、候補決定を LLM に任せないこと、見送った選択肢と公開条件を文書化したこと、そして事業価値の未検証を明確に分けたことです。</p>
+          <p class="sec-label mb-2">公開サイト</p>
+          <p class="font-display text-lg sm:text-xl text-ink max-w-lg leading-snug">味わい地図と相談は、いま公開サイトで触れます。</p>
         </div>
         <a href="https://komesomme.jp" class="cta shrink-0" target="_blank" rel="noopener">komesomme.jp ↗</a>
       </div>
@@ -1375,7 +1481,7 @@
 
   <footer class="px-5 sm:px-10 pb-12">
     <div class="max-w-6xl mx-auto rule pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
-      <p>KomeSomme 1.0.0 · Delivery Case Study · 作品集 / 技術レビュー向け</p>
+      <p>KomeSomme 1.0.0 · Delivery Lab · 技術実験の記録</p>
       <p class="font-mono">docs/05 · 08 · 11 · 20 · 21 · pj/reviews</p>
     </div>
   </footer>
@@ -1462,7 +1568,7 @@
     if (reduce || !window.ScrollTrigger) return;
     const chapters = [
       'top', 'summary', 'lifecycle', 'context', 'concept', 'wedge', 'decision',
-      'design', 'ranking', 'delivery', 'threat', 'validate', 'roadmap',
+      'design', 'ranking', 'delivery', 'threat', 'validate', 'roadmap', 'closing',
     ];
     chapters.forEach((id) => {
       const el = document.getElementById(id);
@@ -1971,6 +2077,7 @@
       ['#scope-svg', '.scope-ring, .scope-core, .scope-chip, .scope-label'],
       ['#stack-svg', '.stack-row'],
       ['#pipe-svg', '.pipe-belt, .pipe-stage, .pipe-gate'],
+      ['#close-svg', '.close-node'],
     ];
     vizGroups.forEach(([root, sel]) => {
       const svg = document.querySelector(root);

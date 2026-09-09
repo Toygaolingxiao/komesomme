@@ -38,3 +38,4 @@ YYYY-MM-DD-<source>[-topic].md
 | --- | --- | --- |
 | [2026-09-09-gpt-5.5-case-study.md](./2026-09-09-gpt-5.5-case-study.md) | GPT-5.5 · 第一轮 | `absorbed` |
 | [2026-09-09-gpt-5.5-case-study-r2.md](./2026-09-09-gpt-5.5-case-study-r2.md) | GPT-5.5 · 第二轮 | `absorbed` |
+| [2026-09-09-copilot-case-study-red-team.md](./2026-09-09-copilot-case-study-red-team.md) | Copilot SDK · 技术实验前提下的红队评审 | `triaged` |
