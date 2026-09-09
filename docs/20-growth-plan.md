@@ -139,6 +139,8 @@
 
 #### Wave 2A — 料理・シーン別着陆（→ 约 `1.2.0`）
 
+意图库存、EEAT 大纲、权威 URL 锚点与 AI 引用门禁见 [21-seo-intent-content.md](./21-seo-intent-content.md)。
+
 **曝光的主引擎。** 「Yに最适なX」是 AI 检索时代仍然稳的 query 形状。
 
 - 新路由 `/pair/[dish]`（romaji slug: `curry`、`sashimi`、`bento`、`nabe`、`donburi`、`chahan`、`sushi`、`karaage`…）
