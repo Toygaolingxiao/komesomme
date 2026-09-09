@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KomeSomme 1.0.0 — Delivery Case Study</title>
+  <meta name="description" content="KomeSomme Ver 1.0.0 のデリバリー事例。課題定義から公開判定、その先の計画までを一本にまとめたものです。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#F6EBDD', rice: '#FFFDF7', cream: '#FFF5E5',
+            ink: '#302820', muted: '#766658', brown: '#704522',
+            gold: '#D49A2A', harvest: '#E56B3F',
+          },
+          fontFamily: {
+            display: ['"Shippori Mincho"', 'Georgia', 'serif'],
+            sans: ['"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/MotionPathPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <style>
+    :root {
+      --ease: cubic-bezier(0.32, 0.72, 0, 1);
+      --sec-y: clamp(2.5rem, 5vw, 4rem);
+      --block-gap: 1.35rem;
+      --sheet-pad: 1.1rem;
+      --ink: #302820;
+      --harvest: #E56B3F;
+      --gold: #D49A2A;
+    }
+    html.lenis, html.lenis body { height: auto; }
+    body {
+      margin: 0;
+      background: #F6EBDD;
+      color: #302820;
+      font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .progress-rail {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+      background: rgba(48,40,32,.08);
+    }
+    .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #E56B3F, #D49A2A);
+      transform-origin: left center;
+    }
+    @media (min-width: 1024px) {
+      .progress-rail {
+        top: 50%; left: auto; right: 1.1rem; width: 2px; height: min(42vh, 280px);
+        transform: translateY(-50%); border-radius: 999px; overflow: hidden;
+      }
+      .progress-bar { width: 100%; height: 0%; background: linear-gradient(180deg, #E56B3F, #D49A2A); }
+    }
+    .nav {
+      position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 40;
+      max-width: calc(100vw - 1.5rem); width: max-content;
+      display: flex; align-items: center; gap: .45rem; flex-wrap: nowrap;
+      padding: .35rem .4rem .35rem 1rem; border-radius: 999px;
+      background: rgba(255,253,247,.92); border: 1px solid rgba(48,40,32,.1);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 36px -22px rgba(48,40,32,.4);
+    }
+    .nav a {
+      text-decoration: none; color: #766658; font-size: 12px;
+      padding: .35rem .55rem; white-space: nowrap; border-radius: 999px;
+    }
+    .nav a:hover { color: #302820; }
+    .nav a.is-active { color: #302820; background: rgba(229,107,63,.12); }
+    .rule { height: 1px; background: rgba(48,40,32,.12); }
+    .sheet {
+      background: #FFFDF7;
+      border: 1px solid rgba(48,40,32,.1);
+      border-radius: .9rem;
+    }
+    .sec-label { font-size: 11px; letter-spacing: .18em; color: #766658; }
+    .sec-y { padding-top: var(--sec-y); padding-bottom: var(--sec-y); }
+    .flow-block { will-change: transform, opacity; }
+    .cta {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: #E56B3F; color: #FFFDF7; text-decoration: none;
+      border-radius: 999px; padding: .5rem .95rem .5rem 1.05rem;
+      font-size: .8rem; font-weight: 500;
+    }
+    .cta:hover { background: #d45a30; }
+    table.grid-doc { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    table.grid-doc th {
+      text-align: left; font-weight: 500; color: #766658; font-size: 11px;
+      letter-spacing: .04em; padding: .65rem .9rem;
+      border-bottom: 1px solid rgba(48,40,32,.14); background: #FFF5E5;
+    }
+    table.grid-doc td {
+      padding: .7rem .9rem; border-bottom: 1px solid rgba(48,40,32,.08);
+      vertical-align: top; line-height: 1.5;
+    }
+    table.grid-doc tr:hover td { background: rgba(229,107,63,.03); }
+    .matrix {
+      background: #FFFDF7;
+      background-image:
+        linear-gradient(rgba(48,40,32,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(48,40,32,.05) 1px, transparent 1px);
+      background-size: 12.5% 12.5%;
+    }
+    .smart-probe {
+      position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%;
+      background: #E56B3F; border: 2.5px solid #FFFDF7; cursor: grab; touch-action: none; z-index: 20;
+      box-shadow: 0 0 0 1px rgba(229,107,63,.25);
+    }
+    .smart-probe:active { cursor: grabbing; }
+    .rice-dot {
+      position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%;
+      border: 1.5px solid #FFFDF7; z-index: 10;
+      will-change: left, top, transform, opacity;
+    }
+    .rice-dot .tip {
+      position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+      background: #302820; color: #FFFDF7; font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .rice-dot:hover .tip { opacity: 1; }
+    .rice-dot.is-top { z-index: 15; }
+    .life-step rect { transition: fill .25s var(--ease), stroke .25s var(--ease), opacity .25s var(--ease); }
+    .life-step text { transition: fill .25s var(--ease), opacity .25s var(--ease); }
+    .life-step.is-upcoming { opacity: 0.78; }
+    .life-step.is-current rect { fill: #FFF5E5 !important; stroke: #E56B3F !important; stroke-width: 1.75; }
+    .life-step.is-current text:first-of-type { fill: #302820 !important; }
+    .life-step.is-done rect { fill: #FFFDF7 !important; stroke: rgba(48,40,32,.18) !important; }
+    #life-feedback { opacity: 0.25; }
+    #life-feedback.is-on { opacity: 1; }
+    .viz-sheet {
+      background: #FFFDF7;
+      border: 1px solid rgba(48,40,32,.1);
+      border-radius: .9rem;
+      padding: .85rem .7rem 1rem;
+      overflow-x: auto;
+    }
+    @media (min-width: 640px) {
+      .viz-sheet { padding: 1.1rem 1.25rem 1.25rem; }
+    }
+    .viz-caption {
+      margin-top: .85rem;
+      font-size: .8rem;
+      color: #766658;
+      line-height: 1.55;
+      max-width: 42rem;
+    }
+    .scope-ring, .scope-core, .scope-label, .scope-chip { transform-box: fill-box; transform-origin: center; }
+    .stack-row, .stack-keep, .stack-drop, .stack-why { transform-box: fill-box; transform-origin: center; }
+    .pipe-stage, .pipe-gate, .pipe-belt { transform-box: fill-box; transform-origin: center; }
+    .ev-dash {
+      display: grid;
+      gap: .65rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 560px) {
+      .ev-dash { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 900px) {
+      .ev-dash { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .ev-card {
+      background: #FFFDF7;
+      border: 1px solid rgba(48,40,32,.1);
+      border-radius: .85rem;
+      padding: .85rem .9rem .9rem;
+      position: relative;
+      min-height: 7.2rem;
+    }
+    .ev-card .led-row {
+      display: flex; align-items: center; gap: .45rem;
+      margin-bottom: .45rem;
+    }
+    .ev-card .led {
+      width: 10px; height: 10px; border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(229,107,63,.12);
+      flex-shrink: 0;
+    }
+    .ev-card.is-ok .led { background: #E56B3F; box-shadow: 0 0 0 3px rgba(229,107,63,.14); }
+    .ev-card.is-run .led { background: #7BB894; box-shadow: 0 0 0 3px rgba(123,184,148,.18); }
+    .ev-card.is-todo .led {
+      background: #D49A2A;
+      box-shadow: 0 0 0 3px rgba(212,154,42,.18);
+      animation: led-pulse 1.8s ease-in-out infinite;
+    }
+    .ev-card.is-mute .led {
+      background: #B5A99A;
+      box-shadow: 0 0 0 3px rgba(48,40,32,.06);
+    }
+    .ev-card.is-mute { opacity: .88; border-style: dashed; }
+    @media (min-width: 900px) {
+      .ev-card.is-span { grid-column: 1 / -1; min-height: auto; }
+    }
+    .ev-card .led-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px; letter-spacing: .04em; color: #766658;
+    }
+    .ev-card .ev-title {
+      font-family: "Shippori Mincho", serif;
+      font-size: 1rem; font-weight: 500; margin: 0 0 .3rem;
+    }
+    .ev-card .ev-proof {
+      font-size: .78rem; color: #766658; line-height: 1.45; margin: 0;
+    }
+    @keyframes led-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .45; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ev-card.is-todo .led { animation: none; }
+    }
+    .concept-chips { display: flex; flex-direction: column; gap: .55rem; }
+    .concept-chip {
+      background: #FFFDF7; border: 1px solid rgba(48,40,32,.1);
+      border-radius: .75rem; padding: .7rem .85rem;
+    }
+    .concept-chip strong {
+      display: block; font-family: "Shippori Mincho", serif;
+      font-weight: 500; font-size: .95rem; margin-bottom: .2rem;
+    }
+    .concept-chip span { font-size: .8rem; color: #766658; line-height: 1.45; }
+    .rice-dot { will-change: transform, opacity; }
+
+
+    .pin-stage {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 5.5rem 1.25rem 2rem;
+    }
+    @media (min-width: 640px) {
+      .pin-stage { padding-left: 2.5rem; padding-right: 2.5rem; }
+    }
+    .swim-node, .swim-path, .swim-anno { opacity: 0; }
+    .road-pin { opacity: 0; }
+    .ghost-num {
+      position: absolute; right: 4%; top: 18%;
+      font-family: "Shippori Mincho", serif;
+      font-size: clamp(4rem, 12vw, 8rem);
+      color: rgba(48,40,32,.045); pointer-events: none; line-height: 1;
+      user-select: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .swim-node, .swim-path, .swim-anno, .road-pin, .reveal-static,
+      .scope-ring, .scope-core, .scope-label, .scope-chip,
+      .stack-row, .pipe-stage, .pipe-gate, .ev-card { opacity: 1 !important; transform: none !important; }
+      .progress-bar { transition: none; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <div class="progress-rail" aria-hidden="true"><div class="progress-bar" id="read-progress"></div></div>
+
+  <nav class="nav" aria-label="章">
+    <a href="#top" data-nav="top" class="!text-ink font-display text-sm !pl-0">KomeSomme</a>
+    <div class="hidden md:flex items-center">
+      <a href="#lifecycle" data-nav="lifecycle">流れ</a>
+      <a href="#context" data-nav="context">背景</a>
+      <a href="#concept" data-nav="concept">概念</a>
+      <a href="#decision" data-nav="decision">選定</a>
+      <a href="#design" data-nav="design">設計</a>
+      <a href="#delivery" data-nav="delivery">実装</a>
+      <a href="#validate" data-nav="validate">検証</a>
+      <a href="#roadmap" data-nav="roadmap">道筋</a>
+    </div>
+    <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">本番 ↗</a>
+  </nav>
+
+  <!-- HERO -->
+  <header id="top" class="px-5 sm:px-10 pt-24 pb-10 relative overflow-hidden">
+    <span class="ghost-num" data-speed="0.08">01</span>
+    <div class="max-w-6xl mx-auto relative">
+      <p class="sec-label mb-4">CASE STUDY · Ver 1.0.0</p>
+      <div class="grid lg:grid-cols-12 gap-8 items-end">
+        <div class="lg:col-span-8">
+          <h1 id="hero-title" class="font-display text-[clamp(2rem,5vw,3.4rem)] leading-[1.18] text-ink font-medium">
+            味わいを、選べる形にする。
+          </h1>
+          <p class="mt-4 text-base sm:text-lg text-brown font-display leading-relaxed max-w-xl">
+            構想から本番公開までを一人で閉じた、フルスタックのデリバリー事例です。
+          </p>
+          <p class="mt-3 text-sm text-muted leading-relaxed max-w-xl">
+            採用した技術だけでなく、見送った選択肢と公開の判断基準も、同じリポジトリに残しています。
+          </p>
+          <p class="mt-5 text-sm text-muted">End-to-End Delivery · komesomme.jp</p>
+        </div>
+        <div class="lg:col-span-4">
+          <p class="sec-label mb-3">この事例で示すこと</p>
+          <ul class="space-y-2.5 text-sm text-ink/85 leading-relaxed list-none m-0 p-0 border-t border-ink/10 pt-3">
+            <li class="border-b border-ink/10 pb-2.5">課題が画面設計を決めたこと</li>
+            <li class="border-b border-ink/10 pb-2.5">トレードオフを文書とコードに残したこと</li>
+            <li class="border-b border-ink/10 pb-2.5">公開条件（P0）を自分で定義し満たしたこと</li>
+            <li>次の施策が同じ銘柄データの延長にあること</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 0 LIFECYCLE -->
+  <section id="lifecycle" class="px-5 sm:px-10 sec-y flow-block" data-chapter="lifecycle">
+    <div class="max-w-6xl mx-auto relative">
+      <span class="ghost-num" data-speed="0.06">0</span>
+      <p class="sec-label mb-2">0 · ライフサイクル</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">案件の進め方</h2>
+      <p class="text-muted text-sm max-w-2xl mb-5 leading-relaxed">背景から公開判定までを横並びにし、前工程の成果が次工程の入力になる関係を示します。</p>
+      <div class="overflow-x-auto sheet p-3 sm:p-4" id="lifecycle-stage">
+        <svg viewBox="0 0 1080 170" class="w-full min-w-[780px] h-auto" aria-label="ライフサイクル関係図">
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#704522"/></marker>
+            <marker id="arrHarvest" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#E56B3F"/></marker>
+          </defs>
+          <g font-family="Shippori Mincho" font-size="12" fill="#302820" text-anchor="middle">
+            <g class="life-step" data-step="0">
+              <rect x="10" y="48" width="110" height="52" rx="8" fill="#FFF5E5" stroke="rgba(48,40,32,.12)"/>
+              <text x="65" y="70">背景</text><text x="65" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">課題</text>
+            </g>
+            <g class="life-step" data-step="1">
+              <rect x="150" y="48" width="110" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="205" y="70">概念</text><text x="205" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">Matrix / 侍米師</text>
+            </g>
+            <g class="life-step" data-step="2">
+              <rect x="290" y="48" width="110" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="345" y="70">選定</text><text x="345" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">捨てたもの</text>
+            </g>
+            <g class="life-step" data-step="3">
+              <rect x="430" y="48" width="110" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="485" y="70">設計</text><text x="485" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">二本立て</text>
+            </g>
+            <g class="life-step" data-step="4">
+              <rect x="570" y="48" width="110" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="625" y="70">実装</text><text x="625" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">段階ごと</text>
+            </g>
+            <g class="life-step" data-step="5">
+              <rect x="710" y="48" width="110" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="765" y="70">公開</text><text x="765" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">検査 / 権限</text>
+            </g>
+            <g class="life-step" data-step="6">
+              <rect x="850" y="48" width="100" height="52" rx="8" fill="#FFF5E5" stroke="rgba(48,40,32,.12)"/>
+              <text x="900" y="70">判定</text><text x="900" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">公開判定</text>
+            </g>
+            <g class="life-step" data-step="7">
+              <rect x="980" y="48" width="90" height="52" rx="8" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="1025" y="70">次</text><text x="1025" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">版の先</text>
+            </g>
+          </g>
+          <g stroke="#704522" stroke-width="1.2" fill="none" marker-end="url(#arr)">
+            <path d="M120 74 H148"/><path d="M260 74 H288"/><path d="M400 74 H428"/>
+            <path d="M540 74 H568"/><path d="M680 74 H708"/><path d="M820 74 H848"/><path d="M950 74 H978"/>
+          </g>
+          <path id="life-feedback" d="M900 100 C900 145 65 145 65 100" fill="none" stroke="#E56B3F" stroke-width="1.25" stroke-dasharray="4 4" marker-end="url(#arrHarvest)"/>
+          <text x="480" y="162" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">破線：公開後の観測を、次の課題定義へ戻す（docs/20）</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 1 CONTEXT -->
+  <section id="context" class="px-5 sm:px-10 sec-y flow-block" data-chapter="context">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">1 · 課題定義</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">スコープの境界</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">店頭や通販では産地・価格・還元率が並びますが、甘みや粒立ち、おかずとの相性は比較可能な形になっていません。同心円は「どこに集中し、何を捨てたか」を示します。</p>
+      <div class="viz-sheet">
+        <svg id="scope-svg" viewBox="0 0 920 460" class="w-full min-w-[720px]" role="img" aria-label="スコープの同心円。中心は今夜のご飯に合う米、第1環はデータ資産、外周は非目標">
+          <defs>
+            <radialGradient id="scopeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFF5E5"/>
+              <stop offset="55%" stop-color="#FFFDF7"/>
+              <stop offset="100%" stop-color="#F6EBDD"/>
+            </radialGradient>
+            <filter id="scopeSoft" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#302820" flood-opacity="0.08"/>
+            </filter>
+          </defs>
+
+          <!-- paper field -->
+          <rect x="24" y="24" width="872" height="412" rx="18" fill="url(#scopeGlow)" stroke="rgba(48,40,32,.08)"/>
+
+          <!-- outer dashed out-of-scope -->
+          <g class="scope-ring" id="scope-outer">
+            <circle cx="390" cy="230" r="168" fill="none" stroke="rgba(48,40,32,.22)" stroke-width="1.5" stroke-dasharray="5 6"/>
+            <circle cx="390" cy="230" r="168" fill="rgba(48,40,32,.015)"/>
+            <text x="390" y="58" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#9A8B7A" letter-spacing="0.12em">OUT OF SCOPE</text>
+          </g>
+
+          <!-- mid ring: data moat -->
+          <g class="scope-ring" id="scope-mid">
+            <circle cx="390" cy="230" r="112" fill="#FFFDF7" stroke="rgba(212,154,42,.45)" stroke-width="1.75" filter="url(#scopeSoft)"/>
+            <text x="390" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#D49A2A" letter-spacing="0.08em">RING · データ資産</text>
+            <text x="390" y="148" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#704522">人手の相性 · 合わない組み合わせ</text>
+          </g>
+
+          <!-- core -->
+          <g class="scope-core" id="scope-core">
+            <circle cx="390" cy="230" r="62" fill="#E56B3F" filter="url(#scopeSoft)"/>
+            <circle cx="390" cy="230" r="54" fill="none" stroke="#FFFDF7" stroke-width="1.25" opacity="0.55"/>
+            <text x="390" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#FFF5E5" letter-spacing="0.14em">CORE</text>
+            <text x="390" y="238" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#FFFDF7">今夜のご飯に</text>
+            <text x="390" y="258" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#FFFDF7">合う米</text>
+          </g>
+
+          <!-- out-of-scope chips -->
+          <g class="scope-chip" id="scope-chip-furu">
+            <line x1="520" y1="120" x2="560" y2="96" stroke="rgba(48,40,32,.25)" stroke-dasharray="3 3"/>
+            <rect x="560" y="72" width="220" height="48" rx="10" fill="#FFFDF7" stroke="rgba(48,40,32,.22)" stroke-dasharray="4 3"/>
+            <text x="670" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">非競争</text>
+            <text x="670" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">ふるさと納税の還元率比較</text>
+          </g>
+          <g class="scope-chip" id="scope-chip-p2">
+            <line x1="530" y1="300" x2="560" y2="328" stroke="rgba(48,40,32,.25)" stroke-dasharray="3 3"/>
+            <rect x="560" y="310" width="220" height="64" rx="10" fill="#FFFDF7" stroke="rgba(48,40,32,.22)" stroke-dasharray="4 3"/>
+            <text x="670" y="332" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">1.0 非目標 · P2</text>
+            <text x="670" y="350" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">認証 · お気に入り</text>
+            <text x="670" y="366" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="#766658">多ターン相談 · 機器連携</text>
+          </g>
+
+          <!-- side callouts -->
+          <g class="scope-label" id="scope-why">
+            <rect x="48" y="168" width="152" height="124" rx="12" fill="#FFFDF7" stroke="rgba(229,107,63,.28)"/>
+            <text x="124" y="192" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">WHY NOW</text>
+            <text x="64" y="214" font-family="Zen Kaku Gothic New" font-size="12" fill="#302820">意味検索が</text>
+            <text x="64" y="232" font-family="Zen Kaku Gothic New" font-size="12" fill="#302820">一人体制でも</text>
+            <text x="64" y="250" font-family="Zen Kaku Gothic New" font-size="12" fill="#302820">運用できる形まで</text>
+            <text x="64" y="268" font-family="Zen Kaku Gothic New" font-size="12" fill="#302820">整った時点で着手</text>
+          </g>
+
+          <text x="390" y="422" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">中心に寄せるほど、1.0 で約束する範囲。破線の外は意図的に捨てた領域です。</text>
+        </svg>
+      </div>
+      <p class="viz-caption">模倣しにくい点は第1環に置いています。味わい・料理・酒の相性に加え、「合わない組み合わせ」まで人手で整理した一次データが、モデル丸投げでは得られない差になります。</p>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 2 CONCEPT + MATRIX (PIN) -->
+  <section id="concept" data-chapter="concept">
+    <div class="pin-stage" id="matrix-stage">
+      <div class="max-w-6xl mx-auto w-full">
+        <p class="sec-label mb-2">2 · プロダクト概念</p>
+        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">利用者が触る体験</h2>
+        <p class="text-muted text-sm max-w-2xl mb-4 leading-relaxed">画面は和紙の味わい地図として見せ、ベクトル検索は裏側に置きます（docs/08）。横軸は甘み、縦軸は粒感です。</p>
+        <div class="grid lg:grid-cols-12 gap-5 items-stretch">
+          <div class="lg:col-span-4">
+            <div class="concept-chips">
+              <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元盤。探針で好みの位置を指す</span></div>
+              <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄と短い案内文を返す</span></div>
+              <div class="concept-chip"><strong>二本立て</strong><span>座標探索は端末内。相談だけサーバ経由</span></div>
+              <div class="concept-chip"><strong>購入</strong><span>通販とふるさと納税への導線</span></div>
+            </div>
+            <p id="matrix-phase" class="mt-3 text-xs font-mono text-brown min-h-[1.25rem]">デモ：探針が銘柄付近をなぞります（座標は固定）</p>
+          </div>
+          <div class="lg:col-span-8">
+            <div class="sheet p-2.5 sm:p-4">
+              <div id="interactive-matrix" class="matrix relative h-[min(52vh,420px)] min-h-[280px] rounded-lg border border-ink/10 select-none overflow-hidden cursor-crosshair">
+                <span class="absolute left-3 top-3 text-[10px] text-muted tracking-widest">ほどける</span>
+                <span class="absolute left-3 bottom-9 text-[10px] text-muted tracking-widest">粒立ち</span>
+                <span class="absolute left-11 bottom-2 text-[10px] text-muted">すっきり</span>
+                <span class="absolute right-3 bottom-2 text-[10px] text-muted">甘みふくよか</span>
+                <svg id="vector-lines" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></svg>
+                <div id="rice-points"></div>
+                <div id="smart-probe" class="smart-probe" style="left:52%;top:48%" role="slider" aria-label="味わいの点" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p class="mt-2 text-xs text-muted">各銘柄の座標はカタログ上の固定値です。動くのは探針だけで、近い四銘柄を本番と同じ粒度で強調します。</p>
+              <p id="knn-readout" class="mt-1 text-xs font-mono text-brown"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 3 TECH -->
+  <section id="decision" class="px-5 sm:px-10 sec-y flow-block" data-chapter="decision">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">3 · 技術選定</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤー別のトレードオフ</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">上から画面、下へデータと商流。各層で左が採用、右が破線の見送りです。データ投入は Node（tsx）、銘柄カタログの正本は Git に置いています。</p>
+      <div class="viz-sheet">
+        <svg id="stack-svg" viewBox="0 0 900 610" class="w-full min-w-[760px]" role="img" aria-label="技術選定のレイヤー別トレードオフ">
+          <defs>
+            <linearGradient id="stackSpine" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#E56B3F" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#D49A2A" stop-opacity="0.35"/>
+            </linearGradient>
+          </defs>
+          <text x="128" y="28" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F" letter-spacing="0.08em">KEEP · 採用</text>
+          <text x="488" y="28" font-family="IBM Plex Mono" font-size="11" fill="#9A8B7A" letter-spacing="0.08em">DROP · 見送り</text>
+          <line x1="108" y1="36" x2="108" y2="590" stroke="url(#stackSpine)" stroke-width="2" stroke-dasharray="3 5"/>
+          <g class="stack-row" id="stack-app" transform="translate(0 48)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">App</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Next.js 15 App Router</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別立ての API サーバ</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">画面と相談 API を同一リポジトリで閉じるため</text>
+          </g>
+          <g class="stack-row" id="stack-vector" transform="translate(0 140)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Vector</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Supabase pgvector</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">Pinecone / Qdrant 単独</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">リレーショナルと同一基盤・同一権限に揃えるため</text>
+          </g>
+          <g class="stack-row" id="stack-embed" transform="translate(0 232)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Embed</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">Gemini 既定 / OpenAI 切替 · 1536d</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">モデル混在比較</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">次元やモデルを混在させると類似度が成立しないため</text>
+          </g>
+          <g class="stack-row" id="stack-rec" transform="translate(0 324)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Recommend</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">二本立て（座標 + 意味）</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">操作のたびに LLM</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">地図は低遅延。相談時だけ埋め込みを使うため</text>
+          </g>
+          <g class="stack-row" id="stack-ingest" transform="translate(0 416)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Ingest</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">TS catalog → seed:rice</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">別言語の常設スクレイパ</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">銘柄の正本を Git に置き、DB は配信用の控えにするため</text>
+          </g>
+          <g class="stack-row" id="stack-commerce" transform="translate(0 508)">
+            <text x="28" y="26" font-family="IBM Plex Mono" font-size="12" fill="#766658">Commerce</text>
+            <line x1="108" y1="4" x2="108" y2="72" stroke="rgba(48,40,32,.1)" stroke-dasharray="2 4"/>
+            <g class="stack-keep">
+              <rect x="128" y="0" width="340" height="48" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.45)" stroke-width="1.5"/>
+              <rect x="128" y="0" width="5" height="48" rx="2" fill="#E56B3F"/>
+              <text x="148" y="20" font-family="IBM Plex Mono" font-size="10" fill="#E56B3F">採用</text>
+              <text x="148" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#302820">検索 CTA + 楽天直リンク</text>
+            </g>
+            <g class="stack-drop">
+              <rect x="488" y="0" width="340" height="48" rx="10" fill="none" stroke="rgba(48,40,32,.28)" stroke-width="1.25" stroke-dasharray="4 3"/>
+              <text x="508" y="20" font-family="IBM Plex Mono" font-size="10" fill="#9A8B7A">見送り</text>
+              <text x="508" y="38" font-family="Zen Kaku Gothic New" font-size="13" fill="#766658">全モール API 必須</text>
+            </g>
+            <text class="stack-why" x="128" y="70" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">横断 API 必須化は規約対応と運用負荷が増えるため</text>
+          </g>
+        </svg>
+      </div>
+      <p class="viz-caption">モデル混在や別 API サーバを見送ったのは、類似度の一貫性と一人運用の境界を守るためです。層が分かれて見えるほど、混在コストが読み取れます。</p>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 4 DESIGN SWIM (PIN) -->
+  <section id="design" data-chapter="design">
+    <div class="pin-stage" id="swim-stage">
+      <div class="max-w-[1100px] mx-auto w-full">
+        <p class="sec-label mb-2">4 · 処理設計</p>
+        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">レイヤ別のデータフロー</h2>
+        <p id="swim-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">画面・サーバ・データベース・外部モデルの役割分担と、地図／相談の二系統を示します。</p>
+        <div class="sheet overflow-x-auto p-3 sm:p-5">
+          <svg id="swimlane-svg" viewBox="0 0 1060 460" class="w-full min-w-[860px]" aria-label="処理の流れ">
+            <defs>
+              <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#E56B3F"/></marker>
+              <marker id="ahGray" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#766658"/></marker>
+              <marker id="ahGold" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#D49A2A"/></marker>
+            </defs>
+            <g class="swim-lanes">
+              <rect x="130" y="28" width="900" height="92" rx="10" fill="#FFF5E5" opacity="0.9"/>
+              <rect x="130" y="128" width="900" height="92" rx="10" fill="#F6EBDD" opacity="0.95"/>
+              <rect x="130" y="228" width="900" height="92" rx="10" fill="#FFF5E5" opacity="0.9"/>
+              <rect x="130" y="328" width="900" height="92" rx="10" fill="#F6EBDD" opacity="0.95"/>
+            </g>
+            <g text-anchor="end" font-family="Shippori Mincho" fill="#302820">
+              <text x="118" y="68" font-size="14">画面</text>
+              <text x="118" y="86" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">ブラウザ</text>
+              <text x="118" y="168" font-size="14">サーバ</text>
+              <text x="118" y="186" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">Next.js</text>
+              <text x="118" y="268" font-size="14">データベース</text>
+              <text x="118" y="286" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">Supabase</text>
+              <text x="118" y="368" font-size="14">外部モデル</text>
+              <text x="118" y="386" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">Gemini / OpenAI</text>
+            </g>
+            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">左が入力、右が結果</text>
+
+            <g class="swim-node" data-phase="ui">
+              <rect x="160" y="52" width="108" height="44" rx="22" fill="#FFFDF7" stroke="#302820" stroke-width="1.4"/>
+              <text x="214" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#302820" font-weight="600">地図を動かす</text>
+              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">端末内だけで計算</text>
+            </g>
+            <g class="swim-node" data-phase="ui">
+              <rect x="300" y="52" width="108" height="44" rx="22" fill="#FFFDF7" stroke="#302820" stroke-width="1.4"/>
+              <text x="354" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#302820" font-weight="600">相談を送る</text>
+              <text x="354" y="86" text-anchor="middle" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">一文を投稿</text>
+            </g>
+            <g class="swim-node" data-phase="result">
+              <rect x="860" y="52" width="120" height="44" rx="22" fill="#E56B3F"/>
+              <text x="920" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#FFFDF7" font-weight="600">候補を四つ出す</text>
+              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">短い一言つき</text>
+            </g>
+
+            <g class="swim-node" data-phase="api">
+              <rect x="300" y="152" width="100" height="44" rx="8" fill="#302820"/>
+              <text x="350" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">回数制限</text>
+              <text x="350" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">非常時は止める</text>
+            </g>
+            <g class="swim-node" data-phase="api">
+              <rect x="440" y="152" width="110" height="44" rx="8" fill="#302820"/>
+              <text x="495" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">文を数値化</text>
+              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">1536 次元</text>
+            </g>
+            <g class="swim-node" data-phase="bridge">
+              <rect x="600" y="152" width="120" height="44" rx="8" fill="#302820"/>
+              <text x="660" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">相性の整理</text>
+              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">規則のみ・モデルなし</text>
+            </g>
+            <g class="swim-node" data-phase="bridge">
+              <rect x="760" y="152" width="110" height="44" rx="8" fill="#302820"/>
+              <text x="815" y="172" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">返事をまとめる</text>
+              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8D5A3" font-family="Zen Kaku Gothic New">候補＋文言</text>
+            </g>
+
+            <g class="swim-node" data-phase="db">
+              <rect x="170" y="252" width="120" height="44" rx="8" fill="#7BB894"/>
+              <text x="230" y="272" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">銘柄一覧</text>
+              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">公開用の見え方</text>
+            </g>
+            <g class="swim-node" data-phase="db">
+              <rect x="480" y="252" width="130" height="44" rx="8" fill="#7BB894"/>
+              <text x="545" y="272" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">近い銘柄を探す</text>
+              <text x="545" y="286" text-anchor="middle" font-size="9" fill="#F6EBDD" font-family="Zen Kaku Gothic New">類似度で並べる</text>
+            </g>
+
+            <g class="swim-node" data-phase="llm">
+              <rect x="440" y="352" width="110" height="44" rx="22" fill="#D49A2A"/>
+              <text x="495" y="372" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">文の埋め込み</text>
+              <text x="495" y="386" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">5秒で打ち切り</text>
+            </g>
+            <g class="swim-node" data-phase="llm">
+              <rect x="700" y="352" width="120" height="44" rx="22" fill="#D49A2A"/>
+              <text x="760" y="372" text-anchor="middle" font-size="11" fill="#FFFDF7" font-family="Zen Kaku Gothic New" font-weight="600">侍米師の一言</text>
+              <text x="760" y="386" text-anchor="middle" font-size="9" fill="#FFF5E5" font-family="Zen Kaku Gothic New">書けなくても候補は返す</text>
+            </g>
+
+            <path class="swim-path" id="path-coord" d="M214 96 V 252" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
+            <path class="swim-path" id="path-coord2" d="M170 274 H 150 V 74 H 160" fill="none" stroke="#766658" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ahGray)"/>
+            <text class="swim-anno" x="248" y="236" font-size="9" fill="#766658" font-family="Zen Kaku Gothic New">地図だけ（サーバを通さない）</text>
+
+            <path class="swim-path" id="path1" d="M354 96 V 152" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path2" d="M400 174 H 440" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path3a" d="M495 196 V 352" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path3b" d="M495 352 H 545 V 296" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path4" d="M545 252 V 220 H 660 V 196" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path4b" d="M720 174 H 760" fill="none" stroke="#E56B3F" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path7" d="M815 152 V 96 H 860" fill="none" stroke="#E56B3F" stroke-width="2.25" marker-end="url(#ah)"/>
+            <path class="swim-path" id="path5" d="M835 196 V 374 H 820" fill="none" stroke="#D49A2A" stroke-width="1.75" marker-end="url(#ahGold)"/>
+            <path class="swim-path" id="path6" d="M760 352 V 196" fill="none" stroke="#D49A2A" stroke-width="1.75" marker-end="url(#ahGold)"/>
+            <path class="swim-path" id="path-fb" d="M820 374 H 990 V 90 H 980" fill="none" stroke="#E56B3F" stroke-width="1.4" stroke-dasharray="3 5" marker-end="url(#ah)"/>
+                      </svg>
+          <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-muted">
+            <span>灰の点線：地図</span>
+            <span>橙の実線：相談</span>
+            <span>金の線：任意の一言</span>
+            <span>橙の破線：一言なしでも候補を返す</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- data table after pin -->
+  <section class="px-5 sm:px-10 pb-[var(--sec-y)]">
+    <div class="max-w-6xl mx-auto">
+      <h3 class="font-display text-base text-ink mb-3">データ配置</h3>
+      <div class="overflow-x-auto sheet">
+        <table class="grid-doc">
+          <thead><tr><th>オブジェクト</th><th>役割</th><th>注意</th></tr></thead>
+          <tbody>
+            <tr><td class="font-mono text-xs">rice_brands / regions</td><td>マスタ</td><td>anon 可読</td></tr>
+            <tr><td class="font-mono text-xs">rice_profile_details</td><td>指標 + embedding</td><td>一般ユーザーは読めない</td></tr>
+            <tr><td class="font-mono text-xs">VIEW rice_catalog</td><td>ブラウザ用結合</td><td>埋め込みを出さない</td></tr>
+            <tr><td class="font-mono text-xs">match_rice_profiles</td><td>cosine RPC</td><td>サーバ権限だけ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 5 DELIVERY -->
+  <section id="delivery" class="px-5 sm:px-10 sec-y flow-block" data-chapter="delivery">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">5 · 実装と公開</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">品質ゲートのパイプライン</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">段階はベルトのように繋がっています。菱形の Gate を満たさないと、次の箱へ進めません。</p>
+      <div class="viz-sheet mb-5">
+        <svg id="pipe-svg" viewBox="0 0 1040 210" class="w-full min-w-[860px]" role="img" aria-label="実装から公開までの品質パイプライン">
+          <g class="pipe-belt">
+            <line x1="40" y1="118" x2="1000" y2="118" stroke="rgba(48,40,32,.1)" stroke-width="10" stroke-linecap="round"/>
+            <line x1="40" y1="118" x2="1000" y2="118" stroke="#FFF5E5" stroke-width="4" stroke-dasharray="8 10" stroke-linecap="round"/>
+          </g>
+
+          <g class="pipe-stage" id="pipe-stage-0">
+            <rect x="48" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
+            <text x="62" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">01</text>
+            <text x="62" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">データ地基</text>
+            <text x="62" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">RiceSource → catalog</text>
+            <rect x="58" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
+            <text x="122" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">validate ≥ 80</text>
+          </g>
+          <g class="pipe-gate" id="pipe-gate-0">
+            <line x1="196" y1="118" x2="238" y2="118" stroke="#E56B3F" stroke-width="2.5"/>
+            <polygon points="217,102 228,118 217,134 206,118" fill="#FFFDF7" stroke="#E56B3F" stroke-width="1.5"/>
+            <text x="217" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#E56B3F">G</text>
+            <text x="217" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="#766658">Gate</text>
+          </g>
+          <g class="pipe-stage" id="pipe-stage-1">
+            <rect x="238" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
+            <text x="252" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">02</text>
+            <text x="252" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">意味トラック</text>
+            <text x="252" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">seed · embed · 相談 API</text>
+            <rect x="248" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
+            <text x="312" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">レート制限</text>
+          </g>
+          <g class="pipe-gate" id="pipe-gate-1">
+            <line x1="386" y1="118" x2="428" y2="118" stroke="#E56B3F" stroke-width="2.5"/>
+            <polygon points="407,102 418,118 407,134 396,118" fill="#FFFDF7" stroke="#E56B3F" stroke-width="1.5"/>
+            <text x="407" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#E56B3F">G</text>
+            <text x="407" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="#766658">Gate</text>
+          </g>
+          <g class="pipe-stage" id="pipe-stage-2">
+            <rect x="428" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
+            <text x="442" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">03</text>
+            <text x="442" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">地図 UX</text>
+            <text x="442" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">Matrix · Top4 · 和紙</text>
+            <rect x="438" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
+            <text x="502" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">地図操作≠API</text>
+          </g>
+          <g class="pipe-gate" id="pipe-gate-2">
+            <line x1="576" y1="118" x2="618" y2="118" stroke="#E56B3F" stroke-width="2.5"/>
+            <polygon points="597,102 608,118 597,134 586,118" fill="#FFFDF7" stroke="#E56B3F" stroke-width="1.5"/>
+            <text x="597" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#E56B3F">G</text>
+            <text x="597" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="#766658">Gate</text>
+          </g>
+          <g class="pipe-stage" id="pipe-stage-3">
+            <rect x="618" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
+            <text x="632" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">04</text>
+            <text x="632" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">収益・法務</text>
+            <text x="632" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">CTA · 開示 · 特商法</text>
+            <rect x="628" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
+            <text x="692" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">開示の置き場</text>
+          </g>
+          <g class="pipe-gate" id="pipe-gate-3">
+            <line x1="766" y1="118" x2="808" y2="118" stroke="#E56B3F" stroke-width="2.5"/>
+            <polygon points="787,102 798,118 787,134 776,118" fill="#FFFDF7" stroke="#E56B3F" stroke-width="1.5"/>
+            <text x="787" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#E56B3F">G</text>
+            <text x="787" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="#766658">Gate</text>
+          </g>
+          <g class="pipe-stage" id="pipe-stage-4">
+            <rect x="808" y="72" width="148" height="92" rx="12" fill="#FFFDF7" stroke="rgba(48,40,32,.12)" stroke-width="1.25"/>
+            <text x="822" y="94" font-family="IBM Plex Mono" font-size="11" fill="#E56B3F">05</text>
+            <text x="822" y="116" font-family="Shippori Mincho" font-size="15" fill="#302820">本番</text>
+            <text x="822" y="136" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">Vercel · CI · RLS</text>
+            <rect x="818" y="146" width="128" height="12" rx="3" fill="rgba(229,107,63,.08)"/>
+            <text x="882" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#704522">P0 → 1.0.0</text>
+          </g>
+          <text x="520" y="196" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#766658">各 Gate は docs / CI / checklist に対応。飛ばして本番へは行けません。</text>
+        </svg>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">公開時の運用条件</p>
+          <ul class="space-y-1.5 text-muted leading-relaxed list-none m-0 p-0">
+            <li>· CI で lint・型検査・試験・ビルドを通す</li>
+            <li>· 本番は origin/main からデプロイする</li>
+            <li>· 埋め込みと照合 RPC は一般公開しない</li>
+            <li>· 相談 API には日次上限と緊急停止を入れる</li>
+          </ul>
+        </div>
+        <div class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">一人体制での進め方</p>
+          <ul class="space-y-1.5 text-muted leading-relaxed list-none m-0 p-0">
+            <li>· 判断根拠は docs と Cursor rules に残す</li>
+            <li>· 未計測の効率指標は記載しない</li>
+            <li>· 設計から公開までを閉じ、文書と CI を再現可能な形で残す</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 6 VALIDATE -->
+  <section id="validate" class="px-5 sm:px-10 sec-y flow-block" data-chapter="validate">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">6 · 検証</p>
+      <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">監査ダッシュボード</h2>
+      <p class="text-sm text-muted mb-4 max-w-2xl leading-relaxed">未計測のレイテンシや一致率は掲げません。公開チェックリストと、設計で固定した値だけをランプ付きで示します。</p>
+      <div class="ev-dash" aria-label="検証エビデンス">
+        <article class="ev-card is-ok">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">P0 · PASS</span></div>
+          <p class="ev-title">公開判定</p>
+          <p class="ev-proof">P0 checklist · smoke 2026-09-07</p>
+        </article>
+        <article class="ev-card is-run">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">LIVE</span></div>
+          <p class="ev-title">カタログ</p>
+          <p class="ev-proof">約 106 銘柄 · validate ≥ 80</p>
+        </article>
+        <article class="ev-card is-ok">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SPEC</span></div>
+          <p class="ev-title">推薦粒度</p>
+          <p class="ev-proof">座標 / 相談とも Top 4</p>
+        </article>
+        <article class="ev-card is-ok">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">READY</span></div>
+          <p class="ev-title">相談耐性</p>
+          <p class="ev-proof">embed / 返信 5s · 失敗時も Top4</p>
+        </article>
+        <article class="ev-card is-ok">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">SECURE</span></div>
+          <p class="ev-title">セキュリティ</p>
+          <p class="ev-proof">RLS · embedding 非公開 · RPC 制限</p>
+        </article>
+        <article class="ev-card is-todo">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">TODO · P1</span></div>
+          <p class="ev-title">P1 運用</p>
+          <p class="ev-proof">アフィ突合 · GA4 · Sentry</p>
+        </article>
+        <article class="ev-card is-mute is-span">
+          <div class="led-row"><span class="led" aria-hidden="true"></span><span class="led-label">UNPUBLISHED</span></div>
+          <p class="ev-title">体感遅延の公開値</p>
+          <p class="ev-proof">公開数値なし（未計測の指標は出さない）</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule max-w-6xl mx-auto"></div>
+
+  <!-- 7 ROADMAP (PIN) -->
+  <section id="roadmap" data-chapter="roadmap">
+    <div class="pin-stage" id="road-stage">
+      <div class="max-w-6xl mx-auto w-full">
+        <p class="sec-label mb-2">7 · ロードマップ</p>
+        <h2 class="font-display text-xl sm:text-2xl text-ink mb-2 font-medium">1.x 以降の計画</h2>
+        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">近い仕事は米のプレイブック完成（Phase 2）。その先に、同じ型を他食材へ広げる製品マトリクス（Phase 3・構想）を置きます。</p>
+        <div class="sheet p-3 sm:p-6 overflow-x-auto">
+          <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[780px]" aria-label="これからの道">
+            <defs>
+              <linearGradient id="roadFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3A3228"/>
+                <stop offset="100%" stop-color="#5C5044"/>
+              </linearGradient>
+              <filter id="pinSoft" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#302820" flood-opacity="0.16"/>
+              </filter>
+            </defs>
+            <ellipse cx="500" cy="528" rx="420" ry="22" fill="#E8DCC8" opacity="0.45"/>
+            <path id="road-path"
+              d="M 70 430 C 180 430, 220 350, 300 320 S 430 290, 500 230 S 620 150, 740 160 S 860 190, 920 90"
+              fill="none" stroke="url(#roadFill)" stroke-width="30" stroke-linecap="round"/>
+            <path id="road-dash"
+              d="M 70 430 C 180 430, 220 350, 300 320 S 430 290, 500 230 S 620 150, 740 160 S 860 190, 920 90"
+              fill="none" stroke="#FFFDF7" stroke-width="2.5" stroke-dasharray="10 12" stroke-linecap="round" opacity="0.85"/>
+
+            <g class="road-pin" id="road-pin-done">
+              <path d="M160 370 C160 350 176 338 160 322 C144 338 160 350 160 370 Z" fill="#E56B3F" filter="url(#pinSoft)"/>
+              <circle cx="160" cy="350" r="9" fill="#FFFDF7"/>
+              <text x="160" y="308" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#E56B3F" font-weight="600">DONE</text>
+              <text x="160" y="290" text-anchor="middle" font-size="18" font-family="Shippori Mincho" fill="#302820">1.0.0</text>
+              <line x1="160" y1="370" x2="160" y2="400" stroke="#E56B3F" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="50" y="402" width="180" height="72" rx="10" fill="#FFFDF7" stroke="rgba(229,107,63,.35)"/>
+              <text x="140" y="426" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">地図・相談・事典</text>
+              <text x="140" y="446" text-anchor="middle" font-size="11" fill="#766658" font-family="Zen Kaku Gothic New">買う出口まで。公開判定を満たした</text>
+            </g>
+
+            <g class="road-pin" id="road-pin-now">
+              <path d="M320 315 C320 295 336 283 320 267 C304 283 320 295 320 315 Z" fill="#D49A2A" filter="url(#pinSoft)"/>
+              <circle cx="320" cy="295" r="9" fill="#FFFDF7" stroke="#D49A2A" stroke-width="2"/>
+              <text x="320" y="250" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#D49A2A" font-weight="600">NOW · 1.1.x</text>
+              <line x1="320" y1="315" x2="320" y2="348" stroke="#D49A2A" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="230" y="350" width="180" height="32" rx="8" fill="#FFFDF7" stroke="rgba(212,154,42,.45)"/>
+              <text x="320" y="371" text-anchor="middle" font-size="11" fill="#704522" font-family="Zen Kaku Gothic New">検索まわり・OG 画像</text>
+              <rect x="230" y="390" width="180" height="32" rx="8" fill="#FFFDF7" stroke="rgba(212,154,42,.45)"/>
+              <text x="320" y="411" text-anchor="middle" font-size="11" fill="#704522" font-family="Zen Kaku Gothic New">県の地図の直し</text>
+            </g>
+
+            <g class="road-pin" id="road-pin-next">
+              <text x="500" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 2</text>
+              <text x="500" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#4A7A5D" font-weight="700">NEXT · 型を完成</text>
+              <path d="M500 155 C500 135 516 123 500 107 C484 123 500 135 500 155 Z" fill="#7BB894" filter="url(#pinSoft)"/>
+              <circle cx="500" cy="135" r="9" fill="#FFFDF7"/>
+              <line x1="500" y1="155" x2="500" y2="248" stroke="#7BB894" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="390" y="252" width="220" height="128" rx="10" fill="#FFFDF7" stroke="rgba(123,184,148,.55)"/>
+              <text x="500" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">米でプレイブックを固める</text>
+              <text x="500" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">料理別入口 · 銘柄比較 · SEO</text>
+              <text x="500" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">長尾クエリと内部リンク設計</text>
+              <text x="500" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">比較表後の CTA · 直リンク</text>
+              <text x="500" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">季節面 · 人手の特集リード</text>
+              <text x="500" y="368" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">計測をページ型で分解する</text>
+            </g>
+
+            <g class="road-pin" id="road-pin-phase3">
+              <text x="700" y="82" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#302820">Phase 3</text>
+              <text x="700" y="100" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#704522" font-weight="700">構想 · 製品マトリクス</text>
+              <path d="M700 155 C700 135 716 123 700 107 C684 123 700 135 700 155 Z" fill="#D49A2A" filter="url(#pinSoft)"/>
+              <circle cx="700" cy="135" r="9" fill="#FFFDF7"/>
+              <line x1="700" y1="155" x2="700" y2="248" stroke="#D49A2A" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="590" y="252" width="220" height="128" rx="10" fill="#FFFDF7" stroke="rgba(212,154,42,.5)"/>
+              <text x="700" y="276" text-anchor="middle" font-size="12" fill="#302820" font-family="Zen Kaku Gothic New">同じ型を他カテゴリへ</text>
+              <text x="700" y="296" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">盤面 × 相談 × 事典の再利用</text>
+              <text x="700" y="314" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">桃Somme · 和牛Somme …</text>
+              <text x="700" y="332" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">共通: 座標軸 / 埋め込み / CTA</text>
+              <text x="700" y="350" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">差分: 一次データと専門家編集</text>
+              <text x="700" y="368" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">約束ではなく、拡張の見通し</text>
+            </g>
+
+            <g class="road-pin" id="road-pin-later">
+              <path d="M860 125 C860 105 876 93 860 77 C844 93 860 105 860 125 Z" fill="#9A8B7A" filter="url(#pinSoft)"/>
+              <circle cx="860" cy="105" r="8" fill="#FFFDF7"/>
+              <text x="860" y="62" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#766658">LATER</text>
+              <line x1="860" y1="77" x2="860" y2="36" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
+              <rect x="755" y="8" width="210" height="28" rx="8" fill="none" stroke="rgba(48,40,32,.22)" stroke-dasharray="3 2"/>
+              <text x="860" y="26" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">未確約：画像認識・機器連携</text>
+              <line x1="860" y1="125" x2="860" y2="200" stroke="#766658" stroke-width="1.15" stroke-dasharray="3 3"/>
+              <rect x="755" y="204" width="210" height="58" rx="10" fill="#FFFDF7" stroke="rgba(48,40,32,.12)"/>
+              <text x="860" y="228" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#302820">また来てもらう</text>
+              <text x="860" y="248" text-anchor="middle" font-size="11" fill="#766658" font-family="Zen Kaku Gothic New">共有と LINE。ログインは別件</text>
+            </g>
+
+            <circle id="road-traveler" r="6" fill="#E56B3F" stroke="#FFFDF7" stroke-width="2" opacity="0"/>
+            <text x="500" y="545" text-anchor="middle" font-size="10" fill="#766658" font-family="Zen Kaku Gothic New">Phase 2 は米で型を固める仕事。Phase 3 は同じ型の横展開構想。破線は未確約</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-5 sm:px-10 pb-[var(--sec-y)]">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <article class="issue-card">
+          <p class="eyebrow">Phase 2 · 米の型を完成させる</p>
+          <p class="body" style="margin-bottom:.55rem">1.0 で通した「味わいで選ぶ」を、検索に見つかって、比較できて、買えるところまで通す段階です。米だけでプレイブックを閉じる仕事です。</p>
+          <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
+            <li>· 料理・シーン別の入口で「この一膳に合う米」を取る</li>
+            <li>· 銘柄比較と「向かない組み合わせ」で一次情報を前面に出す</li>
+            <li>· 構造化データ・sitemap・内部リンクで入口を設計する</li>
+            <li>· 比較のあとに直リンクと CTA。計測はページ型で分ける</li>
+            <li>· 季節面と人手の特集リード。量産ブログはしない</li>
+          </ul>
+        </article>
+        <article class="issue-card">
+          <p class="eyebrow">Phase 3 · 製品マトリクス（構想）</p>
+          <p class="body" style="margin-bottom:.55rem">米で型が回ったら、同じエンジンを他の食材へ広げる見通しです。桃Somme、和牛Somme、酒Sommeのように、カテゴリごとにブランドを立てる案です。確約ではなく、拡張の地図です。</p>
+          <ul class="space-y-1.5 text-sm text-muted leading-relaxed list-none m-0 p-0">
+            <li>· 共通: 二次元の味わい盤面、相談、事典、買う出口</li>
+            <li>· 差し替え: 座標軸の意味、専門家編集、一次データ</li>
+            <li>· 毎回やり直すもの: 非目標の切り方と監修の仕方</li>
+            <li>· 米の運用と転化が安定してから、横展開を検討する</li>
+          </ul>
+        </article>
+      </div>
+      <p class="text-xs text-muted mb-6 leading-relaxed">破線の LATER（共有・LINE・画像認識など）は再訪と仮説です。Phase 3 の製品マトリクスは、いまの成長計画の外側にある構想として分けています。</p>
+
+<div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+        <div>
+          <p class="sec-label mb-2">まとめ</p>
+          <p class="font-display text-lg sm:text-xl text-ink max-w-lg leading-snug">インタラクティブな味わい地図と相談 API は表層です。見送った選択肢と公開条件が、同じリポジトリに残っていることが、この事例の要点です。</p>
+        </div>
+        <a href="https://komesomme.jp" class="cta shrink-0" target="_blank" rel="noopener">komesomme.jp ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="px-5 sm:px-10 pb-12">
+    <div class="max-w-6xl mx-auto rule pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
+      <p>KomeSomme · Delivery Case Study · Ver 1.0.0</p>
+      <p class="font-mono">docs/08 · 11 · 12 · 20 · package.json</p>
+    </div>
+  </footer>
+
+  <script>
+(function () {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile = matchMedia('(max-width: 768px)');
+  const isDesktopProgress = matchMedia('(min-width: 1024px)');
+
+  const CFG = {
+    matrixVh: () => (mobile.matches ? 1.6 : 2.8),
+    swimVh: () => (mobile.matches ? 1.4 : 2.8),
+    roadVh: () => (mobile.matches ? 1.2 : 2.2),
+    scrub: 0.65,
+  };
+
+  let lenis = null;
+
+  function refreshAll() {
+    if (lenis) lenis.resize();
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+
+  /* ---------- Lenis ---------- */
+  function initLenis() {
+    if (reduce || typeof Lenis === 'undefined' || !window.gsap) return null;
+    const instance = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    instance.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { instance.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    return instance;
+  }
+
+  /* ---------- Progress ---------- */
+  function initProgress() {
+    const bar = document.getElementById('read-progress');
+    if (!bar) return;
+    const apply = (p) => {
+      const pct = Math.max(0, Math.min(1, p)) * 100;
+      if (isDesktopProgress.matches) {
+        bar.style.width = '100%';
+        bar.style.height = pct + '%';
+      } else {
+        bar.style.height = '100%';
+        bar.style.width = pct + '%';
+      }
+    };
+    if (reduce || !window.ScrollTrigger) {
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        apply(max > 0 ? scrollY / max : 0);
+      }, { passive: true });
+      return;
+    }
+    ScrollTrigger.create({
+      start: 0,
+      end: 'max',
+      onUpdate: (self) => apply(self.progress),
+    });
+  }
+
+  /* ---------- Nav ---------- */
+  function initNav() {
+    const links = Array.from(document.querySelectorAll('.nav a[data-nav]'));
+    const scrollToId = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (lenis) lenis.scrollTo(el, { offset: -12 });
+      else el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    };
+    links.forEach((a) => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('data-nav');
+        if (!id) return;
+        e.preventDefault();
+        scrollToId(id);
+      });
+    });
+    if (reduce || !window.ScrollTrigger) return;
+    const chapters = [
+      'top', 'lifecycle', 'context', 'concept', 'decision',
+      'design', 'delivery', 'validate', 'roadmap',
+    ];
+    chapters.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 45%',
+        end: 'bottom 45%',
+        onToggle: (self) => {
+          if (!self.isActive) return;
+          links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('data-nav') === id));
+        },
+      });
+    });
+  }
+
+  /* ---------- Matrix ---------- */
+  function initMatrixScene() {
+    const container = document.getElementById('interactive-matrix');
+    const probe = document.getElementById('smart-probe');
+    const svgLayer = document.getElementById('vector-lines');
+    const pointsContainer = document.getElementById('rice-points');
+    const readout = document.getElementById('knn-readout');
+    const phaseEl = document.getElementById('matrix-phase');
+    const stage = document.getElementById('matrix-stage');
+    if (!container || !probe || !svgLayer || !pointsContainer || !stage) return;
+
+    const riceData = [
+      { name: 'ゆめぴりか', x: 82, y: 28, color: '#D49A2A' },
+      { name: 'コシヒカリ', x: 68, y: 48, color: '#7BB894' },
+      { name: 'つや姫', x: 58, y: 58, color: '#7BB894' },
+      { name: 'ササニシキ', x: 28, y: 72, color: '#7BB8C6' },
+      { name: '青天の霹靂', x: 38, y: 62, color: '#7BB8C6' },
+      { name: '雪若丸', x: 48, y: 70, color: '#7BB8C6' },
+      { name: 'いちほまれ', x: 72, y: 36, color: '#7BB894' },
+      { name: 'ひのひかり', x: 45, y: 52, color: '#E8906A' },
+      { name: 'あきさかり', x: 55, y: 40, color: '#E8B56A' },
+      { name: 'にこまる', x: 62, y: 65, color: '#E8906A' },
+      { name: 'みずかがみ', x: 50, y: 45, color: '#D4899A' },
+      { name: 'きぬむすめ', x: 40, y: 38, color: '#7BB894' },
+    ];
+
+    const dots = riceData.map((rice, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'rice-dot';
+      dot.style.left = rice.x + '%';
+      dot.style.top = rice.y + '%';
+      dot.style.backgroundColor = rice.color;
+      dot.style.opacity = '0.55';
+      dot.dataset.index = String(i);
+      dot.setAttribute('aria-label', rice.name);
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = rice.name;
+      dot.appendChild(tip);
+      pointsContainer.appendChild(dot);
+      return dot;
+    });
+
+    let px = 18, py = 72;
+    let dragging = false;
+    let interactive = reduce;
+    let lineAmount = reduce ? 1 : 0;
+    let glowAmount = reduce ? 1 : 0;
+
+    function setProbe(xPct, yPct) {
+      px = Math.max(5, Math.min(95, xPct));
+      py = Math.max(5, Math.min(95, yPct));
+      probe.style.left = px + '%';
+      probe.style.top = py + '%';
+    }
+
+    function updateVectors() {
+      const rect = container.getBoundingClientRect();
+      if (rect.width < 10) return;
+      const pX = (px / 100) * rect.width;
+      const pY = (py / 100) * rect.height;
+      const ranked = riceData.map((rice, index) => {
+        const rX = (rice.x / 100) * rect.width;
+        const rY = (rice.y / 100) * rect.height;
+        return { index, dist: Math.hypot(pX - rX, pY - rY), rX, rY, name: rice.name };
+      }).sort((a, b) => a.dist - b.dist);
+
+      const topK = ranked.slice(0, 4);
+      const topSet = new Set(topK.map((t) => t.index));
+      const emphasize = glowAmount > 0.35;
+
+      svgLayer.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+      svgLayer.innerHTML = '';
+      if (lineAmount > 0.05) {
+        topK.forEach((item, rank) => {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', pX);
+          line.setAttribute('y1', pY);
+          line.setAttribute('x2', item.rX);
+          line.setAttribute('y2', item.rY);
+          line.setAttribute('stroke', '#E56B3F');
+          line.setAttribute('stroke-width', rank === 0 ? '2' : '1');
+          line.setAttribute('stroke-dasharray', '4 4');
+          line.setAttribute('opacity', String(lineAmount * (1 - rank * 0.18)));
+          svgLayer.appendChild(line);
+        });
+      }
+
+      dots.forEach((el, i) => {
+        const isTop = topSet.has(i);
+        el.classList.toggle('is-top', emphasize && isTop);
+        if (emphasize) {
+          el.style.opacity = isTop ? '1' : '0.22';
+          el.style.transform = isTop ? 'scale(1.55)' : 'scale(0.85)';
+          el.style.boxShadow = isTop ? '0 0 0 4px rgba(229,107,63,0.28)' : 'none';
+        } else {
+          el.style.opacity = '0.55';
+          el.style.transform = 'scale(1)';
+          el.style.boxShadow = 'none';
+        }
+      });
+
+      if (readout) {
+        readout.textContent = lineAmount > 0.4
+          ? ('Top4: ' + topK.map((t) => t.name).join(' · '))
+          : '';
+      }
+    }
+
+    function moveToClient(clientX, clientY) {
+      if (!interactive && !reduce) return;
+      const rect = container.getBoundingClientRect();
+      setProbe(
+        ((clientX - rect.left) / rect.width) * 100,
+        ((clientY - rect.top) / rect.height) * 100
+      );
+      updateVectors();
+    }
+
+    probe.addEventListener('pointerdown', (e) => {
+      if (!interactive && !reduce) return;
+      dragging = true;
+      if (lenis) lenis.stop();
+      try { probe.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
+    });
+    container.addEventListener('pointerdown', (e) => {
+      if (!interactive && !reduce) return;
+      if (e.target && e.target.closest && e.target.closest('.rice-dot')) return;
+      dragging = true;
+      if (lenis) lenis.stop();
+      moveToClient(e.clientX, e.clientY);
+      try { container.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    container.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      moveToClient(e.clientX, e.clientY);
+    });
+    const endDrag = () => {
+      dragging = false;
+      if (lenis) lenis.start();
+    };
+    container.addEventListener('pointerup', endDrag);
+    container.addEventListener('pointercancel', endDrag);
+    window.addEventListener('resize', updateVectors);
+
+    setProbe(px, py);
+    updateVectors();
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      lineAmount = 1;
+      glowAmount = 1;
+      interactive = true;
+      setProbe(52, 48);
+      if (phaseEl) phaseEl.textContent = '探針を動かし、近い四銘柄を確認できます';
+      updateVectors();
+      return;
+    }
+
+    // デモ軌道：銘柄付近をなぞって使い方を見せる（銘柄座標は動かさない）
+    const tour = [
+      { x: 26, y: 74, label: 'すっきり寄りを探る（例: ササニシキ付近）' },
+      { x: 45, y: 54, label: '盤面の中央へ滑らせる' },
+      { x: 58, y: 56, label: '近い四銘柄へ線が付く' },
+      { x: 70, y: 46, label: '甘み寄りを見る（例: コシヒカリ付近）' },
+      { x: 80, y: 30, label: 'ふくよか寄り（例: ゆめぴりか付近）' },
+      { x: 54, y: 50, label: '探針をドラッグして試せます' },
+    ];
+    const probeState = { x: tour[0].x, y: tour[0].y };
+    const state = { lines: 0, glow: 0 };
+
+    function syncProbeFromState() {
+      if (dragging || interactive) return;
+      setProbe(probeState.x, probeState.y);
+      updateVectors();
+    }
+
+    setProbe(tour[0].x, tour[0].y);
+    updateVectors();
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stage,
+        start: 'top top',
+        end: () => '+=' + innerHeight * CFG.matrixVh(),
+        pin: true,
+        scrub: 0.85,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const idx = Math.min(tour.length - 1, Math.floor(p * tour.length));
+          if (phaseEl) phaseEl.textContent = tour[idx].label;
+          interactive = p >= 0.88;
+          container.style.cursor = interactive ? 'crosshair' : 'default';
+        },
+      },
+    });
+
+    const step = 0.12;
+    tour.forEach((pt, i) => {
+      if (i === 0) return;
+      tl.to(probeState, {
+        x: pt.x, y: pt.y, duration: step, ease: 'none',
+        onUpdate: syncProbeFromState,
+      }, (i - 1) * step);
+    });
+    tl.to(state, {
+      lines: 1, duration: 0.18, ease: 'none',
+      onUpdate: () => { lineAmount = state.lines; updateVectors(); },
+    }, 0.08);
+    tl.to(state, {
+      glow: 1, duration: 0.16, ease: 'none',
+      onUpdate: () => { glowAmount = state.glow; updateVectors(); },
+    }, 0.55);
+    tl.to({}, { duration: 0.12 }, 0.88);
+  }
+
+  /* ---------- Swimlane ---------- */
+  function prepDrawPath(path) {
+    if (!path) return 0;
+    const marker = path.getAttribute('marker-end') || path.dataset.marker || '';
+    if (marker) {
+      path.dataset.marker = marker;
+      path.removeAttribute('marker-end');
+    }
+    let len = 0;
+    try { len = path.getTotalLength(); } catch (_) { len = 0; }
+    if (!len) return 0;
+    path.style.strokeDasharray = String(len);
+    path.style.strokeDashoffset = String(len);
+    return len;
+  }
+
+  function syncPathMarker(path) {
+    if (!path || !path.dataset.marker) return;
+    let len = 0;
+    try { len = path.getTotalLength(); } catch (_) { return; }
+    if (!len) return;
+    const raw = path.style.strokeDashoffset;
+    const offset = raw === '' || raw == null ? 0 : parseFloat(raw);
+    const drawn = 1 - (isFinite(offset) ? offset / len : 0);
+    const visible = parseFloat(path.style.opacity || path.getAttribute('opacity') || '1') > 0.2;
+    if (visible && drawn >= 0.96) path.setAttribute('marker-end', path.dataset.marker);
+    else path.removeAttribute('marker-end');
+  }
+
+  function drawStrokeVars(opacity) {
+    return {
+      opacity: opacity == null ? 1 : opacity,
+      strokeDashoffset: 0,
+      onUpdate: function () {
+        gsap.utils.toArray(this.targets()).forEach(syncPathMarker);
+      },
+    };
+  }
+
+  function initSwimScene() {
+    const stage = document.getElementById('swim-stage');
+    const phaseEl = document.getElementById('swim-phase');
+    if (!stage) return;
+
+    const nodes = {
+      ui: Array.from(document.querySelectorAll('.swim-node[data-phase="ui"]')),
+      db: Array.from(document.querySelectorAll('.swim-node[data-phase="db"]')),
+      api: Array.from(document.querySelectorAll('.swim-node[data-phase="api"]')),
+      llm: Array.from(document.querySelectorAll('.swim-node[data-phase="llm"]')),
+      bridge: Array.from(document.querySelectorAll('.swim-node[data-phase="bridge"]')),
+      result: Array.from(document.querySelectorAll('.swim-node[data-phase="result"]')),
+    };
+    const pathIds = [
+      'path-coord', 'path-coord2',
+      'path1', 'path2', 'path3a', 'path3b', 'path4', 'path4b',
+      'path5', 'path6', 'path7', 'path-fb',
+    ];
+    const paths = pathIds.map((id) => document.getElementById(id)).filter(Boolean);
+    const annos = Array.from(document.querySelectorAll('.swim-anno'));
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      document.querySelectorAll('.swim-node, .swim-path, .swim-anno').forEach((el) => {
+        el.style.opacity = '1';
+        if (el.tagName === 'path') {
+          el.style.strokeDasharray = '';
+          el.style.strokeDashoffset = '';
+          if (el.dataset.marker) el.setAttribute('marker-end', el.dataset.marker);
+          else if (!el.getAttribute('marker-end')) {
+            /* keep existing marker-end from HTML */
+          }
+        }
+      });
+      return;
+    }
+
+    // Capture markers before first prep (HTML still has marker-end)
+    paths.forEach((p) => {
+      if (!p.dataset.marker && p.getAttribute('marker-end')) {
+        p.dataset.marker = p.getAttribute('marker-end');
+      }
+    });
+
+    const allNodes = [].concat(nodes.ui, nodes.db, nodes.api, nodes.llm, nodes.bridge, nodes.result);
+    gsap.set(allNodes.concat(annos), { opacity: 0 });
+
+    function resetPaths() {
+      paths.forEach((p) => {
+        prepDrawPath(p);
+        gsap.set(p, { opacity: 0, strokeDashoffset: p.getTotalLength ? p.getTotalLength() : 0 });
+        p.removeAttribute('marker-end');
+      });
+    }
+    resetPaths();
+    ScrollTrigger.addEventListener('refreshInit', resetPaths);
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stage,
+        start: 'top top',
+        end: () => '+=' + innerHeight * CFG.swimVh(),
+        pin: true,
+        scrub: CFG.scrub,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          if (!phaseEl) return;
+          const p = self.progress;
+          if (p < 0.15) phaseEl.textContent = '画面層：地図操作と相談の入口';
+          else if (p < 0.3) phaseEl.textContent = '地図経路：サーバを経由しません';
+          else if (p < 0.5) phaseEl.textContent = '相談経路：制限 → 埋め込み要求';
+          else if (p < 0.7) phaseEl.textContent = '類似検索のあと、規則で相性を整理します';
+          else if (p < 0.88) phaseEl.textContent = '案内文は任意。失敗しても候補は返します';
+          else phaseEl.textContent = '右側の破線は失敗時の退避経路です';
+          paths.forEach(syncPathMarker);
+        },
+      },
+    });
+
+    const dbCatalog = nodes.db[0] ? [nodes.db[0]] : [];
+    const dbMatch = nodes.db[1] ? [nodes.db[1]] : [];
+    const llmEmbed = nodes.llm[0] ? [nodes.llm[0]] : [];
+    const llmNote = nodes.llm[1] ? [nodes.llm[1]] : [];
+
+    tl.to(nodes.ui, { opacity: 1, duration: 0.08, stagger: 0.02 }, 0)
+      .to(dbCatalog, { opacity: 1, duration: 0.06 }, 0.08)
+      .to(['#path-coord', '#path-coord2'], Object.assign({ duration: 0.12, stagger: 0.04 }, drawStrokeVars(0.75)), 0.12);
+    if (annos[0]) tl.to(annos[0], { opacity: 1, duration: 0.05 }, 0.2);
+    tl.to(nodes.api, { opacity: 1, duration: 0.08, stagger: 0.03 }, 0.28)
+      .to('#path1', Object.assign({ duration: 0.06 }, drawStrokeVars(1)), 0.28)
+      .to('#path2', Object.assign({ duration: 0.05 }, drawStrokeVars(1)), 0.34)
+      .to(llmEmbed, { opacity: 1, duration: 0.06 }, 0.4)
+      .to('#path3a', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), 0.4)
+      .to(dbMatch, { opacity: 1, duration: 0.06 }, 0.5)
+      .to('#path3b', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), 0.5)
+      .to(nodes.bridge, { opacity: 1, duration: 0.08, stagger: 0.03 }, 0.58)
+      .to(['#path4', '#path4b'], Object.assign({ duration: 0.1, stagger: 0.04 }, drawStrokeVars(1)), 0.58)
+      .to(llmNote, { opacity: 1, duration: 0.06 }, 0.7)
+      .to(['#path5', '#path6'], Object.assign({ duration: 0.1, stagger: 0.04 }, drawStrokeVars(1)), 0.7)
+      .to(nodes.result, { opacity: 1, duration: 0.06 }, 0.82)
+      .to('#path7', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), 0.82)
+      .to('#path-fb', Object.assign({ duration: 0.1 }, drawStrokeVars(0.85)), 0.9);
+    if (annos.length > 1) tl.to(annos.slice(1), { opacity: 1, duration: 0.05 }, 0.92);
+  }
+
+  /* ---------- Road ---------- */
+  function initRoadScene() {
+    const stage = document.getElementById('road-stage');
+    const traveler = document.getElementById('road-traveler');
+    const roadPath = document.getElementById('road-path');
+    const phaseEl = document.getElementById('road-phase');
+    const pins = [
+      document.getElementById('road-pin-done'),
+      document.getElementById('road-pin-now'),
+      document.getElementById('road-pin-next'),
+      document.getElementById('road-pin-phase3'),
+      document.getElementById('road-pin-later'),
+    ].filter(Boolean);
+
+    if (!stage) return;
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      pins.forEach((p) => { p.style.opacity = '1'; });
+      if (traveler) traveler.style.opacity = '0';
+      return;
+    }
+
+    gsap.set(pins, { opacity: 0, y: 12 });
+    if (traveler) gsap.set(traveler, { opacity: 0 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: stage,
+        start: 'top top',
+        end: () => '+=' + innerHeight * CFG.roadVh(),
+        pin: true,
+        scrub: CFG.scrub,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          if (!phaseEl) return;
+          const p = self.progress;
+          if (p < 0.25) phaseEl.textContent = 'DONE · 1.0.0 公開判定';
+          else if (p < 0.5) phaseEl.textContent = 'NOW · 1.1.x の保守と改善';
+          else if (p < 0.62) phaseEl.textContent = 'Phase 2 · 米で型を完成させる';
+          else if (p < 0.82) phaseEl.textContent = 'Phase 3 · 桃Somme / 和牛Somme 構想';
+          else phaseEl.textContent = 'LATER · 未確約の仮説を含む';
+        },
+      },
+    });
+
+    if (traveler && roadPath && window.MotionPathPlugin) {
+      gsap.registerPlugin(MotionPathPlugin);
+      tl.to(traveler, { opacity: 1, duration: 0.05 }, 0);
+      tl.to(traveler, {
+        duration: 1,
+        ease: 'none',
+        motionPath: {
+          path: '#road-path',
+          align: '#road-path',
+          alignOrigin: [0.5, 0.5],
+          autoRotate: false,
+        },
+      }, 0);
+    }
+
+    const thresholds = [0.05, 0.22, 0.42, 0.62, 0.82];
+    pins.forEach((pin, i) => {
+      tl.to(pin, { opacity: 1, y: 0, duration: 0.12, ease: 'none' }, thresholds[i]);
+    });
+  }
+
+  /* ---------- Lifecycle step highlight ---------- */
+  function initLifecycleSteps() {
+    const stage = document.getElementById('lifecycle-stage') || document.getElementById('lifecycle');
+    const steps = Array.from(document.querySelectorAll('.life-step'));
+    const feedback = document.getElementById('life-feedback');
+    if (!stage || !steps.length) return;
+
+    function paint(active) {
+      steps.forEach((step) => {
+        const i = Number(step.getAttribute('data-step') || 0);
+        step.classList.remove('is-current', 'is-done', 'is-upcoming');
+        if (i === active) step.classList.add('is-current');
+        else if (i < active) step.classList.add('is-done');
+        else step.classList.add('is-upcoming');
+      });
+      if (feedback) feedback.classList.toggle('is-on', active >= 6);
+    }
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      paint(6);
+      return;
+    }
+
+    paint(0);
+    ScrollTrigger.create({
+      trigger: stage,
+      start: 'top 70%',
+      end: 'bottom 35%',
+      scrub: true,
+      onUpdate: (self) => {
+        const idx = Math.min(7, Math.floor(self.progress * 8));
+        paint(idx);
+      },
+    });
+  }
+
+  /* ---------- Flow sections ---------- */
+  function initFlowReveals() {
+    if (reduce || !window.gsap || !window.ScrollTrigger) return;
+
+    const vizGroups = [
+      ['#scope-svg', '.scope-ring, .scope-core, .scope-chip, .scope-label'],
+      ['#stack-svg', '.stack-row'],
+      ['#pipe-svg', '.pipe-belt, .pipe-stage, .pipe-gate'],
+    ];
+    vizGroups.forEach(([root, sel]) => {
+      const svg = document.querySelector(root);
+      if (!svg) return;
+      const parts = svg.querySelectorAll(sel);
+      if (!parts.length) return;
+      gsap.set(parts, { opacity: 0, y: 10 });
+      gsap.to(parts, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.06,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: svg,
+          start: 'top 78%',
+          once: true,
+        },
+      });
+    });
+
+    gsap.utils.toArray('.ev-card').forEach((card, i) => {
+      gsap.fromTo(card,
+        { opacity: 0, y: 12 },
+        {
+          opacity: 1,
+          y: 0,
+          delay: i * 0.04,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            once: true,
+          },
+        }
+      );
+    });
+
+        gsap.utils.toArray('.flow-block').forEach((el) => {
+      gsap.fromTo(el,
+        { y: 18 },
+        {
+          y: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            end: 'top 65%',
+            scrub: 0.35,
+          },
+        }
+      );
+    });
+
+    const title = document.getElementById('hero-title');
+    if (title) {
+      gsap.to(title, {
+        y: -18, opacity: 0.55,
+        ease: 'none',
+        scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true },
+      });
+    }
+
+    document.querySelectorAll('[data-speed]').forEach((el) => {
+      const speed = parseFloat(el.getAttribute('data-speed') || '0.05');
+      gsap.to(el, {
+        yPercent: speed * 100 * 8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el.parentElement || el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+  }
+
+  /* ---------- Boot ---------- */
+  function boot() {
+    try {
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        if (window.MotionPathPlugin) gsap.registerPlugin(MotionPathPlugin);
+      }
+      if (!reduce) lenis = initLenis();
+      initProgress();
+      initNav();
+      initMatrixScene();
+      initSwimScene();
+      initRoadScene();
+      initLifecycleSteps();
+      initFlowReveals();
+
+      window.addEventListener('load', refreshAll);
+      window.addEventListener('resize', () => {
+        clearTimeout(window.__ksRefresh);
+        window.__ksRefresh = setTimeout(refreshAll, 120);
+      });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(refreshAll).catch(() => {});
+      }
+      mobile.addEventListener('change', refreshAll);
+    } catch (err) {
+      console.warn('case-study boot failed', err);
+      document.querySelectorAll('.swim-node, .swim-path, .swim-anno, .road-pin').forEach((el) => {
+        el.style.opacity = '1';
+      });
+    }
+  }
+
+  boot();
+})();
+  </script>
+</body>
+</html>
