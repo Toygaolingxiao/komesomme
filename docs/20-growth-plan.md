@@ -137,14 +137,16 @@
 
 下面按波次排；每波一个 minor，做完再推。
 
-#### Wave 2A — 料理・シーン別着陆（→ 约 `1.2.0`）· **首发 5 面已交付**
+#### Wave 2A — 料理・シーン別着陆（→ 约 `1.2.0`）· **首发 5 + 第二批 5 面**
 
 意图库存、EEAT 大纲、权威 URL 锚点与 AI 引用门禁见 [21-seo-intent-content.md](./21-seo-intent-content.md)。
 
 **曝光的主引擎。** 「Yに最适なX」是 AI 检索时代仍然稳的 query 形状。
 
 - 新路由 `/pair/[dish]`（romaji slug: `curry`、`sashimi`、`bento`、`nabe`、`sushi`…）
-- **`1.2.0` 首发 5 面:** `curry` · `sashimi` · `bento` · `nabe` · `sushi`。其余 Wave 2A slug 在后续 `1.2.x` 续写人手リード
+- **`1.2.0` 首发 5 面:** `curry` · `sashimi` · `bento` · `nabe` · `sushi`
+- **`1.2.3` 第二批 5 面:** `donburi` · `onigiri` · `karaage` · `chahan` · `tamagokake`（唐揚げ・卵かけはカタログ命中が薄いため、座標で Top を補完し sortNote に開示）
+- 其余 Wave 2A slug 在后续 `1.2.x` 续写人手リード
 - 每面必须有:
   1. 从 `best_match_dishes` + 味わい座標 算出的 Top 5 銘柄（一次データ排序，写明排序依据）
   2. **HTML 比較表**：銘柄 / 甘み / 粘り / 向いている人 / 気をつける点 / お店で探す

@@ -16,6 +16,7 @@ export function resolvePairing(page: PairingPage): ResolvedPairing {
     avoidAliases: page.avoidAliases,
     bias: page.bias,
     allowAxisOppositeAvoid: page.allowAxisOppositeAvoid,
+    allowBiasFillTop: page.allowBiasFillTop,
   });
   return {
     page,

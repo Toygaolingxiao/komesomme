@@ -27,6 +27,11 @@ Sources are stored as **WebP** (resized ≤1600px long edge, quality≈82) via `
 | `pairings/pair-bento.webp` | Pairing hero（弁当、2026-09-09） |
 | `pairings/pair-nabe.webp` | Pairing hero（鍋、2026-09-09） |
 | `pairings/pair-sushi.webp` | Pairing hero（寿司、2026-09-09） |
+| `pairings/pair-donburi.webp` | Pairing hero（丼もの、2026-09-09） |
+| `pairings/pair-onigiri.webp` | Pairing hero（おにぎり、2026-09-09） |
+| `pairings/pair-karaage.webp` | Pairing hero（唐揚げ、2026-09-09） |
+| `pairings/pair-chahan.webp` | Pairing hero（チャーハン、2026-09-09） |
+| `pairings/pair-tamagokake.webp` | Pairing hero（卵かけご飯、2026-09-09） |
 | `regions/*.webp` | Neutral macro-region fallbacks (no single-prefecture highlight) |
 | `prefectures/*.webp` | Atlas plates for catalog prefectures (46): region base + **full-prefecture wash** + rice / local mood (2026-09-03). No town pins, no prefecture-name text in image. |
 | `prefectures/nagasaki.webp` | Geography fix 2026-09-09: full regen. Amakusa (Kumamoto) green; Tsushima / Iki / Goto / Shimabara orange. |

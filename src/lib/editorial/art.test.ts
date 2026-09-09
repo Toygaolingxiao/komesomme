@@ -55,6 +55,7 @@ describe("collectionArtSrc", () => {
 describe("pairingArtSrc", () => {
   it("returns pairing heroes when listed", () => {
     expect(pairingArtSrc("pair-curry.webp")).toBe("/brand-art/pairings/pair-curry.webp");
+    expect(pairingArtSrc("pair-donburi.webp")).toBe("/brand-art/pairings/pair-donburi.webp");
     expect(pairingArtSrc("missing.webp")).toBeNull();
   });
 });

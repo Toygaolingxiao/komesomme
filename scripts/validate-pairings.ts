@@ -58,6 +58,9 @@ export function collectPairingErrors(): string[] {
     if (page.allowAxisOppositeAvoid && !page.axisAvoidNote?.trim()) {
       fail(`${label}: axisAvoidNote required when allowAxisOppositeAvoid`);
     }
+    if (page.allowBiasFillTop && !/補っ/.test(page.sortNote)) {
+      fail(`${label}: allowBiasFillTop pages must disclose fill in sortNote`);
+    }
 
     const banned = ["還元率", "最安", "ポイント還元", "だから買え"];
     const blob = [
@@ -76,6 +79,7 @@ export function collectPairingErrors(): string[] {
       avoidAliases: page.avoidAliases,
       bias: page.bias,
       allowAxisOppositeAvoid: page.allowAxisOppositeAvoid,
+      allowBiasFillTop: page.allowBiasFillTop,
     });
     if (ranked.top.length === 0) fail(`${label}: Top brands empty`);
     if (ranked.avoid.length === 0) fail(`${label}: 向かない empty`);

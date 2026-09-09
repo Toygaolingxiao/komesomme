@@ -18,6 +18,8 @@ test.describe("TS-PAIR cuisine landings", () => {
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml).toContain("/pair/curry");
     expect(xml).toContain("/pair/bento");
+    expect(xml).toContain("/pair/donburi");
+    expect(xml).toContain("/pair/onigiri");
     expect(xml).toContain("/pair");
   });
 });

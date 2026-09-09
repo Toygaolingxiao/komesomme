@@ -40,6 +40,11 @@ export const PAIRING_ART_FILES = new Set<string>([
   "pair-bento.webp",
   "pair-nabe.webp",
   "pair-sushi.webp",
+  "pair-donburi.webp",
+  "pair-onigiri.webp",
+  "pair-karaage.webp",
+  "pair-chahan.webp",
+  "pair-tamagokake.webp",
 ]);
 
 export function brandArtPath(id: string): string {

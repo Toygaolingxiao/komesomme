@@ -64,4 +64,17 @@ describe("rankPairingCandidates", () => {
       expect(scores[i]!).toBeGreaterThanOrEqual(scores[i - 1]! - 0.01);
     }
   });
+
+  it("fills Top from bias when catalogue matches are sparse", () => {
+    const karaage = PAIRING_PAGES.find((page) => page.slug === "karaage")!;
+    const ranked = rankPairingCandidates(riceProfiles, {
+      aliases: karaage.dishAliases,
+      avoidAliases: karaage.avoidAliases,
+      bias: karaage.bias,
+      allowAxisOppositeAvoid: true,
+      allowBiasFillTop: true,
+    });
+    expect(ranked.top).toHaveLength(5);
+    expect(ranked.avoid.length).toBeGreaterThan(0);
+  });
 });

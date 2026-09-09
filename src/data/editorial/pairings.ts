@@ -15,6 +15,8 @@ export type PairingPage = {
   avoidAliases?: string[];
   /** When catalog avoid is empty, allow axis-opposite fallback. */
   allowAxisOppositeAvoid?: boolean;
+  /** When dish matches are few, fill Top with nearest bias brands. */
+  allowBiasFillTop?: boolean;
   bias: PairTasteBias;
   title: string;
   dek: string;
@@ -64,7 +66,7 @@ export const PAIRING_PAGES: PairingPage[] = [
         a: "表の「向いている人」と「気をつける点」を先に読み、気になった銘柄の事典で産地とメモを確認してください。お店のリンクは比較表のあとです。",
       },
     ],
-    relatedSlugs: ["bento", "nabe", "sashimi", "sushi"],
+    relatedSlugs: ["donburi", "bento", "nabe", "sashimi"],
     artFile: "pair-curry.webp",
   },
   {
@@ -96,7 +98,7 @@ export const PAIRING_PAGES: PairingPage[] = [
         a: "重なる銘柄もありますが、酢を効かせる寿司と、塩気中心の刺身では、求める粘りが少し違います。寿司のページも併せてどうぞ。",
       },
     ],
-    relatedSlugs: ["sushi", "curry", "bento", "nabe"],
+    relatedSlugs: ["sushi", "donburi", "bento", "nabe"],
     artFile: "pair-sashimi.webp",
   },
   {
@@ -131,7 +133,7 @@ export const PAIRING_PAGES: PairingPage[] = [
         a: "白飯の官能評価としては参考になりますが、冷めた弁当専用の答えではありません。",
       },
     ],
-    relatedSlugs: ["curry", "nabe", "sushi", "sashimi"],
+    relatedSlugs: ["onigiri", "curry", "nabe", "sushi"],
     collectionSlug: "bento-cold",
     artFile: "pair-bento.webp",
   },
@@ -167,7 +169,7 @@ export const PAIRING_PAGES: PairingPage[] = [
         a: "タレが濃い日は、甘みのある米も合いやすいです。表の「向いている人」を見て、今夜の味付けに寄せてください。",
       },
     ],
-    relatedSlugs: ["curry", "bento", "sashimi", "sushi"],
+    relatedSlugs: ["donburi", "curry", "bento", "karaage"],
     collectionSlug: "nabe",
     artFile: "pair-nabe.webp",
   },
@@ -200,8 +202,187 @@ export const PAIRING_PAGES: PairingPage[] = [
         a: "刺身は塩気中心、寿司は酢との馴染みを見ます。両方開いて比べると差が掴みやすいです。",
       },
     ],
-    relatedSlugs: ["sashimi", "bento", "curry", "nabe"],
+    relatedSlugs: ["sashimi", "donburi", "bento", "tamagokake"],
     artFile: "pair-sushi.webp",
+  },
+  {
+    slug: "donburi",
+    dishLabel: "丼もの",
+    dishAliases: ["丼", "丼もの", "親子丼", "牛丼", "海鮮丼", "天丼"],
+    avoidAliases: ["丼", "丼もの", "甘辛いタレの丼"],
+    bias: { sweetness: 3, hardness: 3.2, stickiness: 2.8 },
+    title: "丼ものに合う米の選び方｜タレがかかっても粒が残る比較表",
+    dek: "つゆだくの日も、粒の輪郭が残る帯をカタログから拾います。",
+    lead: [
+      "丼ものはタレや出汁が先に口に来ます。米は甘みの強さと、汁を含んだあとの粒の残り方で印象が変わります。",
+      "カタログで丼もの・牛丼・親子丼などに触れている銘柄を集め、甘みと硬さの座標が丼向きの帯に近い順に五銘柄を置いています。",
+      "あっさりした丼には向かない、とカタログに書かれた銘柄は向かない欄へ寄せました。濃いタレの日と薄い出汁の日では、選ぶ帯が少し違います。",
+    ],
+    sortNote:
+      "候補は best_match_dishes に丼系の語を含む銘柄。並びは甘み3・硬さ3.2・粘り2.8に近い座標を優先しています。",
+    faq: [
+      {
+        q: "つゆだくの牛丼と、海鮮丼で米は分けた方がよいですか。",
+        a: "重なる銘柄も多いです。タレが濃い日は粒が残る帯、ネタが主役の日は甘み控えの帯を表で確認してください。",
+      },
+      {
+        q: "特Aの米なら丼に向きますか。",
+        a: "食味ランキングは白飯の官能評価です。丼のタレとの相性を直接答えているわけではありません。",
+      },
+      {
+        q: "カレーのページとの違いは何ですか。",
+        a: "カレーはルーの厚み、丼は醤油や出汁の絡みを見ることが多いです。両方開くと差が掴みやすいです。",
+      },
+    ],
+    relatedSlugs: ["curry", "karaage", "nabe", "sushi"],
+    artFile: "pair-donburi.webp",
+  },
+  {
+    slug: "onigiri",
+    dishLabel: "おにぎり",
+    dishAliases: ["おにぎり", "おむすび", "握り飯", "塩おにぎり"],
+    avoidAliases: ["おにぎり", "おむすび", "塩おにぎり"],
+    allowAxisOppositeAvoid: true,
+    bias: { sweetness: 3, hardness: 3.1, stickiness: 3.2, coldRice: 4 },
+    title: "おにぎりに合う米の選び方｜握っても粒が残る比較表",
+    dek: "塩だけで食べる日も、具を包む日も、冷めたあとの粘りが効きます。",
+    lead: [
+      "おにぎりは、握ったあとも形が保ちつつ、口に入れるとほどける米が扱いやすいです。粘りが強すぎると具の輪郭が消えます。",
+      "カタログでおにぎり向きと書いた銘柄を集め、冷めたときの指標と粘りの座標が近い順に五銘柄を置いています。",
+      "向かない欄は、カタログ忌避が薄いため、この帯から遠い銘柄を座標で示しています。パラパラ炒飯向きの米は、握りではばらけやすいことがあります。",
+    ],
+    sortNote:
+      "候補は best_match_dishes におにぎり系の語を含む銘柄。並びは冷めたときの指標を重く見つつ、甘み3・硬さ3.1・粘り3.2に近い座標を優先しています。",
+    axisAvoidNote:
+      "カタログに「おにぎりには向かない」と直書きされた銘柄が少ないため、握り向きの座標から遠い銘柄を挙げています。",
+    faq: [
+      {
+        q: "塩むすびと具入りで、米は変えた方がよいですか。",
+        a: "塩だけなら甘みの出る帯、濃い具なら粒が残る帯を見ると選びやすいです。表の「向いている人」を先に読んでください。",
+      },
+      {
+        q: "弁当用の米と同じでよいですか。",
+        a: "重なることが多いです。おにぎりは握りのまとまり、弁当は蓋を開けたときの粒感を少し重く見ます。",
+      },
+      {
+        q: "食味ランキングの上位はおにぎり向きですか。",
+        a: "白飯の評価としては参考になりますが、握ったあとの食感専用の答えではありません。",
+      },
+    ],
+    relatedSlugs: ["bento", "tamagokake", "curry", "chahan"],
+    artFile: "pair-onigiri.webp",
+  },
+  {
+    slug: "karaage",
+    dishLabel: "唐揚げ",
+    dishAliases: ["唐揚げ", "から揚げ", "からあげ", "とんかつ", "揚げ物", "焼き鳥"],
+    avoidAliases: ["唐揚げ", "から揚げ", "揚げ物"],
+    allowAxisOppositeAvoid: true,
+    allowBiasFillTop: true,
+    bias: {
+      sweetness: 3.1,
+      hardness: 3.5,
+      stickiness: 2.6,
+      oilCompatibility: 4.5,
+    },
+    title: "唐揚げに合う米の選び方｜油のあとに粒が残る比較表",
+    dek: "揚げ物の脂のあと、白飯が切り替えてくれる帯を見ます。",
+    lead: [
+      "唐揚げの日は、衣の油と塩気が先に来ます。米は甘みが強すぎず、口の中で粒が残るほうが次の一口に戻りやすいです。",
+      "カタログで唐揚げや揚げ物に触れている銘柄を先に集め、油との相性と硬さの座標が近い順に並べています。候補が少ない分は、同じ帯に近い銘柄で五銘柄まで補っています。",
+      "向かない欄は、カタログ忌避が薄いため、この帯から遠い銘柄を座標で示しています。もっちり甘い米は、揚げ物の余韻を長く残すことがあります。",
+    ],
+    sortNote:
+      "候補は best_match_dishes に唐揚げ・揚げ物系の語を含む銘柄を優先。足りない分は油との相性4.5・硬さ3.5・甘み3.1に近い座標の銘柄で補っています。",
+    axisAvoidNote:
+      "カタログに「唐揚げには向かない」と直書きされた銘柄が少ないため、揚げ物向きの座標から遠い銘柄を挙げています。",
+    faq: [
+      {
+        q: "ハイボールと合わせる日も、同じ米でよいですか。",
+        a: "粒が残る帯は炭酸とも相性がよいことが多いです。銘柄の事典メモに飲み物の記述があれば、そちらも見てください。",
+      },
+      {
+        q: "とんかつ向きの米と同じですか。",
+        a: "揚げ物としては近い帯です。タレが濃いカツ丼の日は、丼もののページも併せてどうぞ。",
+      },
+      {
+        q: "特Aだから唐揚げに向く、と考えてよいですか。",
+        a: "いいえ。食味ランキングは白飯の官能評価であり、揚げ物専用の答えではありません。",
+      },
+    ],
+    relatedSlugs: ["donburi", "curry", "chahan", "bento"],
+    artFile: "pair-karaage.webp",
+  },
+  {
+    slug: "chahan",
+    dishLabel: "チャーハン",
+    dishAliases: ["チャーハン", "炒飯", "焼き飯"],
+    avoidAliases: ["チャーハン", "炒飯", "パラパラのチャーハン"],
+    allowAxisOppositeAvoid: true,
+    bias: { sweetness: 2.2, hardness: 3.8, stickiness: 1.8 },
+    title: "チャーハンに合う米の選び方｜パラパラ粒感の比較表",
+    dek: "炒めたあとに粒がくっつきすぎない帯を、カタログから拾います。",
+    lead: [
+      "チャーハンは、冷めたごはんをほぐして炒める日が多いです。粘りが強いとダマになり、油のまわりが悪くなります。",
+      "カタログでチャーハン・炒飯向きと書いた銘柄を集め、硬め・粘り控えめの座標に近い順に五銘柄を置いています。",
+      "向かない欄は、カタログ忌避が薄いため、この帯から遠い銘柄を示しています。もっちり甘い米は、炒飯ではまとまりすぎることがあります。",
+    ],
+    sortNote:
+      "候補は best_match_dishes にチャーハン・炒飯系の語を含む銘柄。並びは甘み2.2・硬さ3.8・粘り1.8に近い座標を優先しています。",
+    axisAvoidNote:
+      "カタログに「チャーハンには向かない」と直書きされた銘柄が少ないため、パラパラ炒飯向きの座標から遠い銘柄を挙げています。",
+    faq: [
+      {
+        q: "炊きたてのごはんで炒めてもよいですか。",
+        a: "できますが、水分が多いとべたつきやすいです。冷ましてほぐしてから炒めると、表の帯の持ち味が出やすいです。",
+      },
+      {
+        q: "おにぎり向きの米で炒飯はできますか。",
+        a: "粘りが強い銘柄はダマになりやすいです。炒飯の日は、この表の粒立ち寄りの帯を見てください。",
+      },
+      {
+        q: "食味ランキングは炒飯選びに使えますか。",
+        a: "白飯の評価としては参考になりますが、炒めたあとの粒感専用の答えではありません。",
+      },
+    ],
+    relatedSlugs: ["karaage", "curry", "onigiri", "bento"],
+    artFile: "pair-chahan.webp",
+  },
+  {
+    slug: "tamagokake",
+    dishLabel: "卵かけご飯",
+    dishAliases: ["卵かけご飯", "たまごかけご飯", "卵かけ", "たまごかけ"],
+    avoidAliases: ["卵かけ", "たまごかけ"],
+    allowAxisOppositeAvoid: true,
+    allowBiasFillTop: true,
+    bias: { sweetness: 3.6, hardness: 2.8, stickiness: 3.4 },
+    title: "卵かけご飯に合う米の選び方｜甘みと粘りの比較表",
+    dek: "醤油と卵黄の朝は、米の甘みが先に立つ帯を見ます。",
+    lead: [
+      "卵かけご飯は、調味がシンプルな分、米の甘みと粘りがそのまま口に残ります。主張が強すぎる銘柄も、朝の一口では主役になれます。",
+      "カタログで卵かけご飯に触れている銘柄を先に集め、甘みと粘りの座標が近い順に並べています。候補が少ない分は、同じ帯に近い銘柄で五銘柄まで補っています。",
+      "向かない欄は、カタログ忌避が薄いため、この帯から遠い銘柄を座標で示しています。あっさり硬い米は、卵黄のコクを受け止める前に口を通り過ぎることがあります。",
+    ],
+    sortNote:
+      "候補は best_match_dishes に卵かけ系の語を含む銘柄を優先。足りない分は甘み3.6・粘り3.4・硬さ2.8に近い座標の銘柄で補っています。",
+    axisAvoidNote:
+      "カタログに「卵かけには向かない」と直書きされた銘柄が少ないため、卵かけ向きの座標から遠い銘柄を挙げています。",
+    faq: [
+      {
+        q: "醤油だけと、めんつゆでは米を変えた方がよいですか。",
+        a: "醤油だけなら甘みの出る帯、つゆが濃い日は少し粒が残る帯を見ると選びやすいです。",
+      },
+      {
+        q: "おにぎり用の米と同じで朝を済ませてよいですか。",
+        a: "重なる銘柄もあります。卵かけは甘み、おにぎりは握りのまとまりを少し重く見ます。",
+      },
+      {
+        q: "特Aの米なら卵かけに向きますか。",
+        a: "必ずしもそうではありません。食味ランキングは白飯の官能評価であり、卵かけ専用の答えではありません。",
+      },
+    ],
+    relatedSlugs: ["onigiri", "bento", "sushi", "sashimi"],
+    artFile: "pair-tamagokake.webp",
   },
 ];
 

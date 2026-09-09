@@ -7,6 +7,8 @@ export type PairTasteBias = {
   stickiness?: number;
   /** Prefer higher cold_rice_quality when set (弁当). */
   coldRice?: number;
+  /** Prefer higher oil_compatibility when set (唐揚げなど). */
+  oilCompatibility?: number;
 };
 
 export type PairRankOptions = {
@@ -21,6 +23,11 @@ export type PairRankOptions = {
    * (and not in the top list). Labelled as coordinate opposites on the page.
    */
   allowAxisOppositeAvoid?: boolean;
+  /**
+   * When catalogue dish matches are fewer than topN, fill the rest from
+   * brands nearest the bias. Disclose this in the page sortNote.
+   */
+  allowBiasFillTop?: boolean;
 };
 
 export type PairRankResult = {
@@ -58,6 +65,7 @@ function distanceToBias(rice: RiceProfileV2, bias: PairTasteBias): number {
   add(rice.hardness, bias.hardness, 1.2);
   add(rice.stickiness, bias.stickiness, 1);
   add(rice.cold_rice_quality, bias.coldRice, 1.4);
+  add(rice.oil_compatibility, bias.oilCompatibility, 1.3);
   return weight === 0 ? 0 : sum / weight;
 }
 
@@ -79,14 +87,22 @@ export function rankPairingCandidates(
   const matched = profiles.filter((rice) =>
     listMatchesAliases(rice.best_match_dishes, options.aliases)
   );
-  const top = [...matched]
-    .sort((a, b) => {
-      const da = pairFitScore(a, options.bias);
-      const db = pairFitScore(b, options.bias);
-      if (da !== db) return da - db;
-      return a.id.localeCompare(b.id);
-    })
-    .slice(0, topN);
+  const byBiasAsc = (a: RiceProfileV2, b: RiceProfileV2) => {
+    const da = pairFitScore(a, options.bias);
+    const db = pairFitScore(b, options.bias);
+    if (da !== db) return da - db;
+    return a.id.localeCompare(b.id);
+  };
+  let top = [...matched].sort(byBiasAsc).slice(0, topN);
+
+  if (options.allowBiasFillTop && top.length < topN) {
+    const taken = new Set(top.map((rice) => rice.id));
+    const fillers = profiles
+      .filter((rice) => !taken.has(rice.id))
+      .sort(byBiasAsc)
+      .slice(0, topN - top.length);
+    top = [...top, ...fillers];
+  }
 
   const topIds = new Set(top.map((rice) => rice.id));
 

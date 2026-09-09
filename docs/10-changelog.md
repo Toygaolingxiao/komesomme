@@ -4,6 +4,11 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.2.3 — 2026-09-09
+
+- Wave 2A 第二批: `/pair` に丼もの・おにぎり・唐揚げ・チャーハン・卵かけご飯。各面に専用英雄図
+- カタログ命中が薄い唐揚げ・卵かけは、座標で Top を補い sortNote にその旨を書く（`allowBiasFillTop`）
+
 ## 1.2.2 — 2026-09-09
 
 - `/pair` 五菜に専用ガッシュ英雄（curry / sashimi / bento / nabe / sushi）。誌中二番目の切り抜き、関連料理・Discover・索引のサムネも同じ絵を使う
