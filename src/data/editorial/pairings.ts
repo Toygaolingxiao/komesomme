@@ -26,6 +26,8 @@ export type PairingPage = {
   faq: PairingFaq[];
   relatedSlugs: string[];
   collectionSlug?: string;
+  /** Basename under public/brand-art/pairings/. */
+  artFile?: string;
 };
 
 /**
@@ -63,6 +65,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       },
     ],
     relatedSlugs: ["bento", "nabe", "sashimi", "sushi"],
+    artFile: "pair-curry.webp",
   },
   {
     slug: "sashimi",
@@ -94,6 +97,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       },
     ],
     relatedSlugs: ["sushi", "curry", "bento", "nabe"],
+    artFile: "pair-sashimi.webp",
   },
   {
     slug: "bento",
@@ -129,6 +133,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     ],
     relatedSlugs: ["curry", "nabe", "sushi", "sashimi"],
     collectionSlug: "bento-cold",
+    artFile: "pair-bento.webp",
   },
   {
     slug: "nabe",
@@ -164,6 +169,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     ],
     relatedSlugs: ["curry", "bento", "sashimi", "sushi"],
     collectionSlug: "nabe",
+    artFile: "pair-nabe.webp",
   },
   {
     slug: "sushi",
@@ -195,6 +201,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       },
     ],
     relatedSlugs: ["sashimi", "bento", "curry", "nabe"],
+    artFile: "pair-sushi.webp",
   },
 ];
 

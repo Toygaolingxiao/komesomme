@@ -2,9 +2,11 @@ import {
   BRAND_ART_IDS,
   COLLECTION_ART_FILES,
   MASTHEAD_ART,
+  PAIRING_ART_FILES,
   REGION_ART_IDS,
   brandArtPath,
   collectionArtPath,
+  pairingArtPath,
   regionArtPath,
 } from "@/data/editorial/artManifest";
 import {
@@ -64,6 +66,12 @@ export function collectionArtSrc(artFile: string | null): string | null {
   return collectionArtPath(artFile);
 }
 
+export function pairingArtSrc(artFile: string | null | undefined): string | null {
+  if (!artFile) return null;
+  if (!PAIRING_ART_FILES.has(artFile)) return null;
+  return pairingArtPath(artFile);
+}
+
 /** Show furigana only when it matches the name. */
 export function distinctReading(name: string, reading: string | null | undefined): string | null {
   if (!reading) return null;
@@ -74,9 +82,11 @@ export function distinctReading(name: string, reading: string | null | undefined
 }
 
 /** Extra taste chips that are not already the texture/sweetness labels. */
-export function dossierExtraTags(
-  rice: { texture_label: string; sweetness_label: string; cold_rice_quality: number }
-): string[] {
+export function dossierExtraTags(rice: {
+  texture_label: string;
+  sweetness_label: string;
+  cold_rice_quality: number;
+}): string[] {
   const tags: string[] = [];
   if (rice.cold_rice_quality >= 4) tags.push("冷めても美味しい");
   return tags;

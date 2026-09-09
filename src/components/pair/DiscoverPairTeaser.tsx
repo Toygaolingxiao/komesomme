@@ -5,7 +5,7 @@ import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
-import { collectionArtSrc, mastheadArtSrc, resolveBrandArt } from "@/lib/editorial/art";
+import { collectionArtSrc, mastheadArtSrc, pairingArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { allResolvedPairings } from "@/lib/editorial/pairings";
 
 /** Compact inbound list so /pair pages are not orphaned from /discover. */
@@ -41,8 +41,8 @@ export function DiscoverPairTeaser() {
 
       <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {PAIRING_PAGES.map((page) => {
-          let art: string | null = null;
-          if (page.collectionSlug) {
+          let art = pairingArtSrc(page.artFile);
+          if (!art && page.collectionSlug) {
             const collection = EDITORIAL_COLLECTIONS.find(
               (row) => row.slug === page.collectionSlug
             );

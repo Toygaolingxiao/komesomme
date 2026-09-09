@@ -3,6 +3,7 @@
  * and as `node --import tsx scripts/validate-pairings.ts`.
  */
 import { EDITORIAL_COLLECTIONS } from "../src/data/editorial/collections";
+import { PAIRING_ART_FILES } from "../src/data/editorial/artManifest";
 import { PAIRING_PAGES } from "../src/data/editorial/pairings";
 import { riceProfiles } from "../src/data/rice/catalog";
 import { rankPairingCandidates } from "../src/lib/editorial/pairRank";
@@ -50,6 +51,9 @@ export function collectPairingErrors(): string[] {
     }
     if (page.collectionSlug && !collectionSlugs.has(page.collectionSlug)) {
       fail(`${label}: unknown collectionSlug ${page.collectionSlug}`);
+    }
+    if (!page.artFile || !PAIRING_ART_FILES.has(page.artFile)) {
+      fail(`${label}: artFile must be a registered pairing art file`);
     }
     if (page.allowAxisOppositeAvoid && !page.axisAvoidNote?.trim()) {
       fail(`${label}: axisAvoidNote required when allowAxisOppositeAvoid`);

@@ -10,6 +10,7 @@ import { pairingPageBySlug } from "@/data/editorial/pairings";
 import {
   collectionArtSrc,
   mastheadArtSrc,
+  pairingArtSrc,
   resolveBrandArt,
 } from "@/lib/editorial/art";
 import type { ResolvedPairing } from "@/lib/editorial/pairings";
@@ -27,6 +28,8 @@ function caution(rice: RiceProfileV2): string {
 }
 
 function heroSrc(page: ResolvedPairing["page"], lead: RiceProfileV2 | undefined): string | null {
+  const dedicated = pairingArtSrc(page.artFile);
+  if (dedicated) return dedicated;
   if (page.collectionSlug) {
     const collection = EDITORIAL_COLLECTIONS.find((row) => row.slug === page.collectionSlug);
     const fromCollection = collectionArtSrc(collection?.artFile ?? null);
@@ -119,6 +122,19 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
           <p key={paragraph.slice(0, 28)}>{paragraph}</p>
         ))}
       </div>
+
+      {hero ? (
+        <div className={`${SITE_COLUMN} mt-10`}>
+          <EditorialArt
+            src={hero}
+            alt=""
+            className="aspect-[21/8] w-full md:aspect-[24/7]"
+            sizes="(min-width: 768px) 1100px, 100vw"
+            quality={88}
+            objectPosition="62% 48%"
+          />
+        </div>
+      ) : null}
 
       <div className={`${SITE_COLUMN} mt-10`}>
         <div className="border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-4 py-4 sm:px-5">
@@ -291,19 +307,40 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
           </h2>
           <AffiliateDisclosure variant="pr" className="sm:hidden" />
         </div>
-        <ul className="mt-4 flex flex-wrap gap-2.5">
-          {related.map((other) =>
-            other ? (
+        <ul className="mt-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((other) => {
+            if (!other) return null;
+            const thumb = pairingArtSrc(other.artFile);
+            return (
               <li key={other.slug}>
                 <Link
                   href={`/pair/${other.slug}`}
-                  className={`inline-flex border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-3.5 py-2 text-[13px] text-[var(--km-ink)] hover:border-[var(--km-brown)]/35 hover:text-[var(--km-brown)] ${FOCUS}`}
+                  className={`group grid grid-cols-[4.25rem_minmax(0,1fr)] items-center gap-2.5 border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-1.5 hover:border-[var(--km-brown)]/35 ${FOCUS}`}
                 >
-                  {other.dishLabel}
+                  {thumb ? (
+                    <EditorialArt
+                      src={thumb}
+                      alt=""
+                      className="aspect-[5/4] w-full"
+                      sizes="4.25rem"
+                      quality={70}
+                      objectPosition="50% 42%"
+                    />
+                  ) : (
+                    <div
+                      aria-hidden
+                      className="aspect-[5/4] w-full bg-[var(--km-bg-soft)]"
+                    />
+                  )}
+                  <span className="pr-2 font-serif text-[14px] font-semibold text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+                    {other.dishLabel}
+                  </span>
                 </Link>
               </li>
-            ) : null
-          )}
+            );
+          })}
+        </ul>
+        <ul className="mt-3 flex flex-wrap gap-2.5">
           <li>
             <Link
               href="/library"

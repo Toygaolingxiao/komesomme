@@ -33,6 +33,15 @@ export const COLLECTION_ART_FILES = new Set<string>([
   "toku-a.webp",
 ]);
 
+/** Basenames under public/brand-art/pairings/. */
+export const PAIRING_ART_FILES = new Set<string>([
+  "pair-curry.webp",
+  "pair-sashimi.webp",
+  "pair-bento.webp",
+  "pair-nabe.webp",
+  "pair-sushi.webp",
+]);
+
 export function brandArtPath(id: string): string {
   return `/brand-art/brands/${id}.webp`;
 }
@@ -44,4 +53,9 @@ export function regionArtPath(regionId: string): string {
 /** `file` is the basename declared in collections data, e.g. `shinmai.webp`. */
 export function collectionArtPath(file: string): string {
   return `/brand-art/collections/${file}`;
+}
+
+/** `file` is the basename declared on pairing pages, e.g. `pair-curry.webp`. */
+export function pairingArtPath(file: string): string {
+  return `/brand-art/pairings/${file}`;
 }

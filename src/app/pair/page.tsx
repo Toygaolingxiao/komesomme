@@ -10,7 +10,7 @@ import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
-import { collectionArtSrc, mastheadArtSrc, resolveBrandArt } from "@/lib/editorial/art";
+import { collectionArtSrc, mastheadArtSrc, pairingArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { allResolvedPairings, type ResolvedPairing } from "@/lib/editorial/pairings";
 import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
 
@@ -28,6 +28,8 @@ const TRAIL = [
 
 function artFor(resolved: ResolvedPairing): string | null {
   const { page, top } = resolved;
+  const dedicated = pairingArtSrc(page.artFile);
+  if (dedicated) return dedicated;
   if (page.collectionSlug) {
     const collection = EDITORIAL_COLLECTIONS.find((row) => row.slug === page.collectionSlug);
     const src = collectionArtSrc(collection?.artFile ?? null);

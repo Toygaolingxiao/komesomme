@@ -4,6 +4,7 @@ import {
   collectionArtSrc,
   distinctReading,
   mastheadArtSrc,
+  pairingArtSrc,
   resolveBrandArt,
 } from "@/lib/editorial/art";
 
@@ -48,6 +49,13 @@ describe("collectionArtSrc", () => {
     expect(collectionArtSrc("toku-a.webp")).toBe("/brand-art/collections/toku-a.webp");
     expect(collectionArtSrc(null)).toBeNull();
     expect(collectionArtSrc("missing.webp")).toBeNull();
+  });
+});
+
+describe("pairingArtSrc", () => {
+  it("returns pairing heroes when listed", () => {
+    expect(pairingArtSrc("pair-curry.webp")).toBe("/brand-art/pairings/pair-curry.webp");
+    expect(pairingArtSrc("missing.webp")).toBeNull();
   });
 });
 
