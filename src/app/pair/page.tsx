@@ -80,16 +80,16 @@ export default function PairIndexPage() {
               <EditorialArt
                 src={firstArt}
                 alt=""
-                className="aspect-[21/9] w-full sm:aspect-[24/9]"
+                className="aspect-[16/9] w-full"
                 sizes="(min-width: 768px) 1100px, 100vw"
-                quality={88}
+                quality={92}
                 priority
                 objectPosition="50% 42%"
               />
             ) : (
               <div
                 aria-hidden
-                className="flex aspect-[21/9] items-end bg-[var(--km-surface-warm)] px-4 pb-3 sm:aspect-[24/9]"
+                className="flex aspect-[16/9] items-end bg-[var(--km-surface-warm)] px-4 pb-3"
               >
                 <BowlMark className="h-10 w-10 opacity-80" />
               </div>
@@ -122,7 +122,7 @@ export default function PairIndexPage() {
                         alt=""
                         className="aspect-[5/4] w-full"
                         sizes="6.25rem"
-                        quality={74}
+                        quality={84}
                         objectPosition="50% 42%"
                       />
                     ) : (

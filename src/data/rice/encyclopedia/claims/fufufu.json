@@ -1,0 +1,35 @@
+{
+  "brand_id": "fufufu",
+  "updated_at": "2026-09-10T01:47:44.815Z",
+  "source_ids": [
+    "kokken-r7-pdf",
+    "kokken-ranking",
+    "maff-kome",
+    "naro-top"
+  ],
+  "claims": [
+    {
+      "id": "fufufu:prefecture",
+      "field_path": "origin.prefecture",
+      "claim_text": "主産地（カタログ）は富山県",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome",
+        "naro-top"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+    },
+    {
+      "id": "fufufu:editorial-scores",
+      "field_path": "caveats.editorial",
+      "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "製品ポリシー。"
+    }
+  ]
+}

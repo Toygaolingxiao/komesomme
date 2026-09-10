@@ -75,34 +75,37 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
 
   return (
     <article className="pb-16 text-[var(--km-ink)]">
-      {/* ~38 / 62 — art is atmosphere, copy is the job */}
+      {/* Art keeps near-source ratio; sticky column fills warm paper — no full-vh object-cover stretch */}
       <div className="lg:grid lg:min-h-[calc(100dvh-3rem)] lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-        <aside className="relative isolate min-h-[28dvh] overflow-hidden bg-[var(--km-surface-warm)] sm:min-h-[32dvh] lg:sticky lg:top-0 lg:h-[calc(100dvh-3rem)] lg:min-h-0">
-          {hero ? (
-            <EditorialArt
-              src={hero}
-              alt=""
-              className="absolute inset-0 h-full w-full"
-              sizes="(min-width: 1280px) 22rem, (min-width: 1024px) 38vw, 100vw"
-              quality={88}
-              priority
-              objectPosition="48% 42%"
+        <aside className="relative isolate bg-[var(--km-surface-warm)] lg:sticky lg:top-0 lg:flex lg:h-[calc(100dvh-3rem)] lg:flex-col lg:min-h-0">
+          <div className="relative aspect-[16/10] w-full sm:aspect-[16/9] lg:aspect-auto lg:h-[min(68dvh,34rem)] lg:max-h-[72%] lg:shrink-0">
+            {hero ? (
+              <EditorialArt
+                src={hero}
+                alt=""
+                className="absolute inset-0 h-full w-full"
+                sizes="(min-width: 1280px) 22rem, (min-width: 1024px) 38vw, 100vw"
+                quality={92}
+                priority
+                objectPosition="48% 42%"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-end bg-[var(--km-surface-warm)] px-6 pb-6">
+                <BowlMark className="h-12 w-12 opacity-80" />
+              </div>
+            )}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.22)]"
             />
-          ) : (
-            <div className="absolute inset-0 flex items-end bg-[var(--km-surface-warm)] px-6 pb-6">
-              <BowlMark className="h-12 w-12 opacity-80" />
+            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 lg:hidden">
+              <p className="text-[12px] tracking-[0.14em] text-white/75">料理で選ぶ</p>
+              <h1 className="mt-2 font-serif text-[1.85rem] font-semibold text-white sm:text-[2.05rem]">
+                {page.dishLabel}に合う米
+              </h1>
             </div>
-          )}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.28)]"
-          />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 lg:hidden">
-            <p className="text-[12px] tracking-[0.14em] text-white/75">料理で選ぶ</p>
-            <h1 className="mt-2 font-serif text-[1.85rem] font-semibold text-white sm:text-[2.05rem]">
-              {page.dishLabel}に合う米
-            </h1>
           </div>
+          <div aria-hidden className="hidden flex-1 bg-[var(--km-surface-warm)] lg:block" />
         </aside>
 
         <div className="pair-stage-enter bg-[var(--km-bg)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 xl:px-14">
@@ -172,7 +175,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                               alt=""
                               className="hidden aspect-square w-12 shrink-0 sm:block"
                               sizes="3rem"
-                              quality={72}
+                              quality={84}
                             />
                           ) : null}
                           <span className="min-w-0">
@@ -273,7 +276,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                             alt=""
                             className="aspect-[5/4] w-full"
                             sizes="4rem"
-                            quality={70}
+                            quality={84}
                           />
                         ) : (
                           <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-bg-soft)]" />

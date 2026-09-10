@@ -1,0 +1,45 @@
+{
+  "brand_id": "pikamaru",
+  "updated_at": "2026-09-10T01:47:44.815Z",
+  "source_ids": [
+    "maff-kome",
+    "naro-top"
+  ],
+  "claims": [
+    {
+      "id": "pikamaru:prefecture",
+      "field_path": "origin.prefecture",
+      "claim_text": "主産地（カタログ）は福岡県",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome",
+        "naro-top"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+    },
+    {
+      "id": "pikamaru:breeding",
+      "field_path": "origin.breeding",
+      "claim_text": "育成・系統に関する記述",
+      "status": "partial",
+      "source_ids": [
+        "maff-kome",
+        "naro-top"
+      ],
+      "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
+      "verified_at": "2026-09-10T01:47:44.815Z"
+    },
+    {
+      "id": "pikamaru:editorial-scores",
+      "field_path": "caveats.editorial",
+      "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "製品ポリシー。"
+    }
+  ]
+}

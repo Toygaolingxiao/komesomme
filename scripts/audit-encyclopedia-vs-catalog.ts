@@ -3,13 +3,18 @@
  * Reports score/copy conflicts, banned wording, pairing clashes, and reused prose.
  */
 
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { riceProfiles } from "@/data/rice/catalog";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
 import type { RiceProfileV2 } from "@/types/rice";
 
 const ARTICLES_DIR = path.join(process.cwd(), "src/data/rice/encyclopedia/articles");
+const CLAIMS_DIR = path.join(process.cwd(), "src/data/rice/encyclopedia/claims");
+const REGISTRY_PATH = path.join(
+  process.cwd(),
+  "src/data/rice/encyclopedia/sources/registry.json",
+);
 
 const BANNED = [
   "最強",
@@ -132,6 +137,20 @@ function pairingConflicts(rice: RiceProfileV2, article: RiceEncyclopediaArticle)
 }
 
 function main() {
+  if (!existsSync(REGISTRY_PATH)) {
+    console.error("missing sources/registry.json");
+    process.exit(1);
+  }
+  const registry = JSON.parse(readFileSync(REGISTRY_PATH, "utf8")) as {
+    sources?: { id: string; url?: string }[];
+  };
+  for (const source of registry.sources ?? []) {
+    if (!source.url || !/^https?:\/\//.test(source.url)) {
+      console.error(`registry source ${source.id} missing http(s) url`);
+      process.exit(1);
+    }
+  }
+
   const files = readdirSync(ARTICLES_DIR).filter((name) => name.endsWith(".json"));
   const articles = new Map<string, RiceEncyclopediaArticle>();
   for (const file of files) {
@@ -175,6 +194,62 @@ function main() {
         kind: "banned",
         detail: "具体的な円金額を記載している",
       });
+    }
+
+    if (!article.sourceIds?.length) {
+      findings.push({
+        id: rice.id,
+        name: rice.name,
+        kind: "coverage",
+        detail: "encyclopedia に sourceIds が無い",
+      });
+    }
+    if (!article.factStatus || article.factStatus === "unverified") {
+      findings.push({
+        id: rice.id,
+        name: rice.name,
+        kind: "coverage",
+        detail: `factStatus=${article.factStatus ?? "missing"}（verified|partial が必要）`,
+      });
+    }
+
+    const claimsPath = path.join(CLAIMS_DIR, `${rice.id}.json`);
+    if (!existsSync(claimsPath)) {
+      findings.push({
+        id: rice.id,
+        name: rice.name,
+        kind: "coverage",
+        detail: "claims JSON が無い",
+      });
+    } else {
+      const claimsFile = JSON.parse(readFileSync(claimsPath, "utf8")) as {
+        claims?: { status: string; source_ids?: string[]; field_path?: string; claim_text?: string }[];
+      };
+      for (const claim of claimsFile.claims ?? []) {
+        if (
+          (claim.status === "verified" || claim.status === "partial") &&
+          !(claim.source_ids && claim.source_ids.length > 0)
+        ) {
+          findings.push({
+            id: rice.id,
+            name: rice.name,
+            kind: "coverage",
+            detail: `claim ${claim.field_path} が ${claim.status} なのに source_ids が空`,
+          });
+        }
+        if (
+          claim.status === "verified" &&
+          /特A|献上|金賞/.test(claim.claim_text ?? "") &&
+          !(claim.source_ids && claim.source_ids.length > 0)
+        ) {
+          findings.push({
+            id: rice.id,
+            name: rice.name,
+            kind: "banned",
+            detail: `受賞系 claim が verified なのに source 無し: ${claim.field_path}`,
+          });
+        }
+      }
     }
 
     for (const hit of scoreConflicts(rice, blob)) {

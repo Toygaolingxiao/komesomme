@@ -4,7 +4,8 @@
 
 | 工件 | 路径 | 说明 |
 | --- | --- | --- |
-| Case Study 1.0.0（HTML） | [`../../assets/komesomme-1.0.0-case-study.html`](../../assets/komesomme-1.0.0-case-study.html) | 站外叙事；Lenis/GSAP；非 Next 路由 |
+| Case Study 1.0.0（HTML） | [`../../assets/komesomme-1.0.0-case-study.html`](../../assets/komesomme-1.0.0-case-study.html) | 站外叙事正本；Lenis/GSAP；非 Next 路由 |
+| Case Study redesign 对照 | [`../../assets/old/komesomme-1.0.0-case-study-copilot-redesign-ref.html`](../../assets/old/komesomme-1.0.0-case-study-copilot-redesign-ref.html) | Copilot 深色稿；仅作参考，非正本（见 [`../../assets/old/README.md`](../../assets/old/README.md)） |
 | 1.0.0 Launch 海报 | [`../../assets/komesomme-1.0.0-launch.png`](../../assets/komesomme-1.0.0-launch.png) | 发版视觉 |
 | SEO 正本 | [`../../21-seo-intent-content.md`](../../21-seo-intent-content.md) | 意图 / EEAT / 权威锚 |
 | 成長正本 | [`../../20-growth-plan.md`](../../20-growth-plan.md) | Phase 顺序与 Wave |

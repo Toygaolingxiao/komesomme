@@ -1,0 +1,48 @@
+{
+  "brand_id": "hazuki-minori",
+  "updated_at": "2026-09-10T01:47:44.815Z",
+  "source_ids": [
+    "maff-kome",
+    "naro-top",
+    "pref-niigata-shinmai"
+  ],
+  "claims": [
+    {
+      "id": "hazuki-minori:prefecture",
+      "field_path": "origin.prefecture",
+      "claim_text": "主産地（カタログ）は新潟県",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome",
+        "naro-top",
+        "pref-niigata-shinmai"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
+    },
+    {
+      "id": "hazuki-minori:breeding",
+      "field_path": "origin.breeding",
+      "claim_text": "育成・系統に関する記述",
+      "status": "partial",
+      "source_ids": [
+        "maff-kome",
+        "naro-top",
+        "pref-niigata-shinmai"
+      ],
+      "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
+      "verified_at": "2026-09-10T01:47:44.815Z"
+    },
+    {
+      "id": "hazuki-minori:editorial-scores",
+      "field_path": "caveats.editorial",
+      "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "製品ポリシー。"
+    }
+  ]
+}

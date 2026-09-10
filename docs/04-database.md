@@ -149,3 +149,20 @@ Migration [`0012_yahoo_furusato_affiliate_links.sql`](../supabase/migrations/001
 anon / authenticated は権限なし。service role は `/ops/yahoo-furusato` のみ（`/api/rice/shop-links` はふるさと表を読まない）。
 
 **既存本番:** SQL Editor で 0012 を実行してから観測台で「对齐目录」、または `npm run yahoo:sync:furusato`。
+
+## 百科（encyclopedia）· 公式リンク・クレーム
+
+Migration [`0013_rice_encyclopedia.sql`](../supabase/migrations/0013_rice_encyclopedia.sql)。  
+運用手順の正本は [pj/reviews/encyclopedia-governance.md](./pj/reviews/encyclopedia-governance.md)。  
+**Git JSON が正本**。DB は公開ミラーと溯源。ランタイム表示は当面 `loadEncyclopediaArticle`（Git）。
+
+| テーブル | 役割 |
+| --- | --- |
+| `rice_editorial_sources` | 公式／準公式 URL（`url` NOT NULL、unique） |
+| `rice_encyclopedia_articles` | 銘柄 1 行の公開文案 + `fact_status` + `source_ids` + `content_hash` |
+| `rice_encyclopedia_revisions` | `content_hash` 変化時の不変スナップショット（anon 読取なし） |
+| `rice_encyclopedia_claims` | 事実クレーム + `source_ids[]` |
+
+RLS: sources / articles は anon SELECT 可。claims は `verified|partial|tradition|removed` のみ公開読取。revisions は service_role のみ。
+
+**適用:** SQL Editor で 0013 → `npm run seed:encyclopedia`（要 service role。先に `seed:rice` で `rice_brands` があること）。

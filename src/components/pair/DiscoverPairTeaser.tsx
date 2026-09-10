@@ -67,7 +67,7 @@ export function DiscoverPairTeaser() {
                     alt=""
                     className="aspect-[5/4] w-full"
                     sizes="5.5rem"
-                    quality={72}
+                    quality={84}
                     objectPosition="50% 42%"
                   />
                 ) : (

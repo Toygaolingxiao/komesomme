@@ -1,0 +1,3440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="KomeSomme 1.0.0 の技術実験と公開までの設計判断を記録したデリバリーケーススタディ。">
+  <title>KomeSomme 1.0.0 | デリバリーケーススタディ</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101713;
+      --surface: #17211b;
+      --surface-strong: #1e2b23;
+      --surface-soft: #142019;
+      --text: #edf1e9;
+      --muted: #aab5ac;
+      --quiet: #718075;
+      --line: rgba(237, 241, 233, 0.15);
+      --line-strong: rgba(237, 241, 233, 0.25);
+      --accent: #bedb72;
+      --accent-ink: #162008;
+      --accent-wash: rgba(190, 219, 114, 0.12);
+      --accent-wash-strong: rgba(190, 219, 114, 0.2);
+      --shadow: rgba(0, 0, 0, 0.28);
+      --radius-panel: 16px;
+      --radius-control: 10px;
+      --radius-pill: 999px;
+      --shell: min(1180px, calc(100% - 40px));
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --page: #edf2ec;
+        --surface: #f7faf5;
+        --surface-strong: #e3eadf;
+        --surface-soft: #e7eee4;
+        --text: #152018;
+        --muted: #526056;
+        --quiet: #758177;
+        --line: rgba(21, 32, 24, 0.15);
+        --line-strong: rgba(21, 32, 24, 0.26);
+        --accent: #5d760f;
+        --accent-ink: #f3f8e8;
+        --accent-wash: rgba(93, 118, 15, 0.12);
+        --accent-wash-strong: rgba(93, 118, 15, 0.2);
+        --shadow: rgba(27, 42, 29, 0.12);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--page);
+      scroll-behavior: auto;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, system-ui, sans-serif;
+      font-feature-settings: "palt";
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+
+    button,
+    a,
+    summary {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-control);
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      transform: translateY(-160%);
+      transition: transform 160ms var(--ease);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .reading-progress {
+      position: fixed;
+      z-index: 70;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 3px;
+      background: var(--line);
+      pointer-events: none;
+    }
+
+    .reading-progress__bar {
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    .site-nav {
+      position: fixed;
+      z-index: 60;
+      top: 0;
+      left: 0;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .site-nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      width: var(--shell);
+      min-height: 64px;
+      margin: 0 auto;
+      padding: 0.55rem 0.65rem 0.55rem 1rem;
+      border: 1px solid var(--line);
+      border-top: 0;
+      border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+      background: color-mix(in srgb, var(--page) 88%, transparent);
+      box-shadow: 0 12px 36px -28px var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      pointer-events: auto;
+    }
+
+    .brand-link {
+      flex: 0 0 auto;
+      color: var(--text);
+      font-family: "Aptos Display", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: 0.96rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-primary {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 0.15rem;
+    }
+
+    .nav-primary a,
+    .chapter-menu__list a {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 180ms var(--ease), background-color 180ms var(--ease);
+    }
+
+    .nav-primary a {
+      padding: 0.42rem 0.53rem;
+      border-radius: var(--radius-pill);
+    }
+
+    .nav-primary a:hover,
+    .nav-primary a.is-active {
+      background: var(--accent-wash);
+      color: var(--text);
+    }
+
+    .chapter-menu {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .chapter-menu summary {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0.38rem 0.68rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 700;
+      list-style: none;
+      white-space: nowrap;
+    }
+
+    .chapter-menu summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .chapter-menu summary::after {
+      content: "+";
+      margin-left: 0.4rem;
+      color: var(--accent);
+      font-size: 1rem;
+      line-height: 0;
+    }
+
+    .chapter-menu[open] summary::after {
+      content: "-";
+    }
+
+    .chapter-menu__list {
+      position: absolute;
+      top: calc(100% + 0.65rem);
+      right: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(126px, 1fr));
+      gap: 0.2rem;
+      width: min(318px, calc(100vw - 2rem));
+      padding: 0.5rem;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+      box-shadow: 0 18px 45px -25px var(--shadow);
+    }
+
+    .chapter-menu__list a {
+      padding: 0.55rem 0.6rem;
+      border-radius: var(--radius-control);
+    }
+
+    .chapter-menu__list a:hover,
+    .chapter-menu__list a.is-active {
+      background: var(--accent-wash);
+      color: var(--text);
+    }
+
+    .shell {
+      width: var(--shell);
+      margin: 0 auto;
+    }
+
+    .section {
+      border-top: 1px solid var(--line);
+      padding: clamp(4.5rem, 8vw, 8rem) 0;
+    }
+
+    .section--compact {
+      padding-bottom: clamp(3.25rem, 6vw, 5rem);
+    }
+
+    .section-intro {
+      max-width: 720px;
+      margin-bottom: clamp(2rem, 4vw, 3.2rem);
+    }
+
+    .section-intro h2,
+    .closing-copy h2 {
+      margin: 0;
+      color: var(--text);
+      font-family: "Aptos Display", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: clamp(2rem, 4.1vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.065em;
+      line-height: 1.06;
+    }
+
+    .section-intro p,
+    .closing-copy p {
+      max-width: 62ch;
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: clamp(0.94rem, 1.5vw, 1.06rem);
+      line-height: 1.85;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .mono {
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+    }
+
+    .hero {
+      display: grid;
+      align-items: center;
+      min-height: 100dvh;
+      padding: 6rem 0 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(390px, 0.85fr);
+      align-items: center;
+      gap: clamp(2rem, 6vw, 7rem);
+    }
+
+    .hero-copy {
+      max-width: 645px;
+    }
+
+    .hero-copy h1 {
+      max-width: 12ch;
+      margin: 0;
+      font-family: "Aptos Display", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: clamp(3rem, 6vw, 5.7rem);
+      font-weight: 800;
+      letter-spacing: -0.08em;
+      line-height: 0.98;
+    }
+
+    .hero-copy h1 span {
+      display: block;
+      margin-top: 0.15em;
+      color: var(--accent);
+    }
+
+    .hero-dek {
+      max-width: 31rem;
+      margin: 1.35rem 0 1.7rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.8vw, 1.18rem);
+      line-height: 1.8;
+    }
+
+    .button-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0.7rem 1.1rem;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-pill);
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 160ms var(--ease), background-color 160ms var(--ease);
+    }
+
+    .button-primary:hover {
+      background: color-mix(in srgb, var(--accent) 88%, var(--text));
+    }
+
+    .button-primary:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .contract-board {
+      overflow: hidden;
+      padding: clamp(1.25rem, 2.5vw, 2rem);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+      box-shadow: 0 25px 60px -45px var(--shadow);
+    }
+
+    .contract-board figcaption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .contract-board figcaption span {
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    .contract-board figcaption strong {
+      color: var(--text);
+      font-size: 0.9rem;
+      text-align: right;
+    }
+
+    .contract-flow {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .contract-flow li {
+      position: relative;
+      padding: 1.12rem 0 1.12rem 2.25rem;
+    }
+
+    .contract-flow li + li {
+      border-top: 1px solid var(--line);
+    }
+
+    .contract-flow li::before {
+      position: absolute;
+      top: 1.36rem;
+      left: 0;
+      width: 0.85rem;
+      height: 0.85rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .contract-flow li:not(:last-child)::after {
+      position: absolute;
+      top: 2.35rem;
+      bottom: -0.1rem;
+      left: 0.37rem;
+      width: 1px;
+      background: var(--line-strong);
+      content: "";
+    }
+
+    .contract-flow strong {
+      display: block;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .contract-flow p {
+      margin: 0.24rem 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+
+    .contract-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.77rem;
+    }
+
+    .contract-foot strong {
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr 0.82fr;
+      grid-template-rows: auto auto;
+      gap: 0.8rem;
+    }
+
+    .overview-item {
+      min-height: 154px;
+      padding: 1.3rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .overview-item--lead {
+      grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--surface-strong);
+      border-color: var(--accent-wash-strong);
+    }
+
+    .overview-item--accent {
+      background: var(--accent-wash);
+      border-color: var(--accent-wash-strong);
+    }
+
+    .overview-kicker {
+      margin: 0;
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .overview-value {
+      margin: 0.45rem 0 0;
+      color: var(--accent);
+      font-family: "Aptos Display", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: clamp(2.1rem, 4vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+
+    .overview-item h3 {
+      max-width: 18ch;
+      margin: 0.7rem 0 0;
+      color: var(--text);
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .overview-item p:last-child {
+      max-width: 35ch;
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+
+    .details-panel {
+      margin-top: 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-control);
+      background: var(--surface-soft);
+    }
+
+    .details-panel summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.87rem;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .details-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-panel summary::after {
+      color: var(--accent);
+      content: "+";
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .details-panel[open] summary::after {
+      content: "-";
+    }
+
+    .details-panel__body {
+      padding: 0 1rem 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.75;
+    }
+
+    .details-panel__body p {
+      max-width: 72ch;
+      margin: 0;
+    }
+
+    .inline-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.9rem;
+      margin-top: 0.8rem;
+    }
+
+    .inline-links a {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-underline-offset: 0.18em;
+    }
+
+    .lifecycle-board {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .lifecycle-tabs {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(126px, 1fr));
+      min-width: 882px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .lifecycle-scroll {
+      overflow-x: auto;
+    }
+
+    .lifecycle-tab {
+      position: relative;
+      min-height: 104px;
+      padding: 1rem 0.85rem;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: left;
+      transition: background-color 180ms var(--ease), color 180ms var(--ease);
+    }
+
+    .lifecycle-tab:last-child {
+      border-right: 0;
+    }
+
+    .lifecycle-tab::after {
+      position: absolute;
+      right: 0.85rem;
+      bottom: 0.85rem;
+      width: 1.7rem;
+      height: 1px;
+      background: currentColor;
+      content: "";
+      opacity: 0.55;
+    }
+
+    .lifecycle-tab:hover,
+    .lifecycle-tab[aria-selected="true"] {
+      background: var(--accent-wash);
+      color: var(--text);
+    }
+
+    .lifecycle-tab[aria-selected="true"]::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent);
+      content: "";
+    }
+
+    .lifecycle-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+      gap: 2rem;
+      min-height: 175px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .lifecycle-panel__label {
+      margin: 0;
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .lifecycle-panel h3 {
+      margin: 0.45rem 0 0;
+      color: var(--text);
+      font-size: clamp(1.3rem, 2.4vw, 2rem);
+      letter-spacing: -0.045em;
+      line-height: 1.15;
+    }
+
+    .lifecycle-panel p:last-child {
+      align-self: center;
+      max-width: 53ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.75;
+    }
+
+    .scope-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.75fr);
+      align-items: center;
+      gap: clamp(1.25rem, 4vw, 4.5rem);
+    }
+
+    .diagram-shell {
+      overflow-x: auto;
+      padding: clamp(0.85rem, 2vw, 1.25rem);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .scope-diagram {
+      display: block;
+      width: 100%;
+      min-width: 630px;
+      color: var(--text);
+    }
+
+    .scope-diagram text {
+      font-family: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    .scope-diagram .scope-mono {
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+    }
+
+    .scope-sidebar {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .thesis-card {
+      padding: 1.15rem 1.2rem;
+      border-left: 3px solid var(--accent);
+      background: var(--surface-soft);
+    }
+
+    .thesis-card h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .thesis-card p {
+      margin: 0.38rem 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.72;
+    }
+
+    .matrix-layout {
+      display: grid;
+      grid-template-columns: minmax(245px, 0.58fr) minmax(0, 1.42fr);
+      gap: clamp(1.25rem, 3vw, 2.6rem);
+      align-items: start;
+    }
+
+    .matrix-sidebar {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .matrix-sidebar > p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .matrix-rule {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-control);
+      background: var(--surface-soft);
+    }
+
+    .matrix-rule strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .matrix-rule span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .matrix-status {
+      min-height: 3.5rem;
+      margin: 0;
+      padding: 0.9rem 1rem;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-wash);
+      color: var(--text);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .matrix-shell {
+      padding: clamp(0.8rem, 2vw, 1.2rem);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .matrix-canvas {
+      position: relative;
+      min-height: min(54vw, 440px);
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-control);
+      background-color: var(--surface-soft);
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 12.5% 12.5%;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .matrix-axis {
+      position: absolute;
+      z-index: 2;
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .matrix-axis--north {
+      top: 0.8rem;
+      left: 0.85rem;
+    }
+
+    .matrix-axis--south {
+      bottom: 2.3rem;
+      left: 0.85rem;
+    }
+
+    .matrix-axis--west {
+      bottom: 0.75rem;
+      left: 0.85rem;
+    }
+
+    .matrix-axis--east {
+      right: 0.85rem;
+      bottom: 0.75rem;
+    }
+
+    .matrix-line-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .rice-point {
+      position: absolute;
+      z-index: 3;
+      width: 12px;
+      height: 12px;
+      margin: -6px 0 0 -6px;
+      padding: 0;
+      border: 2px solid var(--surface);
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-wash-strong);
+      cursor: pointer;
+      transition: opacity 180ms var(--ease), transform 180ms var(--ease), box-shadow 180ms var(--ease);
+    }
+
+    .rice-point__tip {
+      position: absolute;
+      bottom: calc(100% + 0.5rem);
+      left: 50%;
+      padding: 0.24rem 0.42rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: var(--page);
+      color: var(--text);
+      font-size: 0.68rem;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 0.2rem);
+      transition: opacity 150ms var(--ease), transform 150ms var(--ease);
+      white-space: nowrap;
+    }
+
+    .rice-point:hover .rice-point__tip,
+    .rice-point:focus-visible .rice-point__tip {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .matrix-probe {
+      position: absolute;
+      z-index: 5;
+      width: 28px;
+      height: 28px;
+      margin: -14px 0 0 -14px;
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      background: var(--surface);
+      box-shadow: 0 0 0 5px var(--accent-wash);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .matrix-probe::before,
+    .matrix-probe::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: var(--accent);
+      content: "";
+      transform: translate(-50%, -50%);
+    }
+
+    .matrix-probe::before {
+      width: 2px;
+      height: 13px;
+    }
+
+    .matrix-probe::after {
+      width: 13px;
+      height: 2px;
+    }
+
+    .matrix-probe:active {
+      cursor: grabbing;
+    }
+
+    .matrix-readout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.9rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .matrix-readout li {
+      padding: 0.35rem 0.55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1;
+    }
+
+    .matrix-readout li:first-child {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .matrix-caption {
+      margin: 0.7rem 0 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.65;
+    }
+
+    .evidence-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+      gap: 0.8rem;
+    }
+
+    .evidence-lead,
+    .evidence-rail {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .evidence-lead {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: 1.4rem;
+      padding: clamp(1.3rem, 3vw, 2rem);
+      background: var(--surface-strong);
+    }
+
+    .evidence-lead h3,
+    .evidence-rail h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+      letter-spacing: -0.05em;
+      line-height: 1.2;
+    }
+
+    .evidence-lead p {
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+
+    .evidence-rail {
+      display: grid;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .evidence-rail__item {
+      position: relative;
+      padding: 1.15rem 1.2rem 1.15rem 2.15rem;
+    }
+
+    .evidence-rail__item + .evidence-rail__item {
+      border-top: 1px solid var(--line);
+    }
+
+    .evidence-rail__item::before {
+      position: absolute;
+      top: 1.35rem;
+      left: 1rem;
+      width: 0.56rem;
+      height: 0.56rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .evidence-rail__item:not(:last-child)::after {
+      position: absolute;
+      top: 2rem;
+      bottom: -0.15rem;
+      left: 1.26rem;
+      width: 1px;
+      background: var(--line-strong);
+      content: "";
+    }
+
+    .evidence-rail__item strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .evidence-rail__item span {
+      display: block;
+      margin-top: 0.22rem;
+      color: var(--muted);
+      font-size: 0.77rem;
+      line-height: 1.58;
+    }
+
+    .decision-matrix {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .decision-head {
+      display: grid;
+      grid-template-columns: 145px minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 0.75rem;
+      padding: 0 1.1rem;
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .decision-row {
+      display: grid;
+      grid-template-columns: 145px minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 0.75rem;
+      align-items: stretch;
+      padding: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .decision-axis {
+      display: flex;
+      align-items: flex-start;
+      padding: 0.65rem 0.35rem;
+      color: var(--text);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .decision-choice {
+      padding: 0.85rem 0.95rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-control);
+    }
+
+    .decision-choice--keep {
+      border-color: var(--accent-wash-strong);
+      background: var(--accent-wash);
+    }
+
+    .decision-choice--drop {
+      border-style: dashed;
+      color: var(--muted);
+    }
+
+    .decision-choice small {
+      display: block;
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.66rem;
+      font-weight: 700;
+    }
+
+    .decision-choice--keep small {
+      color: var(--accent);
+    }
+
+    .decision-choice strong {
+      display: block;
+      margin-top: 0.3rem;
+      color: var(--text);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .decision-choice p {
+      margin: 0.28rem 0 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.55;
+    }
+
+    .decision-row details {
+      grid-column: 2 / -1;
+      border-top: 1px solid var(--line);
+    }
+
+    .decision-row summary {
+      padding-top: 0.66rem;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .decision-row details p {
+      max-width: 68ch;
+      margin: 0.4rem 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.65;
+    }
+
+    .route-control {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .route-control button,
+    .pipeline-tab,
+    .release-node,
+    .road-stop {
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 800;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 160ms var(--ease);
+    }
+
+    .route-control button {
+      min-height: 38px;
+      padding: 0.42rem 0.8rem;
+    }
+
+    .route-control button:hover,
+    .route-control button[aria-selected="true"],
+    .pipeline-tab:hover,
+    .pipeline-tab[aria-selected="true"],
+    .release-node:hover,
+    .release-node[aria-pressed="true"],
+    .road-stop:hover,
+    .road-stop[aria-selected="true"] {
+      border-color: var(--accent);
+      background: var(--accent-wash);
+      color: var(--text);
+    }
+
+    .route-control button:active,
+    .pipeline-tab:active,
+    .release-node:active,
+    .road-stop:active {
+      transform: translateY(1px) scale(0.985);
+    }
+
+    .swimlane-board {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .swimlane-scroll {
+      overflow-x: auto;
+      padding: clamp(0.75rem, 2vw, 1.25rem);
+    }
+
+    .swimlane-svg {
+      display: block;
+      width: 100%;
+      min-width: 890px;
+      color: var(--text);
+    }
+
+    .swimlane-svg text {
+      font-family: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    .swimlane-svg .svg-mono {
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+    }
+
+    .flow-node,
+    .flow-path,
+    .flow-label {
+      transition: opacity 180ms var(--ease);
+    }
+
+    .swimlane-board[data-route-mode="map"] .route-consult,
+    .swimlane-board[data-route-mode="consult"] .route-map {
+      opacity: 0.17;
+    }
+
+    .swimlane-board[data-route-mode="map"] .route-map .node-frame,
+    .swimlane-board[data-route-mode="consult"] .route-consult .node-frame {
+      stroke: var(--accent);
+      stroke-width: 2;
+    }
+
+    .swimlane-caption {
+      min-height: 4rem;
+      margin: 0;
+      padding: 1rem 1.2rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+
+    .swimlane-caption strong {
+      color: var(--text);
+    }
+
+    .ranking-board {
+      display: grid;
+      grid-template-columns: minmax(210px, 0.72fr) minmax(0, 1.28fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .pipeline-tabs {
+      display: grid;
+      align-content: start;
+      gap: 0.45rem;
+      padding: 1rem;
+      border-right: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .pipeline-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 52px;
+      padding: 0.7rem 0.82rem;
+      border-radius: var(--radius-control);
+      text-align: left;
+    }
+
+    .pipeline-tab span {
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.67rem;
+      font-weight: 700;
+    }
+
+    .pipeline-tab[aria-selected="true"] span {
+      color: var(--accent);
+    }
+
+    .pipeline-panel {
+      min-height: 275px;
+      padding: clamp(1.3rem, 4vw, 2.5rem);
+    }
+
+    .pipeline-panel__label {
+      margin: 0;
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .pipeline-panel h3 {
+      margin: 0.55rem 0 0;
+      color: var(--text);
+      font-size: clamp(1.55rem, 3vw, 2.65rem);
+      letter-spacing: -0.06em;
+      line-height: 1.12;
+    }
+
+    .pipeline-panel p {
+      max-width: 54ch;
+      margin: 0.8rem 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.8;
+    }
+
+    .pipeline-artifact {
+      display: inline-flex;
+      margin-top: 1.2rem;
+      padding: 0.38rem 0.58rem;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-pill);
+      color: var(--text);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.72rem;
+    }
+
+    .rank-contract {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .rank-contract__route {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.8rem;
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .rank-contract__mark {
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-top: 0.3rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+    }
+
+    .rank-contract__route h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .rank-contract__route p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.65;
+    }
+
+    .release-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .release-scroll {
+      overflow-x: auto;
+      padding: 1.1rem;
+    }
+
+    .release-pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      min-width: 860px;
+      gap: 0.6rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .release-pipeline li {
+      position: relative;
+    }
+
+    .release-pipeline li:not(:last-child)::after {
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      right: -0.62rem;
+      width: 0.65rem;
+      height: 1px;
+      background: var(--line-strong);
+      content: "";
+    }
+
+    .release-node {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: 100%;
+      min-height: 145px;
+      align-content: space-between;
+      padding: 0.95rem;
+      border-radius: var(--radius-control);
+      text-align: left;
+    }
+
+    .release-node small {
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.64rem;
+      font-weight: 700;
+    }
+
+    .release-node strong {
+      color: var(--text);
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .release-node span {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    .release-inspector {
+      min-height: 124px;
+      padding: 1.15rem 1.25rem;
+      border-top: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .release-inspector strong {
+      display: block;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .release-inspector p {
+      max-width: 72ch;
+      margin: 0.4rem 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.7;
+    }
+
+    .boundary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 0.8rem;
+    }
+
+    .boundary-card {
+      min-height: 194px;
+      padding: 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .boundary-card--wide {
+      grid-column: 1 / -1;
+      min-height: auto;
+      background: var(--surface-strong);
+    }
+
+    .boundary-card__label {
+      margin: 0;
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .boundary-card h3 {
+      margin: 0.45rem 0 0;
+      color: var(--text);
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .boundary-card p:last-child {
+      max-width: 58ch;
+      margin: 0.5rem 0 0;
+      color: var(--muted);
+      font-size: 0.81rem;
+      line-height: 1.72;
+    }
+
+    .evidence-console {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.8rem;
+    }
+
+    .evidence-panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .evidence-panel__head {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .evidence-panel__head h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.2rem;
+      letter-spacing: -0.035em;
+    }
+
+    .evidence-panel__head p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .evidence-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .evidence-list li {
+      position: relative;
+      padding: 1rem 1.15rem 1rem 2rem;
+    }
+
+    .evidence-list li + li {
+      border-top: 1px solid var(--line);
+    }
+
+    .evidence-list li::before {
+      position: absolute;
+      top: 1.35rem;
+      left: 1.15rem;
+      width: 0.48rem;
+      height: 0.48rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .evidence-list strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .evidence-list span {
+      display: block;
+      margin-top: 0.18rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.6;
+    }
+
+    .metric-deck {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .metric-card {
+      min-height: 160px;
+      padding: 1.15rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface-soft);
+    }
+
+    .metric-card strong {
+      display: block;
+      color: var(--accent);
+      font-family: "Aptos Display", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-size: clamp(1.65rem, 3vw, 2.65rem);
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+
+    .metric-card h3 {
+      margin: 0.5rem 0 0;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .metric-card p {
+      margin: 0.22rem 0 0;
+      color: var(--muted);
+      font-size: 0.73rem;
+      line-height: 1.6;
+    }
+
+    .roadmap-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-panel);
+      background: var(--surface);
+    }
+
+    .roadmap-scroll {
+      overflow-x: auto;
+      padding: 1.25rem;
+    }
+
+    .roadmap-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(165px, 1fr));
+      min-width: 900px;
+      gap: 0.65rem;
+      padding: 1.3rem 0 0;
+    }
+
+    .roadmap-track::before {
+      position: absolute;
+      top: 0.35rem;
+      right: 7%;
+      left: 7%;
+      height: 1px;
+      background: var(--line-strong);
+      content: "";
+    }
+
+    .road-stop {
+      position: relative;
+      display: grid;
+      min-height: 164px;
+      align-content: start;
+      gap: 0.35rem;
+      padding: 1.05rem 0.9rem 0.85rem;
+      border-radius: var(--radius-control);
+      text-align: left;
+    }
+
+    .road-stop::before {
+      position: absolute;
+      top: -1.34rem;
+      left: 0.9rem;
+      width: 0.78rem;
+      height: 0.78rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      background: var(--page);
+      content: "";
+    }
+
+    .road-stop small {
+      color: var(--quiet);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .road-stop strong {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .road-stop span {
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.55;
+    }
+
+    .road-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+      gap: 1.5rem;
+      min-height: 176px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border-top: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .road-panel__state {
+      margin: 0;
+      color: var(--accent);
+      font-family: "Aptos Mono", "Cascadia Code", Consolas, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .road-panel h3 {
+      margin: 0.48rem 0 0;
+      color: var(--text);
+      font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+      letter-spacing: -0.05em;
+      line-height: 1.15;
+    }
+
+    .road-panel p:last-child {
+      align-self: center;
+      max-width: 60ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.75;
+    }
+
+    .closing {
+      padding-top: clamp(5rem, 9vw, 9rem);
+      padding-bottom: clamp(4rem, 7vw, 7rem);
+    }
+
+    .closing-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.75fr);
+      gap: clamp(2rem, 6vw, 7rem);
+      align-items: end;
+    }
+
+    .closing-rail {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .closing-rail p {
+      position: relative;
+      margin: 0;
+      padding: 1.1rem 0 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+
+    .closing-rail p::before {
+      position: absolute;
+      top: 1.68rem;
+      left: 0;
+      width: 0.48rem;
+      height: 0.48rem;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .closing-rail strong {
+      color: var(--text);
+    }
+
+    footer {
+      padding: 0 0 2.5rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--line);
+      color: var(--quiet);
+      font-size: 0.74rem;
+    }
+
+    .footer-inner p {
+      margin: 0;
+    }
+
+    .footer-inner a {
+      color: var(--muted);
+      font-weight: 700;
+      text-underline-offset: 0.18em;
+    }
+
+    @media (max-width: 1040px) {
+      .nav-primary a:nth-child(n + 6) {
+        display: none;
+      }
+
+      .hero-grid,
+      .scope-layout,
+      .evidence-board,
+      .closing-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+      }
+
+      .matrix-layout {
+        grid-template-columns: minmax(220px, 0.52fr) minmax(0, 1.48fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --shell: min(100% - 32px, 1180px);
+      }
+
+      .site-nav__inner {
+        min-height: 58px;
+        padding: 0.42rem 0.45rem 0.42rem 0.75rem;
+      }
+
+      .nav-primary {
+        display: none;
+      }
+
+      .chapter-menu__list {
+        grid-template-columns: 1fr;
+        max-height: min(70dvh, 500px);
+        overflow-y: auto;
+      }
+
+      .hero {
+        align-items: start;
+        min-height: 100dvh;
+        padding-top: 5.8rem;
+      }
+
+      .hero-grid,
+      .scope-layout,
+      .matrix-layout,
+      .evidence-board,
+      .evidence-lead,
+      .ranking-board,
+      .boundary-grid,
+      .evidence-console,
+      .road-panel,
+      .closing-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-copy h1 {
+        max-width: 100%;
+        font-size: clamp(2.35rem, 11vw, 3.6rem);
+      }
+
+      .hero-dek {
+        max-width: 33ch;
+      }
+
+      .contract-board {
+        margin-top: 0.5rem;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .overview-item--lead {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+
+      .overview-item {
+        min-height: 145px;
+      }
+
+      .lifecycle-panel {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+
+      .scope-diagram {
+        min-width: 590px;
+      }
+
+      .matrix-canvas {
+        min-height: 360px;
+      }
+
+      .decision-head {
+        display: none;
+      }
+
+      .decision-row {
+        grid-template-columns: 1fr;
+      }
+
+      .decision-axis {
+        padding: 0.1rem 0.25rem;
+      }
+
+      .decision-row details {
+        grid-column: auto;
+      }
+
+      .pipeline-tabs {
+        grid-template-columns: repeat(4, minmax(125px, 1fr));
+        overflow-x: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .pipeline-tab {
+        min-width: 125px;
+      }
+
+      .rank-contract {
+        grid-template-columns: 1fr;
+      }
+
+      .boundary-card--wide {
+        grid-column: auto;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .overview-grid,
+      .metric-deck {
+        grid-template-columns: 1fr;
+      }
+
+      .matrix-canvas {
+        min-height: 320px;
+      }
+
+      .matrix-axis {
+        font-size: 0.6rem;
+      }
+
+      .matrix-axis--east {
+        right: 0.55rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reading-progress__bar {
+        transition: none;
+      }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      .site-nav__inner {
+        background: var(--page);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#summary">本文へ移動</a>
+  <div class="reading-progress" aria-hidden="true"><div class="reading-progress__bar" id="reading-progress"></div></div>
+
+  <nav class="site-nav" aria-label="事例内ナビゲーション">
+    <div class="site-nav__inner">
+      <a class="brand-link" href="#top" data-nav="top">KomeSomme</a>
+      <div class="nav-primary" aria-label="主要な章">
+        <a href="#summary" data-nav="summary">要点</a>
+        <a href="#concept" data-nav="concept">体験</a>
+        <a href="#decision" data-nav="decision">選定</a>
+        <a href="#ranking" data-nav="ranking">推薦</a>
+        <a href="#validate" data-nav="validate">検証</a>
+        <a href="#roadmap" data-nav="roadmap">次へ</a>
+      </div>
+      <details class="chapter-menu">
+        <summary>すべての章</summary>
+        <div class="chapter-menu__list">
+          <a href="#summary" data-nav="summary">要点</a>
+          <a href="#lifecycle" data-nav="lifecycle">進め方</a>
+          <a href="#context" data-nav="context">実験仮説</a>
+          <a href="#concept" data-nav="concept">味わい地図</a>
+          <a href="#wedge" data-nav="wedge">正本と観測</a>
+          <a href="#decision" data-nav="decision">技術選定</a>
+          <a href="#design" data-nav="design">データフロー</a>
+          <a href="#ranking" data-nav="ranking">推薦処理</a>
+          <a href="#delivery" data-nav="delivery">公開条件</a>
+          <a href="#threat" data-nav="threat">運用境界</a>
+          <a href="#validate" data-nav="validate">証拠と計測</a>
+          <a href="#roadmap" data-nav="roadmap">ロードマップ</a>
+          <a href="#closing" data-nav="closing">結論</a>
+        </div>
+      </details>
+    </div>
+  </nav>
+
+  <main>
+    <header id="top" class="hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">1.0.0 デリバリーケーススタディ</p>
+          <h1>KomeSomme<span>順位を預けない</span></h1>
+          <p class="hero-dek">構造化カタログを正本に、米選びを比較可能にした技術実験です。</p>
+          <a class="button-primary" href="https://komesomme.jp" target="_blank" rel="noopener">公開プロダクトを開く</a>
+        </div>
+
+        <figure class="contract-board reveal" aria-labelledby="contract-title">
+          <figcaption>
+            <span>推薦の契約</span>
+            <strong id="contract-title">候補決定と生成を切り離す</strong>
+          </figcaption>
+          <ol class="contract-flow">
+            <li>
+              <strong>構造化カタログ</strong>
+              <p>甘み、粒感、料理相性、向かない組み合わせを Git で管理します。</p>
+            </li>
+            <li>
+              <strong>距離と検索で順位を決定</strong>
+              <p>地図は二次元距離、相談はモデル版を揃えた意味検索で上位4件を返します。</p>
+            </li>
+            <li>
+              <strong>LLM は案内文を補助</strong>
+              <p>候補と理由は規則で残り、案内文が失敗しても推薦体験は成立します。</p>
+            </li>
+          </ol>
+          <div class="contract-foot">
+            <span>入力の自由度と、出力の説明可能性を両立</span>
+            <strong>カタログを正本に</strong>
+          </div>
+        </figure>
+      </div>
+    </header>
+
+    <section id="summary" class="section" data-chapter="summary">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>公開までに固定した、四つの約束</h2>
+          <p>実験の価値は機能数ではなく、どの判断を再現可能な形で残したかにあります。</p>
+        </div>
+
+        <div class="overview-grid">
+          <article class="overview-item overview-item--lead reveal">
+            <div>
+              <p class="overview-kicker">公開した範囲</p>
+              <p class="overview-value">1.0.0</p>
+              <h3>地図、相談、事典、購入導線までを一つの体験として公開</h3>
+            </div>
+            <p>公開判定では、操作可能性と安全側の境界を先に確認しました。</p>
+          </article>
+          <article class="overview-item overview-item--accent reveal">
+            <p class="overview-kicker">カタログ</p>
+            <p class="overview-value">約106</p>
+            <h3>公開銘柄を検証</h3>
+            <p>80件以上を MVP 表示確認の下限として扱います。</p>
+          </article>
+          <article class="overview-item reveal">
+            <p class="overview-kicker">出力契約</p>
+            <p class="overview-value">上位4件</p>
+            <h3>候補数を統一</h3>
+            <p>地図と相談で画面の選択負荷を揃えます。</p>
+          </article>
+          <article class="overview-item reveal">
+            <p class="overview-kicker">意味検索</p>
+            <p class="overview-value">1536d</p>
+            <h3>モデル版を固定</h3>
+            <p>問い合わせとカタログを同じベクトル空間で照合します。</p>
+          </article>
+          <article class="overview-item reveal">
+            <p class="overview-kicker">公開確認</p>
+            <p class="overview-value">09.07</p>
+            <h3>smoke を実施</h3>
+            <p>地図、相談の上位4件、購入リンクを確認しました。</p>
+          </article>
+        </div>
+
+        <details class="details-panel">
+          <summary>このケーススタディの読み方</summary>
+          <div class="details-panel__body">
+            <p>前半では対象と体験の設計、中央では採用と見送りの理由、後半では公開条件と次の観測を扱います。利用結果の主張と、今回完了したデリバリーの証拠は意図して分けています。</p>
+            <div class="inline-links">
+              <a href="#context" data-nav="context">実験仮説を見る</a>
+              <a href="#decision" data-nav="decision">選定を見る</a>
+              <a href="#validate" data-nav="validate">証拠と観測を見る</a>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="lifecycle" class="section" data-chapter="lifecycle">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>公開後の観測までを、同じ工程に置く</h2>
+          <p>課題定義から公開までを直線で終えず、利用の信号を次の判断へ戻す設計にしました。</p>
+        </div>
+
+        <div class="lifecycle-board reveal">
+          <div class="lifecycle-scroll">
+            <div class="lifecycle-tabs" role="tablist" aria-label="プロジェクトの進め方">
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="true" aria-controls="lifecycle-panel" data-lifecycle="problem">課題を定義</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="concept">体験を組む</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="decision">選定を記録</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="design">境界を設計</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="delivery">実装する</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="release">公開する</button>
+              <button class="lifecycle-tab" type="button" role="tab" aria-selected="false" aria-controls="lifecycle-panel" data-lifecycle="observe">観測へ戻す</button>
+            </div>
+          </div>
+          <div id="lifecycle-panel" class="lifecycle-panel" role="tabpanel" tabindex="0">
+            <div>
+              <p class="lifecycle-panel__label" id="lifecycle-label">課題定義</p>
+              <h3 id="lifecycle-title">比較できない味の言葉を扱う</h3>
+            </div>
+            <p id="lifecycle-copy">産地や価格だけでは決め切れない米選びを、甘み、粒感、料理との相性として比較可能にする。ここで定めた範囲が、以降のデータ構造と画面の判断基準です。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="context" class="section" data-chapter="context">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>実験の対象を、狭く正確に決める</h2>
+          <p>1.0.0 の中心は、今夜の料理と好みに合う米を選ぶことです。広げる前に、判断が必要な境界を明確にしました。</p>
+        </div>
+
+        <div class="scope-layout">
+          <div class="diagram-shell reveal">
+            <svg id="scope-svg" class="scope-diagram" viewBox="0 0 720 470" role="img" aria-labelledby="scope-title scope-desc">
+              <title id="scope-title">KomeSomme 1.0.0 の実験スコープ</title>
+              <desc id="scope-desc">中心は今夜の料理に合う米。中間の環は甘み、粒感、料理相性、向かない組み合わせを管理する構造化カタログ。外側はこの版の対象外です。</desc>
+              <circle cx="306" cy="234" r="191" fill="none" stroke="var(--line-strong)" stroke-width="2" stroke-dasharray="7 8"></circle>
+              <circle cx="306" cy="234" r="133" fill="var(--surface-soft)" stroke="var(--accent)" stroke-width="2"></circle>
+              <circle cx="306" cy="234" r="72" fill="var(--accent)"></circle>
+              <text x="306" y="55" text-anchor="middle" class="scope-mono" font-size="12" fill="var(--quiet)">この版では扱わない範囲</text>
+              <text x="306" y="138" text-anchor="middle" class="scope-mono" font-size="11" fill="var(--accent)">構造化カタログ</text>
+              <text x="306" y="162" text-anchor="middle" font-size="13" fill="var(--text)">甘み / 粒感 / 料理相性</text>
+              <text x="306" y="185" text-anchor="middle" font-size="13" fill="var(--text)">向かない組み合わせ</text>
+              <text x="306" y="223" text-anchor="middle" class="scope-mono" font-size="10" fill="var(--accent-ink)">中心の仕事</text>
+              <text x="306" y="248" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent-ink)">今夜の料理に</text>
+              <text x="306" y="270" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent-ink)">合う米を選ぶ</text>
+              <line x1="454" y1="116" x2="530" y2="85" stroke="var(--line-strong)" stroke-width="1.5"></line>
+              <rect x="530" y="57" width="159" height="57" rx="10" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+              <text x="548" y="80" font-size="12" fill="var(--text)">ふるさと納税の</text>
+              <text x="548" y="99" font-size="12" fill="var(--muted)">還元率比較</text>
+              <line x1="459" y1="315" x2="530" y2="347" stroke="var(--line-strong)" stroke-width="1.5"></line>
+              <rect x="530" y="321" width="159" height="82" rx="10" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+              <text x="548" y="346" font-size="12" fill="var(--text)">認証とお気に入り</text>
+              <text x="548" y="369" font-size="12" fill="var(--muted)">多ターン相談</text>
+              <text x="548" y="389" font-size="12" fill="var(--muted)">機器連携</text>
+              <text x="306" y="447" text-anchor="middle" font-size="11" fill="var(--muted)">中心に近いほど、1.0.0 で約束する体験とデータの範囲</text>
+            </svg>
+          </div>
+          <aside class="scope-sidebar reveal" aria-label="実験仮説と境界">
+            <article class="thesis-card">
+              <h3>実験仮説</h3>
+              <p>料理や口感の言葉から候補を絞る体験は、産地や価格だけを並べる選択よりも比較の軸を増やせる。</p>
+            </article>
+            <article class="thesis-card">
+              <h3>設計上の境界</h3>
+              <p>推薦は銘柄単位です。産年、精米日、水量、炊飯器までを含む SKU 単位の味保証には踏み込みません。</p>
+            </article>
+            <article class="thesis-card">
+              <h3>購入導線の位置づけ</h3>
+              <p>楽天などへの直リンクは実装済みです。次は推薦後の行動とカタログ更新コストを観測し、投資判断につなげます。</p>
+            </article>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="concept" class="section" data-chapter="concept">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>味わい地図を、入力装置にする</h2>
+          <p>ベクトル検索を前面に出すのではなく、甘みと粒感の二次元盤で好みを指せるようにしました。</p>
+        </div>
+
+        <div class="matrix-layout">
+          <div class="matrix-sidebar reveal">
+            <p>この盤面で動くのは探針だけです。銘柄座標はカタログの固定値で、近い4銘柄を同じ計算で強調します。</p>
+            <div class="matrix-rule">
+              <strong>端末内で完結</strong>
+              <span>地図操作は API を呼びません。二次元距離だけで候補を更新します。</span>
+            </div>
+            <div class="matrix-rule">
+              <strong>上位4件を同じ粒度で表示</strong>
+              <span>相談経路と候補数を揃え、画面ごとの選び直しを増やしません。</span>
+            </div>
+            <p id="matrix-phase" class="matrix-status" role="status">探針をドラッグ、タップ、または矢印キーで動かすと、近い銘柄が更新されます。</p>
+          </div>
+
+          <div class="matrix-shell reveal">
+            <div id="interactive-matrix" class="matrix-canvas" aria-describedby="matrix-caption">
+              <span class="matrix-axis matrix-axis--north">ほどける</span>
+              <span class="matrix-axis matrix-axis--south">粒立ち</span>
+              <span class="matrix-axis matrix-axis--west">すっきり</span>
+              <span class="matrix-axis matrix-axis--east">甘みふくよか</span>
+              <svg id="vector-lines" class="matrix-line-layer" aria-hidden="true"></svg>
+              <div id="rice-points"></div>
+              <div id="smart-probe" class="matrix-probe" role="slider" tabindex="0" aria-label="味わいの現在位置。左右の矢印で甘み、上下の矢印で粒感を調整" aria-valuemin="0" aria-valuemax="100" aria-valuenow="52" aria-valuetext="甘み 52、粒感 52"></div>
+            </div>
+            <ol id="knn-readout" class="matrix-readout" aria-label="近い4銘柄"></ol>
+            <p id="matrix-caption" class="matrix-caption">各銘柄を選択しても探針の位置は更新できます。表示される順位はこのデモ内の二次元距離に基づきます。</p>
+          </div>
+        </div>
+
+        <details class="details-panel">
+          <summary>相談経路と地図経路を分ける理由</summary>
+          <div class="details-panel__body">
+            <p>地図は低遅延な探索のための UI です。料理を文章で相談する場合のみ、同じモデル版で埋め込みを作り、pgvector で候補を取得します。二つを無理に融合せず、入力に合う経路を選びます。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="wedge" class="section" data-chapter="wedge">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>差分は、モデルではなく正本にある</h2>
+          <p>候補の根拠をカタログと規則に残すことで、入力の自由さと説明可能な出力を両立させます。</p>
+        </div>
+
+        <div class="evidence-board">
+          <article class="evidence-lead reveal">
+            <div>
+              <p class="eyebrow">推薦の正本</p>
+              <h3>Git に置いた構造化カタログ</h3>
+              <p>甘みと粒感は相対座標、料理相性と向かない組み合わせは人手のメモとして持ちます。</p>
+            </div>
+            <div class="evidence-rail" aria-label="正本が担うこと">
+              <div class="evidence-rail__item">
+                <strong>地図の座標</strong>
+                <span>味わいを端末内で比較するための固定値です。</span>
+              </div>
+              <div class="evidence-rail__item">
+                <strong>料理相性の規則</strong>
+                <span>候補を並べ替えず、カード上の理由を組み立てます。</span>
+              </div>
+              <div class="evidence-rail__item">
+                <strong>更新可能な運用単位</strong>
+                <span>validate:rice で必須フィールドとスコア範囲を検査します。</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="evidence-rail reveal" aria-label="次に観測すること">
+            <div class="evidence-rail__item">
+              <strong>推薦後の行動</strong>
+              <span>主要な観測は shop_click です。</span>
+            </div>
+            <div class="evidence-rail__item">
+              <strong>入口の使われ方</strong>
+              <span>consult_submit と料理別入口をページ型で見ます。</span>
+            </div>
+            <div class="evidence-rail__item">
+              <strong>再訪の手掛かり</strong>
+              <span>share、LINE、revisit を次の体験設計に接続します。</span>
+            </div>
+          </aside>
+        </div>
+
+        <details class="details-panel">
+          <summary>カタログの粒度と、商流の観測範囲</summary>
+          <div class="details-panel__body">
+            <p>推薦は銘柄単位で、袋ごとの産年や精米日を保証するものではありません。購入導線はアフィリエイト直リンクを含みます。shop_click と管理画面の成果を突合し、利用の信号と更新工数を合わせて次の事業仮説を判断します。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="decision" class="section" data-chapter="decision">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>採用は、トレードオフの記録</h2>
+          <p>一人体制で運用できる境界と、推薦の一貫性を守ることを優先して選びました。</p>
+        </div>
+
+        <div class="decision-head" aria-hidden="true">
+          <span>レイヤー</span>
+          <span>採用した判断</span>
+          <span>今回見送った判断</span>
+        </div>
+        <div class="decision-matrix">
+          <article class="decision-row reveal">
+            <div class="decision-axis">アプリケーション</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>Next.js 15 App Router</strong>
+              <p>画面と相談 API を同一リポジトリで閉じます。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>別立ての API サーバ</strong>
+              <p>現段階では運用境界を増やしません。</p>
+            </div>
+            <details>
+              <summary>移る条件を見る</summary>
+              <p>チームを分ける、または API を外部公開する要件が明確になった時点で、独立したスケール境界を検討します。</p>
+            </details>
+          </article>
+
+          <article class="decision-row reveal">
+            <div class="decision-axis">ベクトル検索</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>Supabase pgvector</strong>
+              <p>権限とメタデータをリレーショナル基盤に揃えます。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>Pinecone / Qdrant 単独</strong>
+              <p>件数が百前後の段階で基盤を分けません。</p>
+            </div>
+            <details>
+              <summary>移る条件を見る</summary>
+              <p>プロファイル数万、p95 の悪化、多テナント隔離が必要になることを移行判断の条件に置きます。</p>
+            </details>
+          </article>
+
+          <article class="decision-row reveal">
+            <div class="decision-axis">埋め込み</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>Gemini 既定 / OpenAI 切替</strong>
+              <p>どちらも 1536 次元で、モデル版を明示します。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>異モデルの混在比較</strong>
+              <p>同じ次元数でもベクトル空間は共有しません。</p>
+            </div>
+            <details>
+              <summary>再計算の原則を見る</summary>
+              <p>provider を切り替えるときは、seed でカタログを全量再計算します。RPC は embedding_model を必須にして、同じ版だけを照合します。</p>
+            </details>
+          </article>
+
+          <article class="decision-row reveal">
+            <div class="decision-axis">推薦</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>座標と意味検索の二経路</strong>
+              <p>地図は低遅延、相談だけが意味検索を使います。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>操作のたびに LLM</strong>
+              <p>候補決定を生成の振る舞いに依存させません。</p>
+            </div>
+            <details>
+              <summary>出力契約を見る</summary>
+              <p>地図も相談も上位4件で返します。1.0.0 では diversity rerank を対象にせず、近い候補が似る可能性は次の評価対象です。</p>
+            </details>
+          </article>
+
+          <article class="decision-row reveal">
+            <div class="decision-axis">データ投入</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>TS catalog → seed:rice</strong>
+              <p>Git を正本にし、DB は配信用の控えにします。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>別言語の常設スクレイパ</strong>
+              <p>日常の保守対象を増やしません。</p>
+            </div>
+            <details>
+              <summary>更新の原則を見る</summary>
+              <p>埋め込みを含むカタログは、正本の変更から検証と seed を通して更新します。銘柄数を増やす前に、100銘柄あたりの工数を見積もります。</p>
+            </details>
+          </article>
+
+          <article class="decision-row reveal">
+            <div class="decision-axis">購入導線</div>
+            <div class="decision-choice decision-choice--keep">
+              <small>採用</small>
+              <strong>検索 CTA と楽天直リンク</strong>
+              <p>比較の直後に購入先へ進める出口を置きます。</p>
+            </div>
+            <div class="decision-choice decision-choice--drop">
+              <small>見送り</small>
+              <strong>全モール API の必須化</strong>
+              <p>規約対応と運用負荷を先に増やしません。</p>
+            </div>
+            <details>
+              <summary>次の判断を見る</summary>
+              <p>shop_click と成果の突合、カタログ更新コストを観測し、購入導線を拡張する価値を判断します。</p>
+            </details>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="design" class="section" data-chapter="design">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>経路を分けると、説明も運用も明快になる</h2>
+          <p>地図と相談は同じ画面に見えても、遅延、権限、失敗時の振る舞いが異なるため別の経路として設計しています。</p>
+        </div>
+
+        <div class="route-control reveal" role="tablist" aria-label="データフローの表示切替">
+          <button type="button" role="tab" aria-selected="true" aria-controls="swim-phase" data-route="map">地図の経路</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="swim-phase" data-route="consult">相談の経路</button>
+        </div>
+
+        <div id="swimlane-board" class="swimlane-board reveal" data-route-mode="map">
+          <div class="swimlane-scroll">
+            <svg id="swimlane-svg" class="swimlane-svg" viewBox="0 0 1060 460" role="img" aria-labelledby="swim-title swim-desc">
+              <title id="swim-title">KomeSomme の地図経路と相談経路</title>
+              <desc id="swim-desc">画面、サーバ、データベース、外部モデルの4レーン。地図は端末内の座標計算、相談はサーバ、埋め込み、pgvector、規則、任意の案内文を通ります。</desc>
+              <defs>
+                <marker id="arrow-accent" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="var(--accent)"></path></marker>
+                <marker id="arrow-muted" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="var(--muted)"></path></marker>
+              </defs>
+              <g>
+                <rect x="142" y="28" width="888" height="82" rx="12" fill="var(--surface-soft)"></rect>
+                <rect x="142" y="126" width="888" height="82" rx="12" fill="var(--surface-strong)"></rect>
+                <rect x="142" y="224" width="888" height="82" rx="12" fill="var(--surface-soft)"></rect>
+                <rect x="142" y="322" width="888" height="82" rx="12" fill="var(--surface-strong)"></rect>
+                <text x="122" y="62" text-anchor="end" font-size="15" font-weight="700" fill="var(--text)">画面</text>
+                <text x="122" y="82" text-anchor="end" class="svg-mono" font-size="9" fill="var(--muted)">ブラウザ</text>
+                <text x="122" y="160" text-anchor="end" font-size="15" font-weight="700" fill="var(--text)">サーバ</text>
+                <text x="122" y="180" text-anchor="end" class="svg-mono" font-size="9" fill="var(--muted)">Next.js</text>
+                <text x="122" y="258" text-anchor="end" font-size="15" font-weight="700" fill="var(--text)">データベース</text>
+                <text x="122" y="278" text-anchor="end" class="svg-mono" font-size="9" fill="var(--muted)">Supabase</text>
+                <text x="122" y="356" text-anchor="end" font-size="15" font-weight="700" fill="var(--text)">外部モデル</text>
+                <text x="122" y="376" text-anchor="end" class="svg-mono" font-size="9" fill="var(--muted)">Gemini / OpenAI</text>
+              </g>
+
+              <g class="flow-node route-map">
+                <rect class="node-frame" x="170" y="48" width="130" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="235" y="67" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">地図を動かす</text>
+                <text x="235" y="82" text-anchor="middle" font-size="9" fill="var(--muted)">二次元の入力</text>
+              </g>
+              <g class="flow-node route-map">
+                <rect class="node-frame" x="350" y="244" width="142" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="421" y="263" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">rice_catalog</text>
+                <text x="421" y="278" text-anchor="middle" font-size="9" fill="var(--muted)">公開用の結合</text>
+              </g>
+              <g class="flow-node route-map">
+                <rect class="node-frame" x="680" y="48" width="145" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="752" y="67" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">近い4銘柄を表示</text>
+                <text x="752" y="82" text-anchor="middle" font-size="9" fill="var(--muted)">端末内の距離</text>
+              </g>
+              <path class="flow-path route-map" d="M235 90 V244 H350" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrow-muted)"></path>
+              <path class="flow-path route-map" d="M492 265 H590 V69 H680" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrow-muted)"></path>
+              <text class="flow-label route-map" x="256" y="227" font-size="9" fill="var(--muted)">地図の座標と公開カタログ</text>
+
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="320" y="48" width="122" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="381" y="67" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">相談を送る</text>
+                <text x="381" y="82" text-anchor="middle" font-size="9" fill="var(--muted)">一文を投稿</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="320" y="146" width="122" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="381" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">回数を制御</text>
+                <text x="381" y="180" text-anchor="middle" font-size="9" fill="var(--muted)">上限と緊急停止</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="480" y="146" width="122" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="541" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">文を数値化</text>
+                <text x="541" y="180" text-anchor="middle" font-size="9" fill="var(--muted)">1536 次元</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="480" y="342" width="122" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="541" y="361" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">埋め込み</text>
+                <text x="541" y="376" text-anchor="middle" font-size="9" fill="var(--muted)">5秒で打ち切り</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="650" y="244" width="130" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="715" y="263" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">pgvector 検索</text>
+                <text x="715" y="278" text-anchor="middle" font-size="9" fill="var(--muted)">モデル版で照合</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="810" y="146" width="124" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="872" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">相性を整理</text>
+                <text x="872" y="180" text-anchor="middle" font-size="9" fill="var(--muted)">規則で理由を作る</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="850" y="342" width="130" height="42" rx="9" fill="var(--surface)" stroke="var(--line-strong)"></rect>
+                <text x="915" y="361" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">案内文を補助</text>
+                <text x="915" y="376" text-anchor="middle" font-size="9" fill="var(--muted)">失敗しても候補を返す</text>
+              </g>
+              <g class="flow-node route-consult">
+                <rect class="node-frame" x="875" y="48" width="118" height="42" rx="9" fill="var(--accent)" stroke="var(--accent)"></rect>
+                <text x="934" y="67" text-anchor="middle" font-size="11" font-weight="800" fill="var(--accent-ink)">候補を返す</text>
+                <text x="934" y="82" text-anchor="middle" font-size="9" fill="var(--accent-ink)">理由と案内</text>
+              </g>
+              <path class="flow-path route-consult" d="M381 90 V146" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M442 167 H480" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M541 188 V342" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M602 363 H715 V286" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M780 265 H810 V188" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M872 188 V342" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M934 146 V90" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow-accent)"></path>
+              <path class="flow-path route-consult" d="M915 342 V286 H972 V90" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 5" marker-end="url(#arrow-accent)"></path>
+            </svg>
+          </div>
+          <p id="swim-phase" class="swimlane-caption" role="status"><strong>地図の経路:</strong> 探針の操作はブラウザ内の二次元距離で完結します。サーバと外部モデルを経由しないため、探索の手触りを保てます。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ranking" class="section" data-chapter="ranking">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>順位は決定的に、言葉は補助的に</h2>
+          <p>候補を作る処理と、利用者へ説明する処理を分離し、失敗時にも候補が残るパイプラインにしています。</p>
+        </div>
+
+        <div class="ranking-board reveal">
+          <div class="pipeline-tabs" role="tablist" aria-label="相談経路の推薦パイプライン">
+            <button class="pipeline-tab" type="button" role="tab" aria-selected="true" aria-controls="pipeline-panel" data-pipeline="input">入力を受ける <span>入力</span></button>
+            <button class="pipeline-tab" type="button" role="tab" aria-selected="false" aria-controls="pipeline-panel" data-pipeline="retrieve">候補を取る <span>取得</span></button>
+            <button class="pipeline-tab" type="button" role="tab" aria-selected="false" aria-controls="pipeline-panel" data-pipeline="reason">理由を組む <span>理由</span></button>
+            <button class="pipeline-tab" type="button" role="tab" aria-selected="false" aria-controls="pipeline-panel" data-pipeline="guide">案内を補助 <span>案内</span></button>
+          </div>
+          <article id="pipeline-panel" class="pipeline-panel" role="tabpanel" tabindex="0">
+            <p id="pipeline-label" class="pipeline-panel__label">入力</p>
+            <h3 id="pipeline-title">銘柄名か、料理の一文かを受け取る</h3>
+            <p id="pipeline-copy">銘柄名に直接ヒットすればその候補を使い、それ以外は同じモデル版で埋め込みを作る準備に進みます。</p>
+            <span id="pipeline-artifact" class="pipeline-artifact">名前ヒット / 相談文</span>
+          </article>
+        </div>
+
+        <div class="rank-contract">
+          <article class="rank-contract__route reveal">
+            <span class="rank-contract__mark" aria-hidden="true"></span>
+            <div>
+              <h3>地図の順位</h3>
+              <p>甘みと粒感の二次元距離を端末内で計算します。表示は上位4件で、意味検索を混ぜません。</p>
+            </div>
+          </article>
+          <article class="rank-contract__route reveal">
+            <span class="rank-contract__mark" aria-hidden="true"></span>
+            <div>
+              <h3>相談の順位</h3>
+              <p>銘柄名ヒット、またはモデル版を揃えた pgvector の類似度で決めます。相性規則は順位を変更しません。</p>
+            </div>
+          </article>
+        </div>
+
+        <details class="details-panel">
+          <summary>生成が失敗したときの振る舞い</summary>
+          <div class="details-panel__body">
+            <p>LLM が担当するのは案内文です。埋め込みは5秒で打ち切り、案内文が書けない場合も、決定済みの上位4件と規則から作った理由を返す経路を保持します。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="delivery" class="section" data-chapter="delivery">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>公開は、一つの完了ではなく通過条件の集合</h2>
+          <p>データ、意味検索、地図、公開境界を順に閉じ、確認可能な状態だけを次の工程へ渡しました。</p>
+        </div>
+
+        <div class="release-shell reveal">
+          <div class="release-scroll">
+            <ol class="release-pipeline" aria-label="実装から公開までの品質パイプライン">
+              <li><button class="release-node" type="button" aria-pressed="true" data-release="catalog"><small>データ</small><strong>データ基盤</strong><span>RiceSource から catalog へ</span></button></li>
+              <li><button class="release-node" type="button" aria-pressed="false" data-release="semantic"><small>意味検索</small><strong>意味トラック</strong><span>seed、埋め込み、相談 API</span></button></li>
+              <li><button class="release-node" type="button" aria-pressed="false" data-release="matrix"><small>体験</small><strong>地図 UX</strong><span>Matrix、上位4件、端末内計算</span></button></li>
+              <li><button class="release-node" type="button" aria-pressed="false" data-release="public"><small>公開</small><strong>公開境界</strong><span>CTA、開示、特商法</span></button></li>
+              <li><button class="release-node" type="button" aria-pressed="false" data-release="release"><small>判定</small><strong>公開判定</strong><span>Vercel、CI、RLS</span></button></li>
+            </ol>
+          </div>
+          <div class="release-inspector" aria-live="polite">
+            <strong id="release-title">データ基盤</strong>
+            <p id="release-copy">RiceSource から構造化カタログを作り、80件以上を MVP 表示確認の下限に置きました。現在は約106件を validate:rice で検査します。</p>
+          </div>
+        </div>
+
+        <details class="details-panel">
+          <summary>公開時に確認した運用条件</summary>
+          <div class="details-panel__body">
+            <p>CI で lint、型検査、試験、ビルドを通し、公開環境は origin/main からデプロイします。埋め込みと照合 RPC は一般公開せず、相談 API には日次上限と緊急停止を置きます。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="threat" class="section" data-chapter="threat">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>運用は、見える境界として実装する</h2>
+          <p>公開後の品質は、推薦ロジックだけでは保てません。権限、費用、案内文、計測の境界を製品の一部として扱います。</p>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary-card reveal">
+            <p class="boundary-card__label">利用制御</p>
+            <h3>相談 API の利用を制御する</h3>
+            <p>IP 単位の分・日上限、環境変数の緊急停止、タイムアウトを実装します。高頻度の正規利用とボット対策は、観測を踏まえて強化します。</p>
+          </article>
+          <article class="boundary-card reveal">
+            <p class="boundary-card__label">データ境界</p>
+            <h3>埋め込みを公開面から分離する</h3>
+            <p>RLS、embedding 非公開、サーバ権限の RPC、モデル名一致を組み合わせます。公開 UI は rice_catalog を通じて必要な情報だけを読みます。</p>
+          </article>
+          <article class="boundary-card boundary-card--wide reveal">
+            <p class="boundary-card__label">可観測性</p>
+            <h3>次に確認するのは、ページ型ごとの行動とエラーの輪郭</h3>
+            <p>GA4 と access_events では shop_click、consult_submit、revisit をページ型で分けます。Sentry DSN の確認を行い、相談 API のコストと失敗の兆候を同じ運用面で追えるようにします。</p>
+          </article>
+        </div>
+
+        <details class="details-panel">
+          <summary>ケーススタディの実行環境について</summary>
+          <div class="details-panel__body">
+            <p>この記録ページは単一 HTML と版付き CDN の GSAP、Lenis を使います。公開プロダクトは Next.js のビルド成果物です。SRI と CSP は展示ページの運用作業として扱い、公開プロダクトの安全設計とは分けて改善します。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="validate" class="section" data-chapter="validate">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>完了した証拠と、次に取る信号を分ける</h2>
+          <p>デリバリーでは公開できる状態を確かめました。次の工程では、推薦が行動につながる条件を観測します。</p>
+        </div>
+
+        <div class="evidence-console">
+          <section class="evidence-panel reveal" aria-labelledby="confirmed-title">
+            <div class="evidence-panel__head">
+              <h3 id="confirmed-title">今回確認したこと</h3>
+              <p>公開判定に必要な工程上の証拠です。</p>
+            </div>
+            <ul class="evidence-list">
+              <li><strong>2026-09-07 の smoke</strong><span>地図、相談の上位4件、購入リンクを確認しました。</span></li>
+              <li><strong>約106件のカタログ検証</strong><span>validate:rice が必須フィールドとスコア範囲を検査します。</span></li>
+              <li><strong>候補数を上位4件に統一</strong><span>地図も相談も同じ粒度で出力します。</span></li>
+              <li><strong>権限の骨格</strong><span>RLS、embedding 非公開、RPC のモデル名必須を置きます。</span></li>
+            </ul>
+          </section>
+
+          <section class="evidence-panel reveal" aria-labelledby="observe-title">
+            <div class="evidence-panel__head">
+              <h3 id="observe-title">次に観測すること</h3>
+              <p>利用結果を、次の投資判断の入力にします。</p>
+            </div>
+            <ul class="evidence-list">
+              <li><strong>shop_click</strong><span>推薦後に購入導線へ進むことを主指標として見ます。</span></li>
+              <li><strong>consult_submit と料理別入口</strong><span>どの入口が使われるかをページ型で確認します。</span></li>
+              <li><strong>share、LINE、revisit</strong><span>再訪の価値を作れるかを施策着手後に追います。</span></li>
+              <li><strong>100銘柄追加の工数</strong><span>カテゴリ展開の前に、カタログ運用が回るかを見積もります。</span></li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="metric-deck">
+          <article class="metric-card reveal">
+            <strong>80+</strong>
+            <h3>MVP 表示確認の下限</h3>
+            <p>市場網羅ではなく、公開銘柄の検査基準です。</p>
+          </article>
+          <article class="metric-card reveal">
+            <strong>1536</strong>
+            <h3>埋め込みの次元</h3>
+            <p>問い合わせとカタログは同一モデル版で揃えます。</p>
+          </article>
+          <article class="metric-card reveal">
+            <strong>5秒</strong>
+            <h3>埋め込みの打ち切り</h3>
+            <p>外部モデルの待機で推薦全体を止めません。</p>
+          </article>
+          <article class="metric-card reveal">
+            <strong>4週</strong>
+            <h3>次の観測窓</h3>
+            <p>行動の信号とカタログ工数を続けて見ます。</p>
+          </article>
+        </div>
+
+        <details class="details-panel">
+          <summary>4週間の観測を、次の判断にどう使うか</summary>
+          <div class="details-panel__body">
+            <p>shop_click、consult_submit、revisit のいずれかが継続し、カタログ更新工数が見積もれた段階で、比較、価格、SKU 情報や再訪施策への投資を判断します。収益導線の成果突合もこの観測に組み込みます。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="roadmap" class="section" data-chapter="roadmap">
+      <div class="shell">
+        <div class="section-intro reveal">
+          <h2>次は、米カテゴリの運用を深くする</h2>
+          <p>機能を広げる前に、見つける、比べる、買う、また来るという一連の手順を観測可能な状態にします。</p>
+        </div>
+
+        <div class="roadmap-shell reveal">
+          <div class="roadmap-scroll">
+            <div class="roadmap-track" role="tablist" aria-label="KomeSomme のロードマップ">
+              <button class="road-stop" type="button" role="tab" aria-selected="true" aria-controls="road-panel" data-road="released"><small>公開済み</small><strong>1.0.0</strong><span>地図、相談、事典、購入導線</span></button>
+              <button class="road-stop" type="button" role="tab" aria-selected="false" aria-controls="road-panel" data-road="maintenance"><small>保守</small><strong>1.1.x</strong><span>検索まわり、OG 画像、県の地図</span></button>
+              <button class="road-stop" type="button" role="tab" aria-selected="false" aria-controls="road-panel" data-road="operation"><small>運用</small><strong>見つけて比べる</strong><span>料理入口、比較、SEO、直リンク</span></button>
+              <button class="road-stop" type="button" role="tab" aria-selected="false" aria-controls="road-panel" data-road="return"><small>観測</small><strong>また来てもらう</strong><span>共有 URL、OG、LINE、revisit</span></button>
+              <button class="road-stop" type="button" role="tab" aria-selected="false" aria-controls="road-panel" data-road="horizon"><small>構想</small><strong>次カテゴリの仮説</strong><span>桃、和牛、酒。条件がそろった後</span></button>
+            </div>
+          </div>
+          <article id="road-panel" class="road-panel" role="tabpanel" tabindex="0">
+            <div>
+              <p id="road-state" class="road-panel__state">公開済み</p>
+              <h3 id="road-title">1.0.0 を公開</h3>
+            </div>
+            <p id="road-copy">味わい地図、相談、事典、購入導線をつなぎ、公開判定に必要な確認を通しました。次の仕事は、米の体験を実際の行動として読めるようにすることです。</p>
+          </article>
+        </div>
+
+        <details class="details-panel">
+          <summary>カテゴリを広げるための進入条件</summary>
+          <div class="details-panel__body">
+            <p>少なくとも4週間、shop_click、consult_submit、revisit の信号とカタログ更新工数を観測します。画像認識や機器連携、桃、和牛、酒への展開は、米で運用の型を確認した後に評価する構想です。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="closing" class="section closing" data-chapter="closing">
+      <div class="shell closing-layout">
+        <div class="closing-copy reveal">
+          <p class="eyebrow">デリバリーの結論</p>
+          <h2>実験を、次の判断ができる形で公開した</h2>
+          <p>KomeSomme 1.0.0 は、味わい地図と相談 API を備えた米推薦サービスです。今回のデリバリーでは、推薦の根拠、技術選定、公開条件、次の観測を一つの運用可能な設計にまとめました。</p>
+        </div>
+        <div class="closing-rail reveal" aria-label="ケーススタディの結論">
+          <p><strong>カタログを正本にする。</strong> LLM は候補の順位を持たず、説明を補助します。</p>
+          <p><strong>採用と見送りを残す。</strong> 技術判断を、次の変更ができる条件と一緒に記録します。</p>
+          <p><strong>観測を次へ戻す。</strong> 購入導線、再訪、更新工数を同じ投資判断の入力にします。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <p>KomeSomme デリバリーケーススタディ</p>
+      <p class="mono">docs/05 / docs/08 / docs/11 / docs/20 / docs/21 / pj/reviews</p>
+      <a href="#top" data-nav="top">ページ上部へ</a>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var lenis = null;
+      var lenisTick = null;
+
+      function isReduced() {
+        return reduceMotion.matches;
+      }
+
+      function refreshScrollTrigger() {
+        if (lenis && typeof lenis.resize === 'function') {
+          lenis.resize();
+        }
+        if (window.ScrollTrigger) {
+          window.ScrollTrigger.refresh();
+        }
+      }
+
+      function setupLenis() {
+        if (isReduced() || !window.Lenis || !window.gsap || !window.ScrollTrigger) {
+          return;
+        }
+        lenis = new window.Lenis({
+          duration: 0.9,
+          easing: function (t) {
+            return Math.min(1, 1.001 - Math.pow(2, -10 * t));
+          },
+          smoothWheel: true
+        });
+        lenis.on('scroll', window.ScrollTrigger.update);
+        lenisTick = function (time) {
+          lenis.raf(time * 1000);
+        };
+        window.gsap.ticker.add(lenisTick);
+        window.gsap.ticker.lagSmoothing(0);
+      }
+
+      function setupProgress() {
+        var progress = document.getElementById('reading-progress');
+        if (!progress || !window.ScrollTrigger) {
+          return;
+        }
+        if (isReduced()) {
+          progress.parentElement.hidden = true;
+          return;
+        }
+        window.ScrollTrigger.create({
+          start: 0,
+          end: 'max',
+          onUpdate: function (self) {
+            progress.style.transform = 'scaleX(' + self.progress + ')';
+          }
+        });
+      }
+
+      function setupNavigation() {
+        var links = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+        var chapters = ['top', 'summary', 'lifecycle', 'context', 'concept', 'wedge', 'decision', 'design', 'ranking', 'delivery', 'threat', 'validate', 'roadmap', 'closing'];
+
+        function activate(id) {
+          links.forEach(function (link) {
+            link.classList.toggle('is-active', link.getAttribute('data-nav') === id);
+          });
+        }
+
+        function moveTo(id) {
+          var target = document.getElementById(id);
+          if (!target) {
+            return;
+          }
+          var menu = target.ownerDocument.querySelector('.chapter-menu[open]');
+          if (menu) {
+            menu.open = false;
+          }
+          if (lenis && !isReduced()) {
+            lenis.scrollTo(target, { offset: -80 });
+          } else {
+            target.scrollIntoView({ behavior: isReduced() ? 'auto' : 'smooth', block: 'start' });
+          }
+        }
+
+        links.forEach(function (link) {
+          link.addEventListener('click', function (event) {
+            var id = link.getAttribute('data-nav');
+            if (!id) {
+              return;
+            }
+            event.preventDefault();
+            moveTo(id);
+          });
+        });
+
+        if (!window.ScrollTrigger) {
+          return;
+        }
+        chapters.forEach(function (id) {
+          var section = document.getElementById(id);
+          if (!section) {
+            return;
+          }
+          window.ScrollTrigger.create({
+            trigger: section,
+            start: 'top 48%',
+            end: 'bottom 48%',
+            onToggle: function (self) {
+              if (self.isActive) {
+                activate(id);
+              }
+            }
+          });
+        });
+      }
+
+      function setupRovingTabs(buttons, select) {
+        buttons.forEach(function (button, index) {
+          button.addEventListener('keydown', function (event) {
+            if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft' && event.key !== 'Home' && event.key !== 'End') {
+              return;
+            }
+            event.preventDefault();
+            var next = index;
+            if (event.key === 'ArrowRight') {
+              next = (index + 1) % buttons.length;
+            } else if (event.key === 'ArrowLeft') {
+              next = (index - 1 + buttons.length) % buttons.length;
+            } else if (event.key === 'Home') {
+              next = 0;
+            } else if (event.key === 'End') {
+              next = buttons.length - 1;
+            }
+            buttons[next].focus();
+            select(buttons[next]);
+          });
+        });
+      }
+
+      function setupLifecycle() {
+        var content = {
+          problem: {
+            label: '課題定義',
+            title: '比較できない味の言葉を扱う',
+            copy: '産地や価格だけでは決め切れない米選びを、甘み、粒感、料理との相性として比較可能にする。ここで定めた範囲が、以降のデータ構造と画面の判断基準です。'
+          },
+          concept: {
+            label: '体験設計',
+            title: '好みを指せる二次元盤にする',
+            copy: '味わい地図は、利用者が言葉にし切れない好みを置く入力装置です。ベクトル検索の都合ではなく、比較したい感覚から UI を組み立てます。'
+          },
+          decision: {
+            label: '技術選定',
+            title: '採用と見送りを同じ粒度で残す',
+            copy: '基盤の選定は、現時点の制約と移る条件のセットです。採用理由だけでなく、いつ別の選択が妥当になるかを文書に残します。'
+          },
+          design: {
+            label: '境界設計',
+            title: '地図と相談の責務を分ける',
+            copy: '地図操作はブラウザ内の距離計算、相談は埋め込みと類似検索です。入力、遅延、権限、失敗時の振る舞いが異なるものを無理に一つへ混ぜません。'
+          },
+          delivery: {
+            label: '実装',
+            title: '検証可能な単位で組み上げる',
+            copy: 'カタログ、意味検索、地図、公開境界を順に通し、次の工程が前提にできる条件を確認します。工程の順序自体が品質の一部です。'
+          },
+          release: {
+            label: '公開判定',
+            title: '触れることと、安全側の境界を確認する',
+            copy: '地図、相談の上位4件、購入リンクの smoke を行い、CI、RLS、相談 API の制御を公開条件として扱います。'
+          },
+          observe: {
+            label: '次の観測',
+            title: '利用の信号を次の課題定義へ戻す',
+            copy: 'shop_click、consult_submit、revisit とカタログ更新工数を観測します。ここで得る信号が、比較体験の改善と次カテゴリの投資判断を決めます。'
+          }
+        };
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.lifecycle-tab'));
+        var label = document.getElementById('lifecycle-label');
+        var title = document.getElementById('lifecycle-title');
+        var copy = document.getElementById('lifecycle-copy');
+
+        function select(button) {
+          var entry = content[button.getAttribute('data-lifecycle')];
+          if (!entry) {
+            return;
+          }
+          buttons.forEach(function (item) {
+            item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+          });
+          label.textContent = entry.label;
+          title.textContent = entry.title;
+          copy.textContent = entry.copy;
+        }
+
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            select(button);
+          });
+        });
+        setupRovingTabs(buttons, select);
+      }
+
+      function setupMatrix() {
+        var container = document.getElementById('interactive-matrix');
+        var probe = document.getElementById('smart-probe');
+        var layer = document.getElementById('vector-lines');
+        var pointsContainer = document.getElementById('rice-points');
+        var readout = document.getElementById('knn-readout');
+        var phase = document.getElementById('matrix-phase');
+        if (!container || !probe || !layer || !pointsContainer || !readout) {
+          return;
+        }
+
+        var riceData = [
+          { name: 'ゆめぴりか', x: 82, y: 28 },
+          { name: 'コシヒカリ', x: 68, y: 48 },
+          { name: 'つや姫', x: 58, y: 58 },
+          { name: 'ササニシキ', x: 28, y: 72 },
+          { name: '青天の霹靂', x: 38, y: 62 },
+          { name: '雪若丸', x: 48, y: 70 },
+          { name: 'いちほまれ', x: 72, y: 36 },
+          { name: 'ひのひかり', x: 45, y: 52 },
+          { name: 'あきさかり', x: 55, y: 40 },
+          { name: 'にこまる', x: 62, y: 65 },
+          { name: 'みずかがみ', x: 50, y: 45 },
+          { name: 'きぬむすめ', x: 40, y: 38 }
+        ];
+        var dots = [];
+        var point = { x: 52, y: 48 };
+        var dragging = false;
+
+        function clamp(value) {
+          return Math.max(5, Math.min(95, value));
+        }
+
+        function setPoint(x, y) {
+          point.x = clamp(x);
+          point.y = clamp(y);
+          probe.style.left = point.x + '%';
+          probe.style.top = point.y + '%';
+          probe.setAttribute('aria-valuenow', String(Math.round(point.x)));
+          probe.setAttribute('aria-valuetext', '甘み ' + Math.round(point.x) + '、粒感 ' + Math.round(point.y));
+        }
+
+        function rank() {
+          var rect = container.getBoundingClientRect();
+          if (rect.width < 1 || rect.height < 1) {
+            return [];
+          }
+          return riceData.map(function (rice, index) {
+            var dx = point.x - rice.x;
+            var dy = point.y - rice.y;
+            return {
+              rice: rice,
+              index: index,
+              distance: Math.sqrt(dx * dx + dy * dy),
+              x: (rice.x / 100) * rect.width,
+              y: (rice.y / 100) * rect.height
+            };
+          }).sort(function (a, b) {
+            return a.distance - b.distance;
+          }).slice(0, 4);
+        }
+
+        function render() {
+          var rect = container.getBoundingClientRect();
+          if (rect.width < 1 || rect.height < 1) {
+            return;
+          }
+          var ranked = rank();
+          var selected = new Set(ranked.map(function (item) {
+            return item.index;
+          }));
+          var sourceX = (point.x / 100) * rect.width;
+          var sourceY = (point.y / 100) * rect.height;
+          layer.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+          layer.replaceChildren();
+
+          ranked.forEach(function (item, index) {
+            var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', String(sourceX));
+            line.setAttribute('y1', String(sourceY));
+            line.setAttribute('x2', String(item.x));
+            line.setAttribute('y2', String(item.y));
+            line.setAttribute('stroke', 'var(--accent)');
+            line.setAttribute('stroke-width', index === 0 ? '2' : '1');
+            line.setAttribute('stroke-dasharray', '4 5');
+            line.setAttribute('opacity', String(1 - index * 0.16));
+            layer.appendChild(line);
+          });
+
+          dots.forEach(function (dot, index) {
+            var isTop = selected.has(index);
+            dot.style.opacity = isTop ? '1' : '0.24';
+            dot.style.transform = isTop ? 'scale(1.55)' : 'scale(0.88)';
+            dot.style.boxShadow = isTop ? '0 0 0 5px var(--accent-wash-strong)' : '0 0 0 1px var(--accent-wash-strong)';
+          });
+
+          readout.replaceChildren();
+          ranked.forEach(function (item, index) {
+            var entry = document.createElement('li');
+            entry.textContent = (index + 1) + ' ' + item.rice.name;
+            readout.appendChild(entry);
+          });
+          if (phase) {
+            phase.textContent = '現在地から近い4銘柄を表示中です。最も近い候補は ' + ranked[0].rice.name + ' です。';
+          }
+        }
+
+        riceData.forEach(function (rice) {
+          var dot = document.createElement('button');
+          var tip = document.createElement('span');
+          dot.type = 'button';
+          dot.className = 'rice-point';
+          dot.style.left = rice.x + '%';
+          dot.style.top = rice.y + '%';
+          dot.setAttribute('aria-label', rice.name + ' の位置へ探針を移動');
+          tip.className = 'rice-point__tip';
+          tip.textContent = rice.name;
+          dot.appendChild(tip);
+          dot.addEventListener('click', function (event) {
+            event.stopPropagation();
+            setPoint(rice.x, rice.y);
+            render();
+            probe.focus();
+          });
+          pointsContainer.appendChild(dot);
+          dots.push(dot);
+        });
+
+        function moveFromPointer(clientX, clientY) {
+          var rect = container.getBoundingClientRect();
+          setPoint(((clientX - rect.left) / rect.width) * 100, ((clientY - rect.top) / rect.height) * 100);
+          render();
+        }
+
+        function stopDrag() {
+          if (!dragging) {
+            return;
+          }
+          dragging = false;
+          if (lenis && !isReduced()) {
+            lenis.start();
+          }
+        }
+
+        probe.addEventListener('pointerdown', function (event) {
+          dragging = true;
+          if (lenis && !isReduced()) {
+            lenis.stop();
+          }
+          probe.setPointerCapture(event.pointerId);
+          event.preventDefault();
+        });
+        container.addEventListener('pointerdown', function (event) {
+          if (event.target.closest && event.target.closest('.rice-point, .matrix-probe')) {
+            return;
+          }
+          dragging = true;
+          if (lenis && !isReduced()) {
+            lenis.stop();
+          }
+          container.setPointerCapture(event.pointerId);
+          moveFromPointer(event.clientX, event.clientY);
+        });
+        container.addEventListener('pointermove', function (event) {
+          if (dragging) {
+            moveFromPointer(event.clientX, event.clientY);
+          }
+        });
+        container.addEventListener('pointerup', stopDrag);
+        container.addEventListener('pointercancel', stopDrag);
+        probe.addEventListener('pointerup', stopDrag);
+        probe.addEventListener('pointercancel', stopDrag);
+        probe.addEventListener('keydown', function (event) {
+          var dx = 0;
+          var dy = 0;
+          if (event.key === 'ArrowLeft') {
+            dx = -5;
+          } else if (event.key === 'ArrowRight') {
+            dx = 5;
+          } else if (event.key === 'ArrowUp') {
+            dy = -5;
+          } else if (event.key === 'ArrowDown') {
+            dy = 5;
+          } else if (event.key === 'Home') {
+            setPoint(5, point.y);
+            event.preventDefault();
+            render();
+            return;
+          } else if (event.key === 'End') {
+            setPoint(95, point.y);
+            event.preventDefault();
+            render();
+            return;
+          } else {
+            return;
+          }
+          event.preventDefault();
+          setPoint(point.x + dx, point.y + dy);
+          render();
+        });
+
+        if (window.ResizeObserver) {
+          new ResizeObserver(render).observe(container);
+        } else {
+          window.addEventListener('resize', render);
+        }
+        setPoint(point.x, point.y);
+        render();
+      }
+
+      function setupRouteSwitch() {
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-route]'));
+        var board = document.getElementById('swimlane-board');
+        var phase = document.getElementById('swim-phase');
+        if (!buttons.length || !board || !phase) {
+          return;
+        }
+        var messages = {
+          map: '<strong>地図の経路:</strong> 探針の操作はブラウザ内の二次元距離で完結します。サーバと外部モデルを経由しないため、探索の手触りを保てます。',
+          consult: '<strong>相談の経路:</strong> 回数を制御し、同じモデル版の埋め込みで候補を取得します。相性規則で理由を整え、案内文は候補決定の後に補助します。'
+        };
+        function select(button) {
+          var route = button.getAttribute('data-route');
+          buttons.forEach(function (item) {
+            item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+          });
+          board.setAttribute('data-route-mode', route);
+          phase.innerHTML = messages[route];
+        }
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            select(button);
+          });
+        });
+        setupRovingTabs(buttons, select);
+      }
+
+      function setupPipeline() {
+        var content = {
+          input: {
+            label: '入力',
+            title: '銘柄名か、料理の一文かを受け取る',
+            copy: '銘柄名に直接ヒットすればその候補を使い、それ以外は同じモデル版で埋め込みを作る準備に進みます。',
+            artifact: '名前ヒット / 相談文'
+          },
+          retrieve: {
+            label: '取得',
+            title: 'モデル版を揃えて、近い候補を取る',
+            copy: '問い合わせとカタログを同じ embedding_model で照合し、pgvector の類似度から上位4件を取得します。',
+            artifact: 'match_rice_profiles'
+          },
+          reason: {
+            label: '理由',
+            title: '料理相性の規則で、理由を組み立てる',
+            copy: '相性整理レイヤーは候補を並べ替えません。相談文と銘柄から、カード上の決定的な理由を構成します。',
+            artifact: 'compatibility rules'
+          },
+          guide: {
+            label: '案内',
+            title: '案内文だけを、生成で補助する',
+            copy: 'LLM は候補の順位にも相性規則にも関与しません。案内文が失敗しても、候補と理由を返す経路を維持します。',
+            artifact: 'optional guide'
+          }
+        };
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.pipeline-tab'));
+        var label = document.getElementById('pipeline-label');
+        var title = document.getElementById('pipeline-title');
+        var copy = document.getElementById('pipeline-copy');
+        var artifact = document.getElementById('pipeline-artifact');
+        function select(button) {
+          var entry = content[button.getAttribute('data-pipeline')];
+          if (!entry) {
+            return;
+          }
+          buttons.forEach(function (item) {
+            item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+          });
+          label.textContent = entry.label;
+          title.textContent = entry.title;
+          copy.textContent = entry.copy;
+          artifact.textContent = entry.artifact;
+        }
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            select(button);
+          });
+        });
+        setupRovingTabs(buttons, select);
+      }
+
+      function setupReleasePipeline() {
+        var content = {
+          catalog: {
+            title: 'データ基盤',
+            copy: 'RiceSource から構造化カタログを作り、80件以上を MVP 表示確認の下限に置きました。現在は約106件を validate:rice で検査します。'
+          },
+          semantic: {
+            title: '意味トラック',
+            copy: 'seed と埋め込み、相談 API をつなぎます。問い合わせとカタログは同一モデル版に揃え、相談 API には回数制限と緊急停止を置きます。'
+          },
+          matrix: {
+            title: '地図 UX',
+            copy: 'Matrix の探針は二次元距離で上位4件を出します。地図操作が API 呼び出しに依存しないことを、体験と費用の両面で守ります。'
+          },
+          public: {
+            title: '公開境界',
+            copy: '比較後の CTA、アフィリエイト導線の開示、特商法に関わる情報を、公開体験の一部として整理します。'
+          },
+          release: {
+            title: '公開判定',
+            copy: 'Vercel、CI、RLS を公開条件に置き、地図、相談の上位4件、購入リンクの smoke を実施して 1.0.0 を公開しました。'
+          }
+        };
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.release-node'));
+        var title = document.getElementById('release-title');
+        var copy = document.getElementById('release-copy');
+        function select(button) {
+          var entry = content[button.getAttribute('data-release')];
+          if (!entry) {
+            return;
+          }
+          buttons.forEach(function (item) {
+            item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+          });
+          title.textContent = entry.title;
+          copy.textContent = entry.copy;
+        }
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            select(button);
+          });
+          button.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              select(button);
+            }
+          });
+        });
+      }
+
+      function setupRoadmap() {
+        var content = {
+          released: {
+            state: '公開済み',
+            title: '1.0.0 を公開',
+            copy: '味わい地図、相談、事典、購入導線をつなぎ、公開判定に必要な確認を通しました。次の仕事は、米の体験を実際の行動として読めるようにすることです。'
+          },
+          maintenance: {
+            state: '保守',
+            title: '検索と表現の基礎を整える',
+            copy: '1.1.x では検索まわり、OG 画像、県の地図を整えます。新しい機能の数ではなく、見つかり方と共有され方の基盤を改善します。'
+          },
+          operation: {
+            state: '運用',
+            title: '見つけて、比べて、買う',
+            copy: '料理・シーン別の入口、銘柄比較と向かない組み合わせ、SEO と内部リンク、比較後の直リンクを一つの手順として整え、CTA を可測にします。'
+          },
+          return: {
+            state: '観測',
+            title: 'また来てもらう理由を作る',
+            copy: '診断結果の共有 URL、share card、OG、LINE 公式への導線を通じて、再訪イベントを観測します。横展開より先に、米のループを閉じます。'
+          },
+          horizon: {
+            state: '構想',
+            title: '次カテゴリは、運用の型ができた後',
+            copy: '桃、和牛、酒への展開は仮説です。米で4週間の信号とカタログ更新工数を確認し、画像認識や機器連携を含めて次の対象を評価します。'
+          }
+        };
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.road-stop'));
+        var state = document.getElementById('road-state');
+        var title = document.getElementById('road-title');
+        var copy = document.getElementById('road-copy');
+        function select(button) {
+          var entry = content[button.getAttribute('data-road')];
+          if (!entry) {
+            return;
+          }
+          buttons.forEach(function (item) {
+            item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+          });
+          state.textContent = entry.state;
+          title.textContent = entry.title;
+          copy.textContent = entry.copy;
+        }
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            select(button);
+          });
+        });
+        setupRovingTabs(buttons, select);
+      }
+
+      function setupReveals() {
+        if (isReduced() || !window.gsap || !window.ScrollTrigger) {
+          return;
+        }
+        window.gsap.utils.toArray('.reveal').forEach(function (element) {
+          window.gsap.from(element, {
+            opacity: 0,
+            y: 20,
+            duration: 0.62,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: element,
+              start: 'top 86%',
+              once: true
+            }
+          });
+        });
+        var swimNodes = document.querySelectorAll('#swimlane-svg .flow-node');
+        if (swimNodes.length) {
+          window.gsap.from(swimNodes, {
+            opacity: 0,
+            y: 10,
+            duration: 0.45,
+            stagger: 0.035,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: '#swimlane-board',
+              start: 'top 72%',
+              once: true
+            }
+          });
+        }
+      }
+
+      function boot() {
+        if (window.gsap && window.ScrollTrigger) {
+          window.gsap.registerPlugin(window.ScrollTrigger);
+        }
+        setupLenis();
+        setupProgress();
+        setupNavigation();
+        setupLifecycle();
+        setupMatrix();
+        setupRouteSwitch();
+        setupPipeline();
+        setupReleasePipeline();
+        setupRoadmap();
+        setupReveals();
+
+        window.addEventListener('load', refreshScrollTrigger, { once: true });
+        window.addEventListener('resize', function () {
+          window.clearTimeout(window.__komesommeRefresh);
+          window.__komesommeRefresh = window.setTimeout(refreshScrollTrigger, 120);
+        });
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(refreshScrollTrigger).catch(function () {});
+        }
+      }
+
+      window.addEventListener('pagehide', function () {
+        if (lenis && typeof lenis.destroy === 'function') {
+          lenis.destroy();
+        }
+        if (lenisTick && window.gsap) {
+          window.gsap.ticker.remove(lenisTick);
+        }
+      }, { once: true });
+
+      boot();
+    }());
+  </script>
+</body>
+</html>

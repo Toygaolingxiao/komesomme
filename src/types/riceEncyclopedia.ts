@@ -13,6 +13,44 @@ export type EncyclopediaCookingTip = {
   body: string;
 };
 
+export type EncyclopediaFactStatus = "unverified" | "partial" | "verified";
+
+export type EncyclopediaSourceKind =
+  | "naro"
+  | "pref_gov"
+  | "kokken"
+  | "brand_official"
+  | "maff"
+  | "other_official";
+
+export type EncyclopediaEditorialSource = {
+  id: string;
+  organization: string;
+  title: string;
+  /** Official / quasi-official URL — required; never invent. */
+  url: string;
+  accessed_on: string;
+  source_kind: EncyclopediaSourceKind;
+  notes?: string;
+};
+
+export type EncyclopediaClaimStatus =
+  | "verified"
+  | "partial"
+  | "unverified"
+  | "removed"
+  | "tradition";
+
+export type EncyclopediaClaim = {
+  id: string;
+  field_path: string;
+  claim_text: string;
+  status: EncyclopediaClaimStatus;
+  source_ids: string[];
+  notes?: string;
+  verified_at?: string;
+};
+
 export type RiceEncyclopediaArticle = {
   id: string;
   name: string;
@@ -30,6 +68,15 @@ export type RiceEncyclopediaArticle = {
   confidence: "high" | "medium" | "low";
   generatedAt: string;
   model: string;
+  /** Set when human/GPT revision overwrote Gemini draft copy. */
+  revisedAt?: string;
+  revisionSource?: string;
+  /** Fact-check rollup for the article. */
+  factStatus?: EncyclopediaFactStatus;
+  /** SHA-256 prefix of editorial body fields. */
+  contentHash?: string;
+  /** Default official source ids from registry.json. */
+  sourceIds?: string[];
 };
 
 export type RiceEncyclopediaManifestEntry = {

@@ -1,0 +1,47 @@
+{
+  "brand_id": "yumepirika",
+  "updated_at": "2026-09-10T01:47:44.815Z",
+  "source_ids": [
+    "kokken-r7-pdf",
+    "kokken-ranking",
+    "maff-kome",
+    "naro-top",
+    "pref-hokkaido-kome"
+  ],
+  "claims": [
+    {
+      "id": "yumepirika:prefecture",
+      "field_path": "origin.prefecture",
+      "claim_text": "主産地（カタログ）は北海道",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome",
+        "naro-top",
+        "pref-hokkaido-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
+    },
+    {
+      "id": "yumepirika:naming",
+      "field_path": "origin.naming",
+      "claim_text": "名称・由来に関する伝承または命名説明",
+      "status": "tradition",
+      "source_ids": [
+        "kokken-r7-pdf"
+      ],
+      "notes": "伝承・ブランド命名は tradition。公式育成記録とは別扱い。"
+    },
+    {
+      "id": "yumepirika:editorial-scores",
+      "field_path": "caveats.editorial",
+      "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "製品ポリシー。"
+    }
+  ]
+}

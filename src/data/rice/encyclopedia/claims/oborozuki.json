@@ -1,0 +1,45 @@
+{
+  "brand_id": "oborozuki",
+  "updated_at": "2026-09-10T01:47:44.815Z",
+  "source_ids": [
+    "maff-kome",
+    "naro-top",
+    "pref-hokkaido-kome"
+  ],
+  "claims": [
+    {
+      "id": "oborozuki:prefecture",
+      "field_path": "origin.prefecture",
+      "claim_text": "主産地（カタログ）は北海道",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome",
+        "naro-top",
+        "pref-hokkaido-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
+    },
+    {
+      "id": "oborozuki:naming",
+      "field_path": "origin.naming",
+      "claim_text": "名称・由来に関する伝承または命名説明",
+      "status": "tradition",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "notes": "伝承・ブランド命名は tradition。公式育成記録とは別扱い。"
+    },
+    {
+      "id": "oborozuki:editorial-scores",
+      "field_path": "caveats.editorial",
+      "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+      "status": "verified",
+      "source_ids": [
+        "maff-kome"
+      ],
+      "verified_at": "2026-09-10T01:47:44.815Z",
+      "notes": "製品ポリシー。"
+    }
+  ]
+}

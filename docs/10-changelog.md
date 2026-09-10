@@ -4,6 +4,12 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.4.0 — 2026-09-10
+
+- 百科 106 篇を Gemini 原稿と GPT 改稿で合稿。産地・受賞断定を弱化し、公式 URL registry と claims を全篇に付与
+- Supabase に百科／来源／revision／claim 表（0013）と `seed:encyclopedia`
+- `/pair` の並び根拠から内部フィールド名を消し、おにぎり助詞・相談フォーム文などを店頭語に直す
+
 ## 1.3.1 — 2026-09-10
 
 - `/pair/[dish]` の左英雄を細くする。並び根拠の白枠をやめる

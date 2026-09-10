@@ -88,13 +88,13 @@ function FeaturedRow({
         <EditorialArt
           src={art}
           alt=""
-          className="aspect-[5/4] w-full md:aspect-[24/8]"
+          className="aspect-[5/4] w-full md:aspect-[16/9]"
           sizes="(min-width: 768px) 55vw, 7.5rem"
           quality={90}
           objectPosition="50% 42%"
         />
       ) : (
-        <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-surface-warm)] md:aspect-[24/8]" />
+        <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-surface-warm)] md:aspect-[16/9]" />
       )}
       <span className="min-w-0">
         <span className="flex flex-wrap items-baseline gap-x-2 text-[11px] tracking-wide text-[var(--km-muted)]">

@@ -33,7 +33,7 @@ export function CollectionView({
             <EditorialArt
               src={hero}
               alt=""
-              className="h-32 w-full md:h-auto md:aspect-[24/8]"
+              className="aspect-[16/10] w-full md:aspect-[16/9]"
               sizes="(min-width: 768px) 55vw, 100vw"
               quality={90}
               priority
@@ -42,7 +42,7 @@ export function CollectionView({
           ) : (
             <div
               aria-hidden
-              className="h-32 w-full bg-[var(--km-surface-warm)] md:h-auto md:aspect-[24/8]"
+              className="aspect-[16/10] w-full bg-[var(--km-surface-warm)] md:aspect-[16/9]"
             />
           )}
           <div className="min-w-0 pb-1">

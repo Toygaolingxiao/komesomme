@@ -50,13 +50,14 @@ export function DiscoverCollectionTeaser({
                 slug={collection.slug}
                 className={`group block overflow-hidden rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] ${FOCUS}`}
               >
-                <span className="relative block aspect-[21/7] w-full sm:aspect-[24/7]">
+                <span className="relative block aspect-[16/9] w-full">
                   {art ? (
                     <EditorialArt
                       src={art}
                       alt=""
                       className="absolute inset-0 h-full w-full"
                       sizes="(min-width: 768px) 900px, 100vw"
+                      quality={90}
                       objectPosition="50% 42%"
                     />
                   ) : (
