@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KomeSomme 1.4.1 — 設計判断と運用知見</title>
+  <meta name="description" content="KomeSomme の設計判断と運用知見。約4週間の単独開発で、構造化カタログ・推薦・LLM案内・公開運用までを一体で構築した記録です。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#F7F4EF', rice: '#FFFEF9', cream: '#F3EDE3',
+            ink: '#1A1A18', muted: '#6B6560', brown: '#5C4030',
+            harvest: '#C45C26', amber: '#E8A84A', gold: '#D4A04A',
+            oled: '#0B0B0A', hair: 'rgba(255,255,255,0.12)',
+          },
+          fontFamily: {
+            display: ['"Shippori Mincho"', 'Georgia', 'serif'],
+            sans: ['"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.css" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/MotionPathPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <style>
+    :root {
+      --ease: cubic-bezier(0.32, 0.72, 0, 1);
+      --sec-y: clamp(3rem, 6vw, 5rem);
+      --ink: #1A1A18;
+      --harvest: #C45C26;
+      --paper: #F7F4EF;
+      --oled: #0B0B0A;
+      --amber: #E8A84A;
+    }
+    html.lenis, html.lenis body { height: auto; }
+    html {
+      background: var(--paper);
+      transition: background-color .45s var(--ease);
+    }
+    html.theme-oled { background: var(--oled); }
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+      transition: color .35s var(--ease);
+    }
+    body.theme-oled { color: #E8E4DC; }
+    /* pin-spacer が透明だと前セクションの色が残る */
+    .pin-spacer { background: inherit; }
+    .pin-spacer[data-room-bg="oled"] { background: var(--oled) !important; }
+    .pin-spacer[data-room-bg="washi"] { background: var(--paper) !important; }
+    body::after {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .room-washi { background: var(--paper); color: var(--ink); }
+    .room-oled {
+      background: var(--oled);
+      color: #E8E4DC;
+      position: relative;
+    }
+    .room-oled::before {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), transparent 18%),
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(232,168,74,0.07), transparent 55%);
+    }
+    .room-oled .sec-label { color: rgba(232,228,220,0.45); }
+    .room-oled h2, .room-oled .ink-text { color: #F2EEE6; }
+    .room-oled .muted-text { color: rgba(232,228,220,0.55); }
+    .room-oled .hairline { border-color: rgba(255,255,255,0.12); }
+    .progress-rail {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+      background: rgba(26,26,24,.08);
+    }
+    body.theme-oled .progress-rail { background: rgba(255,255,255,.08); }
+    .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #C45C26, #E8A84A);
+      transform-origin: left center;
+    }
+    @media (min-width: 1024px) {
+      .progress-rail {
+        top: 50%; left: auto; right: 1.1rem; width: 2px; height: min(42vh, 280px);
+        transform: translateY(-50%); border-radius: 999px; overflow: hidden;
+      }
+      .progress-bar { width: 100%; height: 0%; background: linear-gradient(180deg, #C45C26, #E8A84A); }
+    }
+    .nav {
+      position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 40;
+      max-width: calc(100vw - 1.5rem); width: max-content;
+      display: flex; align-items: center; gap: .4rem; flex-wrap: nowrap;
+      padding: .35rem .4rem .35rem 1rem; border-radius: 999px;
+      background: rgba(255,254,249,.9); border: 1px solid rgba(26,26,24,.1);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 10px 36px -22px rgba(26,26,24,.4);
+      transition: background .3s, border-color .3s, box-shadow .3s;
+    }
+    body.theme-oled .nav {
+      background: rgba(11,11,10,.78);
+      border-color: rgba(255,255,255,.14);
+      box-shadow: 0 10px 40px -18px rgba(0,0,0,.7);
+    }
+    .nav a {
+      text-decoration: none; color: #6B6560; font-size: 12px;
+      padding: .35rem .5rem; white-space: nowrap; border-radius: 999px;
+    }
+    body.theme-oled .nav a { color: rgba(232,228,220,.55); }
+    .nav a:hover { color: #1A1A18; }
+    body.theme-oled .nav a:hover { color: #F2EEE6; }
+    .nav a.is-active { color: #1A1A18; background: rgba(196,92,38,.12); }
+    body.theme-oled .nav a.is-active { color: #F2EEE6; background: rgba(232,168,74,.16); }
+    .nav .brand { color: #1A1A18 !important; font-family: "Shippori Mincho", serif; font-size: 14px; padding-left: 0; }
+    body.theme-oled .nav .brand { color: #F2EEE6 !important; }
+    .cta {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: #C45C26; color: #FFFEF9; text-decoration: none;
+      border-radius: 999px; padding: .5rem .95rem .5rem 1.05rem;
+      font-size: .8rem; font-weight: 500;
+    }
+    .cta:hover { background: #b04f1f; }
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: .35rem;
+      border: 1px solid rgba(255,255,255,.2); color: #E8E4DC; text-decoration: none;
+      border-radius: 999px; padding: .45rem .9rem; font-size: .78rem;
+    }
+    .cta-ghost:hover { border-color: rgba(232,168,74,.5); color: #E8A84A; }
+    .sec-label { font-size: 11px; letter-spacing: .18em; color: #6B6560; }
+    .sec-y { padding-top: var(--sec-y); padding-bottom: var(--sec-y); }
+    .sheet {
+      background: #FFFEF9;
+      border: 1px solid rgba(26,26,24,.1);
+      border-radius: .9rem;
+    }
+    .sheet-oled {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: .9rem;
+    }
+    .viz-sheet {
+      background: #FFFEF9;
+      border: 1px solid rgba(26,26,24,.1);
+      border-radius: .9rem;
+      padding: .85rem .7rem 1rem;
+      overflow-x: auto;
+    }
+    @media (min-width: 640px) {
+      .viz-sheet { padding: 1.1rem 1.25rem 1.25rem; }
+    }
+    .viz-caption { margin-top: .85rem; font-size: .8rem; color: #6B6560; line-height: 1.55; max-width: 42rem; }
+    .room-oled .viz-caption { color: rgba(232,228,220,.5); }
+    .paper-note {
+      background: #F3EDE3; border: 1px solid rgba(26,26,24,.1);
+      border-radius: .85rem; padding: .85rem 1rem; font-size: .82rem;
+      line-height: 1.55; color: #5C4030; margin-bottom: 1rem;
+    }
+    .amber-note {
+      border: 1px solid rgba(232,168,74,.35);
+      background: rgba(232,168,74,.08);
+      border-radius: .85rem; padding: .85rem 1rem; font-size: .82rem;
+      line-height: 1.55; color: rgba(232,228,220,.75);
+    }
+    .pin-stage {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 5.5rem 1.25rem 2rem;
+    }
+    .room-oled .pin-stage { background: var(--oled); }
+    .room-washi .pin-stage { background: var(--paper); }
+    .room-washi .gate-pin { background: var(--paper); }
+    @media (min-width: 640px) {
+      .pin-stage { padding-left: 2.5rem; padding-right: 2.5rem; }
+    }
+    .matrix {
+      background: #FFFEF9;
+      background-image:
+        linear-gradient(rgba(26,26,24,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,26,24,.05) 1px, transparent 1px);
+      background-size: 12.5% 12.5%;
+    }
+    .smart-probe {
+      position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%;
+      background: #C45C26; border: 2.5px solid #FFFEF9; cursor: grab; touch-action: none; z-index: 20;
+      box-shadow: 0 0 0 1px rgba(196,92,38,.25);
+    }
+    .smart-probe:active { cursor: grabbing; }
+    .rice-dot {
+      position: absolute; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%;
+      border: 1.5px solid #FFFEF9; z-index: 10;
+    }
+    .rice-dot .tip {
+      position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+      background: #1A1A18; color: #FFFEF9; font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .rice-dot:hover .tip { opacity: 1; }
+    .rice-dot.is-top { z-index: 15; }
+    .swim-node, .swim-path, .swim-anno { opacity: 0; }
+    /* 泳道: 入場前は線を隠す */
+    #swimlane-svg:not(.is-armed) .swim-path,
+    #swimlane-svg:not(.is-armed) .flow-glow {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      stroke-opacity: 0 !important;
+    }
+    #swimlane-svg .flow-glow {
+      visibility: hidden;
+    }
+    #swimlane-svg .flow-glow.is-on {
+      visibility: visible;
+    }
+    .road-pin { opacity: 0; }
+    .flow-block { will-change: transform, opacity; }
+    .ghost-num {
+      position: absolute; right: 4%; top: 12%;
+      font-family: "Shippori Mincho", serif;
+      font-size: clamp(4rem, 12vw, 8rem);
+      color: rgba(26,26,24,.04); pointer-events: none; line-height: 1;
+      user-select: none;
+      z-index: 0;
+    }
+    .room-oled .ghost-num { color: rgba(255,255,255,.035); }
+    .read-spine {
+      display: flex; flex-wrap: wrap; gap: .15rem 0;
+      margin: 0; padding: 1rem 0 0; list-style: none;
+      border-top: 1px solid rgba(26,26,24,.1);
+      overflow: visible;
+      position: relative;
+      z-index: 1;
+    }
+    .read-spine li {
+      flex: 0 0 auto; padding: 0 1.35rem 0 0; position: relative;
+      font-size: .8rem; color: #5C4030;
+    }
+    .read-spine li::after {
+      content: "→"; position: absolute; right: .4rem; top: 0; color: #C45C26; opacity: .5;
+    }
+    .read-spine li:last-child { padding-right: 0; }
+    .read-spine li:last-child::after { content: ""; }
+    .read-spine a { text-decoration: none; color: inherit; border-bottom: 1px solid rgba(196,92,38,.28); }
+    .read-spine a:hover { color: #C45C26; }
+    /* 横スクロール用シート：縦バーを出さない */
+    .sheet-oled, .viz-sheet, .sheet.overflow-x-auto,
+    [class*="overflow-x-auto"] {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(26,26,24,.2) transparent;
+    }
+    [class*="overflow-x-auto"]::-webkit-scrollbar { height: 4px; }
+    [class*="overflow-x-auto"]::-webkit-scrollbar-thumb {
+      background: rgba(26,26,24,.18); border-radius: 999px;
+    }
+    #summary {
+      overflow: hidden;
+    }
+    #summary .max-w-6xl {
+      overflow: hidden;
+    }
+    .life-track {
+      display: grid; gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      .life-track { grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+    }
+    .life-col {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: .85rem; padding: 1.1rem 1rem 1.2rem;
+      background: rgba(255,255,255,.025);
+    }
+    .life-col h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem; font-weight: 500;
+      margin: 0 0 .85rem; padding-bottom: .55rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      color: #F2EEE6;
+    }
+    .life-col .eyebrow {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .1em; color: #E8A84A; margin: 0 0 .35rem;
+    }
+    .life-col ol { margin: 0; padding: 0; list-style: none; }
+    .life-col li {
+      position: relative; padding: .55rem 0 .55rem 1.15rem;
+      font-size: .8rem; line-height: 1.45; color: rgba(232,228,220,.72);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .life-col li:last-child { border-bottom: 0; }
+    .life-col li::before {
+      content: ""; position: absolute; left: 0; top: .85rem;
+      width: .45rem; height: .45rem; border-radius: 50%;
+      background: #C45C26;
+    }
+    .do-split {
+      display: grid; gap: 0; grid-template-columns: 1fr;
+      border: 1px solid rgba(26,26,24,.12); border-radius: .85rem; overflow: hidden;
+    }
+    @media (min-width: 800px) { .do-split { grid-template-columns: 1fr 1fr; } }
+    .do-side { padding: 1.15rem 1.2rem 1.3rem; }
+    .do-side.in { background: #F3EDE3; }
+    .do-side.out { background: #FFFEF9; }
+    @media (min-width: 800px) {
+      .do-side.in { border-right: 1px solid rgba(26,26,24,.1); }
+    }
+    .do-side .eyebrow {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .12em; margin: 0 0 .4rem;
+    }
+    .do-side.in .eyebrow { color: #C45C26; }
+    .do-side.out .eyebrow { color: #9A8B7A; }
+    .do-side h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem;
+      font-weight: 500; margin: 0 0 .7rem;
+    }
+    .do-side ul { margin: 0; padding: 0; list-style: none; }
+    .do-side li {
+      position: relative; padding: .35rem 0 .35rem 1rem;
+      font-size: .82rem; line-height: 1.45;
+    }
+    .do-side.in li::before {
+      content: ""; position: absolute; left: 0; top: .75rem;
+      width: .4rem; height: .4rem; border-radius: 50%; background: #C45C26;
+    }
+    .do-side.out li { color: #6B6560; }
+    .do-side.out li::before {
+      content: ""; position: absolute; left: 0; top: .9rem;
+      width: .55rem; height: 1px; background: #9A8B7A;
+    }
+    .chip-fly {
+      display: inline-flex; align-items: center;
+      font-size: .72rem; padding: .25rem .55rem; border-radius: .4rem;
+      border: 1px dashed rgba(26,26,24,.22); color: #6B6560; margin: .2rem .25rem .2rem 0;
+    }
+    .battlefield {
+      display: grid; gap: 1rem; grid-template-columns: 1fr;
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 800px) { .battlefield { grid-template-columns: 1fr 1fr; } }
+    .battle-card {
+      border-radius: .85rem; padding: 1.15rem 1.2rem;
+      border: 1px solid rgba(26,26,24,.1); background: #FFFEF9;
+    }
+    .battle-card.theirs { opacity: .88; border-style: dashed; }
+    .battle-card.ours {
+      border-color: rgba(196,92,38,.35);
+      background: linear-gradient(180deg, #FFFEF9, #F3EDE3);
+    }
+    .battle-card h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem;
+      font-weight: 500; margin: .35rem 0 .55rem;
+    }
+    .moat-grid {
+      display: grid; gap: .75rem;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (min-width: 800px) { .moat-grid { grid-template-columns: repeat(4, 1fr); } }
+    .moat-tile {
+      border: 1px solid rgba(26,26,24,.1); border-radius: .75rem;
+      padding: .9rem .85rem; background: #FFFEF9; min-height: 7.5rem;
+    }
+    .moat-tile .n {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      color: #C45C26; letter-spacing: .08em; margin-bottom: .35rem;
+    }
+    .moat-tile h4 {
+      font-family: "Shippori Mincho", serif; font-size: .95rem;
+      font-weight: 500; margin: 0 0 .35rem;
+    }
+    .moat-tile p { margin: 0; font-size: .75rem; line-height: 1.45; color: #6B6560; }
+    .adr-fold { display: grid; gap: .65rem; }
+    .adr-item {
+      border: 1px solid rgba(26,26,24,.1); border-radius: .75rem;
+      background: #FFFEF9; overflow: hidden;
+    }
+    .adr-item summary {
+      cursor: pointer; list-style: none; padding: .9rem 1.05rem;
+      font-family: "Shippori Mincho", serif; font-size: .98rem; font-weight: 500;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+    .adr-item summary::-webkit-details-marker { display: none; }
+    .adr-item summary::after {
+      content: "+"; font-family: "IBM Plex Mono", monospace;
+      font-size: 14px; color: #C45C26;
+    }
+    .adr-item[open] summary::after { content: "−"; }
+    .adr-item .body {
+      padding: 0 1.05rem 1rem; font-size: .8rem; line-height: 1.55; color: #6B6560;
+      border-top: 1px solid rgba(26,26,24,.08);
+    }
+    .adr-item dl { margin: .75rem 0 0; display: grid; gap: .45rem; }
+    .adr-item dt {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      color: #C45C26; letter-spacing: .06em;
+    }
+    .adr-item dd { margin: .1rem 0 0; color: #1A1A18; }
+    .pipe-dual {
+      display: grid; gap: 1rem; grid-template-columns: 1fr;
+    }
+    @media (min-width: 860px) { .pipe-dual { grid-template-columns: 1fr auto 1fr; align-items: stretch; } }
+    .pipe-col {
+      border: 1px solid rgba(255,255,255,.12); border-radius: .85rem;
+      padding: 1.1rem 1rem; background: rgba(255,255,255,.03);
+    }
+    .pipe-col h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1rem;
+      margin: 0 0 .75rem; color: #F2EEE6;
+    }
+    .pipe-step {
+      display: flex; gap: .65rem; align-items: flex-start;
+      padding: .55rem 0; border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: .8rem; line-height: 1.45; color: rgba(232,228,220,.72);
+    }
+    .pipe-step:last-child { border-bottom: 0; }
+    .pipe-step .ix {
+      flex: 0 0 auto; width: 1.4rem; height: 1.4rem; border-radius: 50%;
+      border: 1px solid rgba(232,168,74,.45); color: #E8A84A;
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pipe-ban {
+      display: flex; align-items: center; justify-content: center;
+      padding: .5rem; min-width: 3rem;
+    }
+    .pipe-ban span {
+      writing-mode: vertical-rl; text-orientation: mixed;
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .14em; color: #C45C26;
+      border: 1px solid rgba(196,92,38,.45); border-radius: .5rem;
+      padding: .75rem .35rem; background: rgba(196,92,38,.1);
+    }
+    @media (max-width: 859px) {
+      .pipe-ban span { writing-mode: horizontal-tb; padding: .4rem .75rem; }
+    }
+    /* SVG 矢線の流光（ベース線の上に重ねる） */
+    .flow-glow {
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 10 42;
+      pointer-events: none;
+      opacity: 0;
+      /* drop-shadow は pin 中に重いので使わない */
+    }
+    .flow-glow.is-on { opacity: .9; }
+    .flow-glow.is-running {
+      animation: flow-dash 1.25s linear infinite;
+    }
+    .flow-glow.tone-harvest { stroke: #E8A84A; stroke-width: 2.2; }
+    .flow-glow.tone-ink { stroke: #C45C26; stroke-width: 2; }
+    .flow-glow.tone-muted { stroke: rgba(196,92,38,.45); stroke-width: 1.6; }
+    .flow-glow.tone-paper { stroke: #C45C26; stroke-width: 2.4; }
+    @keyframes flow-dash {
+      to { stroke-dashoffset: -52; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .flow-glow.is-running { animation: none; opacity: .5; stroke-dasharray: none; }
+    }
+    /* Gate: 縦手順 + 一枚フォーカス */
+    .gate-pin {
+      position: relative;
+      min-height: min(100vh, 820px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .gate-board {
+      display: grid;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    @media (min-width: 860px) {
+      .gate-board {
+        grid-template-columns: 11.5rem 1fr;
+        gap: 1.75rem;
+      }
+    }
+    .gate-spine {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      gap: .55rem;
+      justify-content: space-between;
+      padding: .15rem 0 .35rem;
+    }
+    @media (min-width: 860px) {
+      .gate-spine {
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0;
+        padding: .4rem 0;
+      }
+      .gate-spine::before {
+        content: "";
+        position: absolute;
+        left: 17px; top: 18px; bottom: 18px;
+        width: 2px;
+        background: linear-gradient(180deg, #D9D0C2, #C8BDAE);
+        border-radius: 2px;
+      }
+      .gate-spine::after {
+        content: "";
+        position: absolute;
+        left: 17px; top: 18px;
+        width: 2px; height: 0;
+        background: linear-gradient(180deg, #C45C26, #5A8F72);
+        border-radius: 2px;
+        transition: height .05s linear;
+        z-index: 1;
+      }
+      .gate-spine[data-fill]::after {
+        height: calc(var(--fill, 0) * 1%);
+      }
+    }
+    .gate-step {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .35rem;
+      text-align: center;
+      min-width: 0;
+    }
+    @media (min-width: 860px) {
+      .gate-step {
+        flex: 0 0 auto;
+        flex-direction: row;
+        align-items: center;
+        gap: .75rem;
+        text-align: left;
+        padding: .7rem 0;
+      }
+    }
+    .gate-dot {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid rgba(26,26,24,.16);
+      background: #FFFEF9;
+      color: #6B6560;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      display: grid; place-items: center;
+      flex-shrink: 0;
+      transition: background .3s, border-color .3s, color .3s, box-shadow .3s;
+    }
+    .gate-step.is-active .gate-dot {
+      background: #C45C26; border-color: #C45C26; color: #FFFEF9;
+      box-shadow: 0 0 0 4px rgba(196,92,38,.16);
+    }
+    .gate-step.is-cleared .gate-dot {
+      background: #5A8F72; border-color: #4A7A5D; color: #FFFEF9;
+      box-shadow: none;
+    }
+    .gate-step-label {
+      font-size: 11px; color: #6B6560; line-height: 1.35;
+      font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+    }
+    @media (max-width: 859px) {
+      .gate-step-label { font-size: 10px; }
+    }
+    .gate-step.is-active .gate-step-label { color: #5C4030; font-weight: 500; }
+    .gate-step.is-cleared .gate-step-label { color: #4A7A5D; }
+    .gate-lead {
+      margin: 0 0 .55rem;
+      font-size: .875rem;
+      color: #6B6560;
+      line-height: 1.65;
+      max-width: 40rem;
+    }
+    .gate-phase {
+      margin: 0 0 1.25rem;
+      min-height: 1.5em;
+      font-size: .875rem;
+      color: #6B6560;
+      line-height: 1.5;
+      font-family: "IBM Plex Mono", monospace;
+      letter-spacing: .02em;
+    }
+    .gate-focus {
+      border-radius: 1rem;
+      border: 1px solid rgba(26,26,24,.12);
+      background: #FFFEF9;
+      padding: 1.25rem 1.3rem 1.35rem;
+      position: relative;
+      overflow: hidden;
+      /* 影はレイアウトに影響させない。枠幅は固定 */
+      box-shadow: 0 0 0 0 transparent;
+      transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
+    }
+    .gate-focus.is-live {
+      border-color: rgba(196,92,38,.35);
+      box-shadow: 0 18px 40px -28px rgba(196,92,38,.45);
+    }
+    .gate-focus.is-done {
+      border-color: rgba(90,143,114,.35);
+      box-shadow: 0 18px 40px -28px rgba(90,143,114,.35);
+    }
+    .gate-focus .status {
+      position: absolute; top: 1.15rem; right: 1.2rem;
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .08em; color: #6B6560;
+      min-width: 3.5rem; text-align: right;
+      opacity: .55;
+    }
+    .gate-focus.is-live .status { color: #C45C26; opacity: 1; }
+    .gate-focus.is-done .status { color: #5A8F72; opacity: 1; }
+    .gate-panels {
+      display: grid;
+      padding-right: 3.25rem; /* status 用の余白 */
+    }
+    .gate-panel {
+      grid-area: 1 / 1;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .22s var(--ease);
+      pointer-events: none;
+    }
+    .gate-panel.is-on {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 1;
+    }
+    .gate-panel .g {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px; letter-spacing: .08em; color: #C45C26; margin: 0 0 .35rem;
+    }
+    .gate-focus.is-done .gate-panel.is-on .g { color: #5A8F72; }
+    .gate-panel h3 {
+      font-family: "Shippori Mincho", serif;
+      font-size: 1.2rem; font-weight: 500; margin: 0 0 .55rem; line-height: 1.35;
+      min-height: 2.7em; /* 見出し2行分を確保 */
+    }
+    .gate-panel .body {
+      margin: 0; font-size: .88rem; color: #6B6560; line-height: 1.65; max-width: 38rem;
+      min-height: 4.95em; /* 本文3行分 */
+    }
+    .gate-panel .cmd {
+      margin: 1rem 0 0;
+      display: inline-block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: #5C4030;
+      background: #F3EDE3;
+      border: 1px solid rgba(26,26,24,.08);
+      border-radius: .45rem;
+      padding: .35rem .65rem;
+      min-height: 1.9rem;
+      line-height: 1.2;
+    }
+    .gate-note {
+      margin-top: 1.1rem;
+      font-size: .82rem;
+      color: #6B6560;
+      line-height: 1.65;
+      max-width: 40rem;
+    }
+    .fact-card {
+      transition: border-color .35s, box-shadow .35s, transform .35s;
+    }
+    .fact-card.is-lit {
+      border-color: rgba(232,168,74,.45) !important;
+      box-shadow: 0 0 0 1px rgba(232,168,74,.12), 0 18px 40px -28px rgba(232,168,74,.55);
+      transform: translateY(-2px);
+    }
+    .fact-card .fact-sheen {
+      position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(105deg, transparent 40%, rgba(232,168,74,.12) 50%, transparent 60%);
+      background-size: 220% 100%;
+      opacity: 0;
+    }
+    .fact-card.is-lit .fact-sheen {
+      opacity: 1;
+      animation: sheen-move 2.4s ease-in-out infinite;
+    }
+    @keyframes sheen-move {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fact-card.is-lit .fact-sheen { animation: none; opacity: .4; }
+    }
+    .funnel-inv {
+      display: grid; gap: .75rem; max-width: 36rem; margin: 0 auto;
+    }
+    .funnel-layer {
+      border-radius: .75rem; padding: 1rem 1.15rem;
+      border: 1px solid rgba(255,255,255,.12);
+      text-align: center;
+    }
+    .funnel-layer.primary {
+      background: rgba(232,168,74,.12);
+      border-color: rgba(232,168,74,.4);
+      padding: 1.35rem 1.2rem;
+    }
+    .funnel-layer.thin {
+      background: rgba(255,255,255,.02);
+      opacity: .85; max-width: 72%; margin-left: auto; margin-right: auto;
+    }
+    .funnel-layer.dashed {
+      border-style: dashed; opacity: .7;
+      max-width: 88%; margin-left: auto; margin-right: auto;
+    }
+    .funnel-layer .tag {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .1em; color: #E8A84A; margin-bottom: .3rem;
+    }
+    .funnel-layer h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem;
+      font-weight: 500; margin: 0 0 .3rem; color: #F2EEE6;
+    }
+    .funnel-layer p { margin: 0; font-size: .78rem; color: rgba(232,228,220,.55); line-height: 1.45; }
+    .device-pair {
+      display: grid; gap: 1rem; grid-template-columns: 1fr;
+    }
+    @media (min-width: 800px) { .device-pair { grid-template-columns: 1fr 1fr; } }
+    .device-frame {
+      border-radius: 1.1rem; border: 1px solid rgba(26,26,24,.14);
+      background: #FFFEF9; padding: .65rem; box-shadow: 0 18px 40px -28px rgba(26,26,24,.45);
+    }
+    .device-frame .bezel {
+      border-radius: .75rem; min-height: 14rem; padding: 1.1rem 1rem;
+      border: 1px solid rgba(26,26,24,.08);
+    }
+    .device-frame.product .bezel {
+      background: linear-gradient(160deg, #FFF8EE, #F7F4EF);
+    }
+    .device-frame.case .bezel {
+      background: #0B0B0A; color: #E8E4DC; border-color: rgba(255,255,255,.1);
+    }
+    .device-frame .tag {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .1em; margin-bottom: .5rem;
+    }
+    .device-frame.product .tag { color: #C45C26; }
+    .device-frame.case .tag { color: #E8A84A; }
+    .device-frame h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem;
+      font-weight: 500; margin: 0 0 .45rem;
+    }
+    .device-frame p { margin: 0; font-size: .8rem; line-height: 1.5; opacity: .8; }
+    .ev-split {
+      display: grid; gap: 1rem; grid-template-columns: 1fr;
+    }
+    @media (min-width: 800px) { .ev-split { grid-template-columns: 1fr 1fr; } }
+    .ev-panel {
+      border-radius: .85rem; border: 1px solid rgba(26,26,24,.1);
+      background: #FFFEF9; padding: 1.1rem 1.15rem;
+    }
+    .ev-panel h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1rem;
+      font-weight: 500; margin: 0 0 .75rem; padding-bottom: .55rem;
+      border-bottom: 1px solid rgba(26,26,24,.1);
+    }
+    .ev-panel.pending h3 { color: #6B6560; }
+    .ev-row { padding: .65rem 0; border-bottom: 1px solid rgba(26,26,24,.07); }
+    .ev-row:last-child { border-bottom: 0; }
+    .ev-title { font-family: "Shippori Mincho", serif; font-size: .92rem; margin: 0 0 .2rem; }
+    .ev-proof { margin: 0; font-size: .76rem; color: #6B6560; line-height: 1.45; }
+    .stat-row {
+      display: flex; flex-wrap: wrap; gap: .65rem 1.25rem;
+      margin: 1rem 0 0; padding: 0; list-style: none;
+    }
+    .stat-row li {
+      font-size: .78rem; color: rgba(232,228,220,.65);
+    }
+    .stat-row strong {
+      display: block; font-family: "Shippori Mincho", serif;
+      font-size: 1.55rem; font-weight: 500; color: #E8A84A; line-height: 1.1;
+    }
+    .asset-layers { display: grid; gap: .7rem; }
+    .asset-layer {
+      border: 1px solid rgba(255,255,255,.12); border-radius: .75rem;
+      padding: .95rem 1.05rem; background: rgba(255,255,255,.03);
+      display: grid; gap: .35rem;
+      grid-template-columns: 5.5rem 1fr;
+      align-items: start;
+    }
+    @media (max-width: 560px) {
+      .asset-layer { grid-template-columns: 1fr; }
+    }
+    .asset-layer .lab {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px;
+      letter-spacing: .1em; color: #E8A84A; padding-top: .15rem;
+    }
+    .asset-layer h3 {
+      font-family: "Shippori Mincho", serif; font-size: .98rem;
+      font-weight: 500; margin: 0 0 .25rem; color: #F2EEE6;
+    }
+    .asset-layer p { margin: 0; font-size: .78rem; line-height: 1.45; color: rgba(232,228,220,.55); }
+    .concept-chips { display: flex; flex-direction: column; gap: 0; }
+    .concept-chip {
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      padding: .7rem 0;
+    }
+    .concept-chip:last-child { border-bottom: 0; }
+    .concept-chip strong {
+      display: block; font-family: "Shippori Mincho", serif;
+      font-weight: 500; font-size: .95rem; margin-bottom: .2rem; color: #F2EEE6;
+    }
+    .concept-chip span { font-size: .78rem; color: rgba(232,228,220,.55); line-height: 1.45; }
+    .takeaways {
+      display: grid; gap: .75rem; grid-template-columns: 1fr;
+      margin-bottom: 1.5rem;
+    }
+    @media (min-width: 800px) { .takeaways { grid-template-columns: 1fr 1fr 1fr; } }
+    .take-card {
+      border: 1px solid rgba(26,26,24,.1); border-radius: .85rem;
+      background: #FFFEF9; padding: 1.1rem 1rem;
+    }
+    .take-card .n {
+      font-family: "IBM Plex Mono", monospace; font-size: 10px; color: #C45C26;
+    }
+    .take-card h3 {
+      font-family: "Shippori Mincho", serif; font-size: 1.05rem;
+      font-weight: 500; margin: .3rem 0 .4rem;
+    }
+    .take-card p { margin: 0; font-size: .78rem; color: #6B6560; line-height: 1.5; }
+    .hero-map {
+      position: absolute; inset: 0; opacity: .35; pointer-events: none;
+      background:
+        radial-gradient(circle at 72% 45%, rgba(232,168,74,.18), transparent 32%),
+        radial-gradient(circle at 58% 58%, rgba(196,92,38,.1), transparent 28%);
+    }
+    .hero-map svg { width: 100%; height: 100%; opacity: .55; }
+    @media (prefers-reduced-motion: reduce) {
+      .swim-node, .swim-path, .swim-anno, .road-pin { opacity: 1 !important; }
+      .progress-bar { transition: none; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <div class="progress-rail" aria-hidden="true"><div class="progress-bar" id="read-progress"></div></div>
+
+  <nav class="nav" aria-label="章">
+    <a href="#top" data-nav="top" class="brand">KomeSomme</a>
+    <div class="hidden md:flex items-center">
+      <a href="#summary" data-nav="summary">要点</a>
+      <a href="#overview" data-nav="overview">概要</a>
+      <a href="#concept" data-nav="concept">体験</a>
+      <a href="#assets" data-nav="assets">資産</a>
+      <a href="#delivery" data-nav="delivery">公開</a>
+      <a href="#learnings" data-nav="learnings">学び</a>
+      <a href="#closing" data-nav="closing">まとめ</a>
+    </div>
+    <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">公開サイト ↗</a>
+  </nav>
+
+  <!-- 1 TOP · OLED · H-2 -->
+  <header id="top" class="room-oled relative overflow-hidden px-5 sm:px-10 pt-28 pb-16" data-room="oled" data-chapter="top">
+    <div class="hero-map" aria-hidden="true">
+      <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1">
+          <ellipse cx="540" cy="230" rx="160" ry="120"/>
+          <ellipse cx="540" cy="230" rx="110" ry="82"/>
+          <ellipse cx="540" cy="230" rx="60" ry="44"/>
+          <line x1="380" y1="230" x2="700" y2="230"/>
+          <line x1="540" y1="90" x2="540" y2="370"/>
+        </g>
+        <circle cx="480" cy="280" r="3" fill="#E8A84A"/>
+        <circle cx="590" cy="180" r="3" fill="#C45C26"/>
+        <circle cx="560" cy="250" r="2.5" fill="#E8A84A"/>
+        <circle cx="510" cy="200" r="2.5" fill="rgba(255,255,255,.4)"/>
+      </svg>
+    </div>
+    <div class="max-w-6xl mx-auto relative">
+      <p class="sec-label mb-4">CASE STUDY · <span data-cs-version></span></p>
+      <div class="grid lg:grid-cols-12 gap-10 items-end">
+        <div class="lg:col-span-7">
+          <h1 id="hero-title" class="font-display text-[clamp(2.7rem,7vw,4.8rem)] leading-[1.05] font-medium tracking-tight text-[#F2EEE6]">
+            KomeSomme
+          </h1>
+          <p class="mt-3 font-display text-[clamp(1.1rem,2.3vw,1.55rem)] leading-snug text-[#E8A84A] max-w-xl">
+            味わいを、選べる形にする
+          </p>
+          <p class="mt-4 text-sm sm:text-base leading-relaxed max-w-xl muted-text">
+            米の銘柄を、産地や価格ではなく「甘み・粒感・料理との相性」から選べる推薦サービスです。約4週間の単独開発で、構造化カタログ、推薦ロジック、LLM案内、公開運用までを一体で構築しました。
+          </p>
+          <p class="mt-3 text-xs leading-relaxed max-w-xl" style="color:rgba(232,228,220,.45)">
+            本資料では、候補決定を LLM に委ねない設計、Git 上の一次データ管理、公開後の継続改善から得た知見を整理します。本番は komesomme.jp です。
+          </p>
+        </div>
+        <div class="lg:col-span-5">
+          <p class="sec-label mb-3">現在の規模（2026年9月11日時点）</p>
+          <ul class="space-y-0 text-sm leading-relaxed list-none m-0 p-0 border-t hairline" style="border-color:rgba(255,255,255,.12)">
+            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">期間：2026年8月中旬〜9月11日頃・約4週間・単独開発</li>
+            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">構成：Next.js 15・Supabase（pgvector）・Vercel</li>
+            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">バージョン：0.x 試作 → <strong style="color:#E8A84A">1.0.0</strong> 本番 → <strong style="color:#E8A84A">1.4.1</strong>（公開後に minor を連続）</li>
+            <li class="py-2.5">主な機能：味わい地図・相談・事典（claims+URL）・料理別 /pair 約10ページ・開示つきの買う出口</li>
+          </ul>
+          <ul class="stat-row" aria-label="規模">
+            <li><strong>106</strong>銘柄</li>
+            <li><strong>13</strong>回の 1.x リリース</li>
+            <li><strong>99</strong> commits</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2 SUMMARY · washi · executive -->
+  <section id="summary" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="summary">
+    <div class="max-w-6xl mx-auto relative">
+      <span class="ghost-num" data-speed="0.06">読</span>
+      <p class="sec-label mb-2">EXECUTIVE SUMMARY</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">米選びサービスにおける設計判断と運用知見</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">本資料では、体験の設計、データの管理方法、本番公開までの手順、公開後の改善、再利用できる方針を整理します。</p>
+      <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <article class="sheet p-4">
+          <p class="sec-label mb-2">方針 01</p>
+          <h3 class="font-display text-base mb-2 font-medium">候補決定を LLM に委ねない</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">候補は座標計算または埋め込み検索で決め、LLM は説明文の生成に限る。</p>
+        </article>
+        <article class="sheet p-4">
+          <p class="sec-label mb-2">方針 02</p>
+          <h3 class="font-display text-base mb-2 font-medium">一次データは Git で管理する</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">銘柄カタログと出典を Git 上で管理し、検査後に Supabase へ反映する。</p>
+        </article>
+        <article class="sheet p-4">
+          <p class="sec-label mb-2">方針 03</p>
+          <h3 class="font-display text-base mb-2 font-medium">未測定の成果は語らない</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">工程上の確認結果と、利用実績として未検証の指標を分ける。</p>
+        </article>
+      </div>
+      <ol class="read-spine" aria-label="目次">
+        <li><a href="#overview">PJ概要</a></li>
+        <li><a href="#context">課題と範囲</a></li>
+        <li><a href="#concept">体験</a></li>
+        <li><a href="#assets">データ</a></li>
+        <li><a href="#ranking">推薦</a></li>
+        <li><a href="#delivery">公開運用</a></li>
+        <li><a href="#validate">検証</a></li>
+        <li><a href="#learnings">学び</a></li>
+        <li><a href="#closing">まとめ</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 2b PJ OVERVIEW -->
+  <section id="overview" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="overview">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">0 · PJ概要</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">制約のなかで、何を一気に通したか</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">単独・約4週間。在庫と配送は持たず、味覚データと推薦、公開運用までを閉じる範囲に収めました。専用ベクトル基盤の性能より、実装速度・権限管理・運用の単純さを優先しています。</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">制約</p>
+          <ul class="m-0 p-0 list-none space-y-2 text-sm text-muted leading-relaxed">
+            <li>・体制は一人。画面と相談 API を別サーバに分けない</li>
+            <li>・銘柄規模は百前後。権限とメタデータを同一 DB に置く</li>
+            <li>・在庫・発送・問い合わせ対応は現段階で担わない</li>
+            <li>・未測定の利用指標を成果として語らない</li>
+          </ul>
+        </article>
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">通した範囲</p>
+          <ul class="m-0 p-0 list-none space-y-2 text-sm text-muted leading-relaxed">
+            <li>・構造化カタログ（Git）→ validate → seed → Supabase</li>
+            <li>・味わい地図（端末内順位）と相談（埋め込み検索）</li>
+            <li>・事典（claims + URL）・料理別 /pair・買う出口</li>
+            <li>・validate → CI → smoke → Production の固定手順</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 LIFECYCLE · OLED · L-2 -->
+  <section id="lifecycle" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="lifecycle">
+    <div class="max-w-6xl mx-auto relative">
+      <p class="sec-label mb-2">0 · 進捗の見取り図</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">製品、開発工程、公開後の追加機能</h2>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">同じ期間を三本に分けています。上から画面の中身、中央がリポジトリと CI、下が 1.0 以降に増やした機能です。</p>
+      <div class="sheet-oled p-3 sm:p-5 mb-5 overflow-x-auto">
+        <svg viewBox="0 0 1000 320" class="w-full min-w-[720px]" aria-label="三軌の時間軸">
+          <defs>
+            <marker id="lifeAh" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#E8A84A"/></marker>
+          </defs>
+          <!-- time axis -->
+          <line x1="120" y1="40" x2="940" y2="40" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <text x="160" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.4)">構想</text>
+          <text x="380" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.4)">1.0 公開</text>
+          <text x="560" y="28" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">1.4.x NOW</text>
+          <text x="760" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.4)">Phase 3</text>
+          <text x="900" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.35)">先</text>
+          <!-- PRODUCT lane -->
+          <rect x="20" y="58" width="960" height="72" rx="10" fill="rgba(255,255,255,.03)"/>
+          <text x="100" y="90" text-anchor="end" font-family="Shippori Mincho" font-size="13" fill="#F2EEE6">製品</text>
+          <text x="100" y="108" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#E8A84A">PRODUCT</text>
+          <circle cx="200" cy="94" r="5" fill="#C45C26"/>
+          <text x="220" y="90" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">味覚二次元</text>
+          <text x="220" y="106" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">向かないをカタログへ</text>
+          <path id="life-p1" d="M310 94 H360" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-p1" d="M310 94 H360"/>
+          <circle cx="400" cy="94" r="5" fill="#C45C26"/>
+          <text x="420" y="90" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">双軌推薦</text>
+          <text x="420" y="106" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">地図≠相談</text>
+          <path id="life-p2" d="M510 94 H550" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-p2" d="M510 94 H550"/>
+          <rect x="560" y="74" width="150" height="40" rx="8" fill="rgba(232,168,74,.12)" stroke="rgba(232,168,74,.45)"/>
+          <text x="635" y="92" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#E8A84A">Wave 2A pair</text>
+          <text x="635" y="106" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="rgba(232,228,220,.45)">約10ページライブ</text>
+          <path id="life-p3" d="M720 94 H760" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <path class="flow-glow tone-muted" data-glow-for="life-p3" d="M720 94 H760"/>
+          <circle cx="800" cy="94" r="5" fill="none" stroke="#5A8F72" stroke-width="1.5"/>
+          <text x="820" y="98" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.5)">再訪ループ</text>
+          <!-- ENG lane -->
+          <rect x="20" y="142" width="960" height="72" rx="10" fill="rgba(255,255,255,.02)"/>
+          <text x="100" y="174" text-anchor="end" font-family="Shippori Mincho" font-size="13" fill="#F2EEE6">工程</text>
+          <text x="100" y="192" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#E8A84A">ENGINEERING</text>
+          <circle cx="200" cy="178" r="5" fill="#5A8F72"/>
+          <text x="220" y="174" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">Git catalog</text>
+          <text x="220" y="190" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">validate → seed</text>
+          <path id="life-e1" d="M340 178 H380" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-e1" d="M340 178 H380"/>
+          <circle cx="420" cy="178" r="5" fill="#5A8F72"/>
+          <text x="440" y="174" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">RLS · embed 非公開</text>
+          <text x="440" y="190" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">RPC はサーバ権限</text>
+          <path id="life-e2" d="M600 178 H640" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-e2" d="M600 178 H640"/>
+          <circle cx="680" cy="178" r="5" fill="#5A8F72"/>
+          <text x="700" y="174" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">CI · smoke · main</text>
+          <text x="700" y="190" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">Vercel Production</text>
+          <!-- CAREER lane -->
+          <rect x="20" y="226" width="960" height="72" rx="10" fill="rgba(255,255,255,.03)"/>
+          <text x="100" y="258" text-anchor="end" font-family="Shippori Mincho" font-size="13" fill="#F2EEE6">公開後</text>
+          <text x="100" y="276" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#E8A84A">SINCE 1.0</text>
+          <circle cx="220" cy="262" r="5" fill="#C45C26"/>
+          <text x="240" y="258" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">1.1 検索・OG</text>
+          <text x="240" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">JSON-LD · パンくず</text>
+          <path id="life-c1" d="M420 262 H460" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-c1" d="M420 262 H460"/>
+          <rect x="480" y="242" width="200" height="40" rx="8" fill="rgba(196,92,38,.15)" stroke="rgba(196,92,38,.4)"/>
+          <text x="580" y="260" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#E8A84A">1.2 /pair 約10ページ</text>
+          <text x="580" y="274" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="rgba(232,228,220,.45)">料理から選ぶ入口</text>
+          <path id="life-c2" d="M690 262 H730" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="life-c2" d="M690 262 H730"/>
+          <circle cx="770" cy="262" r="5" fill="#C45C26"/>
+          <text x="790" y="258" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">1.4 百科 claims</text>
+          <text x="790" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">公式 URL · seed</text>
+        </svg>
+      </div>
+      <div class="life-track">
+        <article class="life-col">
+          <p class="eyebrow">PRODUCT</p>
+          <h3>画面に載せたもの</h3>
+          <ol>
+            <li>甘み×粒感の地図と Top4</li>
+            <li>相談（埋め込み検索）と侍米師の一文</li>
+            <li>事典 · 料理別 /pair · 買う出口</li>
+            <li>アフィリエイト開示と特商法の置き場</li>
+          </ol>
+        </article>
+        <article class="life-col">
+          <p class="eyebrow">ENGINEERING</p>
+          <h3>開発・運用プロセス</h3>
+          <ol>
+            <li>Git の TS カタログ → validate → seed</li>
+            <li>Supabase RLS · embedding は非公開</li>
+            <li>CI · smoke · origin/main → Vercel</li>
+            <li>SemVer。ユーザーに見える変更は同一コミットでバージョンを更新する</li>
+          </ol>
+        </article>
+        <article class="life-col">
+          <p class="eyebrow">SINCE 1.0</p>
+          <h3>公開後に増やした版</h3>
+          <ol>
+            <li>1.1.x 検索基盤（JSON-LD / OG / パンくず）</li>
+            <li>1.2.x〜1.3.x 料理別 /pair 約10ページと誌面</li>
+            <li>1.4.x 百科の合稿 · claims · 公式 URL · DB seed</li>
+            <li>リリースメモを changelog に残す</li>
+          </ol>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 CONTEXT · washi · C-2 -->
+  <section id="context" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="context">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">1 · 課題と範囲</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">対象範囲と対象外</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">産地と価格の並びだけでは、今夜のおかずとの相性が比較できません。味わいと料理相性で選べる体験に集中し、現フェーズで担わないものを切ります。</p>
+      <div class="do-split mb-4">
+        <div class="do-side in">
+          <p class="eyebrow">DO · 集中</p>
+          <h3>今夜のご飯に合う米</h3>
+          <ul>
+            <li>甘み・粒感の相対座標</li>
+            <li>料理タグと人手の相性・向かない</li>
+            <li>Top4 推薦と買う出口</li>
+            <li>百科の claims + URL 溯源</li>
+            <li>アフィリエイト開示と特商法の置き場</li>
+          </ul>
+        </div>
+        <div class="do-side out">
+          <p class="eyebrow">DON'T · 捨てる</p>
+          <h3>現フェーズで担わないもの</h3>
+          <ul>
+            <li>ふるさと還元率の価格競争</li>
+            <li>自社在庫・D2C販売・問い合わせ／配送対応</li>
+            <li>認証・お気に入り・多ターン（P2）</li>
+            <li>アフィリエイト収益だけで工数を回収する前提</li>
+            <li>構想カテゴリ（桃／和牛／酒）の確約</li>
+          </ul>
+          <div class="mt-3">
+            <span class="chip-fly">人気順</span>
+            <span class="chip-fly">還元率</span>
+            <span class="chip-fly">万能 API</span>
+            <span class="chip-fly">機器連携</span>
+          </div>
+        </div>
+      </div>
+      <p class="viz-caption">一次データは Git 上の構造化カタログです。更新を止めれば負債になります。完成した参入障壁ではなく、運用し続ける前提の資産です。</p>
+    </div>
+  </section>
+
+  <!-- 5 CONCEPT · OLED + washi sheet · X-1 -->
+  <section id="concept" class="room-oled relative" data-room="oled" data-chapter="concept">
+    <div class="pin-stage" id="matrix-stage">
+      <div class="max-w-6xl mx-auto w-full">
+        <p class="sec-label mb-2">2 · プロダクト体験</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">味わい地図・端末内ランキング</h2>
+        <p class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">横軸は甘み、縦軸は粒感。プローブが近い四銘柄を強調します。順位は端末内の距離計算です。</p>
+        <div class="amber-note max-w-2xl mb-4">汎用チャットとの差は文章力ではありません。構造化した味覚・相性・向かない組み合わせを持ち、比較 UI と買う出口までつなぎます。</div>
+        <div class="grid lg:grid-cols-12 gap-5 items-stretch">
+          <div class="lg:col-span-4">
+            <div class="concept-chips">
+              <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元。プローブが好みの位置を示す</span></div>
+              <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄。案内は LLM、候補は規則と距離</span></div>
+              <div class="concept-chip"><strong>二本立て</strong><span>地図の順位は端末内。相談だけサーバ。結果は混ぜない</span></div>
+              <div class="concept-chip"><strong>端末内の順位</strong><span class="font-mono text-[11px]" style="color:#E8A84A">client-side rank</span></div>
+            </div>
+            <p id="matrix-phase" class="mt-3 text-xs font-mono min-h-[1.25rem]" style="color:#E8A84A">すっきり寄り（例: ササニシキ付近）</p>
+          </div>
+          <div class="lg:col-span-8">
+            <div class="sheet p-2.5 sm:p-4">
+              <div id="interactive-matrix" class="matrix relative h-[min(52vh,420px)] min-h-[280px] rounded-lg border border-ink/10 select-none overflow-hidden">
+                <span class="absolute left-3 top-3 text-[10px] text-muted tracking-widest">ほどける</span>
+                <span class="absolute left-3 bottom-9 text-[10px] text-muted tracking-widest">粒立ち</span>
+                <span class="absolute left-11 bottom-2 text-[10px] text-muted">すっきり</span>
+                <span class="absolute right-3 bottom-2 text-[10px] text-muted">甘みふくよか</span>
+                <span class="absolute right-3 top-3 text-[10px] font-mono tracking-wider" style="color:#C45C26">CLIENT RANK</span>
+                <svg id="vector-lines" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></svg>
+                <div id="rice-points"></div>
+                <div id="smart-probe" class="smart-probe" style="left:52%;top:48%" role="slider" aria-label="味わいの点" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p class="mt-2 text-xs text-muted">座標はカタログの固定値です。プローブの近くの四銘柄を強調します。</p>
+              <p id="knn-readout" class="mt-1 text-xs font-mono" style="color:#C45C26"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 WEDGE · washi · W-2 -->
+  <section id="wedge" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="wedge">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">3 · ほかとの違い</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">価格比較でも、雑談チャットでもない</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">候補の順番はカタログの座標と検索が決めます。LLM には案内文だけを書かせます。</p>
+      <div class="battlefield">
+        <article class="battle-card theirs">
+          <p class="sec-label">よくある探し方</p>
+          <h3>人気・値段・産地</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">還元率や口コミ、汎用チャットの一文。今夜のおかずとの相性は表に出ません。</p>
+        </article>
+        <article class="battle-card ours">
+          <p class="sec-label" style="color:#C45C26">このサイト</p>
+          <h3>味わいと相性から四つ</h3>
+          <p class="text-sm leading-relaxed m-0" style="color:#5C4030">地図か相談で候補を絞り、比較して買う出口までつなぎます。</p>
+        </article>
+      </div>
+      <div class="moat-grid">
+        <article class="moat-tile">
+          <p class="n">01</p>
+          <h4>人手で整備した味覚データ</h4>
+          <p>甘み・粒感・相性・向かないを Git 上のカタログに置く</p>
+        </article>
+        <article class="moat-tile">
+          <p class="n">02</p>
+          <h4>二系統の推薦</h4>
+          <p>地図は端末内の距離。相談だけサーバ埋め込み。結果は混ぜない</p>
+        </article>
+        <article class="moat-tile">
+          <p class="n">03</p>
+          <h4>出典つきの事典</h4>
+          <p>主張と公式 URL を分けて持つ。106 銘柄 · 16 ソース</p>
+        </article>
+        <article class="moat-tile">
+          <p class="n">04</p>
+          <h4>開示のある出口</h4>
+          <p>特商法とアフィリエイト表記。在庫や発送は抱えません</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 ASSETS · OLED · A-1 NEW -->
+  <section id="assets" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="assets">
+    <div class="max-w-6xl mx-auto relative">
+      <p class="sec-label mb-2">4 · データ資産</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">Git → validate / seed → Supabase</h2>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">一次データはリポジトリで管理し、DB は配信用のミラーとして扱います。百科は claims と URL を分けます。</p>
+      <div class="asset-layers mb-5">
+        <div class="asset-layer">
+          <span class="lab">L0 · GIT</span>
+          <div>
+            <h3>構造化カタログ（一次データ）</h3>
+            <p>銘柄座標・pair・encyclopedia articles / claims。差分レビューが可能な一次データとして管理します。</p>
+          </div>
+        </div>
+        <div class="asset-layer">
+          <span class="lab">L1 · GATE</span>
+          <div>
+            <h3>validate:rice → seed:rice</h3>
+            <p>必須フィールドとスコア範囲を検査してから投入。埋め込みは同一モデル版で全量再計算。</p>
+          </div>
+        </div>
+        <div class="asset-layer">
+          <span class="lab">L2 · LIVE</span>
+          <div>
+            <h3>Supabase ミラー</h3>
+            <p>catalog VIEW（埋め込み非公開）· match_rice_profiles RPC（サーバ権限）· RLS。</p>
+          </div>
+        </div>
+        <div class="asset-layer">
+          <span class="lab">L3 · TRACE</span>
+          <div>
+            <h3>百科 claims + URL</h3>
+            <p>主張と出典 URL を分離。106 銘柄 · 99 verified / 7 partial · 16 sources。</p>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-oled p-4 sm:p-5 overflow-x-auto">
+        <svg viewBox="0 0 920 160" class="w-full min-w-[640px]" aria-label="資産の流れ">
+          <defs>
+            <marker id="aAmber" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#E8A84A"/></marker>
+          </defs>
+          <rect x="20" y="40" width="160" height="70" rx="10" fill="none" stroke="rgba(255,255,255,.2)"/>
+          <text x="100" y="72" text-anchor="middle" fill="#F2EEE6" font-family="Shippori Mincho" font-size="14">Git 一次データ</text>
+          <text x="100" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">catalog · claims</text>
+          <path id="asset-a1" d="M190 75 H230" stroke="#E8A84A" stroke-width="1.5" marker-end="url(#aAmber)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="asset-a1" d="M190 75 H230"/>
+          <rect x="240" y="40" width="180" height="70" rx="10" fill="rgba(232,168,74,.08)" stroke="rgba(232,168,74,.4)"/>
+          <text x="330" y="72" text-anchor="middle" fill="#E8A84A" font-family="Shippori Mincho" font-size="14">validate / seed</text>
+          <text x="330" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">検査 → 投入</text>
+          <path id="asset-a2" d="M430 75 H470" stroke="#E8A84A" stroke-width="1.5" marker-end="url(#aAmber)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="asset-a2" d="M430 75 H470"/>
+          <rect x="480" y="40" width="170" height="70" rx="10" fill="none" stroke="rgba(255,255,255,.2)"/>
+          <text x="565" y="72" text-anchor="middle" fill="#F2EEE6" font-family="Shippori Mincho" font-size="14">Supabase</text>
+          <text x="565" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">RLS · RPC</text>
+          <path id="asset-a3" d="M660 75 H700" stroke="#E8A84A" stroke-width="1.5" marker-end="url(#aAmber)"/>
+          <path class="flow-glow tone-harvest" data-glow-for="asset-a3" d="M660 75 H700"/>
+          <rect x="710" y="40" width="190" height="70" rx="10" fill="none" stroke="rgba(196,92,38,.45)"/>
+          <text x="805" y="72" text-anchor="middle" fill="#C45C26" font-family="Shippori Mincho" font-size="14">公開面</text>
+          <text x="805" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">地図 · 相談 · 事典</text>
+          <text x="460" y="145" text-anchor="middle" fill="rgba(232,228,220,.4)" font-family="Zen Kaku Gothic New" font-size="11">DB はミラー。Git を直してから seed する</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 DECISION · washi · D-2 -->
+  <section id="decision" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="decision">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">5 · トレードオフ</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">レイヤー別の設計判断</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">各レイヤーで何を採用し、何を見送ったかを整理します。あわせて、将来の移行条件も明示します。</p>
+      <div class="adr-fold">
+        <details class="adr-item" open>
+          <summary>App · Next.js 同一リポジトリ</summary>
+          <div class="body"><dl>
+            <dt>問題</dt><dd>画面と相談 API を、単独開発で運用できる範囲に収める必要があった</dd>
+            <dt>選んだこと</dt><dd>Next.js 15 App Router。別建ての API サーバーは現段階では見送る</dd>
+            <dt>捨てたもの</dt><dd>サービス分割のスケール境界</dd>
+            <dt>移行条件</dt><dd>チーム分割や公開 API が必要になったとき</dd>
+          </dl></div>
+        </details>
+        <details class="adr-item">
+          <summary>Vector · Supabase pgvector</summary>
+          <div class="body"><dl>
+            <dt>問題</dt><dd>件数は百前後。権限とメタデータを同一 DB に置きたい</dd>
+            <dt>選んだこと</dt><dd>pgvector + RLS。Pinecone / Qdrant 単独は見送る</dd>
+            <dt>捨てたもの</dt><dd>専用ベクトル基盤の性能面の拡張余地</dd>
+            <dt>移行条件</dt><dd>プロファイル数万、p95 悪化、多テナント隔離</dd>
+          </dl></div>
+        </details>
+        <details class="adr-item">
+          <summary>Recommend · 二本立て（座標 / 意味）</summary>
+          <div class="body"><dl>
+            <dt>問題</dt><dd>地図は低遅延。相談だけ外部モデル費用が発生する</dd>
+            <dt>選んだこと</dt><dd>端末内距離とサーバ埋め込みを分離。操作のたびに LLM しない</dd>
+            <dt>捨てたもの</dt><dd>操作のたびに生成して名簿を作ること</dd>
+            <dt>移行条件</dt><dd>両系統の一貫性評価と融合が必須になったとき</dd>
+          </dl></div>
+        </details>
+        <details class="adr-item">
+          <summary>Ingest · Git 一次データ + seed</summary>
+          <div class="body"><dl>
+            <dt>問題</dt><dd>味覚データの監査可能性</dd>
+            <dt>選んだこと</dt><dd>TS catalog → validate:rice → seed:rice。DB は配信用ミラー</dd>
+            <dt>捨てたもの</dt><dd>別言語の常設スクレイパーを一次データにしない</dd>
+            <dt>移行条件</dt><dd>専門家ワークフローが別系統を要求するとき</dd>
+          </dl></div>
+        </details>
+        <details class="adr-item">
+          <summary>Commerce · 検索 CTA + 直リンク</summary>
+          <div class="body"><dl>
+            <dt>問題</dt><dd>買う出口は必要。在庫・配送は背負わない</dd>
+            <dt>選んだこと</dt><dd>楽天直リンク等。全モール API 必須化は見送る</dd>
+            <dt>捨てたもの</dt><dd>自社在庫 D2C、アフィリエイト収益だけで工数を回収する前提</dd>
+            <dt>移行条件</dt><dd>高 LTV 協力先や軽 B2B パイロットが具体化したとき</dd>
+          </dl></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 DESIGN · OLED room + light sheet · F-1 -->
+  <section id="design" class="room-oled relative" data-room="oled" data-chapter="design">
+    <div class="pin-stage" id="swim-stage">
+      <div class="max-w-[1100px] mx-auto w-full">
+        <p class="sec-label mb-2">6 · 処理の流れ</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">レイヤ別データフロー</h2>
+        <p id="swim-phase" class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。</p>
+        <div class="sheet p-3 sm:p-5">
+          <svg id="swimlane-svg" viewBox="0 0 1060 460" class="w-full min-w-[720px]" aria-label="処理の流れ">
+            <defs>
+              <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#C45C26"/></marker>
+              <marker id="ahGray" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#6B6560"/></marker>
+              <marker id="ahGold" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7" fill="#D4A04A"/></marker>
+            </defs>
+            <g class="swim-lanes">
+              <rect x="130" y="28" width="900" height="92" rx="10" fill="#F3EDE3" opacity="0.95"/>
+              <rect x="130" y="128" width="900" height="92" rx="10" fill="#F7F4EF" opacity="0.98"/>
+              <rect x="130" y="228" width="900" height="92" rx="10" fill="#F3EDE3" opacity="0.95"/>
+              <rect x="130" y="328" width="900" height="92" rx="10" fill="#F7F4EF" opacity="0.98"/>
+            </g>
+            <g text-anchor="end" font-family="Shippori Mincho" fill="#1A1A18">
+              <text x="118" y="68" font-size="14">画面</text>
+              <text x="118" y="86" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">ブラウザ</text>
+              <text x="118" y="168" font-size="14">サーバ</text>
+              <text x="118" y="186" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Next.js</text>
+              <text x="118" y="268" font-size="14">データベース</text>
+              <text x="118" y="286" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Supabase</text>
+              <text x="118" y="368" font-size="14">外部モデル</text>
+              <text x="118" y="386" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Gemini / OpenAI</text>
+            </g>
+            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">左が入力、右が結果 · 二系統は混ぜない</text>
+
+            <g class="swim-node" data-phase="ui">
+              <rect x="160" y="52" width="108" height="44" rx="22" fill="#FFFEF9" stroke="#1A1A18" stroke-width="1.4"/>
+              <text x="214" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">地図を動かす</text>
+              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">距離で上位四件</text>
+            </g>
+            <g class="swim-node" data-phase="ui">
+              <rect x="300" y="52" width="108" height="44" rx="22" fill="#FFFEF9" stroke="#1A1A18" stroke-width="1.4"/>
+              <text x="354" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">相談を送る</text>
+              <text x="354" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">一文を投稿</text>
+            </g>
+            <g class="swim-node" data-phase="result">
+              <rect x="860" y="52" width="120" height="44" rx="22" fill="#C45C26"/>
+              <text x="920" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#FFFEF9" font-weight="600">候補を四つ出す</text>
+              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">理由文 ± 案内</text>
+            </g>
+
+            <g class="swim-node" data-phase="api">
+              <rect x="300" y="152" width="100" height="44" rx="8" fill="#1A1A18"/>
+              <text x="350" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">回数制限</text>
+              <text x="350" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">非常時は止める</text>
+            </g>
+            <g class="swim-node" data-phase="api">
+              <rect x="440" y="152" width="110" height="44" rx="8" fill="#1A1A18"/>
+              <text x="495" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">文を数値化</text>
+              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">名指し以外</text>
+            </g>
+            <g class="swim-node" data-phase="bridge">
+              <rect x="600" y="152" width="120" height="44" rx="8" fill="#1A1A18"/>
+              <text x="660" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">相性の整理</text>
+              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">理由文のみ・順位なし</text>
+            </g>
+            <g class="swim-node" data-phase="bridge">
+              <rect x="760" y="152" width="110" height="44" rx="8" fill="#1A1A18"/>
+              <text x="815" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">返事をまとめる</text>
+              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">候補＋案内</text>
+            </g>
+
+            <g class="swim-node" data-phase="db">
+              <rect x="170" y="252" width="120" height="44" rx="8" fill="#5A8F72"/>
+              <text x="230" y="272" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">銘柄一覧</text>
+              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F7F4EF" font-family="Zen Kaku Gothic New">catalog · 埋込なし</text>
+            </g>
+            <g class="swim-node" data-phase="db">
+              <rect x="560" y="252" width="130" height="44" rx="8" fill="#5A8F72"/>
+              <text x="625" y="272" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">近い銘柄を探す</text>
+              <text x="625" y="286" text-anchor="middle" font-size="9" fill="#F7F4EF" font-family="Zen Kaku Gothic New">RPC · モデル版必須</text>
+            </g>
+
+            <g class="swim-node" data-phase="llm">
+              <rect x="440" y="352" width="110" height="44" rx="22" fill="#D4A04A"/>
+              <text x="495" y="372" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">文の埋め込み</text>
+              <text x="495" y="386" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">5秒で打ち切り</text>
+            </g>
+            <g class="swim-node" data-phase="llm">
+              <rect x="700" y="352" width="120" height="44" rx="22" fill="#D4A04A"/>
+              <text x="760" y="372" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">侍米師の一言</text>
+              <text x="760" y="386" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">書けなくても候補は返す</text>
+            </g>
+
+            <path class="swim-path" id="path-coord" d="M230 252 V 110 H 214 V 96" fill="none" stroke="#6B6560" stroke-width="1.5" data-dash="5 4" marker-end="url(#ahGray)"/>
+            <path class="flow-glow tone-muted" data-glow-for="path-coord" d="M230 252 V 110 H 214 V 96"/>
+            <path class="swim-path" id="path-coord2" d="M268 52 V 40 H 860 V 52" fill="none" stroke="#6B6560" stroke-width="1.5" data-dash="5 4" marker-end="url(#ahGray)"/>
+            <path class="flow-glow tone-muted" data-glow-for="path-coord2" d="M268 52 V 40 H 860 V 52"/>
+            <text class="swim-anno" x="248" y="236" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">一覧は読む · 順位は端末内</text>
+
+            <path class="swim-path" id="path1" d="M354 96 V 152" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path1" d="M354 96 V 152"/>
+            <path class="swim-path" id="path2" d="M400 174 H 440" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path2" d="M400 174 H 440"/>
+            <path class="swim-path" id="path3a" d="M495 196 V 352" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path3a" d="M495 196 V 352"/>
+            <path class="swim-path" id="path3b" d="M550 374 H 625 V 296" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path3b" d="M550 374 H 625 V 296"/>
+            <path class="swim-path" id="path4" d="M625 252 V 220 H 660 V 196" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path4" d="M625 252 V 220 H 660 V 196"/>
+            <path class="swim-path" id="path4b" d="M720 174 H 760" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path4b" d="M720 174 H 760"/>
+            <path class="swim-path" id="path7" d="M815 152 V 96 H 860" fill="none" stroke="#C45C26" stroke-width="2.25" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-harvest" data-glow-for="path7" d="M815 152 V 96 H 860"/>
+            <path class="swim-path" id="path5" d="M835 196 V 374 H 820" fill="none" stroke="#D4A04A" stroke-width="1.75" marker-end="url(#ahGold)"/>
+            <path class="flow-glow tone-harvest" data-glow-for="path5" d="M835 196 V 374 H 820"/>
+            <path class="swim-path" id="path6" d="M760 352 V 196" fill="none" stroke="#D4A04A" stroke-width="1.75" marker-end="url(#ahGold)"/>
+            <path class="flow-glow tone-harvest" data-glow-for="path6" d="M760 352 V 196"/>
+            <path class="swim-path" id="path-fb" d="M820 374 H 990 V 90 H 980" fill="none" stroke="#C45C26" stroke-width="1.4" data-dash="3 5" marker-end="url(#ah)"/>
+            <path class="flow-glow tone-ink" data-glow-for="path-fb" d="M820 374 H 990 V 90 H 980"/>
+          </svg>
+          <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-muted">
+            <span>灰の点線：地図（一覧読込＋端末内順位）</span>
+            <span>橙の実線：相談</span>
+            <span>金の線：任意の案内文</span>
+            <span>橙の破線：案内失敗でも候補を返す</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 RANKING · OLED · R-2 -->
+  <section id="ranking" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="ranking">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">7 · 推薦設計</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">LLM に任せる領域、任せない領域</h2>
+      <p class="text-sm muted-text mb-5 max-w-2xl leading-relaxed">候補は構造化データと検索ロジックで決め、LLM は説明文の生成に限ります。地図は端末内、相談はサーバの埋め込み検索です。</p>
+      <div class="sheet-oled p-4 sm:p-5 mb-4 overflow-x-auto">
+        <svg viewBox="0 0 960 220" class="w-full min-w-[680px]" aria-label="双軌と禁令">
+          <rect x="24" y="24" width="360" height="172" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="204" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">MAP · CLIENT</text>
+          <text x="204" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">地図 · 端末内順位</text>
+          <text x="204" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">1  甘み・粒感の距離</text>
+          <text x="204" y="132" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">2  近い順 Top4</text>
+          <text x="204" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">3  規則の短い理由文</text>
+          <text x="204" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">LLM 案内なし</text>
+
+          <rect x="420" y="70" width="120" height="80" rx="10" fill="rgba(196,92,38,.18)" stroke="#C45C26" stroke-width="1.4"/>
+          <text x="480" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#C45C26">BAN</text>
+          <text x="480" y="126" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#F2EEE6">LLM ≠</text>
+          <text x="480" y="142" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#F2EEE6">名簿づくり</text>
+
+          <rect x="576" y="24" width="360" height="172" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+          <text x="756" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">CONSULT · SERVER</text>
+          <text x="756" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">相談 · 埋め込み検索</text>
+          <text x="756" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">1  名指し or 埋め込み</text>
+          <text x="756" y="132" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">2  pgvector（モデル版）</text>
+          <text x="756" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">3  Top4 + 規則理由</text>
+          <text x="756" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">案内文は任意・失敗可</text>
+        </svg>
+      </div>
+      <p class="viz-caption">相性整理レイヤーは理由文だけを組み立て、順位は変えません。案内文が失敗しても候補は返します。</p>
+    </div>
+  </section>
+
+  <!-- 11 DELIVERY · washi · 公開手順 -->
+  <section id="delivery" class="room-washi px-5 sm:px-10 sec-y" data-room="washi" data-chapter="delivery">
+    <div class="max-w-6xl mx-auto">
+      <div class="gate-pin" id="gate-pin">
+        <p class="sec-label mb-2">8 · 公開ゲート</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">本番公開までの四つの手順</h2>
+        <p class="gate-lead">約4週間・一人。1.0.0 から 1.4.1 まで、公開のたびに同じ順を通します。</p>
+        <p id="gate-phase" class="gate-phase">G1 · データ検査 — validate:rice</p>
+
+        <div class="gate-board" id="gate-stage" aria-label="公開までの手順">
+          <div class="gate-spine" id="gate-spine" data-fill="0" style="--fill: 0">
+            <div class="gate-step" data-gate="0">
+              <span class="gate-dot">G1</span>
+              <span class="gate-step-label">データ</span>
+            </div>
+            <div class="gate-step" data-gate="1">
+              <span class="gate-dot">G2</span>
+              <span class="gate-step-label">検査</span>
+            </div>
+            <div class="gate-step" data-gate="2">
+              <span class="gate-dot">G3</span>
+              <span class="gate-step-label">手元</span>
+            </div>
+            <div class="gate-step" data-gate="3">
+              <span class="gate-dot">G4</span>
+              <span class="gate-step-label">公開</span>
+            </div>
+          </div>
+
+          <article class="gate-focus" id="gate-focus">
+            <p class="status" id="gate-status"></p>
+            <div class="gate-panels">
+              <div class="gate-panel is-on" data-gate-panel="0">
+                <p class="g">G1 · データ</p>
+                <h3>カタログの整合性を担保する</h3>
+                <p class="body">Git にある銘柄カタログを validate:rice で検査します。必須項目とスコア範囲。件数が足りなければここで止まります。</p>
+                <p class="cmd">npm run validate:rice</p>
+              </div>
+              <div class="gate-panel" data-gate-panel="1">
+                <p class="g">G2 · 検査</p>
+                <h3>main 反映前に自動検査で止める</h3>
+                <p class="body">lint · typecheck · unit · e2e · client-bundle。秘密や肥大化したクライアントも、人が見返す前に弾きます。</p>
+                <p class="cmd">CI · lint / type / unit / e2e / client-bundle</p>
+              </div>
+              <div class="gate-panel" data-gate-panel="2">
+                <p class="g">G3 · 手元</p>
+                <h3>本番反映後に手動確認し、実施日を記録する</h3>
+                <p class="body">地図 · Top4 · 買う出口。自動化の穴を人が埋め、smoke-test の記録に日付を残します。</p>
+                <p class="cmd">smoke-test 記録</p>
+              </div>
+              <div class="gate-panel" data-gate-panel="3">
+                <p class="g">G4 · 公開</p>
+                <h3>同一コミットでバージョンを更新してリリースする</h3>
+                <p class="body">VERSION · package.json · changelog を同一コミットに揃えます。origin/main が Vercel Production になります。</p>
+                <p class="cmd">git push origin HEAD</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <p class="gate-note">埋め込みと照合 RPC は一般公開しません。相談 API には日次上限と緊急停止があります。本番のあとに smoke-test へ日付を残し、測っていない数字は成果に書きません。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 DELIVERY FACTS · OLED -->
+  <section id="returns" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="returns">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">9 · 4週間で本番化した範囲</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">何を使い、どこまで出したか</h2>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">スタックと、出した版の規模です。</p>
+      <div class="grid md:grid-cols-3 gap-4 mb-5" id="fact-cards">
+        <article class="sheet-oled p-4 sm:p-5 fact-card relative overflow-hidden">
+          <span class="fact-sheen" aria-hidden="true"></span>
+          <p class="sec-label mb-2" style="color:#E8A84A">STACK</p>
+          <ul class="m-0 p-0 list-none space-y-2 text-sm" style="color:rgba(232,228,220,.78)">
+            <li>Next.js 15（App Router）</li>
+            <li>Supabase · PostgreSQL · pgvector</li>
+            <li>埋め込み：Gemini 既定 / OpenAI 切替</li>
+            <li>本番：Vercel · ドメイン komesomme.jp</li>
+            <li>検証：Vitest · Playwright · validate:rice</li>
+          </ul>
+        </article>
+        <article class="sheet-oled p-4 sm:p-5 fact-card relative overflow-hidden">
+          <span class="fact-sheen" aria-hidden="true"></span>
+          <p class="sec-label mb-2" style="color:#E8A84A">TEMPO</p>
+          <ul class="m-0 p-0 list-none space-y-2 text-sm" style="color:rgba(232,228,220,.78)">
+            <li>着手〜現在：約4週間（2026-08中旬〜09-11）</li>
+            <li>体制：一人</li>
+            <li>1.0.0 本番公開のあと、1.1〜1.4.1 を連続リリース</li>
+            <li>1.x の Release コミット：13</li>
+            <li>リポジトリ commits：約99</li>
+          </ul>
+        </article>
+        <article class="sheet-oled p-4 sm:p-5 fact-card relative overflow-hidden">
+          <span class="fact-sheen" aria-hidden="true"></span>
+          <p class="sec-label mb-2" style="color:#E8A84A">SHIPPED</p>
+          <ul class="m-0 p-0 list-none space-y-2 text-sm" style="color:rgba(232,228,220,.78)">
+            <li>銘柄カタログ 106 · 味わい地図 · 相談</li>
+            <li>事典（claims + 公式 URL · 16 sources）</li>
+            <li>料理別 /pair 約10ページ</li>
+            <li>JSON-LD / OG / パンくず（1.1）</li>
+            <li>買う出口（楽天直リンク等）+ 開示</li>
+          </ul>
+        </article>
+      </div>
+      <p class="amber-note max-w-3xl">アフィリエイトは購入導線として残しています。ただし、米の客単価を前提にすると、アフィリエイト報酬だけで開発工数を回収する設計にはしていません。在庫・発送・問い合わせ対応も現段階では担いません。</p>
+    </div>
+  </section>
+
+  <!-- 13 THREAT · washi · T-2 -->
+  <section id="threat" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="threat">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">10 · 切り分け</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">製品 UI と説明資料を分離する</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">利用者向けの画面と、技術・版の説明は別物です。混ぜるとどちらも読みにくくなります。</p>
+      <div class="device-pair mb-4">
+        <div class="device-frame product">
+          <div class="bezel">
+            <p class="tag">komesomme.jp</p>
+            <h3>製品 UI</h3>
+            <p>今夜の一膳、味わい、事典、お店で探す。実装の説明や事業の話は出しません。</p>
+          </div>
+        </div>
+        <div class="device-frame case">
+          <div class="bezel">
+            <p class="tag">説明資料</p>
+            <h3>サイト外</h3>
+            <p>技術の選び方、データの置き場、版の積み上げ。製品のメタデータとは分けています。</p>
+          </div>
+        </div>
+      </div>
+      <p class="paper-note max-w-2xl">公開側のリスク（相談 API 乱用、プロンプト注入、RLS ミス、費用暴走）は、候補決定を LLM に渡さない設計とレート制限・緊急停止で抑えます。残る穴は監視と権限テストの継続です。</p>
+    </div>
+  </section>
+
+  <!-- 14 VALIDATE · washi · V-2 -->
+  <section id="validate" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="validate">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">11 · 検証</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">確かめたこと / まだ測っていないこと</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">利用実績は誇張せず、工程上の確認結果とユーザー利用の観測値を分けて整理します。</p>
+      <div class="ev-split">
+        <div class="ev-panel">
+          <h3>確かめたこと</h3>
+          <div class="ev-row">
+            <p class="ev-title">公開判定</p>
+            <p class="ev-proof">checklist · smoke（地図・Top4・購入リンク）</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">カタログ</p>
+            <p class="ev-proof">validate:rice · 現在 106 銘柄 · 百科 99 verified / 7 partial · 16 sources</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">推薦粒度</p>
+            <p class="ev-proof">座標も相談も Top4。案内失敗時も候補を返す</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">権限まわり</p>
+            <p class="ev-proof">RLS · embedding 非公開 · RPC にモデル名必須</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">Phase 1 / Wave 2A</p>
+            <p class="ev-proof">検索基盤完了。pair は約10ページ公開中</p>
+          </div>
+        </div>
+        <div class="ev-panel pending">
+          <h3>まだ測っていないこと</h3>
+          <div class="ev-row">
+            <p class="ev-title">転換・再訪</p>
+            <p class="ev-proof">訪問数、CTA 率、再訪率の公開値なし</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">計測運用</p>
+            <p class="ev-proof">GA4 / access_events の週次運用は未到達</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">アフィリエイト突合</p>
+            <p class="ev-proof">shop_click と管理画面成果の突合は未完。まだ主指標にしていない</p>
+          </div>
+          <div class="ev-row">
+            <p class="ev-title">銘柄単位と商品単位</p>
+            <p class="ev-proof">推薦は銘柄単位。商品ごとの産年・ロットまでは保証しません</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 ROADMAP · washi sheet pin · O-2 -->
+  <section id="roadmap" class="room-washi relative" data-room="washi" data-chapter="roadmap">
+    <div class="pin-stage" id="road-stage">
+      <div class="max-w-6xl mx-auto w-full">
+        <p class="sec-label mb-2">12 · ロードマップ</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">いま注力する領域と、まだ約束しない領域</h2>
+        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">1.0 公開から Phase 2 / 1.4.x まで進み、再訪と軽 B2B は次段。他カテゴリは米の検証後に判断します。</p>
+        <div class="sheet p-3 sm:p-6 overflow-x-auto">
+          <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[720px]" aria-label="これからの道">
+            <defs>
+              <linearGradient id="roadFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2A2622"/>
+                <stop offset="100%" stop-color="#4A433C"/>
+              </linearGradient>
+              <filter id="pinSoft" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1A1A18" flood-opacity="0.16"/>
+              </filter>
+            </defs>
+            <ellipse cx="500" cy="528" rx="420" ry="18" fill="#E5DFD4" opacity="0.28"/>
+            <path id="road-path"
+              d="M 70 430 C 160 430, 200 360, 280 330 S 400 300, 470 250 S 580 170, 680 175 S 800 200, 880 120 S 940 80, 960 70"
+              fill="none" stroke="url(#roadFill)" stroke-width="28" stroke-linecap="round"/>
+            <path id="road-dash"
+              d="M 70 430 C 160 430, 200 360, 280 330 S 400 300, 470 250 S 580 170, 680 175 S 800 200, 880 120 S 940 80, 960 70"
+              fill="none" stroke="#FFFEF9" stroke-width="2.2" stroke-dasharray="10 12" stroke-linecap="round" opacity="0.85"/>
+
+            <!-- DONE 1.0 -->
+            <g class="road-pin" id="road-pin-done">
+              <path d="M140 380 C140 360 156 348 140 332 C124 348 140 360 140 380 Z" fill="#C45C26" filter="url(#pinSoft)"/>
+              <circle cx="140" cy="360" r="9" fill="#FFFEF9"/>
+              <text x="140" y="318" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#C45C26" font-weight="600">DONE</text>
+              <text x="140" y="300" text-anchor="middle" font-size="16" font-family="Shippori Mincho" fill="#1A1A18">1.0.0</text>
+              <line x1="140" y1="380" x2="140" y2="408" stroke="#C45C26" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="50" y="410" width="180" height="56" rx="10" fill="#FFFEF9" stroke="rgba(196,92,38,.35)"/>
+              <text x="140" y="434" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">公開判定</text>
+              <text x="140" y="452" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">地図・相談・事典・出口</text>
+            </g>
+
+            <!-- DONE Phase1 -->
+            <g class="road-pin" id="road-pin-p1">
+              <path d="M280 330 C280 310 296 298 280 282 C264 298 280 310 280 330 Z" fill="#C45C26" filter="url(#pinSoft)"/>
+              <circle cx="280" cy="310" r="8" fill="#FFFEF9"/>
+              <text x="280" y="262" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#C45C26" font-weight="600">DONE</text>
+              <text x="280" y="246" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#1A1A18">Phase 1</text>
+              <line x1="280" y1="330" x2="280" y2="360" stroke="#C45C26" stroke-width="1.15" stroke-dasharray="3 3"/>
+              <rect x="195" y="362" width="170" height="40" rx="8" fill="#FFFEF9" stroke="rgba(196,92,38,.3)"/>
+              <text x="280" y="388" text-anchor="middle" font-size="11" fill="#5C4030" font-family="Zen Kaku Gothic New">検索基盤 · 1.1.x</text>
+            </g>
+
+            <!-- NOW Phase2 -->
+            <g class="road-pin" id="road-pin-now">
+              <path d="M470 250 C470 230 486 218 470 202 C454 218 470 230 470 250 Z" fill="#E8A84A" filter="url(#pinSoft)"/>
+              <circle cx="470" cy="230" r="9" fill="#FFFEF9" stroke="#E8A84A" stroke-width="2"/>
+              <text x="470" y="178" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#C45C26" font-weight="700">NOW · 1.4.x</text>
+              <text x="470" y="160" text-anchor="middle" font-size="15" font-family="Shippori Mincho" fill="#1A1A18">Phase 2</text>
+              <line x1="470" y1="250" x2="470" y2="300" stroke="#E8A84A" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="360" y="304" width="220" height="88" rx="10" fill="#FFFEF9" stroke="rgba(232,168,74,.5)"/>
+              <text x="470" y="328" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">見つかる → 比べる → 買う</text>
+              <text x="470" y="348" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">Wave 2A · pair 約10ページ</text>
+              <text x="470" y="366" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">2B / 2C 継続</text>
+              <text x="470" y="382" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">一次データで着地を支える</text>
+            </g>
+
+            <!-- NEXT Phase3 -->
+            <g class="road-pin" id="road-pin-next">
+              <text x="680" y="95" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#1A1A18">Phase 3</text>
+              <text x="680" y="113" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#5A8F72" font-weight="700">NEXT · 再訪</text>
+              <path d="M680 160 C680 140 696 128 680 112 C664 128 680 140 680 160 Z" fill="#5A8F72" filter="url(#pinSoft)"/>
+              <circle cx="680" cy="140" r="9" fill="#FFFEF9"/>
+              <line x1="680" y1="160" x2="680" y2="230" stroke="#5A8F72" stroke-width="1.25" stroke-dasharray="3 3"/>
+              <rect x="575" y="234" width="210" height="72" rx="10" fill="#FFFEF9" stroke="rgba(90,143,114,.5)"/>
+              <text x="680" y="258" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">シェア / 自前チャネル</text>
+              <text x="680" y="278" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">共有 URL · OG · LINE</text>
+              <text x="680" y="294" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">ループが閉じてから次を語る</text>
+            </g>
+
+            <!-- dashed light B2B · 読みやすく・未着手であることは破線で示す -->
+            <g class="road-pin" id="road-pin-b2b">
+              <text x="820" y="52" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#5C5048" font-weight="600">OPTIONAL</text>
+              <path d="M820 100 C820 82 834 72 820 58 C806 72 820 82 820 100 Z" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <circle cx="820" cy="82" r="7" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="820" y1="100" x2="820" y2="148" stroke="#5C5048" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <rect x="725" y="150" width="190" height="62" rx="10" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.35" stroke-dasharray="5 3"/>
+              <text x="820" y="176" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#1A1A18">軽 B2B（未着手）</text>
+              <text x="820" y="196" text-anchor="middle" font-size="11" fill="#3D3832" font-family="Zen Kaku Gothic New">診断の埋め込みは後で検討</text>
+            </g>
+
+            <!-- 構想 -->
+            <g class="road-pin" id="road-pin-horizon">
+              <text x="925" y="48" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#3D3832">構想</text>
+              <path d="M925 90 C925 74 937 64 925 52 C913 64 925 74 925 90 Z" fill="#E8E2D8" stroke="#5C5048" stroke-width="1.2"/>
+              <circle cx="925" cy="74" r="6" fill="#FFFEF9" stroke="#5C5048"/>
+              <line x1="925" y1="90" x2="925" y2="128" stroke="#5C5048" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <rect x="840" y="130" width="150" height="62" rx="10" fill="#F3EDE3" stroke="#5C5048" stroke-width="1.2" stroke-dasharray="4 3"/>
+              <text x="915" y="156" text-anchor="middle" font-size="12" font-family="Shippori Mincho" fill="#1A1A18">他カテゴリ</text>
+              <text x="915" y="176" text-anchor="middle" font-size="11" fill="#3D3832" font-family="Zen Kaku Gothic New">米の検証後に判断</text>
+            </g>
+
+            <circle id="road-traveler" r="6" fill="#C45C26" stroke="#FFFEF9" stroke-width="2" opacity="0"/>
+          </svg>
+          <p class="viz-caption mt-3 mb-0" style="max-width:none">塗りつぶしは着手済みか進行中。破線の枠はまだ約束していない項目です（軽 B2B と品目の横展開）。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="room-washi px-5 sm:px-10 pb-[var(--sec-y)]" data-room="washi">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-4">
+      <article class="sheet p-4">
+        <p class="sec-label mb-2">Phase 2 · いま</p>
+        <p class="text-sm text-muted leading-relaxed m-0">料理から見つかる入口を厚くする。/pair 約10ページ。比較と買う出口を続けて足す。</p>
+      </article>
+      <article class="sheet p-4">
+        <p class="sec-label mb-2">Phase 3 · 次</p>
+        <p class="text-sm text-muted leading-relaxed m-0">診断結果の共有や LINE など、また来てもらう導線。横展開の前にここを見る。</p>
+      </article>
+      <article class="sheet p-4" style="border-style:dashed;opacity:.95">
+        <p class="sec-label mb-2">あとで検討</p>
+        <p class="text-sm text-muted leading-relaxed m-0">店や食堂向けの診断埋め込みなど。他カテゴリへの横展開は、米で再訪・転換・運用負荷を検証したあとに判断します。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 15b LEARNINGS -->
+  <section id="learnings" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="learnings">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">13 · 学び</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">この PJ から再利用できる方針</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">事実の羅列ではなく、次の案件でも使える判断です。</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">01</p>
+          <h3 class="font-display text-base mb-2 font-medium">LLM に候補決定を渡さない</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">候補は構造化データと検索で決め、LLM は説明に限定する。失敗しても候補を返し続けられる。</p>
+        </article>
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">02</p>
+          <h3 class="font-display text-base mb-2 font-medium">一次データは Git、DB は配信</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">差分レビュー、検査、seed を通して品質を保つ。DB 直編集を正としない。</p>
+        </article>
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">03</p>
+          <h3 class="font-display text-base mb-2 font-medium">公開ゲートを固定する</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">validate → CI → smoke → Production を毎回通す。ユーザーに見える変更は同一コミットでバージョンを更新する。</p>
+        </article>
+        <article class="sheet p-4 sm:p-5">
+          <p class="sec-label mb-2">04</p>
+          <h3 class="font-display text-base mb-2 font-medium">未測定の成果は語らない</h3>
+          <p class="text-sm text-muted leading-relaxed m-0">工程上の証拠と利用成果を分ける。測っていない数字で説得しない。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 CLOSING · washi · Z-2 -->
+  <section id="closing" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="closing">
+    <div class="max-w-6xl mx-auto">
+      <p class="sec-label mb-2">まとめ</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">要点</h2>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">何を選んで何を捨てたかと、本番に載せたバージョンの積み上げです。</p>
+      <div class="takeaways">
+        <article class="take-card">
+          <p class="n">01</p>
+          <h3>候補の順番はカタログと検索</h3>
+          <p>Top4 は距離か埋め込み検索が決める。LLM は説明文に限る。</p>
+        </article>
+        <article class="take-card">
+          <p class="n">02</p>
+          <h3>一次データは Git、公開は手順どおり</h3>
+          <p>validate → CI → smoke → Production。DB は配信用のミラー。</p>
+        </article>
+        <article class="take-card">
+          <p class="n">03</p>
+          <h3>約4週間・単独・1.0→1.4.1</h3>
+          <p>Next.js 15 / Supabase / Vercel。公開後も 1.x を13回リリース。</p>
+        </article>
+      </div>
+      <div class="sheet p-6 sm:p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+        <div>
+          <p class="sec-label mb-2">公開サイト</p>
+          <p class="font-display text-lg sm:text-xl max-w-lg leading-snug">味わい地図と相談機能は、公開サイトで体験できます。</p>
+        </div>
+        <a href="https://komesomme.jp" class="cta shrink-0" target="_blank" rel="noopener">komesomme.jp ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="room-washi px-5 sm:px-10 pb-12" data-room="washi">
+    <div class="max-w-6xl mx-auto border-t border-ink/10 pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
+      <p>KomeSomme <span data-cs-version></span> · 設計判断と運用知見</p>
+      <p>説明用 HTML · 製品画面には載せない</p>
+    </div>
+  </footer>
+
+  <script>
+(function () {
+  const CS_VERSION = '1.4.1';
+  document.querySelectorAll('[data-cs-version]').forEach((el) => { el.textContent = CS_VERSION; });
+  document.title = 'KomeSomme ' + CS_VERSION + ' — 設計判断と運用知見';
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile = matchMedia('(max-width: 768px)');
+  const isDesktopProgress = matchMedia('(min-width: 1024px)');
+
+  const CFG = {
+    matrixVh: () => (mobile.matches ? 0.85 : 1.15),
+    swimVh: () => (mobile.matches ? 1.15 : 1.55),
+    roadVh: () => (mobile.matches ? 1.05 : 1.4),
+    gateVh: () => (mobile.matches ? 1.15 : 1.45),
+    scrub: 0.75,
+    pinStart: 'top top',
+    anticipatePin: 0.15,
+    intro: 0.14,
+  };
+
+  function paintPinSpacer(self, room) {
+    const pin = self.pin;
+    if (!pin || !pin.parentNode) return;
+    const spacer = pin.parentNode;
+    if (!spacer.classList || !spacer.classList.contains('pin-spacer')) return;
+    spacer.setAttribute('data-room-bg', room === 'oled' ? 'oled' : 'washi');
+  }
+
+  function pinDefaults(room) {
+    return {
+      start: CFG.pinStart,
+      scrub: CFG.scrub,
+      anticipatePin: CFG.anticipatePin,
+      invalidateOnRefresh: true,
+      onRefresh: (self) => paintPinSpacer(self, room),
+      onEnter: (self) => paintPinSpacer(self, room),
+      onEnterBack: (self) => paintPinSpacer(self, room),
+    };
+  }
+
+  let lenis = null;
+
+  function refreshAll() {
+    if (lenis) lenis.resize();
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+
+  function initLenis() {
+    if (reduce || typeof Lenis === 'undefined' || !window.gsap) return null;
+    const instance = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      syncTouch: false,
+    });
+    instance.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { instance.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    return instance;
+  }
+
+  function initProgress() {
+    const bar = document.getElementById('read-progress');
+    if (!bar) return;
+    const apply = (p) => {
+      const pct = Math.max(0, Math.min(1, p)) * 100;
+      if (isDesktopProgress.matches) {
+        bar.style.width = '100%';
+        bar.style.height = pct + '%';
+      } else {
+        bar.style.height = '100%';
+        bar.style.width = pct + '%';
+      }
+    };
+    if (reduce || !window.ScrollTrigger) {
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        apply(max > 0 ? scrollY / max : 0);
+      }, { passive: true });
+      return;
+    }
+    ScrollTrigger.create({
+      start: 0,
+      end: 'max',
+      onUpdate: (self) => apply(self.progress),
+    });
+  }
+
+  function initThemeRooms() {
+    const rooms = Array.from(document.querySelectorAll('[data-room]'));
+    if (!rooms.length) return;
+    let current = '';
+    const setTheme = (room) => {
+      if (!room || room === current) return;
+      current = room;
+      const oled = room === 'oled';
+      document.documentElement.classList.toggle('theme-oled', oled);
+      document.body.classList.toggle('theme-oled', oled);
+    };
+    const pickRoom = () => {
+      const y = innerHeight * 0.5;
+      let best = rooms[0];
+      let bestScore = -Infinity;
+      rooms.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom <= 0 || r.top >= innerHeight) return;
+        const mid = (r.top + r.bottom) / 2;
+        const score = -Math.abs(mid - y) + Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
+        if (score > bestScore) {
+          bestScore = score;
+          best = el;
+        }
+      });
+      setTheme(best.getAttribute('data-room'));
+    };
+    if (reduce || !window.ScrollTrigger) {
+      pickRoom();
+      window.addEventListener('scroll', pickRoom, { passive: true });
+      return;
+    }
+    ScrollTrigger.create({
+      start: 0,
+      end: 'max',
+      onUpdate: pickRoom,
+      onRefresh: pickRoom,
+    });
+    pickRoom();
+  }
+
+  function initNav() {
+    const links = Array.from(document.querySelectorAll('.nav a[data-nav]'));
+    const scrollToId = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (lenis) lenis.scrollTo(el, { offset: -12 });
+      else el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    };
+    links.forEach((a) => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('data-nav');
+        if (!id) return;
+        e.preventDefault();
+        scrollToId(id);
+      });
+    });
+    if (reduce || !window.ScrollTrigger) return;
+    const chapters = [
+      'top', 'summary', 'overview', 'lifecycle', 'context', 'concept', 'wedge', 'assets',
+      'decision', 'design', 'ranking', 'delivery', 'returns', 'threat',
+      'validate', 'roadmap', 'learnings', 'closing',
+    ];
+    chapters.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 45%',
+        end: 'bottom 45%',
+        onToggle: (self) => {
+          if (!self.isActive) return;
+          links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('data-nav') === id));
+        },
+      });
+    });
+  }
+
+  function initMatrixScene() {
+    const container = document.getElementById('interactive-matrix');
+    const probe = document.getElementById('smart-probe');
+    const svgLayer = document.getElementById('vector-lines');
+    const pointsContainer = document.getElementById('rice-points');
+    const readout = document.getElementById('knn-readout');
+    const phaseEl = document.getElementById('matrix-phase');
+    const stage = document.getElementById('matrix-stage');
+    if (!container || !probe || !svgLayer || !pointsContainer || !stage) return;
+
+    const riceData = [
+      { name: 'ゆめぴりか', x: 82, y: 28, color: '#D4A04A' },
+      { name: 'コシヒカリ', x: 68, y: 48, color: '#5A8F72' },
+      { name: 'つや姫', x: 58, y: 58, color: '#5A8F72' },
+      { name: 'ササニシキ', x: 28, y: 72, color: '#6A9AA8' },
+      { name: '青天の霹靂', x: 38, y: 62, color: '#6A9AA8' },
+      { name: '雪若丸', x: 48, y: 70, color: '#6A9AA8' },
+      { name: 'いちほまれ', x: 72, y: 36, color: '#5A8F72' },
+      { name: 'ひのひかり', x: 45, y: 52, color: '#C45C26' },
+      { name: 'あきさかり', x: 55, y: 40, color: '#E8A84A' },
+      { name: 'にこまる', x: 62, y: 65, color: '#C45C26' },
+      { name: 'みずかがみ', x: 50, y: 45, color: '#B87A8A' },
+      { name: 'きぬむすめ', x: 40, y: 38, color: '#5A8F72' },
+    ];
+
+    const dots = riceData.map((rice, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'rice-dot';
+      dot.style.left = rice.x + '%';
+      dot.style.top = rice.y + '%';
+      dot.style.backgroundColor = rice.color;
+      dot.style.opacity = '0.55';
+      dot.dataset.index = String(i);
+      dot.setAttribute('aria-label', rice.name);
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = rice.name;
+      dot.appendChild(tip);
+      pointsContainer.appendChild(dot);
+      return dot;
+    });
+
+    let px = 18, py = 72;
+    let dragging = false;
+    let interactive = reduce;
+    let lineAmount = reduce ? 1 : 0;
+    let glowAmount = reduce ? 1 : 0;
+
+    function setProbe(xPct, yPct) {
+      px = Math.max(5, Math.min(95, xPct));
+      py = Math.max(5, Math.min(95, yPct));
+      probe.style.left = px + '%';
+      probe.style.top = py + '%';
+    }
+
+    function updateVectors() {
+      const rect = container.getBoundingClientRect();
+      if (rect.width < 10) return;
+      const pX = (px / 100) * rect.width;
+      const pY = (py / 100) * rect.height;
+      const ranked = riceData.map((rice, index) => {
+        const rX = (rice.x / 100) * rect.width;
+        const rY = (rice.y / 100) * rect.height;
+        return { index, dist: Math.hypot(pX - rX, pY - rY), rX, rY, name: rice.name };
+      }).sort((a, b) => a.dist - b.dist);
+
+      const topK = ranked.slice(0, 4);
+      const topSet = new Set(topK.map((t) => t.index));
+      const emphasize = glowAmount > 0.35;
+
+      svgLayer.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+      svgLayer.innerHTML = '';
+      if (lineAmount > 0.05) {
+        topK.forEach((item, rank) => {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', pX);
+          line.setAttribute('y1', pY);
+          line.setAttribute('x2', item.rX);
+          line.setAttribute('y2', item.rY);
+          line.setAttribute('stroke', '#C45C26');
+          line.setAttribute('stroke-width', rank === 0 ? '2' : '1');
+          line.setAttribute('stroke-dasharray', '4 4');
+          line.setAttribute('opacity', String(lineAmount * (1 - rank * 0.18)));
+          svgLayer.appendChild(line);
+        });
+      }
+
+      dots.forEach((el, i) => {
+        const isTop = topSet.has(i);
+        el.classList.toggle('is-top', emphasize && isTop);
+        if (emphasize) {
+          el.style.opacity = isTop ? '1' : '0.22';
+          el.style.transform = isTop ? 'scale(1.55)' : 'scale(0.85)';
+          el.style.boxShadow = isTop ? '0 0 0 4px rgba(196,92,38,0.28)' : 'none';
+        } else {
+          el.style.opacity = '0.55';
+          el.style.transform = 'scale(1)';
+          el.style.boxShadow = 'none';
+        }
+      });
+
+      if (readout) {
+        readout.textContent = lineAmount > 0.4
+          ? ('Top4: ' + topK.map((t) => t.name).join(' · '))
+          : '';
+      }
+    }
+
+    function moveToClient(clientX, clientY) {
+      if (!interactive && !reduce) return;
+      const rect = container.getBoundingClientRect();
+      setProbe(
+        ((clientX - rect.left) / rect.width) * 100,
+        ((clientY - rect.top) / rect.height) * 100
+      );
+      updateVectors();
+    }
+
+    probe.addEventListener('pointerdown', (e) => {
+      if (!interactive && !reduce) return;
+      dragging = true;
+      if (lenis) lenis.stop();
+      try { probe.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
+    });
+    container.addEventListener('pointerdown', (e) => {
+      if (!interactive && !reduce) return;
+      if (e.target && e.target.closest && e.target.closest('.rice-dot')) return;
+      dragging = true;
+      if (lenis) lenis.stop();
+      moveToClient(e.clientX, e.clientY);
+      try { container.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    container.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      moveToClient(e.clientX, e.clientY);
+    });
+    const endDrag = () => {
+      dragging = false;
+      if (lenis) lenis.start();
+    };
+    container.addEventListener('pointerup', endDrag);
+    container.addEventListener('pointercancel', endDrag);
+    window.addEventListener('resize', updateVectors);
+
+    setProbe(px, py);
+    updateVectors();
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      lineAmount = 1;
+      glowAmount = 1;
+      interactive = true;
+      setProbe(52, 48);
+      if (phaseEl) phaseEl.textContent = '近い四銘柄を強調しています';
+      updateVectors();
+      return;
+    }
+
+    const tour = [
+      { x: 26, y: 74, at: 0 },
+      { x: 48, y: 56, at: 0.28 },
+      { x: 68, y: 46, at: 0.55 },
+      { x: 84, y: 26, at: 0.82 },
+    ];
+    const labels = [
+      { at: 0, text: 'すっきり寄り（例: ササニシキ付近）' },
+      { at: 0.28, text: '近い四銘柄が強調され、線が付く' },
+      { at: 0.55, text: '甘み寄り（例: コシヒカリ付近）' },
+      { at: 0.82, text: 'ふくよか右上（例: ゆめぴりか付近）' },
+    ];
+    const probeState = { x: tour[0].x, y: tour[0].y };
+    let lastLabel = '';
+
+    function syncProbeFromState() {
+      if (dragging || interactive) return;
+      setProbe(probeState.x, probeState.y);
+      updateVectors();
+    }
+
+    function labelForProgress(p) {
+      let text = labels[0].text;
+      for (let i = 0; i < labels.length; i++) {
+        if (p >= labels[i].at) text = labels[i].text;
+      }
+      return text;
+    }
+
+    lineAmount = 1;
+    glowAmount = 1;
+    setProbe(tour[0].x, tour[0].y);
+    updateVectors();
+
+    const tl = gsap.timeline({
+      scrollTrigger: Object.assign({}, pinDefaults('oled'), {
+        trigger: stage,
+        end: () => '+=' + innerHeight * CFG.matrixVh(),
+        pin: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const intro = CFG.intro;
+          const armed = p >= intro;
+          const next = armed ? labelForProgress((p - intro) / (1 - intro)) : labels[0].text;
+          if (phaseEl && next !== lastLabel) {
+            phaseEl.textContent = next;
+            lastLabel = next;
+          }
+          interactive = p >= 0.88;
+        },
+        onLeave: () => {
+          interactive = true;
+          if (phaseEl) {
+            phaseEl.textContent = labels[labels.length - 1].text;
+            lastLabel = phaseEl.textContent;
+          }
+        },
+      }),
+    });
+
+    tl.to({}, { duration: CFG.intro }, 0);
+    tour.forEach((pt, i) => {
+      if (i === 0) return;
+      const prev = tour[i - 1];
+      const dur = Math.max(0.08, pt.at - prev.at);
+      tl.to(probeState, {
+        x: pt.x, y: pt.y, duration: dur, ease: 'none',
+        onUpdate: syncProbeFromState,
+      }, CFG.intro + prev.at);
+    });
+  }
+
+  function prepDrawPath(path) {
+    if (!path) return 0;
+    const marker = path.getAttribute('marker-end') || path.dataset.marker || '';
+    if (marker) {
+      path.dataset.marker = marker;
+      path.removeAttribute('marker-end');
+    }
+    path.removeAttribute('stroke-dasharray');
+    let len = 0;
+    try { len = path.getTotalLength(); } catch (_) { len = 0; }
+    if (!len) return 0;
+    path.style.strokeDasharray = String(len);
+    path.style.strokeDashoffset = String(len);
+    return len;
+  }
+
+  function syncPathMarker(path) {
+    if (!path || !path.dataset.marker) return;
+    let len = 0;
+    try { len = path.getTotalLength(); } catch (_) { return; }
+    if (!len) return;
+    const raw = path.style.strokeDashoffset;
+    const offset = raw === '' || raw == null ? 0 : parseFloat(raw);
+    const drawn = 1 - (isFinite(offset) ? offset / len : 0);
+    const visible = parseFloat(path.style.opacity || path.getAttribute('opacity') || '1') > 0.2;
+    if (visible && drawn >= 0.96) {
+      path.setAttribute('marker-end', path.dataset.marker);
+      if (path.dataset.dash) {
+        path.style.strokeDasharray = path.dataset.dash;
+        path.style.strokeDashoffset = '0';
+      }
+    } else {
+      path.removeAttribute('marker-end');
+    }
+  }
+
+  function drawStrokeVars(opacity) {
+    return {
+      opacity: opacity == null ? 1 : opacity,
+      strokeDashoffset: 0,
+      onUpdate: function () {
+        gsap.utils.toArray(this.targets()).forEach(syncPathMarker);
+      },
+    };
+  }
+
+  function initSwimScene() {
+    const stage = document.getElementById('swim-stage');
+    const phaseEl = document.getElementById('swim-phase');
+    const svg = document.getElementById('swimlane-svg');
+    if (!stage) return;
+
+    const nodes = {
+      ui: Array.from(document.querySelectorAll('.swim-node[data-phase="ui"]')),
+      db: Array.from(document.querySelectorAll('.swim-node[data-phase="db"]')),
+      api: Array.from(document.querySelectorAll('.swim-node[data-phase="api"]')),
+      llm: Array.from(document.querySelectorAll('.swim-node[data-phase="llm"]')),
+      bridge: Array.from(document.querySelectorAll('.swim-node[data-phase="bridge"]')),
+      result: Array.from(document.querySelectorAll('.swim-node[data-phase="result"]')),
+    };
+    const pathIds = [
+      'path-coord', 'path-coord2',
+      'path1', 'path2', 'path3a', 'path3b', 'path4', 'path4b',
+      'path5', 'path6', 'path7', 'path-fb',
+    ];
+    const paths = pathIds.map((id) => document.getElementById(id)).filter(Boolean);
+    const annos = Array.from(document.querySelectorAll('.swim-anno'));
+    const INTRO = CFG.intro;
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      if (svg) svg.classList.add('is-armed');
+      document.querySelectorAll('.swim-node, .swim-path, .swim-anno').forEach((el) => {
+        el.style.opacity = '1';
+        if (el.tagName === 'path') {
+          if (el.dataset.dash) el.style.strokeDasharray = el.dataset.dash;
+          else {
+            el.style.strokeDasharray = '';
+            el.style.strokeDashoffset = '';
+          }
+          if (el.dataset.marker) el.setAttribute('marker-end', el.dataset.marker);
+        }
+      });
+      return;
+    }
+
+    paths.forEach((p) => {
+      if (!p.dataset.marker && p.getAttribute('marker-end')) {
+        p.dataset.marker = p.getAttribute('marker-end');
+      }
+    });
+
+    const allNodes = [].concat(nodes.ui, nodes.db, nodes.api, nodes.llm, nodes.bridge, nodes.result);
+    gsap.set(allNodes.concat(annos), { opacity: 0 });
+
+    function clearSwimGlows() {
+      setGlowOn(pathIds, false);
+    }
+
+    function setArmed(on) {
+      if (svg) svg.classList.toggle('is-armed', !!on);
+      if (!on) clearSwimGlows();
+    }
+
+    function resetPaths() {
+      setArmed(false);
+      paths.forEach((p) => {
+        prepDrawPath(p);
+        let len = 0;
+        try { len = p.getTotalLength(); } catch (_) { len = 0; }
+        gsap.set(p, { opacity: 0, strokeDashoffset: len || 0 });
+        p.removeAttribute('marker-end');
+      });
+    }
+    resetPaths();
+    ScrollTrigger.addEventListener('refreshInit', resetPaths);
+
+    const tl = gsap.timeline({
+      scrollTrigger: Object.assign({}, pinDefaults('oled'), {
+        trigger: stage,
+        end: () => '+=' + innerHeight * CFG.swimVh(),
+        pin: true,
+        onLeaveBack: () => {
+          setArmed(false);
+          if (phaseEl) {
+            phaseEl.textContent = '地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。';
+          }
+        },
+        onUpdate: (self) => {
+          const p = self.progress;
+          const armed = p >= INTRO;
+          setArmed(armed);
+          if (!phaseEl) return;
+          if (!armed) {
+            phaseEl.textContent = '地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。';
+            return;
+          }
+          const r = (p - INTRO) / (1 - INTRO);
+          if (r < 0.12) phaseEl.textContent = '画面層：地図操作と相談の入口';
+          else if (r < 0.28) phaseEl.textContent = '地図経路：一覧を読み、順位は端末内';
+          else if (r < 0.48) phaseEl.textContent = '相談経路：制限のあと、銘柄名ヒットまたは埋め込み';
+          else if (r < 0.68) phaseEl.textContent = '類似検索のあと、規則で理由文だけを付ける';
+          else if (r < 0.86) phaseEl.textContent = '案内文は任意。失敗しても候補は返します';
+          else phaseEl.textContent = '案内失敗時も候補は返します';
+        },
+      }),
+    });
+
+    const dbCatalog = nodes.db[0] ? [nodes.db[0]] : [];
+    const dbMatch = nodes.db[1] ? [nodes.db[1]] : [];
+    const llmEmbed = nodes.llm[0] ? [nodes.llm[0]] : [];
+    const llmNote = nodes.llm[1] ? [nodes.llm[1]] : [];
+
+    // 0–INTRO: 初期は静止し、その後にノードと線を描画
+    tl.to({}, { duration: INTRO }, 0);
+    tl.to(nodes.ui, { opacity: 1, duration: 0.08, stagger: 0.02 }, INTRO)
+      .to(dbCatalog, { opacity: 1, duration: 0.06 }, INTRO + 0.08)
+      .to(['#path-coord', '#path-coord2'], Object.assign({ duration: 0.12, stagger: 0.04 }, drawStrokeVars(0.75)), INTRO + 0.12)
+      .call(() => setGlowOn(['path-coord', 'path-coord2'], true), null, INTRO + 0.22);
+    if (annos[0]) tl.to(annos[0], { opacity: 1, duration: 0.05 }, INTRO + 0.2);
+    tl.to(nodes.api, { opacity: 1, duration: 0.08, stagger: 0.03 }, INTRO + 0.28)
+      .to('#path1', Object.assign({ duration: 0.06 }, drawStrokeVars(1)), INTRO + 0.28)
+      .to('#path2', Object.assign({ duration: 0.05 }, drawStrokeVars(1)), INTRO + 0.34)
+      .to(llmEmbed, { opacity: 1, duration: 0.06 }, INTRO + 0.4)
+      .to('#path3a', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), INTRO + 0.4)
+      .to(dbMatch, { opacity: 1, duration: 0.06 }, INTRO + 0.5)
+      .to('#path3b', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), INTRO + 0.5)
+      .to(nodes.bridge, { opacity: 1, duration: 0.08, stagger: 0.03 }, INTRO + 0.58)
+      .to(['#path4', '#path4b'], Object.assign({ duration: 0.1, stagger: 0.04 }, drawStrokeVars(1)), INTRO + 0.58)
+      .to(llmNote, { opacity: 1, duration: 0.06 }, INTRO + 0.7)
+      .to(['#path5', '#path6'], Object.assign({ duration: 0.1, stagger: 0.04 }, drawStrokeVars(1)), INTRO + 0.7)
+      .to(nodes.result, { opacity: 1, duration: 0.06 }, INTRO + 0.82)
+      .to('#path7', Object.assign({ duration: 0.08 }, drawStrokeVars(1)), INTRO + 0.82)
+      .call(() => setGlowOn(['path1', 'path7'], true), null, INTRO + 0.86)
+      .to('#path-fb', Object.assign({ duration: 0.1 }, drawStrokeVars(0.85)), INTRO + 0.9)
+      .call(() => setGlowOn(['path-fb'], true), null, INTRO + 0.96);
+    if (annos.length > 1) tl.to(annos.slice(1), { opacity: 1, duration: 0.05 }, INTRO + 0.92);
+  }
+
+  function setGlowOn(ids, on) {
+    ids.forEach((id) => {
+      document.querySelectorAll('.flow-glow[data-glow-for="' + id + '"]').forEach((el) => {
+        el.classList.toggle('is-on', !!on);
+        el.classList.toggle('is-running', !!on && !reduce);
+      });
+    });
+  }
+
+  function initFlowGlowSections() {
+    const sectionGlows = [
+      { trigger: '#lifecycle', ids: ['life-p1', 'life-p2', 'life-p3', 'life-e1', 'life-e2', 'life-c1', 'life-c2'] },
+      { trigger: '#assets', ids: ['asset-a1', 'asset-a2', 'asset-a3'] },
+    ];
+    if (reduce) {
+      document.querySelectorAll('.flow-glow').forEach((el) => {
+        el.classList.add('is-on');
+      });
+      return;
+    }
+    if (!window.ScrollTrigger) return;
+    sectionGlows.forEach((cfg) => {
+      const el = document.querySelector(cfg.trigger);
+      if (!el) return;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 70%',
+        end: 'bottom 30%',
+        onEnter: () => {
+          if (cfg.ids) setGlowOn(cfg.ids, true);
+          if (cfg.selector) {
+            document.querySelectorAll(cfg.selector).forEach((g) => {
+              g.classList.add('is-on', 'is-running');
+            });
+          }
+        },
+        onLeaveBack: () => {
+          if (cfg.ids) setGlowOn(cfg.ids, false);
+          if (cfg.selector) {
+            document.querySelectorAll(cfg.selector).forEach((g) => {
+              g.classList.remove('is-on', 'is-running');
+            });
+          }
+        },
+      });
+    });
+  }
+
+  function initGateScene() {
+    const pinRoot = document.getElementById('gate-pin');
+    const spine = document.getElementById('gate-spine');
+    const focus = document.getElementById('gate-focus');
+    const phaseEl = document.getElementById('gate-phase');
+    const statusEl = document.getElementById('gate-status');
+    const steps = Array.from(document.querySelectorAll('.gate-step'));
+    const panels = Array.from(document.querySelectorAll('[data-gate-panel]'));
+    if (!pinRoot || !focus || !panels.length) return;
+
+    const phases = [
+      'G1 · データ検査 — validate:rice',
+      'G2 · 自動検査 — CI 一式',
+      'G3 · 手元確認 — smoke-test',
+      'G4 · 公開 — origin/main → Vercel',
+    ];
+
+    let lastIdx = -1;
+    let lastMode = '';
+
+    function paintFocus(idx, mode) {
+      const i = Math.max(0, Math.min(panels.length - 1, idx));
+      if (i !== lastIdx) {
+        panels.forEach((panel, n) => panel.classList.toggle('is-on', n === i));
+        lastIdx = i;
+      }
+      if (mode !== lastMode) {
+        if (statusEl) {
+          statusEl.textContent = mode === 'done' ? '通過' : mode === 'live' ? '通過中' : '';
+        }
+        focus.classList.toggle('is-live', mode === 'live');
+        focus.classList.toggle('is-done', mode === 'done');
+        lastMode = mode;
+      }
+      if (phaseEl) phaseEl.textContent = phases[i];
+    }
+
+    function setGateState(progress) {
+      const intro = CFG.intro;
+      const armed = progress >= intro;
+      const run = armed ? (progress - intro) / (1 - intro) : 0;
+      const thresholds = [0.18, 0.4, 0.62, 0.84];
+
+      if (spine) {
+        spine.style.setProperty('--fill', String(Math.round(run * 100)));
+        spine.setAttribute('data-fill', String(Math.round(run * 100)));
+      }
+
+      steps.forEach((step, i) => {
+        step.classList.remove('is-active', 'is-cleared');
+        if (!armed) return;
+        if (run < thresholds[i] - 0.04) return;
+        if (run < thresholds[i] + 0.1) step.classList.add('is-active');
+        else step.classList.add('is-cleared');
+      });
+
+      if (!armed) {
+        paintFocus(0, 'idle');
+        return;
+      }
+
+      let idx = 0;
+      for (let i = 0; i < thresholds.length; i++) {
+        if (run >= thresholds[i] - 0.04) idx = i;
+      }
+      const mode = run >= thresholds[idx] + 0.1 ? 'done' : 'live';
+      paintFocus(idx, mode);
+    }
+
+    function resetGateVisual() {
+      lastIdx = -1;
+      lastMode = '';
+      setGateState(0);
+    }
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      steps.forEach((s) => s.classList.add('is-cleared'));
+      paintFocus(3, 'done');
+      if (spine) spine.style.setProperty('--fill', '100');
+      return;
+    }
+
+    resetGateVisual();
+
+    ScrollTrigger.create(Object.assign({}, pinDefaults('washi'), {
+      trigger: pinRoot,
+      end: () => '+=' + innerHeight * CFG.gateVh(),
+      pin: true,
+      onLeaveBack: () => resetGateVisual(),
+      onRefresh: (self) => {
+        paintPinSpacer(self, 'washi');
+        setGateState(self.progress);
+      },
+      onUpdate: (self) => setGateState(self.progress),
+    }));
+  }
+
+  function initFactCards() {
+    const cards = Array.from(document.querySelectorAll('#fact-cards .fact-card'));
+    if (!cards.length) return;
+    if (reduce || !window.ScrollTrigger) {
+      cards.forEach((c) => c.classList.add('is-lit'));
+      return;
+    }
+    cards.forEach((card, i) => {
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 82%',
+        onEnter: () => {
+          setTimeout(() => card.classList.add('is-lit'), i * 120);
+        },
+        onLeaveBack: () => card.classList.remove('is-lit'),
+      });
+    });
+  }
+
+  function initRoadScene() {
+    const stage = document.getElementById('road-stage');
+    const traveler = document.getElementById('road-traveler');
+    const roadPath = document.getElementById('road-path');
+    const phaseEl = document.getElementById('road-phase');
+    const pins = [
+      document.getElementById('road-pin-done'),
+      document.getElementById('road-pin-p1'),
+      document.getElementById('road-pin-now'),
+      document.getElementById('road-pin-next'),
+      document.getElementById('road-pin-b2b'),
+      document.getElementById('road-pin-horizon'),
+    ].filter(Boolean);
+
+    if (!stage) return;
+
+    if (reduce || !window.gsap || !window.ScrollTrigger) {
+      pins.forEach((p) => { p.style.opacity = '1'; });
+      if (traveler) traveler.style.opacity = '0';
+      return;
+    }
+
+    gsap.set(pins, { opacity: 0, y: 12 });
+    if (traveler) gsap.set(traveler, { opacity: 0 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: Object.assign({}, pinDefaults('washi'), {
+        trigger: stage,
+        end: () => '+=' + innerHeight * CFG.roadVh(),
+        pin: true,
+        onUpdate: (self) => {
+          if (!phaseEl) return;
+          const p = self.progress;
+          const intro = CFG.intro;
+          if (p < intro) {
+            phaseEl.textContent = '1.0 公開から Phase 2 / 1.4.x まで進み、再訪と軽 B2B は次段。他カテゴリは米の検証後に判断します。';
+            return;
+          }
+          const r = (p - intro) / (1 - intro);
+          if (r < 0.16) phaseEl.textContent = 'DONE · 1.0.0 公開判定';
+          else if (r < 0.32) phaseEl.textContent = 'DONE · Phase 1 / 1.1.x 検索基盤';
+          else if (r < 0.52) phaseEl.textContent = 'NOW · Phase 2 / 1.4.x · Wave 2A pair';
+          else if (r < 0.7) phaseEl.textContent = 'NEXT · Phase 3 再訪';
+          else if (r < 0.85) phaseEl.textContent = 'OPTIONAL · 軽 B2B（虚線）';
+          else phaseEl.textContent = '構想 · 他カテゴリは米の検証後に判断';
+        },
+      }),
+    });
+
+    tl.to({}, { duration: CFG.intro }, 0);
+    if (traveler && roadPath && window.MotionPathPlugin) {
+      gsap.registerPlugin(MotionPathPlugin);
+      tl.to(traveler, { opacity: 1, duration: 0.05 }, CFG.intro);
+      tl.to(traveler, {
+        duration: 1,
+        ease: 'none',
+        motionPath: {
+          path: '#road-path',
+          align: '#road-path',
+          alignOrigin: [0.5, 0.5],
+          autoRotate: false,
+        },
+      }, CFG.intro);
+    }
+
+    const thresholds = [0.04, 0.18, 0.36, 0.55, 0.72, 0.88];
+    pins.forEach((pin, i) => {
+      tl.to(pin, { opacity: 1, y: 0, duration: 0.1, ease: 'none' }, CFG.intro + thresholds[i]);
+    });
+  }
+
+  function initFlowReveals() {
+    if (reduce || !window.gsap || !window.ScrollTrigger) return;
+
+    // pin / 図版章では opacity scrub を避け、入場の跳ねを防ぐ
+    const skip = new Set(['design', 'concept', 'roadmap', 'delivery', 'ranking', 'lifecycle', 'assets', 'returns']);
+    gsap.utils.toArray('.flow-block').forEach((el) => {
+      if (el.id && skip.has(el.id)) return;
+      gsap.fromTo(el,
+        { y: 10, opacity: 0.92 },
+        {
+          y: 0, opacity: 1, ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            end: 'top 68%',
+            scrub: 0.55,
+          },
+        }
+      );
+    });
+
+    const title = document.getElementById('hero-title');
+    if (title) {
+      gsap.to(title, {
+        y: -10, opacity: 0.7, ease: 'none',
+        scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true },
+      });
+    }
+
+    document.querySelectorAll('[data-speed]').forEach((el) => {
+      const speed = parseFloat(el.getAttribute('data-speed') || '0.05');
+      gsap.to(el, {
+        yPercent: speed * 100 * 5,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el.parentElement || el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    });
+  }
+
+  function boot() {
+    try {
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        if (window.MotionPathPlugin) gsap.registerPlugin(MotionPathPlugin);
+      }
+      if (!reduce) lenis = initLenis();
+      initProgress();
+      initThemeRooms();
+      initNav();
+      initMatrixScene();
+      initSwimScene();
+      initGateScene();
+      initRoadScene();
+      initFactCards();
+      initFlowGlowSections();
+      initFlowReveals();
+
+      window.addEventListener('load', refreshAll);
+      window.addEventListener('resize', () => {
+        clearTimeout(window.__ksRefresh);
+        window.__ksRefresh = setTimeout(refreshAll, 120);
+      });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(refreshAll).catch(() => {});
+      }
+      mobile.addEventListener('change', refreshAll);
+    } catch (err) {
+      console.warn('case-study boot failed', err);
+      document.querySelectorAll('.swim-node, .swim-path, .swim-anno, .road-pin').forEach((el) => {
+        el.style.opacity = '1';
+      });
+    }
+  }
+
+  boot();
+})();
+  </script>
+</body>
+</html>

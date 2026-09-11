@@ -2,7 +2,9 @@
 
 对 GAO。这里放**正本之外**仍要进仓留档的东西：调研备份、对外 Case Study 快照、外部 AI 锐评、固定提示词。
 
-**不是** pmo-kit 的 WBS/甘特替代品。可执行正本仍在 `docs/00`–`21` 与 `.cursor/rules/`。兄弟仓 [pmo-kit](https://github.com/Toygaolingxiao/pmo-kit) 只管咨询交付渲染。
+**不是** pmo-kit 的 WBS/甘特替代品。可执行正本仍在 `docs/00`–`22` 与 `.cursor/rules/`。兄弟仓 [pmo-kit](https://github.com/Toygaolingxiao/pmo-kit) 只管咨询交付渲染。
+
+**本仓在职业设计里的位置（2026-09）：** KomeSomme = 可展示的数据产品证据 + 咨询信任背书；常规アフィ不当主 KPI。正本见 [../22-career-positioning.md](../22-career-positioning.md)。**`komesomme.jp` 产品页不要写这套。**
 
 ## 目录
 
@@ -16,25 +18,27 @@
 ## 与正本的关系
 
 ```text
-正本（改产品就改这里）     PJ 柜（留痕 / 备份 / 外部意见）
-─────────────────────     ────────────────────────────
-docs/20 成長計画           research/ 调研快照
-docs/21 SEO 意图           reviews/ 锐评留档
-docs/assets/*-case-study   artifacts/ 索引
-.cursor/rules/*            prompts/ 提示词正本
+正本（改产品 / 改定位就改这里）   PJ 柜（留痕 / 备份 / 外部意见）
+─────────────────────────────   ────────────────────────────
+docs/20 成長計画                  research/ 调研快照
+docs/21 SEO 意图                  reviews/ 锐评留档
+docs/22 职业定位（对 GAO）        artifacts/ 索引
+docs/assets/*-case-study          prompts/ 提示词正本
+.cursor/rules/*
 ```
 
 规则：
 
-1. **正本优先。** 锐评若导致改产品，改 `docs/20`·`21`·代码，并在对应 changelog / 锐评文件头写「已吸收 → 链到 commit / 章节」。
+1. **正本优先。** 锐评若导致改产品或改职业取舍，改 `docs/20`·`21`·`22`·代码，并在对应 changelog / 锐评文件头写「已吸收 → 链到 commit / 章节」。
 2. **调研进柜留备份。** 权威源、长尾词、EEAT 测试记录：正本在 `21`；需要冻结某一天的版本时，复制一份到 `research/YYYY-MM-DD-*.md`。
 3. **锐评原文进柜。** 你粘贴给我或自行保存都可以；文件名见 [reviews/README.md](./reviews/README.md)。
 4. **提示词只维护一处。** 改评审口吻时只改 `prompts/`，聊天里不要分叉。
+5. **Case Study 可以对顾问／招聘读者讲技术决策**（站外叙事）；与公开产品 UI 的「只讲选米」分开。
 
 ## 你怎么用（锐评流程）
 
 1. 打开 [prompts/red-team-case-study.md](./prompts/red-team-case-study.md)，整段复制给外部 AI。
-2. 把待评材料附上（通常是 [case study HTML](../assets/komesomme-1.0.0-case-study.html) 或导出文本）。
+2. 把待评材料附上（通常是 [case study HTML](../assets/komesomme-1.4.1-case-study.html) 或导出文本）。
 3. 收到回复后：新建 `reviews/YYYY-MM-DD-<source>.md`，用 [reviews/_TEMPLATE.md](./reviews/_TEMPLATE.md)，贴上全文。
 4. 下次开聊时丢给我：我会帮你对照正本，标「已吸收 / 暂不采纳 / 需验证」。
 

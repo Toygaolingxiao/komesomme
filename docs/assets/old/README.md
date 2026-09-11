@@ -1,6 +1,6 @@
 # Case study 旧稿 / 对照参考
 
-本目录只放**非正本**的对照稿。站外叙事正本仍是上级目录的 [`komesomme-1.0.0-case-study.html`](../komesomme-1.0.0-case-study.html)。
+本目录只放**非正本**的对照稿。站外叙事**现行正本**是上级目录的 [`komesomme-1.4.1-case-study.html`](../komesomme-1.4.1-case-study.html)。[`komesomme-1.0.0-case-study.html`](../komesomme-1.0.0-case-study.html) 为发版当时归档。
 
 | 文件 | 说明 |
 | --- | --- |

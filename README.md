@@ -54,4 +54,4 @@ http://localhost:3000 で:
 
 本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
-画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、構想からの経緯は [docs/12-product-journey.md](./docs/12-product-journey.md)（中文）、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。
+画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、構想からの経緯は [docs/12-product-journey.md](./docs/12-product-journey.md)（中文）、1.x 成長は [docs/20-growth-plan.md](./docs/20-growth-plan.md)、職業定位（運営者向け・中文）は [docs/22-career-positioning.md](./docs/22-career-positioning.md)、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。

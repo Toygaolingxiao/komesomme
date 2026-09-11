@@ -18,6 +18,8 @@ alwaysApply: true
 | 本番 env / 回滚 | [`docs/vercel-production.md`](../../docs/vercel-production.md) |
 | UI | [`docs/08-ui-design.md`](../../docs/08-ui-design.md) |
 | 联盟合规 | [`docs/13-affiliate-compliance.md`](../../docs/13-affiliate-compliance.md)、[`docs/14-affiliate-programs.md`](../../docs/14-affiliate-programs.md)、披露表面 [`docs/15-disclosure-surfaces.md`](../../docs/15-disclosure-surfaces.md) |
+| 1.x 成长 / Phase | [`docs/20-growth-plan.md`](../../docs/20-growth-plan.md) |
+| 职业定位（对 GAO；对外站不写） | [`docs/22-career-positioning.md`](../../docs/22-career-positioning.md) |
 
 ## Issue / PR
 

@@ -1,21 +1,26 @@
 # 1.x 成長計画（曝光と転化）
 
-1.0.0 已上线。本文是**之后做什么、按什么顺序做、怎么验收**的正本。中文，对 GAO。
+1.0.0 已上线。本文是**产品侧**「之后做什么、按什么顺序做、怎么验收」的正本。中文，对 GAO。  
 上线门禁看 [11-launch-checklist.md](./11-launch-checklist.md)，升号规则看 `.cursor/rules/semver.mdc`。
 
-**一句话:** 不去和比价站抢「還元率 / コスパ」，把 106 銘柄 × 味わい一次データ 做成日本「**按口味选米**」的标准答案，靠 料理別 / 県別 / 比較 三类数据驱动页拿曝光，靠 比較表 + 商品直リンク + 診断シェア 拿转化。
+**职业与回报假设**（アフィ不当主 KPI、轻 B2B、作品集杠杆）见 [22-career-positioning.md](./22-career-positioning.md)。**对外站 UI / 文案不要写那一套。**
 
-**阶段叙事（与 case study 对齐）——顺序不能颠倒:**
+**一句话（产品）:** 不去和比价站抢「還元率 / コスパ」，把 106 銘柄 × 味わい一次データ 做成日本「**按口味选米**」的标准答案；料理別 / 県別 / 比較 拿曝光，比較表 + 购买出口 +（Phase 3）診断シェア 拿转化信号。
 
-| 阶段 | 含义 | 状态 |
+**一句话（职业）:** 本仓优先产出**可展示的数据产品证据**；常规モールアフィ是便利出口，不是回收时薪的主引擎。
+
+**阶段叙事 ——顺序不能颠倒:**
+
+| 阶段 | 含义 | 状态（2026-09） |
 | --- | --- | --- |
 | **Phase 1** | 検索基盤（JSON-LD / OG / 面包屑） | **已交付**（`1.1.x`） |
-| **Phase 2** | **米の型を完成**——露出、比較、転化、季节面（見つかる → 比べる → 買う） | 下一步 |
-| **Phase 3** | **再訪**——診断シェア / share card / LINE；把米的用户环路闭合 | Phase 2 之后 |
+| **Phase 2** | **米の型を完成**——露出、比較、転化、季节面（見つかる → 比べる → 買う） | **进行中**：Wave 2A 十面已上；2B/2C 续 |
+| **Phase 3** | **再訪**——診断シェア / share card / LINE；把米的用户环路闭合 | Phase 2 主体可测之后 |
+| **轻 B2B（试验）** | 挑米診断嵌入 / 白标试点（见 [22](./22-career-positioning.md)） | 可选并行；**不**抢 Phase 2–3 主开发 |
 | **構想** | **製品マトリクス**——桃Somme / 和牛Somme / 酒Somme 等横展 | **构想，不是承诺**；排在 Phase 2–3 之后 |
 | **未確約** | 画像認識・機器連携等 | 破线假设；不验收、不排期 |
 
-叙事图见 [komesomme-1.0.0-case-study.html](./assets/komesomme-1.0.0-case-study.html)。再访属于米产品的第三阶段；产品矩阵是更远的扩展地图，不要和「让人再来网站」对调。
+叙事图见 [komesomme-1.4.1-case-study.html](./assets/komesomme-1.4.1-case-study.html)（1.0 归档：[1.0.0](./assets/komesomme-1.0.0-case-study.html)）。再访属于米产品的第三阶段；产品矩阵是更远的扩展地图，不要和「让人再来网站」对调。
 
 ---
 
@@ -131,7 +136,7 @@
 
 ---
 
-### Phase 2 — 米の型を完成（下一步）
+### Phase 2 — 米の型を完成（进行中）
 
 目标一句话:**让「味わいで選ぶ」在米站上从找到 → 比清楚 → 点得出店，整条链路可测。**
 
@@ -183,9 +188,11 @@
 
 ---
 
-### Phase 3 — 再訪と拡散（→ 约 `1.4.0`）
+### Phase 3 — 再訪と拡散（Phase 2 主体可测之后；版本号随交付，不锁死 `1.4.0`）
 
 目标一句话:**让人选过一次之后还能回来、还能转发给别人。** 这是米产品环路的最后一环，排在横展之前。
+
+> 注：`1.4.x` 已用于百科合稿与溯源等交付；Phase 3 再访能力用**后续 minor** 承接，不要为了叙事倒回去改历史版本号。
 
 - **診断結果パーマリンク**：相談 / 地图结果变成可分享 URL（銘柄 + 理由）+ OG 图
 - **share card 开启**：`SHARE_CARD_ENABLED` 默认开，图里带座標位置
@@ -295,16 +302,21 @@ CI 不变（lint / typecheck / validate / unit / build / client-bundle / e2e）�
 
 ## 7. KPI
 
-以 1.0.0 上线时为基线，**不设绝对值目标**（新站样本太小），只看方向:
+以 1.0.0 上线时为基线，**不设绝对值目标**（新站样本太小），只看方向。
+
+**产品曲线（仍要看）:**
 
 | 指标 | 来源 | 期望 |
 | --- | --- | --- |
-| 可索引页数 | sitemap | 111 → 约 190（Phase 2 的 2A+2B 后） |
-| GSC 表示回数 | GSC | Wave 2A 完成后 4 周内单调上升 |
+| 可索引页数 | sitemap | 随 Wave 2A/2B 上升（已含十面 `/pair`） |
+| GSC 表示回数 | GSC | Wave 2A 后 4 周内宜单调上升 |
 | 収録率 | GSC | 新页 90% 以上被索引（未收录 = 内容太薄的信号） |
-| 页型別 shop_click 率 | `/ops` | `/pair` 应高于銘柄页（意图更明确） |
+| 页型別 shop_click 率 | `/ops` | `/pair` 应高于銘柄页（意图更明确）——作**出口信号**，不作时薪核算 |
 | 指名検索 | GSC | 缓慢上升即可 |
 | 再訪率 | `access_events` | Phase 3（シェア / LINE）之后可测 |
+
+**职业侧（主评价，见 [22](./22-career-positioning.md)）:** 案例是否更好讲、数据资产（catalog / pair / 百科 claims）是否更硬、轻 B2B 是否多一个可演示切口。  
+**明确降权:** 「アフィ月结是否覆盖开发时薪」——结构上对大米常规返利不成立，不作为砍功能或停更的判据。
 
 構想不设 KPI——没有开品类就没有数字。
 
@@ -323,7 +335,9 @@ CI 不变（lint / typecheck / validate / unit / build / client-bundle / e2e）�
 - **Phase 2–3 完成前不开第二条 Somme 产品线。** 不预建多租户 / 万能 SDK
 - **不把未確約仮説（画像認識・IoT）写进近端验收**
 - **不把製品マトリクス排在再访前面**——先闭合米的环路，再谈复制
+- **不把常规モールアフィ回报当成停更判据**——见 [22](./22-career-positioning.md)
+- **不在公开产品页写「作品集 / 咨询 / B2B 招商」元叙事**——站外 Case Study 另论
 
 ---
 
-关联:方向与经纬 [12-product-journey.md](./12-product-journey.md)、技术选型史 [02-tech-retrospective.md](./02-tech-retrospective.md)、画面 [08-ui-design.md](./08-ui-design.md)、联盟 [13](./13-affiliate-compliance.md)–[15](./15-disclosure-surfaces.md)、叙事图 [case study](./assets/komesomme-1.0.0-case-study.html)。
+关联:职业定位 [22-career-positioning.md](./22-career-positioning.md)、方向与经纬 [12-product-journey.md](./12-product-journey.md)、技术选型史 [02-tech-retrospective.md](./02-tech-retrospective.md)、画面 [08-ui-design.md](./08-ui-design.md)、联盟 [13](./13-affiliate-compliance.md)–[15](./15-disclosure-surfaces.md)、叙事图 [case study 1.4.1](./assets/komesomme-1.4.1-case-study.html)。

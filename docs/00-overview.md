@@ -20,6 +20,8 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 
 公開後 1〜2 週の運用（アフィ成果突合・GA4 出数確認・Sentry DSN 等）は [11-launch-checklist.md](./11-launch-checklist.md) の P1。Auth / お気に入りなどは P2。
 
+1.x の製品ロードマップ（Phase / Wave）は [20-growth-plan.md](./20-growth-plan.md)。運営者向けの職業・回収仮説（中文・対外ページには出さない）は [22-career-positioning.md](./22-career-positioning.md)。
+
 ## 関連
 
 | 用途 | 文書 |
@@ -28,4 +30,6 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 | 実装入口 | [03-system-design.md](./03-system-design.md) |
 | 技術振り返り | [02-tech-retrospective.md](./02-tech-retrospective.md) |
 | 構想からの経緯 | [12-product-journey.md](./12-product-journey.md)（中文） |
+| 1.x 成長 | [20-growth-plan.md](./20-growth-plan.md)（中文） |
+| 職業定位 | [22-career-positioning.md](./22-career-positioning.md)（中文・対 GAO） |
 | 文書索引 | [README.md](./README.md) |
