@@ -41,7 +41,7 @@
   "model": "gemini-3.6-flash",
   "revisedAt": "2026-09-10T01:38:51.762Z",
   "revisionSource": "merged-gemini-gpt-20260910",
-  "factStatus": "partial",
+  "factStatus": "verified",
   "contentHash": "c0269f07b470eb39",
   "sourceIds": [
     "kokken-r7-pdf",

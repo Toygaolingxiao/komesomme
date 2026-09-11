@@ -41,10 +41,12 @@
   "model": "gemini-3.5-flash",
   "revisedAt": "2026-09-10T01:38:51.762Z",
   "revisionSource": "merged-gemini-gpt-20260910",
-  "factStatus": "partial",
+  "factStatus": "verified",
   "contentHash": "b04a7eca10209a0b",
   "sourceIds": [
+    "brand-aomori-seiten",
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-aomori-seiten-gov"
   ]
 }

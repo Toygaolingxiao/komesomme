@@ -1,9 +1,11 @@
 {
   "brand_id": "masshigura",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
+    "brand-aomori-seiten",
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-aomori-seiten-gov"
   ],
   "claims": [
     {
@@ -12,11 +14,13 @@
       "claim_text": "主産地（カタログ）は青森県",
       "status": "verified",
       "source_ids": [
+        "brand-aomori-seiten",
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-aomori-seiten-gov"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
-      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+      "verified_at": "2026-09-11T00:31:41.162Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
       "id": "masshigura:breeding",
@@ -24,11 +28,13 @@
       "claim_text": "育成・系統に関する記述",
       "status": "partial",
       "source_ids": [
+        "brand-aomori-seiten",
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-aomori-seiten-gov"
       ],
       "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
-      "verified_at": "2026-09-10T01:47:44.815Z"
+      "verified_at": "2026-09-11T00:31:41.162Z"
     },
     {
       "id": "masshigura:editorial-scores",
@@ -38,7 +44,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

@@ -42,3 +42,5 @@ Git の `src/data/rice/encyclopedia/` が正本。Supabase は公開ミラーと
 - 篇級 `factStatus` は `verified` または `partial`  
 - 各篇 `sourceIds.length >= 1` かつ registry の `url` が http(s)  
 - 受賞系の硬断定は source 無しで `verified` にしない  
+- 育成（breeding）claim は NARO 品種ページ未添付のうち `partial` のままでよい。産地が verified なら篇級は `verified` 可  
+- 全国流通銘柄（catalog `prefecture=全国`）は篇級 `partial` を許容  

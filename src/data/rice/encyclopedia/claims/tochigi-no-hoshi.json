@@ -1,9 +1,10 @@
 {
   "brand_id": "tochigi-no-hoshi",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-tochigi-kome"
   ],
   "claims": [
     {
@@ -13,10 +14,11 @@
       "status": "verified",
       "source_ids": [
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-tochigi-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
-      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+      "verified_at": "2026-09-11T00:31:41.162Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
       "id": "tochigi-no-hoshi:breeding",
@@ -25,20 +27,22 @@
       "status": "partial",
       "source_ids": [
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-tochigi-kome"
       ],
       "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
-      "verified_at": "2026-09-10T01:47:44.815Z"
+      "verified_at": "2026-09-11T00:31:41.162Z"
     },
     {
       "id": "tochigi-no-hoshi:kenjo",
       "field_path": "origin.tribute",
-      "claim_text": "献上米に関する言及（産地紹介ベース・時期要確認）",
-      "status": "unverified",
+      "claim_text": "公式ページに献上米としての記載がある（行事・時期は当該ページに依る）",
+      "status": "verified",
       "source_ids": [
-        "maff-kome"
+        "pref-tochigi-kome"
       ],
-      "notes": "公式の献上記録URLが取れるまで verified にしない。文面は弱化済み。"
+      "verified_at": "2026-09-11T00:31:41.162Z",
+      "notes": "県公式ページの記載に基づく。永久称号ではない。"
     },
     {
       "id": "tochigi-no-hoshi:editorial-scores",
@@ -48,7 +52,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

@@ -41,12 +41,13 @@
   "model": "gemini-3.5-flash-lite",
   "revisedAt": "2026-09-10T01:38:51.762Z",
   "revisionSource": "merged-gemini-gpt-20260910",
-  "factStatus": "partial",
+  "factStatus": "verified",
   "contentHash": "937226ae45c55908",
   "sourceIds": [
     "kokken-r7-pdf",
     "kokken-ranking",
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-saga-sagabiyori"
   ]
 }

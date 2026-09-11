@@ -1,6 +1,6 @@
 {
   "brand_id": "tsubuzoroi",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "brand-akitamai-hinsyu",
     "maff-kome",
@@ -19,7 +19,7 @@
         "naro-top",
         "pref-akita-akitamai"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
@@ -34,7 +34,7 @@
         "pref-akita-akitamai"
       ],
       "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
-      "verified_at": "2026-09-10T01:47:44.815Z"
+      "verified_at": "2026-09-11T00:31:41.162Z"
     },
     {
       "id": "tsubuzoroi:editorial-scores",
@@ -44,7 +44,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

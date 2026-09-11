@@ -1,6 +1,6 @@
 {
   "brand_id": "yukihotaka",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "maff-kome",
     "naro-top"
@@ -15,18 +15,8 @@
         "maff-kome",
         "naro-top"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
-    },
-    {
-      "id": "yukihotaka:kenjo",
-      "field_path": "origin.tribute",
-      "claim_text": "献上米に関する言及（産地紹介ベース・時期要確認）",
-      "status": "unverified",
-      "source_ids": [
-        "maff-kome"
-      ],
-      "notes": "公式の献上記録URLが取れるまで verified にしない。文面は弱化済み。"
     },
     {
       "id": "yukihotaka:editorial-scores",
@@ -36,7 +26,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

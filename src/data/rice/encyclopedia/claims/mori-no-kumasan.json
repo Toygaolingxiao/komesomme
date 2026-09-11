@@ -1,6 +1,6 @@
 {
   "brand_id": "mori-no-kumasan",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "kokken-r7-pdf",
     "kokken-ranking",
@@ -17,7 +17,7 @@
         "maff-kome",
         "naro-top"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
     },
     {
@@ -32,7 +32,7 @@
         "naro-top"
       ],
       "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
-      "verified_at": "2026-09-10T01:47:44.815Z"
+      "verified_at": "2026-09-11T00:31:41.162Z"
     },
     {
       "id": "mori-no-kumasan:editorial-scores",
@@ -42,7 +42,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

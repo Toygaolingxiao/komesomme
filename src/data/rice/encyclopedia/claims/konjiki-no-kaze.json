@@ -1,7 +1,8 @@
 {
   "brand_id": "konjiki-no-kaze",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
+    "brand-iwate-ginga",
     "maff-kome",
     "naro-top"
   ],
@@ -12,11 +13,12 @@
       "claim_text": "主産地（カタログ）は岩手県",
       "status": "verified",
       "source_ids": [
+        "brand-iwate-ginga",
         "maff-kome",
         "naro-top"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
-      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+      "verified_at": "2026-09-11T00:31:41.162Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
       "id": "konjiki-no-kaze:editorial-scores",
@@ -26,7 +28,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

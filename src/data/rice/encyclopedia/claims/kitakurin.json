@@ -1,6 +1,6 @@
 {
   "brand_id": "kitakurin",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "maff-kome",
     "naro-top",
@@ -17,7 +17,7 @@
         "naro-top",
         "pref-hokkaido-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
@@ -28,7 +28,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

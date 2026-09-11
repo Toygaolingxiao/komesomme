@@ -1,11 +1,12 @@
 {
   "brand_id": "yume-shizuku",
-  "updated_at": "2026-09-10T01:47:44.815Z",
+  "updated_at": "2026-09-11T00:31:41.162Z",
   "source_ids": [
     "kokken-r7-pdf",
     "kokken-ranking",
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-saga-sagabiyori"
   ],
   "claims": [
     {
@@ -15,10 +16,11 @@
       "status": "verified",
       "source_ids": [
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-saga-sagabiyori"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
-      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+      "verified_at": "2026-09-11T00:31:41.162Z",
+      "notes": "catalog.prefecture と origin の対応。県／ブランド公式を入口とする。"
     },
     {
       "id": "yume-shizuku:breeding",
@@ -29,10 +31,11 @@
         "kokken-r7-pdf",
         "kokken-ranking",
         "maff-kome",
-        "naro-top"
+        "naro-top",
+        "pref-saga-sagabiyori"
       ],
       "notes": "詳細親子は農研機構等の品種ページで追記予定。断定は避ける。",
-      "verified_at": "2026-09-10T01:47:44.815Z"
+      "verified_at": "2026-09-11T00:31:41.162Z"
     },
     {
       "id": "yume-shizuku:editorial-scores",
@@ -42,7 +45,7 @@
       "source_ids": [
         "maff-kome"
       ],
-      "verified_at": "2026-09-10T01:47:44.815Z",
+      "verified_at": "2026-09-11T00:31:41.162Z",
       "notes": "製品ポリシー。"
     }
   ]

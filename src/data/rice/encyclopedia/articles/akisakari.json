@@ -41,9 +41,10 @@
   "model": "gemini-3.6-flash",
   "revisedAt": "2026-09-10T01:38:51.762Z",
   "revisionSource": "merged-gemini-gpt-20260910",
-  "factStatus": "partial",
+  "factStatus": "verified",
   "contentHash": "d52ba914db333524",
   "sourceIds": [
+    "brand-fukui-ichihomare",
     "maff-kome",
     "naro-top"
   ]

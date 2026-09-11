@@ -26,7 +26,7 @@ const ARTICLES_DIR = path.join(ROOT, "src/data/rice/encyclopedia/articles");
 const SOURCES_DIR = path.join(ROOT, "src/data/rice/encyclopedia/sources");
 const CLAIMS_DIR = path.join(ROOT, "src/data/rice/encyclopedia/claims");
 const REGISTRY_PATH = path.join(SOURCES_DIR, "registry.json");
-const ACCESSED = "2026-09-10";
+const ACCESSED = "2026-09-11";
 const NOW = new Date().toISOString();
 
 type SourceRow = EncyclopediaEditorialSource;
@@ -116,6 +116,55 @@ const SOURCES: SourceRow[] = [
     accessed_on: ACCESSED,
     source_kind: "pref_gov",
   },
+  {
+    id: "brand-aomori-seiten",
+    organization: "青森米本部",
+    title: "青天の霹靂",
+    url: "https://aomori-komehonbu.gr.jp/seitennohekireki/",
+    accessed_on: ACCESSED,
+    source_kind: "brand_official",
+  },
+  {
+    id: "pref-aomori-seiten-gov",
+    organization: "青森県",
+    title: "「青天の霹靂」に関するご案内",
+    url: "https://www.pref.aomori.lg.jp/soshiki/kanko/hanbai/seitennohekireki.html",
+    accessed_on: ACCESSED,
+    source_kind: "pref_gov",
+  },
+  {
+    id: "pref-saga-sagabiyori",
+    organization: "佐賀県",
+    title: "佐賀県産米「さがびより」の情報",
+    url: "https://www.pref.saga.lg.jp/list02352.html",
+    accessed_on: ACCESSED,
+    source_kind: "pref_gov",
+  },
+  {
+    id: "brand-iwate-ginga",
+    organization: "いわて純情米",
+    title: "銀河のしずく",
+    url: "https://iwate-kome.jp/ginganoshizuku/",
+    accessed_on: ACCESSED,
+    source_kind: "brand_official",
+  },
+  {
+    id: "brand-fukui-ichihomare",
+    organization: "福井県（いちほまれ）",
+    title: "福井のお米“いちほまれ”",
+    url: "https://ichihomare.fukui.jp/",
+    accessed_on: ACCESSED,
+    source_kind: "brand_official",
+  },
+  {
+    id: "pref-tochigi-kome",
+    organization: "栃木県",
+    title: "とちぎの星（米）",
+    url: "https://www.pref.tochigi.lg.jp/c05/kensei/aramashi/sangyou/nouringyou/kome.html",
+    accessed_on: ACCESSED,
+    source_kind: "pref_gov",
+    notes: "県ページに大嘗祭献上米の記載あり。",
+  },
 ];
 
 const PREF_TO_SOURCE: Record<string, string[]> = {
@@ -124,6 +173,11 @@ const PREF_TO_SOURCE: Record<string, string[]> = {
   山形県: ["pref-yamagata-tuyahime"],
   新潟県: ["pref-niigata-shinmai"],
   宮城県: ["pref-miyagi-lineup"],
+  青森県: ["brand-aomori-seiten", "pref-aomori-seiten-gov"],
+  佐賀県: ["pref-saga-sagabiyori"],
+  岩手県: ["brand-iwate-ginga"],
+  福井県: ["brand-fukui-ichihomare"],
+  栃木県: ["pref-tochigi-kome"],
 };
 
 const BRAND_TO_SOURCE: Record<string, string[]> = {
@@ -149,6 +203,18 @@ const BRAND_TO_SOURCE: Record<string, string[]> = {
   sasanishiki: ["pref-miyagi-lineup"],
   "date-masayume": ["pref-miyagi-lineup"],
   kinnoibuki: ["pref-miyagi-lineup"],
+  "seiten-no-hekireki": ["brand-aomori-seiten", "pref-aomori-seiten-gov"],
+  masshigura: ["brand-aomori-seiten"],
+  sagabiyori: ["pref-saga-sagabiyori"],
+  "ginga-no-shizuku": ["brand-iwate-ginga"],
+  ichihomare: ["brand-fukui-ichihomare"],
+  akisakari: ["brand-fukui-ichihomare"],
+  "tochigi-no-hoshi": ["pref-tochigi-kome"],
+};
+
+/** Brands whose tribute/献上 wording is backed by a registered official page. */
+const TRIBUTE_VERIFIED_SOURCE: Record<string, string> = {
+  "tochigi-no-hoshi": "pref-tochigi-kome",
 };
 
 function contentHash(article: RiceEncyclopediaArticle): string {
@@ -257,13 +323,19 @@ function buildClaims(
   }
 
   if (/献上/.test(blob)) {
+    const tributeSource = TRIBUTE_VERIFIED_SOURCE[article.id];
     claims.push({
       id: `${article.id}:kenjo`,
       field_path: "origin.tribute",
-      claim_text: "献上米に関する言及（産地紹介ベース・時期要確認）",
-      status: "unverified",
-      source_ids: [localSources.find((id) => id.startsWith("pref-") || id.startsWith("brand-")) ?? "maff-kome"],
-      notes: "公式の献上記録URLが取れるまで verified にしない。文面は弱化済み。",
+      claim_text: tributeSource
+        ? "公式ページに献上米としての記載がある（行事・時期は当該ページに依る）"
+        : "献上米に関する言及（産地紹介ベース・時期要確認）",
+      status: tributeSource ? "verified" : "unverified",
+      source_ids: [tributeSource ?? localSources.find((id) => id.startsWith("pref-") || id.startsWith("brand-")) ?? "maff-kome"],
+      verified_at: tributeSource ? NOW : undefined,
+      notes: tributeSource
+        ? "県公式ページの記載に基づく。永久称号ではない。"
+        : "公式の献上記録URLが取れるまで verified にしない。文面は弱化済み。",
     });
   }
 
@@ -281,16 +353,14 @@ function buildClaims(
 }
 
 function rollupFactStatus(claims: EncyclopediaClaim[]): EncyclopediaFactStatus {
-  const hard = claims.filter((c) =>
-    ["origin.prefecture", "origin.tokuA", "origin.tribute", "origin.breeding"].includes(
-      c.field_path,
-    ),
+  // Breeding stays claim-level partial until NARO variety pages are attached;
+  // it must not block article-level verified when prefecture is solid.
+  const blockers = claims.filter((c) =>
+    ["origin.prefecture", "origin.tokuA", "origin.tribute"].includes(c.field_path),
   );
-  if (hard.some((c) => c.status === "unverified")) return "partial";
+  if (blockers.some((c) => c.status === "unverified")) return "partial";
   const pref = claims.find((c) => c.field_path === "origin.prefecture");
-  if (pref?.status === "verified" && !hard.some((c) => c.status === "partial")) {
-    return "verified";
-  }
+  if (pref?.status === "verified") return "verified";
   return "partial";
 }
 

@@ -56,7 +56,7 @@
 - [x] クライアント JS / 応答に `service_role` 文字列が無い
 - [x] `/sitemap.xml` にトップと銘柄 URL が並ぶ
 - [x] `/robots.txt` が sitemap を指す
-- [ ] `/pair/curry`（または任意の料理ページ）が開き、比較表と ※PR、向かない欄がある（Wave 2A）
+- [x] `/pair/curry`（または任意の料理ページ）が開き、比較表と ※PR、向かない欄がある（Wave 2A）
 
 
 
@@ -75,6 +75,7 @@
 
 | 日付         | URL                                          | 結果                  | メモ                                                                        |
 | ---------- | -------------------------------------------- | ------------------- | ------------------------------------------------------------------------- |
+| 2026-09-11 | [https://komesomme.jp](https://komesomme.jp) | OK（E `/pair/curry`） | 1.4.0 本番。並び根拠にフィールド名なし、比較表・向かない欄あり。百科 registry 拡充は後続 1.4.1 |
 | 2026-09-07 | [https://komesomme.jp](https://komesomme.jp) | OK（A〜F） | 0.16.1。E: ヘッダ SAMEORIGIN/nosniff、HTML に service_role 無し、sitemap 116 URL、robots が sitemap を指す。F は人手 OK |
 | 2026-08-30 | [https://komesomme.jp](https://komesomme.jp) | OK（ドメイン・301・GSC 登録） | `.com` / `sommeatlas.com` は CF 301→`.jp` |
 

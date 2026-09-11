@@ -4,6 +4,12 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.4.1 — 2026-09-11
+
+- 百科公式 URL registry を拡充（青森・佐賀・岩手・福井・栃木など）。篇級 factStatus を整理（全国銘柄以外は verified 寄り）
+- とちぎの星の献上記載を県公式に揃え、雪ほたかは未確認の献上断定を弱化
+- Supabase encyclopedia を再 seed。smoke に `/pair/curry` 本番確認を記録
+
 ## 1.4.0 — 2026-09-10
 
 - 百科 106 篇を Gemini 原稿と GPT 改稿で合稿。産地・受賞断定を弱化し、公式 URL registry と claims を全篇に付与

@@ -45,9 +45,11 @@
   "factStatus": "verified",
   "contentHash": "bdf0cdeda282f012",
   "sourceIds": [
+    "brand-aomori-seiten",
     "kokken-r7-pdf",
     "kokken-ranking",
     "maff-kome",
-    "naro-top"
+    "naro-top",
+    "pref-aomori-seiten-gov"
   ]
 }

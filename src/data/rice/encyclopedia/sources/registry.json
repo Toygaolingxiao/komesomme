@@ -1,12 +1,12 @@
 {
-  "accessed_on": "2026-09-10",
+  "accessed_on": "2026-09-11",
   "sources": [
     {
       "id": "maff-kome",
       "organization": "農林水産省",
       "title": "米をめぐる事情・関連情報",
       "url": "https://www.maff.go.jp/j/seisan/syoryu/kome/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "maff",
       "notes": "全国共通の産地・流通文脈の入口。銘柄固有の断定には使わない。"
     },
@@ -15,7 +15,7 @@
       "organization": "一般財団法人日本穀物検定協会",
       "title": "米の食味ランキング（ランキング試験）",
       "url": "https://www.kokken.or.jp/ranking_area.html",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "kokken",
       "notes": "特Aは産地品種・年次の評価。商品そのものの保証ではない。"
     },
@@ -24,7 +24,7 @@
       "organization": "一般財団法人日本穀物検定協会",
       "title": "令和7年産米の食味ランキングについて（PDF）",
       "url": "https://kokken.or.jp/data/R7_shokumi_next.pdf",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "kokken"
     },
     {
@@ -32,7 +32,7 @@
       "organization": "国立研究開発法人農業・食品産業技術総合研究機構",
       "title": "農研機構",
       "url": "https://www.naro.go.jp/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "naro",
       "notes": "品種育成の公的機関トップ。個別品種ページは追記する。"
     },
@@ -41,7 +41,7 @@
       "organization": "北海道米販売拡大委員会等",
       "title": "北海道のお米｜品種",
       "url": "https://www.hokkaido-kome.gr.jp/variety/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "brand_official"
     },
     {
@@ -49,7 +49,7 @@
       "organization": "秋田県（秋田米ブランド）",
       "title": "ごはんのふるさと秋田へ",
       "url": "https://common3.pref.akita.lg.jp/akitamai/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "pref_gov"
     },
     {
@@ -57,7 +57,7 @@
       "organization": "秋田県（秋田米ブランド）",
       "title": "秋田米｜品種について",
       "url": "https://common3.pref.akita.lg.jp/akitamai/hinsyu/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "pref_gov"
     },
     {
@@ -65,7 +65,7 @@
       "organization": "山形「つや姫」「雪若丸」ブランド化戦略推進本部",
       "title": "つや姫・雪若丸公式",
       "url": "https://www.tuyahime.jp/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "brand_official"
     },
     {
@@ -73,7 +73,7 @@
       "organization": "新潟県",
       "title": "シン新潟の米々",
       "url": "https://shin-niigatamai.pref.niigata.lg.jp/",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "pref_gov"
     },
     {
@@ -81,8 +81,57 @@
       "organization": "宮城米マーケティング推進機構（宮城県）",
       "title": "宮城のお米ラインナップ",
       "url": "https://foodkingdom.pref.miyagi.jp/miyagimai/lineup/index.html",
-      "accessed_on": "2026-09-10",
+      "accessed_on": "2026-09-11",
       "source_kind": "pref_gov"
+    },
+    {
+      "id": "brand-aomori-seiten",
+      "organization": "青森米本部",
+      "title": "青天の霹靂",
+      "url": "https://aomori-komehonbu.gr.jp/seitennohekireki/",
+      "accessed_on": "2026-09-11",
+      "source_kind": "brand_official"
+    },
+    {
+      "id": "pref-aomori-seiten-gov",
+      "organization": "青森県",
+      "title": "「青天の霹靂」に関するご案内",
+      "url": "https://www.pref.aomori.lg.jp/soshiki/kanko/hanbai/seitennohekireki.html",
+      "accessed_on": "2026-09-11",
+      "source_kind": "pref_gov"
+    },
+    {
+      "id": "pref-saga-sagabiyori",
+      "organization": "佐賀県",
+      "title": "佐賀県産米「さがびより」の情報",
+      "url": "https://www.pref.saga.lg.jp/list02352.html",
+      "accessed_on": "2026-09-11",
+      "source_kind": "pref_gov"
+    },
+    {
+      "id": "brand-iwate-ginga",
+      "organization": "いわて純情米",
+      "title": "銀河のしずく",
+      "url": "https://iwate-kome.jp/ginganoshizuku/",
+      "accessed_on": "2026-09-11",
+      "source_kind": "brand_official"
+    },
+    {
+      "id": "brand-fukui-ichihomare",
+      "organization": "福井県（いちほまれ）",
+      "title": "福井のお米“いちほまれ”",
+      "url": "https://ichihomare.fukui.jp/",
+      "accessed_on": "2026-09-11",
+      "source_kind": "brand_official"
+    },
+    {
+      "id": "pref-tochigi-kome",
+      "organization": "栃木県",
+      "title": "とちぎの星（米）",
+      "url": "https://www.pref.tochigi.lg.jp/c05/kensei/aramashi/sangyou/nouringyou/kome.html",
+      "accessed_on": "2026-09-11",
+      "source_kind": "pref_gov",
+      "notes": "県ページに大嘗祭献上米の記載あり。"
     }
   ]
 }

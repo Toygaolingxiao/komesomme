@@ -43,7 +43,7 @@
   "model": "gemini-3.5-flash-lite",
   "revisedAt": "2026-09-10T01:38:51.762Z",
   "revisionSource": "merged-gemini-gpt-20260910",
-  "factStatus": "partial",
+  "factStatus": "verified",
   "contentHash": "a2d1cc5f5d7ccd1a",
   "sourceIds": [
     "brand-akitamai-hinsyu",
