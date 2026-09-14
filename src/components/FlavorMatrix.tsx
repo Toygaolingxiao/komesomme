@@ -33,6 +33,11 @@ import { SITE_COLUMN } from "@/components/siteChrome";
 import { readBrandQuery } from "@/lib/navigation/brandQuery";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
+import {
+  coordinateFromSemanticTop,
+  requestSemanticRecommend,
+  toSemanticRailMatches,
+} from "@/lib/rice/semanticRecommendClient";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
 import { TasteControls } from "./matrix/TasteControls";
@@ -335,68 +340,24 @@ export function FlavorMatrix() {
     setRecommendationMode("semantic");
     setSemanticState("pending");
 
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 12_000);
-
     try {
-      const response = await fetch("/api/rice/semantic-recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed, matchCount: MATCH_LIMIT }),
-        signal: controller.signal,
+      const result = await requestSemanticRecommend({
+        query: trimmed,
+        matchCount: MATCH_LIMIT,
       });
-
-      const body = (await response.json().catch(() => null)) as {
-        matches?: Array<{ rice?: RiceProfileV2; score?: number; reason?: string }>;
-        reply?: string;
-        message?: string;
-      } | null;
-
-      if (!body) {
+      if (!result.ok) {
         setSemanticMatches([]);
-        setSemanticReply(
-          "相談に失敗しました。しばらくしてから、もう一度お試しください。"
-        );
+        setSemanticReply(result.message);
         setSemanticState("error");
         return;
       }
 
-      if (!response.ok) {
-        setSemanticMatches([]);
-        setSemanticReply(
-          typeof body.message === "string" && body.message.trim()
-            ? body.message.trim()
-            : "相談に失敗しました。味わいの地図から銘柄を探してみてください。"
-        );
-        setSemanticState("error");
-        return;
-      }
-
-      const matches: RailMatch[] = (body.matches ?? [])
-        .map((match) => {
-          const id = match.rice?.id;
-          if (!id) return null;
-          const rice = profiles.find((profile) => profile.id === id) ?? match.rice;
-          if (!rice) return null;
-          return {
-            rice,
-            score: typeof match.score === "number" ? match.score : 0,
-            reason: match.reason ?? rice.pairing_reason,
-          };
-        })
-        .filter((match): match is RailMatch => match !== null);
+      const matches: RailMatch[] = toSemanticRailMatches(result.matches, profiles);
 
       setSemanticMatches(matches);
-      setSemanticReply(typeof body.reply === "string" ? body.reply.trim() : null);
-      const top = matches[0]?.rice;
-      if (top) {
-        const placed = points.find((point) => point.id === top.id);
-        const next = placed
-          ? coordinateFromDisplayPoint(placed)
-          : {
-              hardness: clamp(top.hardness),
-              sweetness: clamp(top.sweetness),
-            };
+      setSemanticReply(result.reply);
+      const next = coordinateFromSemanticTop(matches[0]?.rice ?? null, points);
+      if (next) {
         setCoordinate(next);
         probeLeft.set(probeLeftOf(next));
         probeTop.set(probeTopOf(next));
@@ -404,21 +365,9 @@ export function FlavorMatrix() {
       setSemanticState("idle");
     } catch (cause) {
       console.error("Semantic recommend failed:", cause);
-      const aborted =
-        (typeof cause === "object" &&
-          cause !== null &&
-          "name" in cause &&
-          (cause as { name?: string }).name === "AbortError") ||
-        controller.signal.aborted;
       setSemanticMatches([]);
-      setSemanticReply(
-        aborted
-          ? "返事が遅かったので、いったん味わいの地図から探してみてください。"
-          : "相談に失敗しました。しばらくしてから、もう一度お試しください。"
-      );
+      setSemanticReply("相談に失敗しました。しばらくしてから、もう一度お試しください。");
       setSemanticState("error");
-    } finally {
-      window.clearTimeout(timeoutId);
     }
   }, [query, profiles, points, probeLeft, probeTop]);
 

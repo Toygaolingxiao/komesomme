@@ -97,3 +97,11 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 - 公開 URL の相談 API は `guardSemanticRecommend`（kill switch + レート制限）
 - 匿名 UI イベントは `POST /api/analytics/event` → `access_events`（anon は SELECT 不可）
 - 内部观测台 `/ops` のみ service_role で `access_events` を集計。`OPS_DASHBOARD_SECRET` 未設定なら 404
+
+## 6. 2026-09 監査メモ（設計・安全）
+
+- `src/components/FlavorMatrix.tsx` から「相談 API 呼び出し / timeout / エラー文言 / semantic 結果整形」を
+  `src/lib/rice/semanticRecommendClient.ts` へ移動。UI は表示と状態遷移に集中させる。
+- semantic の結果整形（catalog 既存行優先、fallback reason、トップ候補の座標復元）をライブラリで単体テスト化。
+- Supabase の `service_role` は引き続き server-only（`src/app/api/**` と `src/lib/supabase/admin.ts`）に限定。
+- 残課題: CSP は `next.config.ts` の注記どおり段階導入。第三者スクリプト許可先を固定してから本設定化する。
