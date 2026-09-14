@@ -6,11 +6,7 @@ const RESPONSE_FAILURE_MESSAGE = "相談に失敗しました。味わいの地�
 const TIMEOUT_FAILURE_MESSAGE =
   "返事が遅かったので、いったん味わいの地図から探してみてください。";
 
-export type SemanticRecommendApiMatch = {
-  rice?: RiceProfileV2;
-  score?: number;
-  reason?: string;
-};
+type SemanticRecommendApiMatch = { rice?: RiceProfileV2; score?: number; reason?: string };
 
 type SemanticRecommendResponse = {
   matches?: SemanticRecommendApiMatch[];
@@ -18,14 +14,14 @@ type SemanticRecommendResponse = {
   message?: string;
 };
 
-export type SemanticRailMatch = {
+export type SemanticRecommendMatch = {
   rice: RiceProfileV2;
   score: number;
   reason: string;
 };
 
 export type SemanticRecommendResult =
-  | { ok: true; matches: SemanticRecommendApiMatch[]; reply: string | null }
+  | { ok: true; matches: SemanticRecommendMatch[]; reply: string | null }
   | { ok: false; message: string };
 
 /**
@@ -67,7 +63,7 @@ export async function requestSemanticRecommend({
 
     return {
       ok: true,
-      matches: body.matches ?? [],
+      matches: normalizeApiMatches(body.matches ?? []),
       reply: typeof body.reply === "string" ? body.reply.trim() : null,
     };
   } catch (cause) {
@@ -87,22 +83,22 @@ export async function requestSemanticRecommend({
 }
 
 export function toSemanticRailMatches(
-  matches: SemanticRecommendApiMatch[],
+  matches: SemanticRecommendMatch[],
   profiles: RiceProfileV2[]
-): SemanticRailMatch[] {
+): SemanticRecommendMatch[] {
   return matches
     .map((match) => {
-      const id = match.rice?.id;
+      const id = match.rice.id;
       if (!id) return null;
       const rice = profiles.find((profile) => profile.id === id) ?? match.rice;
       if (!rice) return null;
       return {
         rice,
-        score: typeof match.score === "number" ? match.score : 0,
+        score: match.score,
         reason: match.reason ?? rice.pairing_reason,
       };
     })
-    .filter((match): match is SemanticRailMatch => match !== null);
+    .filter((match): match is SemanticRecommendMatch => match !== null);
 }
 
 export function coordinateFromSemanticTop(
@@ -116,4 +112,17 @@ export function coordinateFromSemanticTop(
     hardness: clamp(topRice.hardness),
     sweetness: clamp(topRice.sweetness),
   };
+}
+
+function normalizeApiMatches(matches: SemanticRecommendApiMatch[]): SemanticRecommendMatch[] {
+  return matches
+    .map((match) => {
+      if (!match.rice?.id) return null;
+      return {
+        rice: match.rice,
+        score: typeof match.score === "number" ? match.score : 0,
+        reason: match.reason ?? match.rice.pairing_reason,
+      };
+    })
+    .filter((match): match is SemanticRecommendMatch => match !== null);
 }

@@ -59,13 +59,9 @@ describe("toSemanticRailMatches", () => {
   it("prefers in-memory profile rows and drops invalid entries", () => {
     const catalogRice = sampleRice({ id: "koshihikari", pairing_reason: "catalog reason" });
     const apiRice = sampleRice({ id: "koshihikari", pairing_reason: "api reason" });
-    const mapped = toSemanticRailMatches(
-      [
-        { rice: apiRice, score: 0.87, reason: "semantic reason" },
-        { rice: sampleRice({ id: "" }) },
-      ],
-      [catalogRice]
-    );
+    const mapped = toSemanticRailMatches([{ rice: apiRice, score: 0.87, reason: "semantic reason" }], [
+      catalogRice,
+    ]);
 
     expect(mapped).toHaveLength(1);
     expect(mapped[0].rice).toBe(catalogRice);
@@ -98,6 +94,28 @@ describe("coordinateFromSemanticTop", () => {
 });
 
 describe("requestSemanticRecommend", () => {
+  it("returns normalized matches and trimmed reply on success", async () => {
+    const apiRice = sampleRice({ id: "api-row", pairing_reason: "fallback reason" });
+    const result = await requestSemanticRecommend({
+      query: "おにぎり向き",
+      matchCount: 4,
+      fetchImpl: async () =>
+        new Response(
+          JSON.stringify({
+            reply: "  つや姫です。  ",
+            matches: [{ rice: apiRice }, { rice: sampleRice({ id: "" }) }],
+          }),
+          { status: 200 }
+        ),
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      matches: [{ rice: apiRice, score: 0, reason: "fallback reason" }],
+      reply: "つや姫です。",
+    });
+  });
+
   it("returns server message when the API responds non-2xx", async () => {
     const result = await requestSemanticRecommend({
       query: "唐揚げに合う米",
