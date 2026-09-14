@@ -109,6 +109,19 @@ describe("requestSemanticRecommend", () => {
     expect(result).toEqual({ ok: false, message: "問い合わせ上限です。" });
   });
 
+  it("falls back to generic response message for non-json non-2xx responses", async () => {
+    const result = await requestSemanticRecommend({
+      query: "寿司に合う米",
+      matchCount: 4,
+      fetchImpl: async () => new Response("bad gateway", { status: 502 }),
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      message: "相談に失敗しました。味わいの地図から銘柄を探してみてください。",
+    });
+  });
+
   it("returns timeout guidance on aborted request", async () => {
     const result = await requestSemanticRecommend({
       query: "おにぎり向き",

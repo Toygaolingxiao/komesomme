@@ -55,15 +55,15 @@ export async function requestSemanticRecommend({
     });
 
     const body = (await response.json().catch(() => null)) as SemanticRecommendResponse | null;
-    if (!body) return { ok: false, message: REQUEST_FAILURE_MESSAGE };
-
     if (!response.ok) {
       const message =
-        typeof body.message === "string" && body.message.trim()
+        body && typeof body.message === "string" && body.message.trim()
           ? body.message.trim()
           : RESPONSE_FAILURE_MESSAGE;
       return { ok: false, message };
     }
+
+    if (!body) return { ok: false, message: REQUEST_FAILURE_MESSAGE };
 
     return {
       ok: true,
