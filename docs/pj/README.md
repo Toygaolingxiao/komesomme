@@ -49,5 +49,6 @@ docs/assets/*-case-study          prompts/ 提示词正本
 | 锐评提示词 | [prompts/red-team-case-study.md](./prompts/red-team-case-study.md) |
 | SEO 权威锚点 + 意图库存快照（与 21 同步起始） | [research/2026-09-09-seo-intent-snapshot.md](./research/2026-09-09-seo-intent-snapshot.md) |
 | Case Study 1.0.0 | [artifacts/README.md](./artifacts/README.md) → `docs/assets/` |
+| Case Study 日文用语基准 | [artifacts/case-study-ja-glossary-2026-09-11.md](./artifacts/case-study-ja-glossary-2026-09-11.md) |
 | 锐评 | [reviews/2026-09-09-gpt-5.5-case-study.md](./reviews/2026-09-09-gpt-5.5-case-study.md)（`triaged`） |
 | 技术实验前提下的锐评 | [reviews/2026-09-09-copilot-case-study-red-team.md](./reviews/2026-09-09-copilot-case-study-red-team.md)（`triaged`） |

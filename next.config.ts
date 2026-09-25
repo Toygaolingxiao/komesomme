@@ -1,5 +1,18 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs/config";
+import { seoRedirects } from "./src/lib/seo/legacyRedirects";
+
+function encyclopediaBrandIds(): string[] {
+  const file = path.join(process.cwd(), "src/data/rice/encyclopedia/manifest.json");
+  const raw = JSON.parse(readFileSync(file, "utf8")) as {
+    entries?: Array<{ id?: string }>;
+  };
+  return (raw.entries ?? [])
+    .map((row) => row.id)
+    .filter((id): id is string => typeof id === "string" && /^[a-z0-9-]+$/.test(id));
+}
 
 /**
  * Baseline response headers for a public Vercel deployment.
@@ -41,20 +54,9 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1280, 1440],
     imageSizes: [64, 96, 128, 160, 200, 256, 320, 384],
   },
+  trailingSlash: false,
   async redirects() {
-    return [
-      {
-        source: "/library/collections/:slug",
-        destination: "/collections/:slug",
-        permanent: true,
-      },
-      {
-        /** Index lives under ピックアップ; magazine pages stay at /collections/[slug]. */
-        source: "/collections",
-        destination: "/discover",
-        permanent: true,
-      },
-    ];
+    return seoRedirects(encyclopediaBrandIds());
   },
   async headers() {
     return [

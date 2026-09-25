@@ -4,6 +4,11 @@
 
 見出し日付は発版日（`YYYY-MM-DD`）。旧版は VERSION を上げた commit 日で遡及記入。
 
+## 1.4.2 — 2026-09-25
+
+- Search Console のリダイレクトエラー向けに、www・末尾スラッシュ・旧 `/{id}` を正本へ 1 ホップの 308 に揃える
+- 1.4.1 Case Study の日文を GPT-5.5 用语基准に揃え、对照表を pj/artifacts に残す
+
 ## 1.4.1 — 2026-09-11
 
 - 百科公式 URL registry を拡充（青森・佐賀・岩手・福井・栃木など）。篇級 factStatus を整理（全国銘柄以外は verified 寄り）

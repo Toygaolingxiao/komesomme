@@ -112,7 +112,13 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 `.jp` は Cloudflare 非対応のため日本のレジストラで取得。`.com` / `sommeatlas.com` は Cloudflare Registrar + DNS。
 
-**www:** apex が正本。`www.komesomme.jp` を使う場合は Vercel に `www` を追加し、apex ↔ www の一方へ 301 を揃える（未設定なら apex のみで可）。
+**www:** apex（`https://komesomme.jp`）が正本。`www.komesomme.jp` は **308/301 で apex へ**。Vercel 既定の www 転送が **307** だと Google が「一時リダイレクト」とみなし、GSC のリダイレクトエラーが残る。
+
+- アプリ側: `next.config` の host 条件で www → apex を 308（`src/lib/seo/legacyRedirects.ts`）
+- **Cloudflare**（`.jp` が橙雲ならここが先に効く）: Bulk Redirect または Page Rule  
+  `https://www.komesomme.jp/*` → `https://komesomme.jp/$1`、**301 Permanent**
+- Vercel Domains: www を追加済みなら「Redirect to `komesomme.jp`」。307 のままなら CF 側の 301 で上書きする
+- `www.komesomme.com` は DNS が無い。使うなら CNAME を足して `.jp` へ 301。使わないなら放置でよい
 
 ### 5.2 接続確認（2026-08-30 実測）
 
@@ -156,6 +162,19 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 | 「インデックス登録済み」 | 2 日〜2 週間 |
 | `site:komesomme.jp` でヒット | インデックス後 |
 | ブランド名「KomeSomme」で上位 | 被リンク・更新頻度が必要（数週間〜） |
+
+#### リダイレクト（GSC メール 2026-09 以降）
+
+メールに出る二つの枠は別物。
+
+| GSC の表示 | 意味 | やること |
+| --- | --- | --- |
+| **リダイレクトエラー** | チェーンが長い、307、到達先が 4xx、ループ | コードで 1 ホップの 308 に揃える。www の 307 は上の CF 301 |
+| **ページにリダイレクトがあります** | その URL はリダイレクト先が正本 | **消さない。** 旧 `/{id}`、`/collections`、www、末尾 `/` は意図した 308 |
+
+サイトマップと canonical は apex・末尾スラッシュなし。旧 URL を 200 に戻すと評価が割れる。
+
+「修正を検証」は、**エラー枠**が減ってから押す。リダイレクト枠が残っていても、到達先がインデックスされていれば完了。
 
 #### まだ出ないときの確認
 

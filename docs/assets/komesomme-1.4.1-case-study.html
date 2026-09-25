@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KomeSomme 1.4.1 — 設計判断と運用知見</title>
-  <meta name="description" content="KomeSomme の設計判断と運用知見。約4週間の単独開発で、構造化カタログ・推薦・LLM案内・公開運用までを一体で構築した記録です。" />
+  <meta name="description" content="KomeSomme の設計判断と運用知見。Next.js / Supabase を用いて、約4週間の単独開発で 1.0 公開から 1.4.1 まで継続改善した内容を整理しています。" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -57,7 +57,7 @@
       transition: color .35s var(--ease);
     }
     body.theme-oled { color: #E8E4DC; }
-    /* pin-spacer が透明だと前セクションの色が残る */
+    /* pin中のスペーサーが透明だと、前セクションの背景色が残るため補正する */
     .pin-spacer { background: inherit; }
     .pin-spacer[data-room-bg="oled"] { background: var(--oled) !important; }
     .pin-spacer[data-room-bg="washi"] { background: var(--paper) !important; }
@@ -210,7 +210,7 @@
     .rice-dot:hover .tip { opacity: 1; }
     .rice-dot.is-top { z-index: 15; }
     .swim-node, .swim-path, .swim-anno { opacity: 0; }
-    /* 泳道: 入場前は線を隠す */
+    /* スイムレーン：入場前は線を非表示にし、dash / glow の先出しを防ぐ */
     #swimlane-svg:not(.is-armed) .swim-path,
     #swimlane-svg:not(.is-armed) .flow-glow {
       visibility: hidden !important;
@@ -445,7 +445,7 @@
     @media (max-width: 859px) {
       .pipe-ban span { writing-mode: horizontal-tb; padding: .4rem .75rem; }
     }
-    /* SVG 矢線の流光（ベース線の上に重ねる） */
+    /* SVG矢印のハイライト（ベース線の上に重ねる） */
     .flow-glow {
       fill: none;
       stroke-linecap: round;
@@ -468,7 +468,7 @@
     @media (prefers-reduced-motion: reduce) {
       .flow-glow.is-running { animation: none; opacity: .5; stroke-dasharray: none; }
     }
-    /* Gate: 縦手順 + 一枚フォーカス */
+    /* Gate：縦手順 + 単一フォーカス表示 */
     .gate-pin {
       position: relative;
       min-height: min(100vh, 820px);
@@ -596,7 +596,7 @@
       padding: 1.25rem 1.3rem 1.35rem;
       position: relative;
       overflow: hidden;
-      /* 影はレイアウトに影響させない。枠幅は固定 */
+      /* 影はレイアウトに影響させず、枠線幅を固定して切り替え時の揺れを防ぐ */
       box-shadow: 0 0 0 0 transparent;
       transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
     }
@@ -619,7 +619,7 @@
     .gate-focus.is-done .status { color: #5A8F72; opacity: 1; }
     .gate-panels {
       display: grid;
-      padding-right: 3.25rem; /* status 用の余白 */
+      padding-right: 3.25rem; /* status領域を確保し、タイトルの折り返しによる揺れを防ぐ */
     }
     .gate-panel {
       grid-area: 1 / 1;
@@ -642,11 +642,11 @@
     .gate-panel h3 {
       font-family: "Shippori Mincho", serif;
       font-size: 1.2rem; font-weight: 500; margin: 0 0 .55rem; line-height: 1.35;
-      min-height: 2.7em; /* 見出し2行分を確保 */
+      min-height: 2.7em; /* タイトル2行分の高さを確保し、切り替え時の詰まりを防ぐ */
     }
     .gate-panel .body {
       margin: 0; font-size: .88rem; color: #6B6560; line-height: 1.65; max-width: 38rem;
-      min-height: 4.95em; /* 本文3行分 */
+      min-height: 4.95em; /* 約3行分 */
     }
     .gate-panel .cmd {
       margin: 1rem 0 0;
@@ -852,7 +852,7 @@
       <a href="#summary" data-nav="summary">要点</a>
       <a href="#overview" data-nav="overview">概要</a>
       <a href="#concept" data-nav="concept">体験</a>
-      <a href="#assets" data-nav="assets">資産</a>
+      <a href="#assets" data-nav="assets">データ</a>
       <a href="#delivery" data-nav="delivery">公開</a>
       <a href="#learnings" data-nav="learnings">学び</a>
       <a href="#closing" data-nav="closing">まとめ</a>
@@ -878,7 +878,7 @@
       </svg>
     </div>
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-4">CASE STUDY · <span data-cs-version></span></p>
+      <p class="sec-label mb-4">CASE STUDY・<span data-cs-version></span></p>
       <div class="grid lg:grid-cols-12 gap-10 items-end">
         <div class="lg:col-span-7">
           <h1 id="hero-title" class="font-display text-[clamp(2.7rem,7vw,4.8rem)] leading-[1.05] font-medium tracking-tight text-[#F2EEE6]">
@@ -891,7 +891,7 @@
             米の銘柄を、産地や価格ではなく「甘み・粒感・料理との相性」から選べる推薦サービスです。約4週間の単独開発で、構造化カタログ、推薦ロジック、LLM案内、公開運用までを一体で構築しました。
           </p>
           <p class="mt-3 text-xs leading-relaxed max-w-xl" style="color:rgba(232,228,220,.45)">
-            本資料では、候補決定を LLM に委ねない設計、Git 上の一次データ管理、公開後の継続改善から得た知見を整理します。本番は komesomme.jp です。
+            本資料では、候補決定を LLM に委ねない設計、Git 上の一次データ管理、公開後の継続改善から得た知見を整理します。本番環境：komesomme.jp
           </p>
         </div>
         <div class="lg:col-span-5">
@@ -899,8 +899,8 @@
           <ul class="space-y-0 text-sm leading-relaxed list-none m-0 p-0 border-t hairline" style="border-color:rgba(255,255,255,.12)">
             <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">期間：2026年8月中旬〜9月11日頃・約4週間・単独開発</li>
             <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">構成：Next.js 15・Supabase（pgvector）・Vercel</li>
-            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">バージョン：0.x 試作 → <strong style="color:#E8A84A">1.0.0</strong> 本番 → <strong style="color:#E8A84A">1.4.1</strong>（公開後に minor を連続）</li>
-            <li class="py-2.5">主な機能：味わい地図・相談・事典（claims+URL）・料理別 /pair 約10ページ・開示つきの買う出口</li>
+            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">バージョン：0.x 試作 → <strong style="color:#E8A84A">1.0.0</strong> 本番公開 → <strong style="color:#E8A84A">1.4.1</strong>（公開後もマイナーアップデートを継続）</li>
+            <li class="py-2.5">主な機能：味わい地図・相談・事典（claims + URL）・料理別 /pair 約10ページ・開示付きの購入導線</li>
           </ul>
           <ul class="stat-row" aria-label="規模">
             <li><strong>106</strong>銘柄</li>
@@ -918,7 +918,7 @@
       <span class="ghost-num" data-speed="0.06">読</span>
       <p class="sec-label mb-2">EXECUTIVE SUMMARY</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">米選びサービスにおける設計判断と運用知見</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">本資料では、体験の設計、データの管理方法、本番公開までの手順、公開後の改善、再利用できる方針を整理します。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">本資料では、米選び体験の設計、データ管理、本番公開までの運用手順、公開後の改善、再利用できる方針を整理します。</p>
       <div class="grid md:grid-cols-3 gap-4 mb-6">
         <article class="sheet p-4">
           <p class="sec-label mb-2">方針 01</p>
@@ -938,9 +938,9 @@
       </div>
       <ol class="read-spine" aria-label="目次">
         <li><a href="#overview">PJ概要</a></li>
-        <li><a href="#context">課題と範囲</a></li>
-        <li><a href="#concept">体験</a></li>
-        <li><a href="#assets">データ</a></li>
+        <li><a href="#context">課題と対象範囲</a></li>
+        <li><a href="#concept">プロダクト体験</a></li>
+        <li><a href="#assets">データ資産</a></li>
         <li><a href="#ranking">推薦</a></li>
         <li><a href="#delivery">公開運用</a></li>
         <li><a href="#validate">検証</a></li>
@@ -953,14 +953,14 @@
   <!-- 2b PJ OVERVIEW -->
   <section id="overview" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="overview">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">0 · PJ概要</p>
+      <p class="sec-label mb-2">0・PJ概要</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">制約のなかで、何を一気に通したか</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">単独・約4週間。在庫と配送は持たず、味覚データと推薦、公開運用までを閉じる範囲に収めました。専用ベクトル基盤の性能より、実装速度・権限管理・運用の単純さを優先しています。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">単独開発・約4週間。在庫と配送は持たず、味覚データと推薦、公開運用までを閉じる範囲に収めました。専用ベクトル基盤の性能より、実装速度・権限管理・運用の単純さを優先しています。</p>
       <div class="grid md:grid-cols-2 gap-4">
         <article class="sheet p-4 sm:p-5">
           <p class="sec-label mb-2">制約</p>
           <ul class="m-0 p-0 list-none space-y-2 text-sm text-muted leading-relaxed">
-            <li>・体制は一人。画面と相談 API を別サーバに分けない</li>
+            <li>・体制は単独開発。画面と相談 API を別サーバーに分けない</li>
             <li>・銘柄規模は百前後。権限とメタデータを同一 DB に置く</li>
             <li>・在庫・発送・問い合わせ対応は現段階で担わない</li>
             <li>・未測定の利用指標を成果として語らない</li>
@@ -971,7 +971,7 @@
           <ul class="m-0 p-0 list-none space-y-2 text-sm text-muted leading-relaxed">
             <li>・構造化カタログ（Git）→ validate → seed → Supabase</li>
             <li>・味わい地図（端末内順位）と相談（埋め込み検索）</li>
-            <li>・事典（claims + URL）・料理別 /pair・買う出口</li>
+            <li>・事典（claims + URL）・料理別 /pair・購入導線</li>
             <li>・validate → CI → smoke → Production の固定手順</li>
           </ul>
         </article>
@@ -982,9 +982,9 @@
   <!-- 3 LIFECYCLE · OLED · L-2 -->
   <section id="lifecycle" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="lifecycle">
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-2">0 · 進捗の見取り図</p>
+      <p class="sec-label mb-2">0・進捗の見取り図</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">製品、開発工程、公開後の追加機能</h2>
-      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">同じ期間を三本に分けています。上から画面の中身、中央がリポジトリと CI、下が 1.0 以降に増やした機能です。</p>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">同じ期間の取り組みを、製品機能、開発工程、公開後の追加機能の三層に分けて整理しています。</p>
       <div class="sheet-oled p-3 sm:p-5 mb-5 overflow-x-auto">
         <svg viewBox="0 0 1000 320" class="w-full min-w-[720px]" aria-label="三軌の時間軸">
           <defs>
@@ -996,24 +996,24 @@
           <text x="380" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.4)">1.0 公開</text>
           <text x="560" y="28" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">1.4.x NOW</text>
           <text x="760" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.4)">Phase 3</text>
-          <text x="900" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.35)">先</text>
+          <text x="900" y="28" font-family="IBM Plex Mono" font-size="10" fill="rgba(232,228,220,.35)">今後</text>
           <!-- PRODUCT lane -->
           <rect x="20" y="58" width="960" height="72" rx="10" fill="rgba(255,255,255,.03)"/>
           <text x="100" y="90" text-anchor="end" font-family="Shippori Mincho" font-size="13" fill="#F2EEE6">製品</text>
           <text x="100" y="108" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#E8A84A">PRODUCT</text>
           <circle cx="200" cy="94" r="5" fill="#C45C26"/>
           <text x="220" y="90" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">味覚二次元</text>
-          <text x="220" y="106" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">向かないをカタログへ</text>
+          <text x="220" y="106" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">「向かない」をカタログへ</text>
           <path id="life-p1" d="M310 94 H360" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
           <path class="flow-glow tone-harvest" data-glow-for="life-p1" d="M310 94 H360"/>
           <circle cx="400" cy="94" r="5" fill="#C45C26"/>
-          <text x="420" y="90" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">双軌推薦</text>
+          <text x="420" y="90" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">二系統推薦</text>
           <text x="420" y="106" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">地図≠相談</text>
           <path id="life-p2" d="M510 94 H550" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
           <path class="flow-glow tone-harvest" data-glow-for="life-p2" d="M510 94 H550"/>
           <rect x="560" y="74" width="150" height="40" rx="8" fill="rgba(232,168,74,.12)" stroke="rgba(232,168,74,.45)"/>
           <text x="635" y="92" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#E8A84A">Wave 2A pair</text>
-          <text x="635" y="106" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="rgba(232,228,220,.45)">約10ページライブ</text>
+          <text x="635" y="106" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="9" fill="rgba(232,228,220,.45)">約10ページ公開中</text>
           <path id="life-p3" d="M720 94 H760" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3 3"/>
           <path class="flow-glow tone-muted" data-glow-for="life-p3" d="M720 94 H760"/>
           <circle cx="800" cy="94" r="5" fill="none" stroke="#5A8F72" stroke-width="1.5"/>
@@ -1028,8 +1028,8 @@
           <path id="life-e1" d="M340 178 H380" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
           <path class="flow-glow tone-harvest" data-glow-for="life-e1" d="M340 178 H380"/>
           <circle cx="420" cy="178" r="5" fill="#5A8F72"/>
-          <text x="440" y="174" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">RLS · embed 非公開</text>
-          <text x="440" y="190" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">RPC はサーバ権限</text>
+          <text x="440" y="174" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">RLS・embed 非公開</text>
+          <text x="440" y="190" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">RPC はサーバー権限</text>
           <path id="life-e2" d="M600 178 H640" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
           <path class="flow-glow tone-harvest" data-glow-for="life-e2" d="M600 178 H640"/>
           <circle cx="680" cy="178" r="5" fill="#5A8F72"/>
@@ -1041,7 +1041,7 @@
           <text x="100" y="276" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#E8A84A">SINCE 1.0</text>
           <circle cx="220" cy="262" r="5" fill="#C45C26"/>
           <text x="240" y="258" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">1.1 検索・OG</text>
-          <text x="240" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">JSON-LD · パンくず</text>
+          <text x="240" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">JSON-LD・パンくず</text>
           <path id="life-c1" d="M420 262 H460" stroke="#E8A84A" stroke-width="1.2" marker-end="url(#lifeAh)"/>
           <path class="flow-glow tone-harvest" data-glow-for="life-c1" d="M420 262 H460"/>
           <rect x="480" y="242" width="200" height="40" rx="8" fill="rgba(196,92,38,.15)" stroke="rgba(196,92,38,.4)"/>
@@ -1051,38 +1051,38 @@
           <path class="flow-glow tone-harvest" data-glow-for="life-c2" d="M690 262 H730"/>
           <circle cx="770" cy="262" r="5" fill="#C45C26"/>
           <text x="790" y="258" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.75)">1.4 百科 claims</text>
-          <text x="790" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">公式 URL · seed</text>
+          <text x="790" y="274" font-family="Zen Kaku Gothic New" font-size="10" fill="rgba(232,228,220,.4)">公式 URL・seed</text>
         </svg>
       </div>
       <div class="life-track">
         <article class="life-col">
           <p class="eyebrow">PRODUCT</p>
-          <h3>画面に載せたもの</h3>
+          <h3>実装した主な機能</h3>
           <ol>
             <li>甘み×粒感の地図と Top4</li>
-            <li>相談（埋め込み検索）と侍米師の一文</li>
-            <li>事典 · 料理別 /pair · 買う出口</li>
-            <li>アフィリエイト開示と特商法の置き場</li>
+            <li>相談機能（埋め込み検索）と侍米師による案内文</li>
+            <li>事典・料理別 /pair・購入導線</li>
+            <li>アフィリエイト開示と特定商取引法表記の掲載</li>
           </ol>
         </article>
         <article class="life-col">
           <p class="eyebrow">ENGINEERING</p>
           <h3>開発・運用プロセス</h3>
           <ol>
-            <li>Git の TS カタログ → validate → seed</li>
-            <li>Supabase RLS · embedding は非公開</li>
+            <li>Git上のTypeScriptカタログ → validate → seed</li>
+            <li>Supabase RLS・embedding は非公開</li>
             <li>CI · smoke · origin/main → Vercel</li>
-            <li>SemVer。ユーザーに見える変更は同一コミットでバージョンを更新する</li>
+            <li>SemVerを採用。ユーザーに見える変更は、同一コミットでバージョン更新と changelog を揃える</li>
           </ol>
         </article>
         <article class="life-col">
           <p class="eyebrow">SINCE 1.0</p>
-          <h3>公開後に増やした版</h3>
+          <h3>公開後に追加した機能</h3>
           <ol>
             <li>1.1.x 検索基盤（JSON-LD / OG / パンくず）</li>
-            <li>1.2.x〜1.3.x 料理別 /pair 約10ページと誌面</li>
-            <li>1.4.x 百科の合稿 · claims · 公式 URL · DB seed</li>
-            <li>リリースメモを changelog に残す</li>
+            <li>1.2.x〜1.3.x：料理別 /pair 約10ページと関連コンテンツ</li>
+            <li>1.4.x 百科コンテンツの統合・claims・公式 URL・DB seed</li>
+            <li>リリース内容を changelog に残す</li>
           </ol>
         </article>
       </div>
@@ -1092,30 +1092,30 @@
   <!-- 4 CONTEXT · washi · C-2 -->
   <section id="context" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="context">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">1 · 課題と範囲</p>
+      <p class="sec-label mb-2">1・課題と範囲</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">対象範囲と対象外</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">産地と価格の並びだけでは、今夜のおかずとの相性が比較できません。味わいと料理相性で選べる体験に集中し、現フェーズで担わないものを切ります。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">産地や価格の比較だけでは、今夜のおかずとの相性を判断しにくい。そこで、本PJで扱う範囲と、現段階では扱わない範囲を明確に分けます。</p>
       <div class="do-split mb-4">
         <div class="do-side in">
-          <p class="eyebrow">DO · 集中</p>
-          <h3>今夜のご飯に合う米</h3>
+          <p class="eyebrow">対象範囲</p>
+          <h3>今夜の料理に合う米</h3>
           <ul>
             <li>甘み・粒感の相対座標</li>
             <li>料理タグと人手の相性・向かない</li>
-            <li>Top4 推薦と買う出口</li>
-            <li>百科の claims + URL 溯源</li>
-            <li>アフィリエイト開示と特商法の置き場</li>
+            <li>Top4 推薦と購入導線</li>
+            <li>百科の claims + URL による出典管理</li>
+            <li>アフィリエイト開示と特定商取引法表記の掲載</li>
           </ul>
         </div>
         <div class="do-side out">
-          <p class="eyebrow">DON'T · 捨てる</p>
+          <p class="eyebrow">対象外</p>
           <h3>現フェーズで担わないもの</h3>
           <ul>
-            <li>ふるさと還元率の価格競争</li>
+            <li>ふるさと納税の還元率競争</li>
             <li>自社在庫・D2C販売・問い合わせ／配送対応</li>
-            <li>認証・お気に入り・多ターン（P2）</li>
+            <li>認証・お気に入り・多ターン相談（P2以降）</li>
             <li>アフィリエイト収益だけで工数を回収する前提</li>
-            <li>構想カテゴリ（桃／和牛／酒）の確約</li>
+            <li>桃・和牛・酒など他カテゴリ展開の確約</li>
           </ul>
           <div class="mt-3">
             <span class="chip-fly">人気順</span>
@@ -1125,7 +1125,7 @@
           </div>
         </div>
       </div>
-      <p class="viz-caption">一次データは Git 上の構造化カタログです。更新を止めれば負債になります。完成した参入障壁ではなく、運用し続ける前提の資産です。</p>
+      <p class="viz-caption">一次データはGit上の構造化カタログです。更新を止めれば負債になるため、完成済みの参入障壁ではなく、継続運用できる仕組みとして位置づけています。</p>
     </div>
   </section>
 
@@ -1133,17 +1133,17 @@
   <section id="concept" class="room-oled relative" data-room="oled" data-chapter="concept">
     <div class="pin-stage" id="matrix-stage">
       <div class="max-w-6xl mx-auto w-full">
-        <p class="sec-label mb-2">2 · プロダクト体験</p>
+        <p class="sec-label mb-2">2・プロダクト体験</p>
         <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">味わい地図・端末内ランキング</h2>
-        <p class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">横軸は甘み、縦軸は粒感。プローブが近い四銘柄を強調します。順位は端末内の距離計算です。</p>
-        <div class="amber-note max-w-2xl mb-4">汎用チャットとの差は文章力ではありません。構造化した味覚・相性・向かない組み合わせを持ち、比較 UI と買う出口までつなぎます。</div>
+        <p class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">横軸は甘み、縦軸は粒感。ポインタに近い4銘柄を強調します。ランキングは端末内の距離計算で決定します。</p>
+        <div class="amber-note max-w-2xl mb-4">汎用チャットとの差は、文章生成の巧拙ではありません。構造化した味覚、相性、向かない組み合わせを一次データとして持ち、比較 UI と購入導線までつなぎます。</div>
         <div class="grid lg:grid-cols-12 gap-5 items-stretch">
           <div class="lg:col-span-4">
             <div class="concept-chips">
-              <div class="concept-chip"><strong>味わいの盤面</strong><span>甘みと粒感の二次元。プローブが好みの位置を示す</span></div>
-              <div class="concept-chip"><strong>侍米師</strong><span>上位四銘柄。案内は LLM、候補は規則と距離</span></div>
-              <div class="concept-chip"><strong>二本立て</strong><span>地図の順位は端末内。相談だけサーバ。結果は混ぜない</span></div>
-              <div class="concept-chip"><strong>端末内の順位</strong><span class="font-mono text-[11px]" style="color:#E8A84A">client-side rank</span></div>
+              <div class="concept-chip"><strong>味わいマップ</strong><span>甘みと粒感の二次元。ポインタで好みの位置を示す</span></div>
+              <div class="concept-chip"><strong>侍米師</strong><span>上位4銘柄を提示。案内文はLLM、候補選定は規則と距離計算で行う</span></div>
+              <div class="concept-chip"><strong>二系統の推薦</strong><span>地図のランキングは端末内で計算し、相談のみサーバー側で処理します。両者の結果は混在させません。</span></div>
+              <div class="concept-chip"><strong>端末内ランキング</strong><span class="font-mono text-[11px]" style="color:#E8A84A">client-side rank</span></div>
             </div>
             <p id="matrix-phase" class="mt-3 text-xs font-mono min-h-[1.25rem]" style="color:#E8A84A">すっきり寄り（例: ササニシキ付近）</p>
           </div>
@@ -1159,7 +1159,7 @@
                 <div id="rice-points"></div>
                 <div id="smart-probe" class="smart-probe" style="left:52%;top:48%" role="slider" aria-label="味わいの点" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
-              <p class="mt-2 text-xs text-muted">座標はカタログの固定値です。プローブの近くの四銘柄を強調します。</p>
+              <p class="mt-2 text-xs text-muted">座標はカタログ上の固定値です。ポインタに近い4銘柄を強調します。</p>
               <p id="knn-readout" class="mt-1 text-xs font-mono" style="color:#C45C26"></p>
             </div>
           </div>
@@ -1171,41 +1171,41 @@
   <!-- 6 WEDGE · washi · W-2 -->
   <section id="wedge" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="wedge">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">3 · ほかとの違い</p>
+      <p class="sec-label mb-2">3・他サービスとの差分</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">価格比較でも、雑談チャットでもない</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">候補の順番はカタログの座標と検索が決めます。LLM には案内文だけを書かせます。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">候補の順位は、カタログ上の座標と検索ロジックで決定します。LLMは案内文の生成に限定します。</p>
       <div class="battlefield">
         <article class="battle-card theirs">
-          <p class="sec-label">よくある探し方</p>
+          <p class="sec-label">一般的な探し方</p>
           <h3>人気・値段・産地</h3>
-          <p class="text-sm text-muted leading-relaxed m-0">還元率や口コミ、汎用チャットの一文。今夜のおかずとの相性は表に出ません。</p>
+          <p class="text-sm text-muted leading-relaxed m-0">還元率や口コミ、汎用チャットによる簡易回答。今夜のおかずとの相性は表に出ません。</p>
         </article>
         <article class="battle-card ours">
           <p class="sec-label" style="color:#C45C26">このサイト</p>
-          <h3>味わいと相性から四つ</h3>
-          <p class="text-sm leading-relaxed m-0" style="color:#5C4030">地図か相談で候補を絞り、比較して買う出口までつなぎます。</p>
+          <h3>味わいと相性から4銘柄を提示</h3>
+          <p class="text-sm leading-relaxed m-0" style="color:#5C4030">地図か相談で候補を絞り、比較して購入導線までつなげます。</p>
         </article>
       </div>
       <div class="moat-grid">
         <article class="moat-tile">
           <p class="n">01</p>
           <h4>人手で整備した味覚データ</h4>
-          <p>甘み・粒感・相性・向かないを Git 上のカタログに置く</p>
+          <p>相性が良くない組み合わせもGit上のカタログで管理する</p>
         </article>
         <article class="moat-tile">
           <p class="n">02</p>
           <h4>二系統の推薦</h4>
-          <p>地図は端末内の距離。相談だけサーバ埋め込み。結果は混ぜない</p>
+          <p>地図は端末内の距離計算、相談はサーバー側の埋め込み検索で処理します。両者の結果は混在させません。</p>
         </article>
         <article class="moat-tile">
           <p class="n">03</p>
           <h4>出典つきの事典</h4>
-          <p>主張と公式 URL を分けて持つ。106 銘柄 · 16 ソース</p>
+          <p>主張と公式 URL を分けて持つ。106 銘柄・16 ソース</p>
         </article>
         <article class="moat-tile">
           <p class="n">04</p>
-          <h4>開示のある出口</h4>
-          <p>特商法とアフィリエイト表記。在庫や発送は抱えません</p>
+          <h4>開示付きの購入導線</h4>
+          <p>特商法とアフィリエイト表記。在庫管理や発送業務は担いません</p>
         </article>
       </div>
     </div>
@@ -1214,9 +1214,9 @@
   <!-- 7 ASSETS · OLED · A-1 NEW -->
   <section id="assets" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="assets">
     <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-2">4 · データ資産</p>
+      <p class="sec-label mb-2">4・データ資産</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">Git → validate / seed → Supabase</h2>
-      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">一次データはリポジトリで管理し、DB は配信用のミラーとして扱います。百科は claims と URL を分けます。</p>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">一次データはリポジトリで管理し、DBは配信用のミラーとして扱います。百科コンテンツは claims と URL を分けて管理します。</p>
       <div class="asset-layers mb-5">
         <div class="asset-layer">
           <span class="lab">L0 · GIT</span>
@@ -1229,21 +1229,21 @@
           <span class="lab">L1 · GATE</span>
           <div>
             <h3>validate:rice → seed:rice</h3>
-            <p>必須フィールドとスコア範囲を検査してから投入。埋め込みは同一モデル版で全量再計算。</p>
+            <p>必須フィールドとスコア範囲を検査したうえで投入。埋め込みは同一モデルバージョンで全件再計算。</p>
           </div>
         </div>
         <div class="asset-layer">
           <span class="lab">L2 · LIVE</span>
           <div>
-            <h3>Supabase ミラー</h3>
-            <p>catalog VIEW（埋め込み非公開）· match_rice_profiles RPC（サーバ権限）· RLS。</p>
+            <h3>Supabaseへの配信用ミラー</h3>
+            <p>catalog VIEW（埋め込み非公開）・match_rice_profiles RPC（サーバー権限）・RLS。</p>
           </div>
         </div>
         <div class="asset-layer">
           <span class="lab">L3 · TRACE</span>
           <div>
             <h3>百科 claims + URL</h3>
-            <p>主張と出典 URL を分離。106 銘柄 · 99 verified / 7 partial · 16 sources。</p>
+            <p>主張と出典 URL を分離。106 銘柄・99 verified / 7 partial・16 sources。</p>
           </div>
         </div>
       </div>
@@ -1268,9 +1268,9 @@
           <path id="asset-a3" d="M660 75 H700" stroke="#E8A84A" stroke-width="1.5" marker-end="url(#aAmber)"/>
           <path class="flow-glow tone-harvest" data-glow-for="asset-a3" d="M660 75 H700"/>
           <rect x="710" y="40" width="190" height="70" rx="10" fill="none" stroke="rgba(196,92,38,.45)"/>
-          <text x="805" y="72" text-anchor="middle" fill="#C45C26" font-family="Shippori Mincho" font-size="14">公開面</text>
-          <text x="805" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">地図 · 相談 · 事典</text>
-          <text x="460" y="145" text-anchor="middle" fill="rgba(232,228,220,.4)" font-family="Zen Kaku Gothic New" font-size="11">DB はミラー。Git を直してから seed する</text>
+          <text x="805" y="72" text-anchor="middle" fill="#C45C26" font-family="Shippori Mincho" font-size="14">公開画面</text>
+          <text x="805" y="92" text-anchor="middle" fill="rgba(232,228,220,.5)" font-family="Zen Kaku Gothic New" font-size="11">地図・相談・事典</text>
+          <text x="460" y="145" text-anchor="middle" fill="rgba(232,228,220,.4)" font-family="Zen Kaku Gothic New" font-size="11">DBは配信用ミラー。一次データを直してから seed する</text>
         </svg>
       </div>
     </div>
@@ -1279,35 +1279,35 @@
   <!-- 8 DECISION · washi · D-2 -->
   <section id="decision" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="decision">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">5 · トレードオフ</p>
+      <p class="sec-label mb-2">5・トレードオフ</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">レイヤー別の設計判断</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">各レイヤーで何を採用し、何を見送ったかを整理します。あわせて、将来の移行条件も明示します。</p>
       <div class="adr-fold">
         <details class="adr-item" open>
-          <summary>App · Next.js 同一リポジトリ</summary>
+          <summary>App・Next.js 単一リポジトリ</summary>
           <div class="body"><dl>
-            <dt>問題</dt><dd>画面と相談 API を、単独開発で運用できる範囲に収める必要があった</dd>
-            <dt>選んだこと</dt><dd>Next.js 15 App Router。別建ての API サーバーは現段階では見送る</dd>
-            <dt>捨てたもの</dt><dd>サービス分割のスケール境界</dd>
-            <dt>移行条件</dt><dd>チーム分割や公開 API が必要になったとき</dd>
+            <dt>問題</dt><dd>画面と相談APIを、単独開発で運用できる範囲に収める必要がありました。</dd>
+            <dt>選んだこと</dt><dd>Next.js 15 App Router。別建てのAPIサーバーは現段階では見送る</dd>
+            <dt>見送ったもの</dt><dd>サービス分割によるスケール境界</dd>
+            <dt>移行条件</dt><dd>チーム分割や公開APIが必要になった場合</dd>
           </dl></div>
         </details>
         <details class="adr-item">
           <summary>Vector · Supabase pgvector</summary>
           <div class="body"><dl>
-            <dt>問題</dt><dd>件数は百前後。権限とメタデータを同一 DB に置きたい</dd>
-            <dt>選んだこと</dt><dd>pgvector + RLS。Pinecone / Qdrant 単独は見送る</dd>
-            <dt>捨てたもの</dt><dd>専用ベクトル基盤の性能面の拡張余地</dd>
-            <dt>移行条件</dt><dd>プロファイル数万、p95 悪化、多テナント隔離</dd>
+            <dt>問題</dt><dd>対象件数は百件前後。権限管理とメタデータを同一DBで扱いたい</dd>
+            <dt>選んだこと</dt><dd>pgvector + RLS。Pinecone / Qdrant などの専用ベクトルDBは現段階では見送る</dd>
+            <dt>見送ったもの</dt><dd>専用ベクトル基盤の性能面の拡張余地</dd>
+            <dt>移行条件</dt><dd>プロファイルが数万件規模になり、p95 の悪化や多テナント隔離が課題になった場合</dd>
           </dl></div>
         </details>
         <details class="adr-item">
-          <summary>Recommend · 二本立て（座標 / 意味）</summary>
+          <summary>Recommend・二系統（座標 / 意味）</summary>
           <div class="body"><dl>
             <dt>問題</dt><dd>地図は低遅延。相談だけ外部モデル費用が発生する</dd>
-            <dt>選んだこと</dt><dd>端末内距離とサーバ埋め込みを分離。操作のたびに LLM しない</dd>
-            <dt>捨てたもの</dt><dd>操作のたびに生成して名簿を作ること</dd>
-            <dt>移行条件</dt><dd>両系統の一貫性評価と融合が必須になったとき</dd>
+            <dt>選んだこと</dt><dd>端末内距離とサーバー埋め込みを分離。操作のたびにLLMを呼び出さない</dd>
+            <dt>見送ったもの</dt><dd>操作のたびにLLMで候補リストを生成する方式</dd>
+            <dt>移行条件</dt><dd>両系統の一貫性評価と統合が必須になった場合</dd>
           </dl></div>
         </details>
         <details class="adr-item">
@@ -1315,17 +1315,17 @@
           <div class="body"><dl>
             <dt>問題</dt><dd>味覚データの監査可能性</dd>
             <dt>選んだこと</dt><dd>TS catalog → validate:rice → seed:rice。DB は配信用ミラー</dd>
-            <dt>捨てたもの</dt><dd>別言語の常設スクレイパーを一次データにしない</dd>
-            <dt>移行条件</dt><dd>専門家ワークフローが別系統を要求するとき</dd>
+            <dt>見送ったもの</dt><dd>別言語の常設スクレイパーを一次データにしない</dd>
+            <dt>移行条件</dt><dd>専門家による編集ワークフローが別系統を必要とする場合</dd>
           </dl></div>
         </details>
         <details class="adr-item">
           <summary>Commerce · 検索 CTA + 直リンク</summary>
           <div class="body"><dl>
-            <dt>問題</dt><dd>買う出口は必要。在庫・配送は背負わない</dd>
-            <dt>選んだこと</dt><dd>楽天直リンク等。全モール API 必須化は見送る</dd>
-            <dt>捨てたもの</dt><dd>自社在庫 D2C、アフィリエイト収益だけで工数を回収する前提</dd>
-            <dt>移行条件</dt><dd>高 LTV 協力先や軽 B2B パイロットが具体化したとき</dd>
+            <dt>問題</dt><dd>購入導線は必要ですが、在庫管理や配送対応は担いません。</dd>
+            <dt>選んだこと</dt><dd>楽天への直リンク等を採用し、全モールAPI連携の必須化は現段階では見送る</dd>
+            <dt>見送ったもの</dt><dd>自社在庫 D2C、アフィリエイト収益だけで工数を回収する前提</dd>
+            <dt>移行条件</dt><dd>高LTVが見込める協業先や小規模B2Bパイロットが具体化した場合</dd>
           </dl></div>
         </details>
       </div>
@@ -1336,9 +1336,9 @@
   <section id="design" class="room-oled relative" data-room="oled" data-chapter="design">
     <div class="pin-stage" id="swim-stage">
       <div class="max-w-[1100px] mx-auto w-full">
-        <p class="sec-label mb-2">6 · 処理の流れ</p>
-        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">レイヤ別データフロー</h2>
-        <p id="swim-phase" class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。</p>
+        <p class="sec-label mb-2">6・処理の流れ</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">レイヤー別データフロー</h2>
+        <p id="swim-phase" class="text-sm muted-text mb-3 max-w-2xl leading-relaxed">地図は一覧を取得したあと、端末内で順位を付けます。相談のみサーバー側で埋め込みと検索を行います。</p>
         <div class="sheet p-3 sm:p-5">
           <svg id="swimlane-svg" viewBox="0 0 1060 460" class="w-full min-w-[720px]" aria-label="処理の流れ">
             <defs>
@@ -1355,60 +1355,60 @@
             <g text-anchor="end" font-family="Shippori Mincho" fill="#1A1A18">
               <text x="118" y="68" font-size="14">画面</text>
               <text x="118" y="86" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">ブラウザ</text>
-              <text x="118" y="168" font-size="14">サーバ</text>
+              <text x="118" y="168" font-size="14">サーバー</text>
               <text x="118" y="186" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Next.js</text>
               <text x="118" y="268" font-size="14">データベース</text>
               <text x="118" y="286" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Supabase</text>
               <text x="118" y="368" font-size="14">外部モデル</text>
               <text x="118" y="386" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">Gemini / OpenAI</text>
             </g>
-            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">左が入力、右が結果 · 二系統は混ぜない</text>
+            <text class="swim-anno" x="575" y="22" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">左が入力、右が結果・二系統は混在させない</text>
 
             <g class="swim-node" data-phase="ui">
               <rect x="160" y="52" width="108" height="44" rx="22" fill="#FFFEF9" stroke="#1A1A18" stroke-width="1.4"/>
-              <text x="214" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">地図を動かす</text>
-              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">距離で上位四件</text>
+              <text x="214" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">地図を操作する</text>
+              <text x="214" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">距離で上位4件を算出</text>
             </g>
             <g class="swim-node" data-phase="ui">
               <rect x="300" y="52" width="108" height="44" rx="22" fill="#FFFEF9" stroke="#1A1A18" stroke-width="1.4"/>
-              <text x="354" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">相談を送る</text>
-              <text x="354" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">一文を投稿</text>
+              <text x="354" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#1A1A18" font-weight="600">相談内容を送信</text>
+              <text x="354" y="86" text-anchor="middle" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">相談文を投稿</text>
             </g>
             <g class="swim-node" data-phase="result">
               <rect x="860" y="52" width="120" height="44" rx="22" fill="#C45C26"/>
-              <text x="920" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#FFFEF9" font-weight="600">候補を四つ出す</text>
-              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">理由文 ± 案内</text>
+              <text x="920" y="72" text-anchor="middle" font-size="11" font-family="Zen Kaku Gothic New" fill="#FFFEF9" font-weight="600">候補を4件提示</text>
+              <text x="920" y="86" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">理由文・任意の案内文</text>
             </g>
 
             <g class="swim-node" data-phase="api">
               <rect x="300" y="152" width="100" height="44" rx="8" fill="#1A1A18"/>
               <text x="350" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">回数制限</text>
-              <text x="350" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">非常時は止める</text>
+              <text x="350" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">緊急時は停止可能</text>
             </g>
             <g class="swim-node" data-phase="api">
               <rect x="440" y="152" width="110" height="44" rx="8" fill="#1A1A18"/>
-              <text x="495" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">文を数値化</text>
-              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">名指し以外</text>
+              <text x="495" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">相談文をベクトル化</text>
+              <text x="495" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">銘柄名一致がない場合</text>
             </g>
             <g class="swim-node" data-phase="bridge">
               <rect x="600" y="152" width="120" height="44" rx="8" fill="#1A1A18"/>
-              <text x="660" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">相性の整理</text>
-              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">理由文のみ・順位なし</text>
+              <text x="660" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">相性理由の整理</text>
+              <text x="660" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">理由文のみ生成・順位は変更しない</text>
             </g>
             <g class="swim-node" data-phase="bridge">
               <rect x="760" y="152" width="110" height="44" rx="8" fill="#1A1A18"/>
-              <text x="815" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">返事をまとめる</text>
-              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">候補＋案内</text>
+              <text x="815" y="172" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">応答を生成する</text>
+              <text x="815" y="186" text-anchor="middle" font-size="9" fill="#E8A84A" font-family="Zen Kaku Gothic New">候補 + 案内文</text>
             </g>
 
             <g class="swim-node" data-phase="db">
               <rect x="170" y="252" width="120" height="44" rx="8" fill="#5A8F72"/>
               <text x="230" y="272" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">銘柄一覧</text>
-              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F7F4EF" font-family="Zen Kaku Gothic New">catalog · 埋込なし</text>
+              <text x="230" y="286" text-anchor="middle" font-size="9" fill="#F7F4EF" font-family="Zen Kaku Gothic New">catalog・埋め込みなし</text>
             </g>
             <g class="swim-node" data-phase="db">
               <rect x="560" y="252" width="130" height="44" rx="8" fill="#5A8F72"/>
-              <text x="625" y="272" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">近い銘柄を探す</text>
+              <text x="625" y="272" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">類似銘柄を検索</text>
               <text x="625" y="286" text-anchor="middle" font-size="9" fill="#F7F4EF" font-family="Zen Kaku Gothic New">RPC · モデル版必須</text>
             </g>
 
@@ -1420,14 +1420,14 @@
             <g class="swim-node" data-phase="llm">
               <rect x="700" y="352" width="120" height="44" rx="22" fill="#D4A04A"/>
               <text x="760" y="372" text-anchor="middle" font-size="11" fill="#FFFEF9" font-family="Zen Kaku Gothic New" font-weight="600">侍米師の一言</text>
-              <text x="760" y="386" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">書けなくても候補は返す</text>
+              <text x="760" y="386" text-anchor="middle" font-size="9" fill="#F3EDE3" font-family="Zen Kaku Gothic New">生成に失敗しても候補は返す</text>
             </g>
 
             <path class="swim-path" id="path-coord" d="M230 252 V 110 H 214 V 96" fill="none" stroke="#6B6560" stroke-width="1.5" data-dash="5 4" marker-end="url(#ahGray)"/>
             <path class="flow-glow tone-muted" data-glow-for="path-coord" d="M230 252 V 110 H 214 V 96"/>
             <path class="swim-path" id="path-coord2" d="M268 52 V 40 H 860 V 52" fill="none" stroke="#6B6560" stroke-width="1.5" data-dash="5 4" marker-end="url(#ahGray)"/>
             <path class="flow-glow tone-muted" data-glow-for="path-coord2" d="M268 52 V 40 H 860 V 52"/>
-            <text class="swim-anno" x="248" y="236" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">一覧は読む · 順位は端末内</text>
+            <text class="swim-anno" x="248" y="236" font-size="9" fill="#6B6560" font-family="Zen Kaku Gothic New">一覧を取得し、順位は端末内で計算</text>
 
             <path class="swim-path" id="path1" d="M354 96 V 152" fill="none" stroke="#C45C26" stroke-width="2" marker-end="url(#ah)"/>
             <path class="flow-glow tone-ink" data-glow-for="path1" d="M354 96 V 152"/>
@@ -1451,10 +1451,10 @@
             <path class="flow-glow tone-ink" data-glow-for="path-fb" d="M820 374 H 990 V 90 H 980"/>
           </svg>
           <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-muted">
-            <span>灰の点線：地図（一覧読込＋端末内順位）</span>
-            <span>橙の実線：相談</span>
-            <span>金の線：任意の案内文</span>
-            <span>橙の破線：案内失敗でも候補を返す</span>
+            <span>灰色の点線：地図（一覧取得＋端末内順位）</span>
+            <span>橙色の実線：相談</span>
+            <span>金色の線：任意の案内文</span>
+            <span>橙色の破線：案内文の生成に失敗しても候補を返す</span>
           </div>
         </div>
       </div>
@@ -1464,34 +1464,34 @@
   <!-- 10 RANKING · OLED · R-2 -->
   <section id="ranking" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="ranking">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">7 · 推薦設計</p>
+      <p class="sec-label mb-2">7・推薦設計</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">LLM に任せる領域、任せない領域</h2>
-      <p class="text-sm muted-text mb-5 max-w-2xl leading-relaxed">候補は構造化データと検索ロジックで決め、LLM は説明文の生成に限ります。地図は端末内、相談はサーバの埋め込み検索です。</p>
+      <p class="text-sm muted-text mb-5 max-w-2xl leading-relaxed">候補は距離計算と検索で決め、文章はLLMで生成します。地図は端末内計算、相談はサーバー側の埋め込み検索で処理します。</p>
       <div class="sheet-oled p-4 sm:p-5 mb-4 overflow-x-auto">
-        <svg viewBox="0 0 960 220" class="w-full min-w-[680px]" aria-label="双軌と禁令">
+        <svg viewBox="0 0 960 220" class="w-full min-w-[680px]" aria-label="二系統と境界">
           <rect x="24" y="24" width="360" height="172" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
           <text x="204" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">MAP · CLIENT</text>
-          <text x="204" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">地図 · 端末内順位</text>
+          <text x="204" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">地図・端末内順位</text>
           <text x="204" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">1  甘み・粒感の距離</text>
           <text x="204" y="132" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">2  近い順 Top4</text>
           <text x="204" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">3  規則の短い理由文</text>
-          <text x="204" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">LLM 案内なし</text>
+          <text x="204" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">LLMによる案内文なし</text>
 
           <rect x="420" y="70" width="120" height="80" rx="10" fill="rgba(196,92,38,.18)" stroke="#C45C26" stroke-width="1.4"/>
           <text x="480" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#C45C26">BAN</text>
           <text x="480" y="126" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#F2EEE6">LLM ≠</text>
-          <text x="480" y="142" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#F2EEE6">名簿づくり</text>
+          <text x="480" y="142" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="#F2EEE6">候補リスト生成</text>
 
           <rect x="576" y="24" width="360" height="172" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
           <text x="756" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#E8A84A">CONSULT · SERVER</text>
-          <text x="756" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">相談 · 埋め込み検索</text>
-          <text x="756" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">1  名指し or 埋め込み</text>
+          <text x="756" y="76" text-anchor="middle" font-family="Shippori Mincho" font-size="15" fill="#F2EEE6">相談・埋め込み検索</text>
+          <text x="756" y="108" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">1  銘柄名一致、または埋め込み</text>
           <text x="756" y="132" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">2  pgvector（モデル版）</text>
-          <text x="756" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">3  Top4 + 規則理由</text>
-          <text x="756" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">案内文は任意・失敗可</text>
+          <text x="756" y="156" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="12" fill="rgba(232,228,220,.65)">3  Top4 + ルールベースの理由文</text>
+          <text x="756" y="180" text-anchor="middle" font-family="Zen Kaku Gothic New" font-size="11" fill="rgba(232,228,220,.4)">案内文は任意。生成失敗時も継続可能</text>
         </svg>
       </div>
-      <p class="viz-caption">相性整理レイヤーは理由文だけを組み立て、順位は変えません。案内文が失敗しても候補は返します。</p>
+      <p class="viz-caption">相性整理レイヤーは理由文だけを組み立て、順位は変えません。案内文の生成に失敗しても候補は返します。</p>
     </div>
   </section>
 
@@ -1499,10 +1499,10 @@
   <section id="delivery" class="room-washi px-5 sm:px-10 sec-y" data-room="washi" data-chapter="delivery">
     <div class="max-w-6xl mx-auto">
       <div class="gate-pin" id="gate-pin">
-        <p class="sec-label mb-2">8 · 公開ゲート</p>
-        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">本番公開までの四つの手順</h2>
-        <p class="gate-lead">約4週間・一人。1.0.0 から 1.4.1 まで、公開のたびに同じ順を通します。</p>
-        <p id="gate-phase" class="gate-phase">G1 · データ検査 — validate:rice</p>
+        <p class="sec-label mb-2">8・公開ゲート</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">本番公開までの4つの手順</h2>
+        <p class="gate-lead">約4週間の単独開発で、1.0.0 から 1.4.1 まで、公開ごとに同じ手順を通しています。</p>
+        <p id="gate-phase" class="gate-phase">G1・データ検査 — validate:rice</p>
 
         <div class="gate-board" id="gate-stage" aria-label="公開までの手順">
           <div class="gate-spine" id="gate-spine" data-fill="0" style="--fill: 0">
@@ -1516,7 +1516,7 @@
             </div>
             <div class="gate-step" data-gate="2">
               <span class="gate-dot">G3</span>
-              <span class="gate-step-label">手元</span>
+              <span class="gate-step-label">手動</span>
             </div>
             <div class="gate-step" data-gate="3">
               <span class="gate-dot">G4</span>
@@ -1528,34 +1528,34 @@
             <p class="status" id="gate-status"></p>
             <div class="gate-panels">
               <div class="gate-panel is-on" data-gate-panel="0">
-                <p class="g">G1 · データ</p>
+                <p class="g">G1・データ</p>
                 <h3>カタログの整合性を担保する</h3>
-                <p class="body">Git にある銘柄カタログを validate:rice で検査します。必須項目とスコア範囲。件数が足りなければここで止まります。</p>
+                <p class="body">Git上で管理する銘柄の一次データを validate:rice で検査します。必須項目とスコア範囲。件数不足があれば、この段階で停止します。</p>
                 <p class="cmd">npm run validate:rice</p>
               </div>
               <div class="gate-panel" data-gate-panel="1">
-                <p class="g">G2 · 検査</p>
+                <p class="g">G2・検査</p>
                 <h3>main 反映前に自動検査で止める</h3>
-                <p class="body">lint · typecheck · unit · e2e · client-bundle。秘密や肥大化したクライアントも、人が見返す前に弾きます。</p>
+                <p class="body">lint・typecheck・unit・e2e・client-bundle。シークレットの混入やクライアントバンドルの肥大化も、人手レビュー前に検出します。</p>
                 <p class="cmd">CI · lint / type / unit / e2e / client-bundle</p>
               </div>
               <div class="gate-panel" data-gate-panel="2">
-                <p class="g">G3 · 手元</p>
+                <p class="g">G3・手動</p>
                 <h3>本番反映後に手動確認し、実施日を記録する</h3>
-                <p class="body">地図 · Top4 · 買う出口。自動化の穴を人が埋め、smoke-test の記録に日付を残します。</p>
+                <p class="body">地図・Top4・購入導線。自動化で拾いきれない箇所を手動で確認し、smoke-test の記録に日付を残します。</p>
                 <p class="cmd">smoke-test 記録</p>
               </div>
               <div class="gate-panel" data-gate-panel="3">
-                <p class="g">G4 · 公開</p>
+                <p class="g">G4・公開</p>
                 <h3>同一コミットでバージョンを更新してリリースする</h3>
-                <p class="body">VERSION · package.json · changelog を同一コミットに揃えます。origin/main が Vercel Production になります。</p>
+                <p class="body">VERSION・package.json・changelog を同一コミットで更新します。origin/main への反映が Vercel Production へのデプロイにつながります。</p>
                 <p class="cmd">git push origin HEAD</p>
               </div>
             </div>
           </article>
         </div>
 
-        <p class="gate-note">埋め込みと照合 RPC は一般公開しません。相談 API には日次上限と緊急停止があります。本番のあとに smoke-test へ日付を残し、測っていない数字は成果に書きません。</p>
+        <p class="gate-note">埋め込みと照合 RPC は一般公開しません。相談 API には日次上限と緊急停止があります。本番のあとに smoke-test へ日付を残し、未計測の数値は成果として記載しません。</p>
       </div>
     </div>
   </section>
@@ -1563,9 +1563,9 @@
   <!-- 12 DELIVERY FACTS · OLED -->
   <section id="returns" class="room-oled px-5 sm:px-10 sec-y relative" data-room="oled" data-chapter="returns">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">9 · 4週間で本番化した範囲</p>
-      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">何を使い、どこまで出したか</h2>
-      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">スタックと、出した版の規模です。</p>
+      <p class="sec-label mb-2">9・4週間で本番化した範囲</p>
+      <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium ink-text">利用技術と公開済み範囲</h2>
+      <p class="text-sm muted-text mb-6 max-w-2xl leading-relaxed">利用技術と、公開済みバージョンの範囲を整理します。</p>
       <div class="grid md:grid-cols-3 gap-4 mb-5" id="fact-cards">
         <article class="sheet-oled p-4 sm:p-5 fact-card relative overflow-hidden">
           <span class="fact-sheen" aria-hidden="true"></span>
@@ -1582,59 +1582,59 @@
           <span class="fact-sheen" aria-hidden="true"></span>
           <p class="sec-label mb-2" style="color:#E8A84A">TEMPO</p>
           <ul class="m-0 p-0 list-none space-y-2 text-sm" style="color:rgba(232,228,220,.78)">
-            <li>着手〜現在：約4週間（2026-08中旬〜09-11）</li>
-            <li>体制：一人</li>
-            <li>1.0.0 本番公開のあと、1.1〜1.4.1 を連続リリース</li>
-            <li>1.x の Release コミット：13</li>
-            <li>リポジトリ commits：約99</li>
+            <li>着手〜現在：約4週間（2026年8月中旬〜9月11日）</li>
+            <li>体制：単独開発</li>
+            <li>1.0.0 本番公開後、1.1〜1.4.1 まで継続的にリリース</li>
+            <li>1.x のリリースコミット：13</li>
+            <li>リポジトリのコミット数：約99</li>
           </ul>
         </article>
         <article class="sheet-oled p-4 sm:p-5 fact-card relative overflow-hidden">
           <span class="fact-sheen" aria-hidden="true"></span>
           <p class="sec-label mb-2" style="color:#E8A84A">SHIPPED</p>
           <ul class="m-0 p-0 list-none space-y-2 text-sm" style="color:rgba(232,228,220,.78)">
-            <li>銘柄カタログ 106 · 味わい地図 · 相談</li>
-            <li>事典（claims + 公式 URL · 16 sources）</li>
+            <li>銘柄カタログ 106・味わい地図・相談</li>
+            <li>事典（claims + 公式 URL・16 sources）</li>
             <li>料理別 /pair 約10ページ</li>
             <li>JSON-LD / OG / パンくず（1.1）</li>
-            <li>買う出口（楽天直リンク等）+ 開示</li>
+            <li>購入導線（楽天直リンク等）+ 開示</li>
           </ul>
         </article>
       </div>
-      <p class="amber-note max-w-3xl">アフィリエイトは購入導線として残しています。ただし、米の客単価を前提にすると、アフィリエイト報酬だけで開発工数を回収する設計にはしていません。在庫・発送・問い合わせ対応も現段階では担いません。</p>
+      <p class="amber-note max-w-3xl">アフィリエイトは購入導線として残しています。ただし、米の客単価を前提にすると、アフィリエイト報酬だけで開発工数を回収する設計にはしていません。在庫管理や発送業務も担いません。</p>
     </div>
   </section>
 
   <!-- 13 THREAT · washi · T-2 -->
   <section id="threat" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="threat">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">10 · 切り分け</p>
+      <p class="sec-label mb-2">10・製品UIと説明資料の分離</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">製品 UI と説明資料を分離する</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">利用者向けの画面と、技術・版の説明は別物です。混ぜるとどちらも読みにくくなります。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">利用者向けの画面と、技術・バージョン更新の説明は別物です。混在させると、どちらも読みにくくなります。</p>
       <div class="device-pair mb-4">
         <div class="device-frame product">
           <div class="bezel">
             <p class="tag">komesomme.jp</p>
             <h3>製品 UI</h3>
-            <p>今夜の一膳、味わい、事典、お店で探す。実装の説明や事業の話は出しません。</p>
+            <p>今夜の一膳、味わい、事典、お店で探す。実装説明や事業上の検討事項は掲載しません。</p>
           </div>
         </div>
         <div class="device-frame case">
           <div class="bezel">
             <p class="tag">説明資料</p>
-            <h3>サイト外</h3>
-            <p>技術の選び方、データの置き場、版の積み上げ。製品のメタデータとは分けています。</p>
+            <h3>ケーススタディ</h3>
+            <p>技術選定、データ管理方法、バージョン更新の履歴。製品UIとは切り分けています。</p>
           </div>
         </div>
       </div>
-      <p class="paper-note max-w-2xl">公開側のリスク（相談 API 乱用、プロンプト注入、RLS ミス、費用暴走）は、候補決定を LLM に渡さない設計とレート制限・緊急停止で抑えます。残る穴は監視と権限テストの継続です。</p>
+      <p class="paper-note max-w-2xl">公開側のリスク（相談 API 乱用、プロンプト注入、RLS ミス、コストの急増）は、候補決定を LLM に渡さない設計とレート制限・緊急停止で抑えます。残るリスクは監視と権限テストの継続です。</p>
     </div>
   </section>
 
   <!-- 14 VALIDATE · washi · V-2 -->
   <section id="validate" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="validate">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">11 · 検証</p>
+      <p class="sec-label mb-2">11・検証</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">確かめたこと / まだ測っていないこと</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">利用実績は誇張せず、工程上の確認結果とユーザー利用の観測値を分けて整理します。</p>
       <div class="ev-split">
@@ -1642,38 +1642,38 @@
           <h3>確かめたこと</h3>
           <div class="ev-row">
             <p class="ev-title">公開判定</p>
-            <p class="ev-proof">checklist · smoke（地図・Top4・購入リンク）</p>
+            <p class="ev-proof">checklist・smoke（地図・Top4・購入リンク）</p>
           </div>
           <div class="ev-row">
             <p class="ev-title">カタログ</p>
-            <p class="ev-proof">validate:rice · 現在 106 銘柄 · 百科 99 verified / 7 partial · 16 sources</p>
+            <p class="ev-proof">validate:rice・現在106銘柄・百科 99 verified / 7 partial・16 sources</p>
           </div>
           <div class="ev-row">
-            <p class="ev-title">推薦粒度</p>
-            <p class="ev-proof">座標も相談も Top4。案内失敗時も候補を返す</p>
+            <p class="ev-title">推薦単位</p>
+            <p class="ev-proof">座標計算・相談検索ともにTop4を返す。案内文の生成失敗時も候補を返す</p>
           </div>
           <div class="ev-row">
-            <p class="ev-title">権限まわり</p>
-            <p class="ev-proof">RLS · embedding 非公開 · RPC にモデル名必須</p>
+            <p class="ev-title">権限管理</p>
+            <p class="ev-proof">RLS・embedding 非公開・RPC にモデル名必須</p>
           </div>
           <div class="ev-row">
             <p class="ev-title">Phase 1 / Wave 2A</p>
-            <p class="ev-proof">検索基盤完了。pair は約10ページ公開中</p>
+            <p class="ev-proof">検索基盤は完了。/pair ページは約10ページ公開中</p>
           </div>
         </div>
         <div class="ev-panel pending">
           <h3>まだ測っていないこと</h3>
           <div class="ev-row">
             <p class="ev-title">転換・再訪</p>
-            <p class="ev-proof">訪問数、CTA 率、再訪率の公開値なし</p>
+            <p class="ev-proof">訪問数、CTA率、再訪率として公開できる数値はまだありません</p>
           </div>
           <div class="ev-row">
             <p class="ev-title">計測運用</p>
-            <p class="ev-proof">GA4 / access_events の週次運用は未到達</p>
+            <p class="ev-proof">GA4 / access_events の週次運用は未実施</p>
           </div>
           <div class="ev-row">
-            <p class="ev-title">アフィリエイト突合</p>
-            <p class="ev-proof">shop_click と管理画面成果の突合は未完。まだ主指標にしていない</p>
+            <p class="ev-title">アフィリエイト成果の突合</p>
+            <p class="ev-proof">shop_click と管理画面上の成果データの突合は未完了。まだ主指標にしていない</p>
           </div>
           <div class="ev-row">
             <p class="ev-title">銘柄単位と商品単位</p>
@@ -1688,9 +1688,9 @@
   <section id="roadmap" class="room-washi relative" data-room="washi" data-chapter="roadmap">
     <div class="pin-stage" id="road-stage">
       <div class="max-w-6xl mx-auto w-full">
-        <p class="sec-label mb-2">12 · ロードマップ</p>
-        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">いま注力する領域と、まだ約束しない領域</h2>
-        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">1.0 公開から Phase 2 / 1.4.x まで進み、再訪と軽 B2B は次段。他カテゴリは米の検証後に判断します。</p>
+        <p class="sec-label mb-2">12・フェーズの現在地</p>
+        <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">現在注力する領域と、まだ確約しない領域</h2>
+        <p id="road-phase" class="text-sm text-muted mb-3 max-w-2xl leading-relaxed">1.0 公開後、現在は Phase 2 / 1.4.x にあります。再訪導線、小規模B2B、他カテゴリ展開は今後の検討領域です。</p>
         <div class="sheet p-3 sm:p-6 overflow-x-auto">
           <svg id="road-svg" viewBox="0 0 1000 560" class="w-full min-w-[720px]" aria-label="これからの道">
             <defs>
@@ -1719,7 +1719,7 @@
               <line x1="140" y1="380" x2="140" y2="408" stroke="#C45C26" stroke-width="1.25" stroke-dasharray="3 3"/>
               <rect x="50" y="410" width="180" height="56" rx="10" fill="#FFFEF9" stroke="rgba(196,92,38,.35)"/>
               <text x="140" y="434" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">公開判定</text>
-              <text x="140" y="452" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">地図・相談・事典・出口</text>
+              <text x="140" y="452" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">地図・相談・事典・購入導線</text>
             </g>
 
             <!-- DONE Phase1 -->
@@ -1730,7 +1730,7 @@
               <text x="280" y="246" text-anchor="middle" font-size="14" font-family="Shippori Mincho" fill="#1A1A18">Phase 1</text>
               <line x1="280" y1="330" x2="280" y2="360" stroke="#C45C26" stroke-width="1.15" stroke-dasharray="3 3"/>
               <rect x="195" y="362" width="170" height="40" rx="8" fill="#FFFEF9" stroke="rgba(196,92,38,.3)"/>
-              <text x="280" y="388" text-anchor="middle" font-size="11" fill="#5C4030" font-family="Zen Kaku Gothic New">検索基盤 · 1.1.x</text>
+              <text x="280" y="388" text-anchor="middle" font-size="11" fill="#5C4030" font-family="Zen Kaku Gothic New">検索基盤・1.1.x</text>
             </g>
 
             <!-- NOW Phase2 -->
@@ -1742,7 +1742,7 @@
               <line x1="470" y1="250" x2="470" y2="300" stroke="#E8A84A" stroke-width="1.25" stroke-dasharray="3 3"/>
               <rect x="360" y="304" width="220" height="88" rx="10" fill="#FFFEF9" stroke="rgba(232,168,74,.5)"/>
               <text x="470" y="328" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">見つかる → 比べる → 買う</text>
-              <text x="470" y="348" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">Wave 2A · pair 約10ページ</text>
+              <text x="470" y="348" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">Wave 2A・/pair 約10ページ公開中</text>
               <text x="470" y="366" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">2B / 2C 継続</text>
               <text x="470" y="382" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">一次データで着地を支える</text>
             </g>
@@ -1755,20 +1755,20 @@
               <circle cx="680" cy="140" r="9" fill="#FFFEF9"/>
               <line x1="680" y1="160" x2="680" y2="230" stroke="#5A8F72" stroke-width="1.25" stroke-dasharray="3 3"/>
               <rect x="575" y="234" width="210" height="72" rx="10" fill="#FFFEF9" stroke="rgba(90,143,114,.5)"/>
-              <text x="680" y="258" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">シェア / 自前チャネル</text>
-              <text x="680" y="278" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">共有 URL · OG · LINE</text>
-              <text x="680" y="294" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">ループが閉じてから次を語る</text>
+              <text x="680" y="258" text-anchor="middle" font-size="12" fill="#1A1A18" font-family="Zen Kaku Gothic New">共有・自前チャネル</text>
+              <text x="680" y="278" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">共有 URL・OG・LINE</text>
+              <text x="680" y="294" text-anchor="middle" font-size="10" fill="#6B6560" font-family="Zen Kaku Gothic New">再訪ループを確認したうえで次を判断</text>
             </g>
 
-            <!-- dashed light B2B · 読みやすく・未着手であることは破線で示す -->
+            <!-- 小規模B2B：未着手であることを破線で示す -->
             <g class="road-pin" id="road-pin-b2b">
               <text x="820" y="52" text-anchor="middle" font-size="11" font-family="IBM Plex Mono" fill="#5C5048" font-weight="600">OPTIONAL</text>
               <path d="M820 100 C820 82 834 72 820 58 C806 72 820 82 820 100 Z" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.5" stroke-dasharray="3 2"/>
               <circle cx="820" cy="82" r="7" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.5" stroke-dasharray="2 2"/>
               <line x1="820" y1="100" x2="820" y2="148" stroke="#5C5048" stroke-width="1.2" stroke-dasharray="3 3"/>
               <rect x="725" y="150" width="190" height="62" rx="10" fill="#FFFEF9" stroke="#5C5048" stroke-width="1.35" stroke-dasharray="5 3"/>
-              <text x="820" y="176" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#1A1A18">軽 B2B（未着手）</text>
-              <text x="820" y="196" text-anchor="middle" font-size="11" fill="#3D3832" font-family="Zen Kaku Gothic New">診断の埋め込みは後で検討</text>
+              <text x="820" y="176" text-anchor="middle" font-size="13" font-family="Shippori Mincho" fill="#1A1A18">小規模B2B（未着手）</text>
+              <text x="820" y="196" text-anchor="middle" font-size="11" fill="#3D3832" font-family="Zen Kaku Gothic New">診断機能の埋め込みは今後検討</text>
             </g>
 
             <!-- 構想 -->
@@ -1784,7 +1784,7 @@
 
             <circle id="road-traveler" r="6" fill="#C45C26" stroke="#FFFEF9" stroke-width="2" opacity="0"/>
           </svg>
-          <p class="viz-caption mt-3 mb-0" style="max-width:none">塗りつぶしは着手済みか進行中。破線の枠はまだ約束していない項目です（軽 B2B と品目の横展開）。</p>
+          <p class="viz-caption mt-3 mb-0" style="max-width:none">塗りつぶしは着手済みまたは進行中の項目です。破線の枠は、現時点では確約していない検討領域を示します。</p>
         </div>
       </div>
     </div>
@@ -1793,15 +1793,15 @@
   <section class="room-washi px-5 sm:px-10 pb-[var(--sec-y)]" data-room="washi">
     <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-4">
       <article class="sheet p-4">
-        <p class="sec-label mb-2">Phase 2 · いま</p>
-        <p class="text-sm text-muted leading-relaxed m-0">料理から見つかる入口を厚くする。/pair 約10ページ。比較と買う出口を続けて足す。</p>
+        <p class="sec-label mb-2">Phase 2・現在</p>
+        <p class="text-sm text-muted leading-relaxed m-0">料理から見つけられる導線を強化する。/pair 約10ページ。比較機能と購入導線を継続的に拡充する。</p>
       </article>
       <article class="sheet p-4">
-        <p class="sec-label mb-2">Phase 3 · 次</p>
-        <p class="text-sm text-muted leading-relaxed m-0">診断結果の共有や LINE など、また来てもらう導線。横展開の前にここを見る。</p>
+        <p class="sec-label mb-2">Phase 3・次</p>
+        <p class="text-sm text-muted leading-relaxed m-0">診断結果の共有や LINE など、再訪を促す導線。横展開の前に、この領域を検証する。</p>
       </article>
       <article class="sheet p-4" style="border-style:dashed;opacity:.95">
-        <p class="sec-label mb-2">あとで検討</p>
+        <p class="sec-label mb-2">今後検討</p>
         <p class="text-sm text-muted leading-relaxed m-0">店や食堂向けの診断埋め込みなど。他カテゴリへの横展開は、米で再訪・転換・運用負荷を検証したあとに判断します。</p>
       </article>
     </div>
@@ -1810,7 +1810,7 @@
   <!-- 15b LEARNINGS -->
   <section id="learnings" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="learnings">
     <div class="max-w-6xl mx-auto">
-      <p class="sec-label mb-2">13 · 学び</p>
+      <p class="sec-label mb-2">13・学び</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">この PJ から再利用できる方針</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">事実の羅列ではなく、次の案件でも使える判断です。</p>
       <div class="grid md:grid-cols-2 gap-4">
@@ -1822,7 +1822,7 @@
         <article class="sheet p-4 sm:p-5">
           <p class="sec-label mb-2">02</p>
           <h3 class="font-display text-base mb-2 font-medium">一次データは Git、DB は配信</h3>
-          <p class="text-sm text-muted leading-relaxed m-0">差分レビュー、検査、seed を通して品質を保つ。DB 直編集を正としない。</p>
+          <p class="text-sm text-muted leading-relaxed m-0">差分レビュー、検査、seed を通して品質を保つ。DB 直編集をマスターとしない。</p>
         </article>
         <article class="sheet p-4 sm:p-5">
           <p class="sec-label mb-2">03</p>
@@ -1843,21 +1843,21 @@
     <div class="max-w-6xl mx-auto">
       <p class="sec-label mb-2">まとめ</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">要点</h2>
-      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">何を選んで何を捨てたかと、本番に載せたバージョンの積み上げです。</p>
+      <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">何を採用し、何を見送ったか、そして本番公開後にどのように改善を積み上げたかを整理します。</p>
       <div class="takeaways">
         <article class="take-card">
           <p class="n">01</p>
-          <h3>候補の順番はカタログと検索</h3>
-          <p>Top4 は距離か埋め込み検索が決める。LLM は説明文に限る。</p>
+          <h3>候補の順位はカタログと検索で決める</h3>
+          <p>LLMは案内文の生成に限定し、Top4は距離計算または埋め込み検索で決定します。</p>
         </article>
         <article class="take-card">
           <p class="n">02</p>
-          <h3>一次データは Git、公開は手順どおり</h3>
-          <p>validate → CI → smoke → Production。DB は配信用のミラー。</p>
+          <h3>一次データはGitで管理し、公開は手順化する</h3>
+          <p>validate → CI → smoke → Production。DBは配信用のミラーとして扱います。</p>
         </article>
         <article class="take-card">
           <p class="n">03</p>
-          <h3>約4週間・単独・1.0→1.4.1</h3>
+          <h3>約4週間・単独開発・1.0→1.4.1</h3>
           <p>Next.js 15 / Supabase / Vercel。公開後も 1.x を13回リリース。</p>
         </article>
       </div>
@@ -1873,8 +1873,8 @@
 
   <footer class="room-washi px-5 sm:px-10 pb-12" data-room="washi">
     <div class="max-w-6xl mx-auto border-t border-ink/10 pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-muted">
-      <p>KomeSomme <span data-cs-version></span> · 設計判断と運用知見</p>
-      <p>説明用 HTML · 製品画面には載せない</p>
+      <p>KomeSomme <span data-cs-version></span>・設計判断と運用知見</p>
+      <p>説明用HTML・製品画面には掲載しない内容</p>
     </div>
   </footer>
 
@@ -2400,7 +2400,7 @@
         onLeaveBack: () => {
           setArmed(false);
           if (phaseEl) {
-            phaseEl.textContent = '地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。';
+            phaseEl.textContent = '地図は一覧を取得したあと、端末内で順位を付けます。相談のみサーバー側で埋め込みと検索を行います。';
           }
         },
         onUpdate: (self) => {
@@ -2409,16 +2409,16 @@
           setArmed(armed);
           if (!phaseEl) return;
           if (!armed) {
-            phaseEl.textContent = '地図は一覧を読んだあと端末内で順位を付けます。相談だけサーバで埋め込みと検索を行います。';
+            phaseEl.textContent = '地図は一覧を取得したあと、端末内で順位を付けます。相談のみサーバー側で埋め込みと検索を行います。';
             return;
           }
           const r = (p - INTRO) / (1 - INTRO);
           if (r < 0.12) phaseEl.textContent = '画面層：地図操作と相談の入口';
-          else if (r < 0.28) phaseEl.textContent = '地図経路：一覧を読み、順位は端末内';
-          else if (r < 0.48) phaseEl.textContent = '相談経路：制限のあと、銘柄名ヒットまたは埋め込み';
+          else if (r < 0.28) phaseEl.textContent = '地図経路：一覧を取得し、順位は端末内';
+          else if (r < 0.48) phaseEl.textContent = '相談経路：制限のあと、銘柄名一致または埋め込み';
           else if (r < 0.68) phaseEl.textContent = '類似検索のあと、規則で理由文だけを付ける';
-          else if (r < 0.86) phaseEl.textContent = '案内文は任意。失敗しても候補は返します';
-          else phaseEl.textContent = '案内失敗時も候補は返します';
+          else if (r < 0.86) phaseEl.textContent = '案内文は任意。生成失敗時も継続可能';
+          else phaseEl.textContent = '案内文の生成に失敗しても候補は返します';
         },
       }),
     });
@@ -2428,7 +2428,7 @@
     const llmEmbed = nodes.llm[0] ? [nodes.llm[0]] : [];
     const llmNote = nodes.llm[1] ? [nodes.llm[1]] : [];
 
-    // 0–INTRO: 初期は静止し、その後にノードと線を描画
+    // 0–INTRO: 初期状態では静止し、その後にノードと線を描画する
     tl.to({}, { duration: INTRO }, 0);
     tl.to(nodes.ui, { opacity: 1, duration: 0.08, stagger: 0.02 }, INTRO)
       .to(dbCatalog, { opacity: 1, duration: 0.06 }, INTRO + 0.08)
@@ -2513,10 +2513,10 @@
     if (!pinRoot || !focus || !panels.length) return;
 
     const phases = [
-      'G1 · データ検査 — validate:rice',
-      'G2 · 自動検査 — CI 一式',
-      'G3 · 手元確認 — smoke-test',
-      'G4 · 公開 — origin/main → Vercel',
+      'G1・データ検査 — validate:rice',
+      'G2・自動検査 — CI 一式',
+      'G3・手動確認 — smoke-test',
+      'G4・公開 — origin/main → Vercel',
     ];
 
     let lastIdx = -1;
@@ -2653,7 +2653,7 @@
           const p = self.progress;
           const intro = CFG.intro;
           if (p < intro) {
-            phaseEl.textContent = '1.0 公開から Phase 2 / 1.4.x まで進み、再訪と軽 B2B は次段。他カテゴリは米の検証後に判断します。';
+            phaseEl.textContent = '1.0 公開後、現在は Phase 2 / 1.4.x にあります。再訪導線、小規模B2B、他カテゴリ展開は今後の検討領域です。';
             return;
           }
           const r = (p - intro) / (1 - intro);
@@ -2661,8 +2661,8 @@
           else if (r < 0.32) phaseEl.textContent = 'DONE · Phase 1 / 1.1.x 検索基盤';
           else if (r < 0.52) phaseEl.textContent = 'NOW · Phase 2 / 1.4.x · Wave 2A pair';
           else if (r < 0.7) phaseEl.textContent = 'NEXT · Phase 3 再訪';
-          else if (r < 0.85) phaseEl.textContent = 'OPTIONAL · 軽 B2B（虚線）';
-          else phaseEl.textContent = '構想 · 他カテゴリは米の検証後に判断';
+          else if (r < 0.85) phaseEl.textContent = 'OPTIONAL · 小規模B2B（破線）';
+          else phaseEl.textContent = '構想・他カテゴリは米の検証後に判断';
         },
       }),
     });
@@ -2692,7 +2692,7 @@
   function initFlowReveals() {
     if (reduce || !window.gsap || !window.ScrollTrigger) return;
 
-    // pin / 図版章では opacity scrub を避け、入場の跳ねを防ぐ
+    // pin章・図版章では opacity scrub を避け、入場時の跳ねを防ぐ
     const skip = new Set(['design', 'concept', 'roadmap', 'delivery', 'ranking', 'lifecycle', 'assets', 'returns']);
     gsap.utils.toArray('.flow-block').forEach((el) => {
       if (el.id && skip.has(el.id)) return;

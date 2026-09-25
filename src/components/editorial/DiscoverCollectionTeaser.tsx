@@ -33,7 +33,7 @@ export function DiscoverCollectionTeaser({
           </p>
         </div>
         <Link
-          href="/collections"
+          href="/discover#collections"
           className={`shrink-0 text-[12px] text-[var(--km-brown)] hover:text-[var(--km-gold)] ${FOCUS}`}
         >
           一覧へ
