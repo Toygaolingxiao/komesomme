@@ -3,6 +3,10 @@
  * Keep www → apex, trailing-slash aliases, and legacy /{id} as a single hop
  * to the canonical path. Do not import the rice catalog here — next.config
  * cannot resolve `@/` aliases.
+ *
+ * Note: with `trailingSlash: false`, Next may strip `/path/` → `/path` before
+ * matching sources that end in `/`. `src/middleware.ts` collapses those
+ * aliases first so Google sees one 308 hop.
  */
 
 export type SeoRedirect = {

@@ -75,6 +75,7 @@
 
 | 日付         | URL                                          | 結果                  | メモ                                                                        |
 | ---------- | -------------------------------------------- | ------------------- | ------------------------------------------------------------------------- |
+| 2026-09-30 | [https://komesomme.jp](https://komesomme.jp) | 要確認（GSC リダイレクト） | `/collections` → `/discover` は 308×1。`/collections/`・`/{id}/` は middleware で 1 ホップ化（1.4.3）。www は Vercel 307 のまま → CF で 301 が必要。GSC 前回クロール 09-07 は修正前 |
 | 2026-09-11 | [https://komesomme.jp](https://komesomme.jp) | OK（E `/pair/curry`） | 1.4.0 本番。並び根拠にフィールド名なし、比較表・向かない欄あり。百科 registry 拡充は後続 1.4.1 |
 | 2026-09-07 | [https://komesomme.jp](https://komesomme.jp) | OK（A〜F） | 0.16.1。E: ヘッダ SAMEORIGIN/nosniff、HTML に service_role 無し、sitemap 116 URL、robots が sitemap を指す。F は人手 OK |
 | 2026-08-30 | [https://komesomme.jp](https://komesomme.jp) | OK（ドメイン・301・GSC 登録） | `.com` / `sommeatlas.com` は CF 301→`.jp` |

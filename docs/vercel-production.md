@@ -114,10 +114,10 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 **www:** apex（`https://komesomme.jp`）が正本。`www.komesomme.jp` は **308/301 で apex へ**。Vercel 既定の www 転送が **307** だと Google が「一時リダイレクト」とみなし、GSC のリダイレクトエラーが残る。
 
-- アプリ側: `next.config` の host 条件で www → apex を 308（`src/lib/seo/legacyRedirects.ts`）
+- アプリ側: `next.config` + `src/middleware.ts` で www → apex を 308。末尾 `/` の旧 URL（`/collections/`・`/{id}/`）も正本へ 1 ホップ
 - **Cloudflare**（`.jp` が橙雲ならここが先に効く）: Bulk Redirect または Page Rule  
   `https://www.komesomme.jp/*` → `https://komesomme.jp/$1`、**301 Permanent**
-- Vercel Domains: www を追加済みなら「Redirect to `komesomme.jp`」。307 のままなら CF 側の 301 で上書きする
+- Vercel Domains: www を追加済みなら「Redirect to `komesomme.jp`」。平台が **307** を返す場合、アプリの middleware より先に効くので **必ず CF 301** で上書きする
 - `www.komesomme.com` は DNS が無い。使うなら CNAME を足して `.jp` へ 301。使わないなら放置でよい
 
 ### 5.2 接続確認（2026-08-30 実測）
@@ -171,6 +171,8 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 | --- | --- | --- |
 | **リダイレクトエラー** | チェーンが長い、307、到達先が 4xx、ループ | コードで 1 ホップの 308 に揃える。www の 307 は上の CF 301 |
 | **ページにリダイレクトがあります** | その URL はリダイレクト先が正本 | **消さない。** 旧 `/{id}`、`/collections`、www、末尾 `/` は意図した 308 |
+
+**`/collections` について（GSC 2026-09）:** 正本は `/discover`。apex の `https://komesomme.jp/collections` は **308 → `/discover` の 1 ホップ**が正しい。サイトマップには載せない。検証開始後も「リダイレクトエラー」に残ることがあるが、前回クロールが修正前（例: 2026-09-07）なら再クロール待ち。URL 検査で最終 URL が `https://komesomme.jp/discover` の 200 なら完了。消えて「ページにリダイレクトがあります」に移るのも正常。
 
 サイトマップと canonical は apex・末尾スラッシュなし。旧 URL を 200 に戻すと評価が割れる。
 
