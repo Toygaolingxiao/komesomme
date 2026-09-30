@@ -110,9 +110,9 @@ function RunnerUpList({
           return (
             <motion.li
               key={match.rice.id}
-              initial={reduceMotion ? false : { opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.23, 1, 0.32, 1] }}
             >
               <button
                 type="button"
@@ -192,6 +192,11 @@ export function RecommendationRail({
 }) {
   const primary = matches[0] ?? null;
   const runnerUps = matches.slice(1);
+  const signature = `${mode}:${matches.map((match) => match.rice.id).join(",")}`;
+  const fade = {
+    duration: reduceMotion ? 0 : 0.22,
+    ease: [0.23, 1, 0.32, 1] as const,
+  };
 
   const open = (id: string) => {
     track("recommendation_detail_click", { id });
@@ -210,13 +215,20 @@ export function RecommendationRail({
             該当する銘柄が見つかりませんでした。
           </p>
         ) : (
-          <AnimatePresence initial={false}>
-            <motion.div
-              key={`${mode}-${primary?.rice.id ?? "empty"}`}
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.18 }}
-            >
+          <div className="grid">
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={signature}
+                className="col-start-1 row-start-1"
+                initial={reduceMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 0, pointerEvents: "none" }
+                }
+                transition={fade}
+              >
               {primary ? (
                 <>
                   <BestMatchCard
@@ -240,8 +252,9 @@ export function RecommendationRail({
                   ) : null}
                 </>
               ) : null}
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         )}
       </div>
       {!loading && !pending && primary ? (

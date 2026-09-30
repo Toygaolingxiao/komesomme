@@ -29,12 +29,20 @@
   }
 }
 
+.km-grain-mark {
+  transition: filter 220ms var(--km-ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sommelier-curtain-panel,
   .pair-stage-enter {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .km-grain-mark {
+    transition: none;
   }
 }
 

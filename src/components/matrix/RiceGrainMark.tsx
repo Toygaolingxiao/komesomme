@@ -1,5 +1,7 @@
 "use client";
 
+import "@/components/home/sommelier-motion.css";
+
 export type GrainEmphasis = "rest" | "runner" | "featured";
 
 function safeId(raw: string) {
@@ -32,10 +34,10 @@ export function RiceGrainMark({
   const runner = emphasis === "runner";
 
   const glow = featured
-    ? "drop-shadow(0 0 10px rgba(229,107,63,0.55)) drop-shadow(0 1px 3px rgba(229,107,63,0.35))"
+    ? "drop-shadow(0 0 7px rgba(196,140,72,0.42)) drop-shadow(0 1px 2px rgba(168,110,28,0.2))"
     : runner
-      ? "drop-shadow(0 0 7px rgba(212,154,42,0.48)) drop-shadow(0 1px 2px rgba(168,110,28,0.28))"
-      : "drop-shadow(0 1px 1px rgba(112,69,34,0.12))";
+      ? "drop-shadow(0 0 5px rgba(212,164,90,0.36)) drop-shadow(0 1px 1px rgba(168,110,28,0.16))"
+      : "drop-shadow(0 1px 1px rgba(112,69,34,0.1))";
 
   return (
     <svg
@@ -44,6 +46,7 @@ export function RiceGrainMark({
       height={height}
       viewBox="0 0 40 22"
       className={className}
+      className={`km-grain-mark ${className}`}
       style={{
         transform: `rotate(${tilt}deg)`,
         overflow: "visible",
@@ -66,7 +69,14 @@ export function RiceGrainMark({
         stroke="rgba(112,69,34,0.14)"
         strokeWidth="0.5"
       />
-      <ellipse cx="16.5" cy="8.2" rx="7.4" ry="3" fill="#fffef9" opacity="0.38" />
+      <ellipse
+        cx="16.5"
+        cy="8.2"
+        rx="7.4"
+        ry="3"
+        fill="#fff6e4"
+        opacity={featured ? 0.62 : runner ? 0.48 : 0.34}
+      />
     </svg>
   );
 }

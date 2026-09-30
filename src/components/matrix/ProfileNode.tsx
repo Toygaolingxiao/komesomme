@@ -92,7 +92,15 @@ export function ProfileNode({
   const top = 100 - valueToPosition(rice.display_y, INSET);
   const fill = mapGrainFill(regionColor(rice.region_id ?? rice.region));
   const tags = pairTasteTags(rice);
-  const restOpacity = dimmed ? 0.34 : muted ? 0.5 : 0.88;
+  const restOpacity = dimmed ? 0.3 : muted ? 0.5 : 0.88;
+  const grainEase = [0.23, 1, 0.32, 1] as const;
+  const grainScale = reduceMotion
+    ? 1
+    : featured
+      ? 1.06
+      : isRunnerUp
+        ? 1.03
+        : 1;
 
   return (
     <motion.button
@@ -105,15 +113,11 @@ export function ProfileNode({
       onBlur={() => onHover?.(null)}
       aria-label={`${rice.name}、${rice.prefecture}、味わいを見る`}
       aria-current={isSelected || isBestMatch ? "true" : undefined}
-      initial={reduceMotion ? false : { opacity: 0, scale: 0.72 }}
-      animate={{
-        opacity: connected ? 1 : restOpacity,
-        scale: isHighlighted && !featured ? 1.04 : 1,
-      }}
-      whileHover={muted || dimmed || touchFriendly ? undefined : { scale: 1.05 }}
+      initial={reduceMotion ? false : { opacity: 0 }}
+      animate={{ opacity: connected ? 1 : restOpacity }}
       transition={{
-        duration: reduceMotion ? 0 : 0.18,
-        ease: [0.22, 1, 0.36, 1],
+        duration: reduceMotion ? 0 : 0.22,
+        ease: grainEase,
       }}
       style={{
         left: `${left}%`,
@@ -130,7 +134,15 @@ export function ProfileNode({
       }}
       className={`group absolute -translate-x-1/2 -translate-y-1/2 ${FOCUS}`}
     >
-      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <motion.span
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        initial={false}
+        animate={{ scale: grainScale }}
+        transition={{
+          duration: reduceMotion ? 0 : 0.22,
+          ease: grainEase,
+        }}
+      >
         <RiceGrainMark
           markId={rice.id}
           fill={fill}
@@ -139,7 +151,7 @@ export function ProfileNode({
           tilt={pose.tilt}
           emphasis={emphasis}
         />
-      </span>
+      </motion.span>
 
       {tooltipOpen && !muted ? (
         <span
