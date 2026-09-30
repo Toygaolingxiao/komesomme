@@ -2,7 +2,19 @@
 
 開発手順は [README.md](../README.md)。銘柄データは [src/data/README.md](../src/data/README.md)。現在の番号は [`VERSION`](../VERSION)。
 
-**読み分け:** 日々触るのは「正本」だけ。振り返り・完了した UX 計画は「アーカイブ」へ。
+**読み分け:** 事実は一箇所だけ書く。ほかの文書はリンクに留める。
+
+| 知りたいこと | 開くファイル | ここに書かない |
+| --- | --- | --- |
+| 画面・動き | [08-ui-design.md](./08-ui-design.md) | 要件や概要へ同じ仕様を複製しない |
+| ファイル配置・データフロー・旧 URL の仕組み | [03-system-design.md](./03-system-design.md) | |
+| 本番・ドメイン・GSC | [vercel-production.md](./vercel-production.md) | www の作業はここで閉じた。ほかでは繰り返さない |
+| 相談 API | [05-semantic-search.md](./05-semantic-search.md) | |
+| DB | [04-database.md](./04-database.md) | |
+| 次に何をするか | [20-growth-plan.md](./20-growth-plan.md) | |
+| なぜ時間を投じるか | [22-career-positioning.md](./22-career-positioning.md) | 公開ページへ書かない |
+| どうここまで来たか | [12-product-journey.md](./12-product-journey.md) | 手順の正本にしない |
+| 変更の日付 | [10-changelog.md](./10-changelog.md) | 他文書の文頭に現在バージョンを書かない |
 
 ## 正本（実装・運用）
 

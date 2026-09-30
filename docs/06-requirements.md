@@ -1,5 +1,7 @@
 # KomeSomme 要件定義
 
+画面・動きの正本は [08-ui-design.md](./08-ui-design.md)。相談 API は [05-semantic-search.md](./05-semantic-search.md)。旧 URL とドメインは [vercel-production.md](./vercel-production.md)（仕組みは [03-system-design.md](./03-system-design.md) §6）。本書は受け入れの契約だけを書く。
+
 ## 1. 現行 MVP 要件
 
 ### 1.1 風味マトリクス
@@ -30,7 +32,7 @@
 ### 1.4 銘柄詳細と購入導線
 
 - 詳細パネル（銘柄品鑑）は重点説明（味わい・今日の食べ方・料理相性）と購入 CTA を優先し、お酒・お茶・季節の詳細相性は出さない
-- `/library/[id]` が銘柄の統合事典（品鑑＋由来＋季節・酒＋炊飯＋購入目安）。旧 `/{id}` は同 URL へ永久リダイレクト
+- `/library/[id]` が銘柄の統合事典。旧 URL の 1 ホップは [03-system-design.md](./03-system-design.md) §6
 - 購入 UI: **通販**（楽天 / Yahoo / Amazon / メルカリ）と **ふるさと納税**（楽天ふるさと / Yahoo!ふるさと / さとふる）のタグ切替。軟色カプセル（検索 URL）。銘柄品鑑では重点説明の直後
 - アフィタグ配線（楽天 wrap・Amazon Associate・VC 用ヘルパ）はコード済み。**商品 API / deep link と VC 本番 SID・成果突合**は未完（P1/P2）
 - 味わい値を公的測定値として表示しない
@@ -56,6 +58,8 @@
 [11-launch-checklist.md](./11-launch-checklist.md) が実行リスト。ここに「将来」と書いてあっても、チェックリスト側が新しい。
 
 **1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel / `komesomme.jp`）、RLS 0004、匿名 `access_events`、GA4 gtag（測定 ID は env）、Sentry SDK（DSN は env）、法務草案、Vitest / Playwright / CI、購入タグ UI、編集発見。
+
+**1.x で入ったもの:** 百科の合稿と公式 URL（0013）、旧 URL の 1 ホップ 308、地図で選んだ粒の短い強調と推薦欄の交叉フェード。
 
 **まだ残り（門禁の詳細は 11）:**
 

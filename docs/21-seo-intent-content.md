@@ -344,7 +344,8 @@
 | --- | --- |
 | `/` | 味わい地図・相談導線（認知 Q） |
 | `/library` · `/library/[id]` | 軸の説明・銘柄正本 |
-| `/collections/[slug]` | 人手特集（19）。`/pair` と役割分担 |
+| `/discover` · `/pair` · `/pair/[dish]` | ピックアップと料理入口 |
+| `/collections/[slug]` | 人手特集（19）。索引 `/collections` と末尾 `/` は `/discover` または誌面へ 1 ホップの 308。サイトマップに転送元は載せない |
 
 ---
 

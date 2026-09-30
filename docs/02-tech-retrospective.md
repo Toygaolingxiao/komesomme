@@ -21,11 +21,11 @@ KomeSomme を一から組み立てたときの技術選定、システム設計�
 
 | 技術 | 用途 | 選定理由 |
 | --- | --- | --- |
-| Next.js 15 App Router | SSR、API Route、ルーティング | `/library/[id]` 事典の SEO と単一リポジトリ（旧 `/{id}` は永久リダイレクト） |
+| Next.js 15 App Router | SSR、API Route、ルーティング | `/library/[id]` 事典の SEO。旧 `/{id}` と末尾 `/` は middleware で 1 ホップの 308（slash strip が二段になるのを避ける） |
 | React 19 | UI | App Router の標準 |
 | TypeScript 5 | 型安全 | 銘柄プロファイル・DB 型の共有 |
 | Tailwind CSS 4 | スタイル | デザイントークンを utility で統一 |
-| Motion | 探針・フェード | 短い spring。chart ライブラリは使わない |
+| Motion | 探針・粒の強調・推薦欄の淡入 | およそ 220ms の ease。粒はばねで跳ねさせない。chart ライブラリは使わない |
 | Phosphor Icons | アイコン | 線画で和紙 UI に合う |
 | 素の SVG | 味わいの輪郭 | 依存を増やさずデザイン正本に従う |
 
@@ -106,6 +106,7 @@ sources/（手書き打分・文案）
 - `FlavorMatrix.tsx` がオーケストレーション
 - `matrix/` 配下に地図・レール・相談・詳細・購入を分割
 - Desktop は 1 画面収め、Mobile は推薦優先の縦フロー
+- 地図のフィードバックは味に触れたときだけ。仕様は [08-ui-design.md](./08-ui-design.md) の「動き」
 
 ## 4. RAG としての設計（試行と学び）
 

@@ -45,8 +45,7 @@ export function RiceGrainMark({
       width={width}
       height={height}
       viewBox="0 0 40 22"
-      className={className}
-      className={`km-grain-mark ${className}`}
+      className={`km-grain-mark ${className}`.trim()}
       style={{
         transform: `rotate(${tilt}deg)`,
         overflow: "visible",

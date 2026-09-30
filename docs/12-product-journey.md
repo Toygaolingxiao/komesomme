@@ -25,6 +25,9 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 | 味觉再校正 | 五张外部食味图 + 县 / JA / Wikipedia，保守加权，轴不改名 | 档案在 `scripts/data/`；灌库后地图才与源码一致 |
 | 观测 | GTM 可选埋入 + 自建 `access_events` | 代码在；GTM 容器 ID 仍未配 |
 | 版本纪律 | SemVer 正本收成 `VERSION` + `package.json` | 其它文档不再手写「当前 0.x.y」 |
+| 1.4 事典 | Gemini 原稿与 GPT 改稿合稿。获奖说法放软。0013 与 `seed:encyclopedia` | 事典可追溯。分数仍是编辑评价 |
+| 旧网址 | `/collections` → `/discover`。末尾 `/` 与 `/{id}/` 由 middleware 收成一跳 308。www 不做独立站（2026-09-30 关闭） | 故意的转发留着。做法只写在 vercel-production |
+| 味觉反馈 | 选中和近邻的米粒短、暖、不弹。推荐栏在同一格里交叉淡入。`prefers-reduced-motion` 仍生效 | 不加粒子和长滚动。画面正本在 08 |
 
 数字里程碑的条目级记录只放 [10-changelog.md](./10-changelog.md)。
 
@@ -55,7 +58,7 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 - 特商法：运营信息已填；详细住所・电话按请求披露（不是空白页）
 - 楽天 / Amazon 标签代码已接；**至少一个渠道的点击↔后台对账**仍建议完成（学习与披露完整性，不是 ROI 门槛）
 - GA4 / Sentry / GSC：观测继续用，服务产品 Phase 2–3 与案例讲述
-- Search Console：sitemap 已交；索引定着需持续盯
+- Search Console：sitemap 已交。旧网址的一跳 308 不要改回 200。www 不做独立站。索引定着继续盯
 
 顾问式的建议：不要在对账完成前展开 Auth、收藏、煮饭建议、自营库存。那是另一条产品曲线。轻 B2B 试点排在 Phase 2 可演示之后，见 [20](./20-growth-plan.md) 与 [22](./22-career-positioning.md)。
 

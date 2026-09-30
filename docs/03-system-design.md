@@ -20,6 +20,7 @@
 
 ```text
 src/
+├── middleware.ts                   # www・末尾 /・旧 URL を 1 ホップの 308 に畳む
 ├── app/
 │   ├── page.tsx                      # 味わいの地図（ホーム）
 │   ├── layout.tsx
@@ -97,3 +98,14 @@ Browser → fetchRiceCatalog → calculateMatrixDisplayPoint
 - 公開 URL の相談 API は `guardSemanticRecommend`（kill switch + レート制限）
 - 匿名 UI イベントは `POST /api/analytics/event` → `access_events`（anon は SELECT 不可）
 - 内部观测台 `/ops` のみ service_role で `access_events` を集計。`OPS_DASHBOARD_SECRET` 未設定なら 404
+
+## 6. 旧 URL（1 ホップ）
+
+正本ホストは `https://komesomme.jp`。`next.config` の redirects に加え、`src/middleware.ts` が末尾 `/` を先に畳む。Next の `trailingSlash: false` が `/path/` を `/path` にしてから redirect すると 2 ホップになる。
+
+- 独立の www サイトは置かない（2026-09-30 に閉じた）。`www.komesomme.com` は DNS なし。`www.komesomme.jp` は開くと 307 で apex へ 1 跳。詳細は [vercel-production.md](./vercel-production.md)
+- `/collections` と `/collections/` → `/discover`
+- `/{id}` と `/{id}/` → `/library/{id}`
+- `/library/collections/:slug/` → 誌面へ 1 ホップ
+
+サイトマップに転送元は載せない。GSC の「ページにリダイレクトがあります」は意図した転送なので、200 のページには戻さない。

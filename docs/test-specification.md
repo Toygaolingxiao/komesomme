@@ -145,8 +145,8 @@
 - **期待:** 侍米師メモ、由来、季節と飲み物、炊飯。catalog `description` を origin に再掲しない
 
 #### TS-LIBRARY-03 旧 `/{id}` がライブラリへリダイレクト
-- **手順:** `/yumepirika`  
-- **期待:** URL が `/library/yumepirika` になり、銘柄見出しが表示される
+- **手順:** `/yumepirika` と `/yumepirika/`  
+- **期待:** どちらも 1 ホップの 308 で `/library/yumepirika`。銘柄見出しが表示される
 
 #### TS-LIBRARY-04 ピックアップ（きょうの三銘柄）
 - **手順:** `/library` に三銘柄見出しが無いこと。`/discover` で「きょうの三銘柄」と 3 リンク  
@@ -154,7 +154,7 @@
 
 #### TS-LIBRARY-05 編集特集ページ
 - **手順:** `/discover` で特集見出し。`/collections` は `/discover` へ。`/collections/shinmai` で誌面  
-- **期待:** ナビに「ピックアップ」（「特集」一級なし）。誌面に銘柄リンク。未知 slug は 404。旧 `/library/collections/shinmai` は `/collections/shinmai` へ
+- **期待:** ナビに「ピックアップ」（「特集」一級なし）。誌面に銘柄リンク。未知 slug は 404。`/collections` と `/collections/` は 1 ホップで `/discover`。旧 `/library/collections/shinmai` は `/collections/shinmai` へ
 
 #### TS-LIBRARY-06 事典ヒーロー画（ある銘柄だけ）
 - **手順:** `/library/koshihikari-uonuma`  

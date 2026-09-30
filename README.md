@@ -24,7 +24,7 @@ Desktop は 100% 表示で一画面に収まります。Mobile は推薦 → 小
 
 ## 開発者向け
 
-Next.js 15 と Supabase で動いています。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql)、[`0005_access_events.sql`](./supabase/migrations/0005_access_events.sql)、Yahoo 短鎖を使うなら [`0006_yahoo_shopping_affiliate_links.sql`](./supabase/migrations/0006_yahoo_shopping_affiliate_links.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
+Next.js 15 と Supabase で動いています。旧 URL の 308 は `src/middleware.ts` と `next.config` の redirects。末尾スラッシュは middleware が先に畳む。カタログは手書きの銘柄データから seed します。空のプロジェクトでは SQL Editor で [`0003_normalize_rice_catalog.sql`](./supabase/migrations/0003_normalize_rice_catalog.sql) のあと [`0004_restrict_embedding_access.sql`](./supabase/migrations/0004_restrict_embedding_access.sql)、[`0005_access_events.sql`](./supabase/migrations/0005_access_events.sql)、Yahoo 短鎖を使うなら [`0006_yahoo_shopping_affiliate_links.sql`](./supabase/migrations/0006_yahoo_shopping_affiliate_links.sql) を実行してください。0001 / 0002 は既存環境向けで、新規には不要です。Vercel 本番の env は [docs/vercel-production.md](./docs/vercel-production.md)。
 
 ```bash
 npm install

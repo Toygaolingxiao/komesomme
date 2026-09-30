@@ -112,13 +112,12 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 `.jp` は Cloudflare 非対応のため日本のレジストラで取得。`.com` / `sommeatlas.com` は Cloudflare Registrar + DNS。
 
-**www:** apex（`https://komesomme.jp`）が正本。`www.komesomme.jp` は **308/301 で apex へ**。Vercel 既定の www 転送が **307** だと Google が「一時リダイレクト」とみなし、GSC のリダイレクトエラーが残る。
+**www は閉じた（2026-09-30）。** 独立の www サイトは持たない。正本は apex のみ。GSC に www プロパティは作らない。307 を 301 に上げる作業もしない。
 
-- アプリ側: `next.config` + `src/middleware.ts` で www → apex を 308。末尾 `/` の旧 URL（`/collections/`・`/{id}/`）も正本へ 1 ホップ
-- **Cloudflare**（`.jp` が橙雲ならここが先に効く）: Bulk Redirect または Page Rule  
-  `https://www.komesomme.jp/*` → `https://komesomme.jp/$1`、**301 Permanent**
-- Vercel Domains: www を追加済みなら「Redirect to `komesomme.jp`」。平台が **307** を返す場合、アプリの middleware より先に効くので **必ず CF 301** で上書きする
-- `www.komesomme.com` は DNS が無い。使うなら CNAME を足して `.jp` へ 301。使わないなら放置でよい
+- `www.komesomme.com` は DNS が無い
+- `www.komesomme.jp` は apex と同じ Cloudflare アドレスに解決する。開くと **307 で apex へ 1 跳**。中身のページはない。新規の www レコードは足さない
+- アプリの `src/middleware.ts` は、リクエストが届いたときだけ www → apex を 308 する保険。平台の 307 が先に返ることがある
+- 末尾 `/` の旧 URL（`/collections/`・`/{id}/`）は middleware で正本へ 1 ホップ。手順の詳細は本書と [03-system-design.md](./03-system-design.md) §6
 
 ### 5.2 接続確認（2026-08-30 実測）
 
@@ -169,8 +168,8 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 | GSC の表示 | 意味 | やること |
 | --- | --- | --- |
-| **リダイレクトエラー** | チェーンが長い、307、到達先が 4xx、ループ | コードで 1 ホップの 308 に揃える。www の 307 は上の CF 301 |
-| **ページにリダイレクトがあります** | その URL はリダイレクト先が正本 | **消さない。** 旧 `/{id}`、`/collections`、www、末尾 `/` は意図した 308 |
+| **リダイレクトエラー** | チェーンが長い、307、到達先が 4xx、ループ | 旧パスは 1 ホップの 308 に揃える。www は独立サイトではないので、301 への上げ作業はしない |
+| **ページにリダイレクトがあります** | その URL はリダイレクト先が正本 | **消さない。** 旧 `/{id}`、`/collections`、末尾 `/` は意図した 308。www はプロパティにしない |
 
 **`/collections` について（GSC 2026-09）:** 正本は `/discover`。apex の `https://komesomme.jp/collections` は **308 → `/discover` の 1 ホップ**が正しい。サイトマップには載せない。検証開始後も「リダイレクトエラー」に残ることがあるが、前回クロールが修正前（例: 2026-09-07）なら再クロール待ち。URL 検査で最終 URL が `https://komesomme.jp/discover` の 200 なら完了。消えて「ページにリダイレクトがあります」に移るのも正常。
 
@@ -192,7 +191,7 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 
 ## 6. 本番切替チェックリスト（ドメイン取得後）
 
-- [ ] Vercel Domains: `komesomme.jp`（+ 任意 `www`）
+- [ ] Vercel Domains: `komesomme.jp` のみ（www は追加しない）
 - [ ] Production env: `NEXT_PUBLIC_SITE_URL=https://komesomme.jp`
 - [ ] Redeploy Production
 - [ ] Cloudflare: `komesomme.jp` DNS 橙云 + §7.5（Bot Fight + 限速/WAF）
@@ -229,7 +228,7 @@ Domains で追加 → DNS 指示どおり → HTTPS 自動。証明書エラー�
 | 类型 | 名称 | 内容 | 代理 |
 | --- | --- | --- | --- |
 | `A` 或 `CNAME` | `@` | Vercel Domains 页指示（常见 `76.76.21.21` 或 `cname.vercel-dns.com`） | **橙色云朵 ON** |
-| `CNAME` | `www`（若用） | `cname.vercel-dns.com` | **橙色 ON** |
+| `CNAME` | `www` | 置かない。既存の解決は apex へ 307。新規レコードは足さない | — |
 
 灰色云朵 = 流量 bypass CF，防护无效。改完后 `https://komesomme.jp` 仍 200。
 
