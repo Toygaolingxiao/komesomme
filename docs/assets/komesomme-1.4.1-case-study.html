@@ -829,16 +829,42 @@
       font-weight: 500; margin: .3rem 0 .4rem;
     }
     .take-card p { margin: 0; font-size: .78rem; color: #6B6560; line-height: 1.5; }
+    /* Apple-like scroll depth: sticky stage + layered scrub (case study only) */
+    #top { padding: 0; }
+    .hero-stage {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 7rem 1.25rem 3.5rem;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) {
+      .hero-stage { padding-left: 2.5rem; padding-right: 2.5rem; padding-bottom: 4rem; }
+    }
     .hero-map {
-      position: absolute; inset: 0; opacity: .35; pointer-events: none;
+      position: absolute; inset: -8% -4% -4%; opacity: .35; pointer-events: none;
+      will-change: transform;
       background:
         radial-gradient(circle at 72% 45%, rgba(232,168,74,.18), transparent 32%),
         radial-gradient(circle at 58% 58%, rgba(196,92,38,.1), transparent 28%);
     }
     .hero-map svg { width: 100%; height: 100%; opacity: .55; }
+    .hero-orb {
+      position: absolute; width: min(48vw, 420px); height: min(48vw, 420px);
+      right: -6%; top: 18%; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(232,168,74,.22), transparent 68%);
+      filter: blur(2px); will-change: transform; opacity: .85;
+    }
+    .hero-copy { position: relative; z-index: 1; width: 100%; }
+    .parallax-layer { will-change: transform; }
     @media (prefers-reduced-motion: reduce) {
       .swim-node, .swim-path, .swim-anno, .road-pin { opacity: 1 !important; }
       .progress-bar { transition: none; }
+      .hero-map, .hero-orb, .parallax-layer, #hero-title, #hero-tagline, #hero-lede, #hero-aside {
+        transform: none !important; opacity: 1 !important; filter: none !important;
+      }
     }
   </style>
 </head>
@@ -860,53 +886,58 @@
     <a href="https://komesomme.jp" class="cta" target="_blank" rel="noopener">公開サイト ↗</a>
   </nav>
 
-  <!-- 1 TOP · OLED · H-2 -->
-  <header id="top" class="room-oled relative overflow-hidden px-5 sm:px-10 pt-28 pb-16" data-room="oled" data-chapter="top">
-    <div class="hero-map" aria-hidden="true">
-      <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
-        <g fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1">
-          <ellipse cx="540" cy="230" rx="160" ry="120"/>
-          <ellipse cx="540" cy="230" rx="110" ry="82"/>
-          <ellipse cx="540" cy="230" rx="60" ry="44"/>
-          <line x1="380" y1="230" x2="700" y2="230"/>
-          <line x1="540" y1="90" x2="540" y2="370"/>
-        </g>
-        <circle cx="480" cy="280" r="3" fill="#E8A84A"/>
-        <circle cx="590" cy="180" r="3" fill="#C45C26"/>
-        <circle cx="560" cy="250" r="2.5" fill="#E8A84A"/>
-        <circle cx="510" cy="200" r="2.5" fill="rgba(255,255,255,.4)"/>
-      </svg>
-    </div>
-    <div class="max-w-6xl mx-auto relative">
-      <p class="sec-label mb-4">CASE STUDY・<span data-cs-version></span></p>
-      <div class="grid lg:grid-cols-12 gap-10 items-end">
-        <div class="lg:col-span-7">
-          <h1 id="hero-title" class="font-display text-[clamp(2.7rem,7vw,4.8rem)] leading-[1.05] font-medium tracking-tight text-[#F2EEE6]">
-            KomeSomme
-          </h1>
-          <p class="mt-3 font-display text-[clamp(1.1rem,2.3vw,1.55rem)] leading-snug text-[#E8A84A] max-w-xl">
-            味わいを、選べる形にする
-          </p>
-          <p class="mt-4 text-sm sm:text-base leading-relaxed max-w-xl muted-text">
-            米の銘柄を、産地や価格ではなく「甘み・粒感・料理との相性」から選べる推薦サービスです。約4週間の単独開発で、構造化カタログ、推薦ロジック、LLM案内、公開運用までを一体で構築しました。
-          </p>
-          <p class="mt-3 text-xs leading-relaxed max-w-xl" style="color:rgba(232,228,220,.45)">
-            本資料では、候補決定を LLM に委ねない設計、Git 上の一次データ管理、公開後の継続改善から得た知見を整理します。本番環境：komesomme.jp
-          </p>
-        </div>
-        <div class="lg:col-span-5">
-          <p class="sec-label mb-3">現在の規模（2026年9月11日時点）</p>
-          <ul class="space-y-0 text-sm leading-relaxed list-none m-0 p-0 border-t hairline" style="border-color:rgba(255,255,255,.12)">
-            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">期間：2026年8月中旬〜9月11日頃・約4週間・単独開発</li>
-            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">構成：Next.js 15・Supabase（pgvector）・Vercel</li>
-            <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">バージョン：0.x 試作 → <strong style="color:#E8A84A">1.0.0</strong> 本番公開 → <strong style="color:#E8A84A">1.4.1</strong>（公開後もマイナーアップデートを継続）</li>
-            <li class="py-2.5">主な機能：味わい地図・相談・事典（claims + URL）・料理別 /pair 約10ページ・開示付きの購入導線</li>
-          </ul>
-          <ul class="stat-row" aria-label="規模">
-            <li><strong>106</strong>銘柄</li>
-            <li><strong>13</strong>回の 1.x リリース</li>
-            <li><strong>99</strong> commits</li>
-          </ul>
+  <!-- 1 TOP · OLED · H-2 · Apple-like layered scrub -->
+  <header id="top" class="room-oled relative overflow-hidden" data-room="oled" data-chapter="top">
+    <div class="hero-stage" id="hero-stage">
+      <div class="hero-map" id="hero-map" aria-hidden="true">
+        <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+          <g fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1">
+            <ellipse cx="540" cy="230" rx="160" ry="120"/>
+            <ellipse cx="540" cy="230" rx="110" ry="82"/>
+            <ellipse cx="540" cy="230" rx="60" ry="44"/>
+            <line x1="380" y1="230" x2="700" y2="230"/>
+            <line x1="540" y1="90" x2="540" y2="370"/>
+          </g>
+          <circle cx="480" cy="280" r="3" fill="#E8A84A"/>
+          <circle cx="590" cy="180" r="3" fill="#C45C26"/>
+          <circle cx="560" cy="250" r="2.5" fill="#E8A84A"/>
+          <circle cx="510" cy="200" r="2.5" fill="rgba(255,255,255,.4)"/>
+        </svg>
+      </div>
+      <div class="hero-orb" id="hero-orb" aria-hidden="true"></div>
+      <div class="max-w-6xl mx-auto hero-copy">
+        <p class="sec-label mb-4 parallax-layer" data-speed="0.02">CASE STUDY・<span data-cs-version></span></p>
+        <div class="grid lg:grid-cols-12 gap-10 items-end">
+          <div class="lg:col-span-7">
+            <h1 id="hero-title" class="font-display text-[clamp(2.7rem,7vw,4.8rem)] leading-[1.05] font-medium tracking-tight text-[#F2EEE6]">
+              KomeSomme
+            </h1>
+            <p id="hero-tagline" class="mt-3 font-display text-[clamp(1.1rem,2.3vw,1.55rem)] leading-snug text-[#E8A84A] max-w-xl">
+              味わいを、選べる形にする
+            </p>
+            <div id="hero-lede">
+              <p class="mt-4 text-sm sm:text-base leading-relaxed max-w-xl muted-text">
+                米の銘柄を、産地や価格ではなく「甘み・粒感・料理との相性」から選べる推薦サービスです。約4週間の単独開発で、構造化カタログ、推薦ロジック、LLM案内、公開運用までを一体で構築しました。
+              </p>
+              <p class="mt-3 text-xs leading-relaxed max-w-xl" style="color:rgba(232,228,220,.45)">
+                本資料では、候補決定を LLM に委ねない設計、Git 上の一次データ管理、公開後の継続改善から得た知見を整理します。本番環境：komesomme.jp
+              </p>
+            </div>
+          </div>
+          <div id="hero-aside" class="lg:col-span-5">
+            <p class="sec-label mb-3">現在の規模（2026年9月11日時点）</p>
+            <ul class="space-y-0 text-sm leading-relaxed list-none m-0 p-0 border-t hairline" style="border-color:rgba(255,255,255,.12)">
+              <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">期間：2026年8月中旬〜9月11日頃・約4週間・単独開発</li>
+              <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">構成：Next.js 15・Supabase（pgvector）・Vercel</li>
+              <li class="py-2.5 border-b" style="border-color:rgba(255,255,255,.08)">バージョン：0.x 試作 → <strong style="color:#E8A84A">1.0.0</strong> 本番公開 → <strong style="color:#E8A84A">1.4.1</strong>（公開後もマイナーアップデートを継続）</li>
+              <li class="py-2.5">主な機能：味わい地図・相談・事典（claims + URL）・料理別 /pair 約10ページ・開示付きの購入導線</li>
+            </ul>
+            <ul class="stat-row" aria-label="規模">
+              <li><strong>106</strong>銘柄</li>
+              <li><strong>13</strong>回の 1.x リリース</li>
+              <li><strong>99</strong> commits</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -915,7 +946,7 @@
   <!-- 2 SUMMARY · washi · executive -->
   <section id="summary" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="summary">
     <div class="max-w-6xl mx-auto relative">
-      <span class="ghost-num" data-speed="0.06">読</span>
+      <span class="ghost-num parallax-layer" data-speed="0.08">読</span>
       <p class="sec-label mb-2">EXECUTIVE SUMMARY</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">米選びサービスにおける設計判断と運用知見</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">本資料では、米選び体験の設計、データ管理、本番公開までの運用手順、公開後の改善、再利用できる方針を整理します。</p>
@@ -951,8 +982,9 @@
   </section>
 
   <!-- 2b PJ OVERVIEW -->
-  <section id="overview" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="overview">
-    <div class="max-w-6xl mx-auto">
+  <section id="overview" class="room-washi px-5 sm:px-10 sec-y flow-block relative overflow-hidden" data-room="washi" data-chapter="overview">
+    <div class="max-w-6xl mx-auto relative">
+      <span class="ghost-num parallax-layer" data-speed="0.07">枠</span>
       <p class="sec-label mb-2">0・PJ概要</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">制約のなかで、何を一気に通したか</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">単独開発・約4週間。在庫と配送は持たず、味覚データと推薦、公開運用までを閉じる範囲に収めました。専用ベクトル基盤の性能より、実装速度・権限管理・運用の単純さを優先しています。</p>
@@ -1169,8 +1201,9 @@
   </section>
 
   <!-- 6 WEDGE · washi · W-2 -->
-  <section id="wedge" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="wedge">
-    <div class="max-w-6xl mx-auto">
+  <section id="wedge" class="room-washi px-5 sm:px-10 sec-y flow-block relative overflow-hidden" data-room="washi" data-chapter="wedge">
+    <div class="max-w-6xl mx-auto relative">
+      <span class="ghost-num parallax-layer" data-speed="0.09">差</span>
       <p class="sec-label mb-2">3・他サービスとの差分</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">価格比較でも、雑談チャットでもない</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">候補の順位は、カタログ上の座標と検索ロジックで決定します。LLMは案内文の生成に限定します。</p>
@@ -1808,8 +1841,9 @@
   </section>
 
   <!-- 15b LEARNINGS -->
-  <section id="learnings" class="room-washi px-5 sm:px-10 sec-y flow-block" data-room="washi" data-chapter="learnings">
-    <div class="max-w-6xl mx-auto">
+  <section id="learnings" class="room-washi px-5 sm:px-10 sec-y flow-block relative overflow-hidden" data-room="washi" data-chapter="learnings">
+    <div class="max-w-6xl mx-auto relative">
+      <span class="ghost-num parallax-layer" data-speed="0.075">知</span>
       <p class="sec-label mb-2">13・学び</p>
       <h2 class="font-display text-xl sm:text-2xl mb-2 font-medium">この PJ から再利用できる方針</h2>
       <p class="text-sm text-muted mb-5 max-w-2xl leading-relaxed">事実の羅列ではなく、次の案件でも使える判断です。</p>
@@ -1889,6 +1923,7 @@
   const isDesktopProgress = matchMedia('(min-width: 1024px)');
 
   const CFG = {
+    heroVh: () => (mobile.matches ? 0.65 : 0.9),
     matrixVh: () => (mobile.matches ? 0.85 : 1.15),
     swimVh: () => (mobile.matches ? 1.15 : 1.55),
     roadVh: () => (mobile.matches ? 1.05 : 1.4),
@@ -2689,47 +2724,109 @@
     });
   }
 
+  function initHeroParallax() {
+    const stage = document.getElementById('hero-stage');
+    if (!stage || reduce || !window.gsap || !window.ScrollTrigger) return;
+
+    const map = document.getElementById('hero-map');
+    const orb = document.getElementById('hero-orb');
+    const title = document.getElementById('hero-title');
+    const tagline = document.getElementById('hero-tagline');
+    const lede = document.getElementById('hero-lede');
+    const aside = document.getElementById('hero-aside');
+
+    const tl = gsap.timeline({
+      scrollTrigger: Object.assign({}, pinDefaults('oled'), {
+        trigger: stage,
+        end: () => '+=' + innerHeight * CFG.heroVh(),
+        pin: true,
+      }),
+    });
+
+    // Layer speeds: far map drifts up & scales; copy exits at different rates (Apple product-page feel)
+    if (map) {
+      tl.fromTo(map,
+        { scale: 1, yPercent: 0 },
+        { scale: 1.18, yPercent: 12, ease: 'none' },
+        0
+      );
+    }
+    if (orb) {
+      tl.fromTo(orb,
+        { scale: 1, xPercent: 0, yPercent: 0, opacity: 0.85 },
+        { scale: 1.35, xPercent: -8, yPercent: 18, opacity: 0.25, ease: 'none' },
+        0
+      );
+    }
+    if (title) {
+      tl.fromTo(title,
+        { y: 0, opacity: 1, scale: 1 },
+        { y: -48, opacity: 0.15, scale: 0.94, ease: 'none', transformOrigin: 'left center' },
+        0
+      );
+    }
+    if (tagline) {
+      tl.fromTo(tagline,
+        { y: 0, opacity: 1 },
+        { y: -32, opacity: 0, ease: 'none' },
+        0.04
+      );
+    }
+    if (lede) {
+      tl.fromTo(lede,
+        { y: 0, opacity: 1 },
+        { y: -22, opacity: 0, ease: 'none' },
+        0.08
+      );
+    }
+    if (aside) {
+      tl.fromTo(aside,
+        { y: 18, opacity: 0.92 },
+        { y: -28, opacity: 0, ease: 'none' },
+        0.06
+      );
+    }
+  }
+
   function initFlowReveals() {
     if (reduce || !window.gsap || !window.ScrollTrigger) return;
 
     // pin章・図版章では opacity scrub を避け、入場時の跳ねを防ぐ
-    const skip = new Set(['design', 'concept', 'roadmap', 'delivery', 'ranking', 'lifecycle', 'assets', 'returns']);
+    const skip = new Set(['design', 'concept', 'roadmap', 'delivery', 'ranking', 'lifecycle', 'assets', 'returns', 'top']);
     gsap.utils.toArray('.flow-block').forEach((el) => {
       if (el.id && skip.has(el.id)) return;
       gsap.fromTo(el,
-        { y: 10, opacity: 0.92 },
+        { y: 14, opacity: 0.88 },
         {
           y: 0, opacity: 1, ease: 'none',
           scrollTrigger: {
             trigger: el,
-            start: 'top 90%',
-            end: 'top 68%',
+            start: 'top 92%',
+            end: 'top 64%',
             scrub: 0.55,
           },
         }
       );
     });
 
-    const title = document.getElementById('hero-title');
-    if (title) {
-      gsap.to(title, {
-        y: -10, opacity: 0.7, ease: 'none',
-        scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true },
-      });
-    }
-
+    // Depth parallax for [data-speed] layers (ghost numerals, labels)
     document.querySelectorAll('[data-speed]').forEach((el) => {
+      if (el.closest('#hero-stage')) return; // hero has its own pin scrub
       const speed = parseFloat(el.getAttribute('data-speed') || '0.05');
-      gsap.to(el, {
-        yPercent: speed * 100 * 5,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: el.parentElement || el,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
+      const amp = mobile.matches ? 2.8 : 4.2;
+      gsap.fromTo(el,
+        { yPercent: -speed * 100 * amp * 0.35 },
+        {
+          yPercent: speed * 100 * amp,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el.parentElement || el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      );
     });
   }
 
@@ -2743,6 +2840,7 @@
       initProgress();
       initThemeRooms();
       initNav();
+      initHeroParallax();
       initMatrixScene();
       initSwimScene();
       initGateScene();
