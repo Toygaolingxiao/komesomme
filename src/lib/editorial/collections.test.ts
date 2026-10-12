@@ -21,6 +21,8 @@ const KNOWN = new Set([
   "akitakomachi",
   "sagabiyori",
   "seiten-no-hekireki",
+  "ryu-no-hitomi",
+  "nitamai",
 ]);
 
 describe("editorial collections", () => {
@@ -58,11 +60,24 @@ describe("editorial collections", () => {
 
   it("indexes newest dateLabel first", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "shio-musubi",
       "toku-a",
       "nabe",
       "shinmai",
       "bento-cold",
     ]);
+  });
+
+  it("features shio-musubi in October Tokyo time", () => {
+    const october = Date.UTC(2026, 9, 12, 8, 0);
+    expect(featuredCollections(KNOWN, october).map((row) => row.slug)).toContain(
+      "shio-musubi"
+    );
+  });
+
+  it("prints shio-musubi's first-ship date", () => {
+    const row = EDITORIAL_COLLECTIONS.find((item) => item.slug === "shio-musubi");
+    expect(row?.dateLabel).toBe("2026年10月12日 17時10分");
   });
 
   it("prints nabe's first-ship date, not a future November", () => {

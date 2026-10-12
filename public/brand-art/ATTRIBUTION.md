@@ -22,6 +22,7 @@ Sources are stored as **WebP** (resized ≤1600px long edge, quality≈82) via `
 | `collections/shinmai.webp` | Collection hero |
 | `collections/nabe.webp` | Collection hero |
 | `collections/toku-a.webp` | Collection hero（特Aの一膳、2026-09-05） |
+| `collections/shio-musubi.webp` | Collection hero（塩むすびで、味を見る、2026-10-12） |
 | `pairings/pair-curry.webp` | Pairing hero（カレー、2026-09-09） |
 | `pairings/pair-sashimi.webp` | Pairing hero（刺身、2026-09-09） |
 | `pairings/pair-bento.webp` | Pairing hero（弁当、2026-09-09） |

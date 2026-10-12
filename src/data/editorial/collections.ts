@@ -20,6 +20,26 @@ export type EditorialCollection = {
  */
 export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
   {
+    slug: "shio-musubi",
+    title: "塩むすびで、味を見る",
+    dek: "具もタレも足さない日に、米そのものの甘みと粒を読みます。",
+    lede: "塩だけの握りは、銘柄の差が一番わかりやすい食べ方です。",
+    dateLabel: "2026年10月12日 17時10分",
+    months: [3, 4, 5, 6, 10, 11],
+    riceIds: [
+      "ryu-no-hitomi",
+      "yumepirika",
+      "koshihikari-uonuma",
+      "nitamai",
+      "sasanishiki",
+    ],
+    artFile: "shio-musubi.webp",
+    body: [
+      "塩だけの握りは、おかずに隠されない分、甘みの出方と粒の感触がはっきりします。同じ「おいしい」でも、大粒の厚みと、すっきりした後味では印象が変わります。",
+      "ここでは塩むすびに向きやすい銘柄を、産地の違う五本に絞りました。まず塩で食べてから、事典のメモを読むと、選び方がつかみやすいです。",
+    ],
+  },
+  {
     slug: "bento-cold",
     title: "冷めても、弁当に",
     dek: "昼の弁当箱で、粒がばらけすぎない米を集めました。",

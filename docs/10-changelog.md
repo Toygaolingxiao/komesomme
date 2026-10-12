@@ -6,6 +6,11 @@
 
 ## Unreleased
 
+## 1.5.0 — 2026-10-12
+
+- 編集特集「塩むすびで、味を見る」を追加（`/collections/shio-musubi`）。塩だけの握りで銘柄差を読む五銘柄と英雄図
+- `/pair/onigiri` から同特集へ `collectionSlug` で接続
+
 ## 1.4.5 — 2026-10-12
 
 - 公開ページの頂栏・フッタ・版心を `SiteHeader` / `SITE_COLUMN` / `READING_COLUMN` に揃える（法務頁含む）

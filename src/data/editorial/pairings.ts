@@ -270,6 +270,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       },
     ],
     relatedSlugs: ["bento", "tamagokake", "curry", "chahan"],
+    collectionSlug: "shio-musubi",
     artFile: "pair-onigiri.webp",
   },
   {
