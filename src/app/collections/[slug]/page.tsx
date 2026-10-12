@@ -5,6 +5,7 @@ import { CollectionView } from "@/components/editorial/CollectionView";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { collectionBySlug, collectionPublishedIso } from "@/lib/editorial/collections";
@@ -65,10 +66,7 @@ export default async function CollectionPage({ params }: PageProps) {
         ]}
       />
       <CollectionsChrome />
-      <Breadcrumbs
-        className="mx-auto w-full min-w-0 max-w-[1440px] px-4 pt-5 sm:px-5"
-        crumbs={trail}
-      />
+      <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={trail} />
       <CollectionView collection={collection} entries={entries} />
       <SiteFooter />
     </main>

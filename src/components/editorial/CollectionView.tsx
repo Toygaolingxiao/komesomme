@@ -48,7 +48,7 @@ export function CollectionView({
           <div className="min-w-0 pb-1">
             <SteamMark className="h-7 w-7" />
             <p className="mt-3 text-[12px] text-[var(--km-muted)]">{collection.dateLabel}</p>
-            <h1 className="mt-1.5 font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
+            <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
               {collection.title}
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
@@ -58,10 +58,12 @@ export function CollectionView({
         </div>
       </div>
 
-      <div className={`${SITE_COLUMN} mt-8 max-w-3xl space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]`}>
-        {collection.body.map((paragraph) => (
-          <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-        ))}
+      <div className={`${SITE_COLUMN} mt-8`}>
+        <div className="max-w-3xl space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
+          {collection.body.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+          ))}
+        </div>
       </div>
 
       <ol className={`${SITE_COLUMN} mt-12 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]`}>

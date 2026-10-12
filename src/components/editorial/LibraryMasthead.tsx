@@ -1,6 +1,6 @@
 import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { mastheadArtSrc } from "@/lib/editorial/art";
 
 /** Compact masthead — art is an accent, not half the first viewport. */
@@ -12,9 +12,7 @@ export function LibraryMasthead({ brandCount }: { brandCount: number }) {
       <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,11rem)] sm:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,13rem)]">
         <div className="min-w-0 order-2 sm:order-1">
           <BowlMark className="h-8 w-8" title="椀" />
-          <h1 className="mt-3 font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
-            銘柄ライブラリ
-          </h1>
+          <h1 className={`mt-3 ${PAGE_TITLE}`}>銘柄ライブラリ</h1>
           <p className="mt-3 max-w-md text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
             約{brandCount}銘柄の味わいと由来を並べています。
           </p>

@@ -95,10 +95,10 @@ export function LibraryBrowser({
 
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full min-w-0">
         {showPageTitle ? (
           <header className="max-w-xl">
-            <h1 className="font-serif text-[1.75rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2rem]">
+            <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
               銘柄ライブラリ
             </h1>
             <p className="mt-3 text-[13px] leading-relaxed text-pretty text-[var(--km-muted)]">

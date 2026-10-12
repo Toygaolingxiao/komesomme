@@ -18,8 +18,9 @@ const NAV = [
 /**
  * Shared top chrome. Order is fixed; the current section is emphasized.
  * Page identity lives in the nav active state and the page H1 — not the lockup.
+ * Omit `active` on legal / utility pages so no nav item is current.
  */
-export function SiteHeader({ active }: { active: SiteNavActive }) {
+export function SiteHeader({ active }: { active?: SiteNavActive }) {
   return (
     <header
       className={`${SITE_COLUMN} flex h-12 shrink-0 items-center justify-between gap-2 sm:gap-3`}
@@ -33,7 +34,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
           className="flex flex-wrap items-center justify-end gap-x-2 gap-y-0.5 sm:gap-x-3"
         >
           {NAV.map((item) => {
-            const isActive = item.id === active;
+            const isActive = active != null && item.id === active;
             return (
               <Link
                 key={item.id}

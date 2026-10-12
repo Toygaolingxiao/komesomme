@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { TASTE_DISCLAIMER } from "@/lib/affiliate";
 import { FOCUS } from "@/components/matrix/shared";
 
@@ -34,9 +35,11 @@ export function SiteLegalNav({ className = "" }: { className?: string }) {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-10 border-t border-[var(--km-border)] px-4 py-8 md:px-8">
-      <div className="mx-auto flex max-w-[960px] flex-col gap-3 text-[11px] leading-relaxed text-[var(--km-muted)]">
-        <SiteLegalNav />
+    <footer className="mt-10 border-t border-[var(--km-border)] py-8">
+      <div
+        className={`${SITE_COLUMN} flex flex-col gap-3 text-[11px] leading-relaxed text-[var(--km-muted)]`}
+      >
+        <SiteLegalNav className="justify-start" />
         <AffiliateDisclosure />
         <p>{TASTE_DISCLAIMER}</p>
         <p>

@@ -2,7 +2,7 @@ import { SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { EditorialCollectionLink } from "@/components/editorial/EditorialTrackLinks";
 import { FOCUS } from "@/components/matrix/shared";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import type { EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
 import { jstMonth } from "@/lib/editorial/jst";
@@ -29,9 +29,7 @@ export function CollectionsIndex({
     >
       <header className="max-w-2xl">
         <SteamMark className="h-8 w-8" title="特集" />
-        <Heading className="mt-3 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
-          特集
-        </Heading>
+        <Heading className={`mt-3 ${PAGE_TITLE}`}>特集</Heading>
         <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
           旬や使い方で組んだ特集です。売り込みではなく、食卓の場面ごとに銘柄を並べています。
         </p>

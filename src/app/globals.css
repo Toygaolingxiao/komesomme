@@ -79,8 +79,8 @@ body {
   height: 16px;
   margin-top: -5px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--km-brown) 38%, #fff5e5);
-  background: #fffdf7;
+  border: 1px solid color-mix(in srgb, var(--km-brown) 38%, var(--km-surface-warm));
+  background: var(--km-surface);
   box-shadow: 0 1px 2px rgba(112, 69, 34, 0.12);
 }
 
@@ -88,8 +88,8 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--km-brown) 38%, #fff5e5);
-  background: #fffdf7;
+  border: 1px solid color-mix(in srgb, var(--km-brown) 38%, var(--km-surface-warm));
+  background: var(--km-surface);
   box-shadow: 0 1px 2px rgba(112, 69, 34, 0.12);
 }
 
@@ -137,10 +137,10 @@ body {
 .km-slider-sweet {
   --km-track: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--km-brown) 20%, #fff5e5) 0%,
-    color-mix(in srgb, var(--km-brown) 20%, #fff5e5) var(--km-fill, 50%),
-    color-mix(in srgb, var(--km-brown) 7%, #fff8ef) var(--km-fill, 50%),
-    color-mix(in srgb, var(--km-brown) 7%, #fff8ef) 100%
+    color-mix(in srgb, var(--km-brown) 20%, var(--km-surface-warm)) 0%,
+    color-mix(in srgb, var(--km-brown) 20%, var(--km-surface-warm)) var(--km-fill, 50%),
+    color-mix(in srgb, var(--km-brown) 7%, var(--km-surface)) var(--km-fill, 50%),
+    color-mix(in srgb, var(--km-brown) 7%, var(--km-surface)) 100%
   );
 }
 

@@ -99,7 +99,7 @@ export function ConsultForm({
         wide ? "w-full" : "mt-1 w-full"
       }`}
       style={{
-        background: "linear-gradient(180deg, #e56b3f 0%, #c85a28 100%)",
+        background: "linear-gradient(180deg, var(--km-accent) 0%, var(--km-accent-deep) 100%)",
       }}
     >
       <Sparkle size={14} weight={ICON_WEIGHT} />
@@ -154,7 +154,7 @@ export function ConsultForm({
       }
     >
       {failed ? (
-        <p className="flex min-w-0 items-start gap-2 text-[11px] leading-relaxed text-[#a33b2a]">
+        <p className="flex min-w-0 items-start gap-2 text-[11px] leading-relaxed text-[var(--km-accent-deep)]">
           <Warning size={13} weight={ICON_WEIGHT} className="mt-0.5 shrink-0" />
           {reply?.trim() ||
             "うまく拾えませんでした。言葉を変えて、もう一度どうぞ。"}

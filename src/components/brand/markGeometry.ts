@@ -1,7 +1,12 @@
+/** Color tokens aligned with docs/08-ui-design.md §2. */
 export const BRAND = {
   charcoal: "#302820",
-  riceWhite: "#FFF5E5",
-  cream: "#F6EBDD",
+  /** Rice white — map surface / mark badge fill */
+  riceWhite: "#FFFDF7",
+  /** Cream — warm recommendation / tag surface */
+  cream: "#FFF5E5",
+  /** Paper — page ground */
+  paper: "#F6EBDD",
   gold: "#D49A2A",
   coral: "#E56B3F",
   brown: "#704522",

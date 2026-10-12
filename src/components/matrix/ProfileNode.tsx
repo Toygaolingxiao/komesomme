@@ -155,7 +155,7 @@ export function ProfileNode({
 
       {tooltipOpen && !muted ? (
         <span
-          className={`pointer-events-none absolute z-10 min-w-[7.25rem] max-w-[9.5rem] rounded-lg border border-[var(--km-border)] bg-[#fffdf7] px-2.5 py-1.5 text-left shadow-[0_8px_18px_rgba(112,69,34,0.12)] ${
+          className={`pointer-events-none absolute z-10 min-w-[7.25rem] max-w-[9.5rem] rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] px-2.5 py-1.5 text-left shadow-[0_8px_18px_rgba(112,69,34,0.12)] ${
             rice.display_y <= 1.8 ? "bottom-full mb-2.5" : "top-full mt-2.5"
           } ${
             rice.display_x <= 1.55

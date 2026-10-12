@@ -20,12 +20,9 @@ import {
 } from "@/components/matrix/shared";
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
+import { READING_COLUMN } from "@/components/siteChrome";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
-
-/** Reading column — narrower than SITE_COLUMN so the dossier doesn't feel like a dashboard. */
-const DOSSIER_COLUMN =
-  "mx-auto w-full min-w-0 max-w-[40rem] px-4 sm:px-5";
 
 const H2 =
   "font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]";
@@ -95,16 +92,8 @@ export function LibraryRiceDossier({
   const reading = distinctReading(rice.name, article.reading);
 
   return (
-    <article className={`${DOSSIER_COLUMN} pb-20 pt-5`}>
-      <nav className="text-[12px] text-[var(--km-muted)]">
-        <Link href="/library" className={`hover:text-[var(--km-gold)] ${FOCUS}`}>
-          ライブラリ
-        </Link>
-        <span className="mx-1.5">/</span>
-        <span>{rice.name}</span>
-      </nav>
-
-      <header className="mt-6">
+    <article className={`${READING_COLUMN} pb-20 pt-2`}>
+      <header>
         {heroArt ? (
           <EditorialArt
             src={heroArt.src}

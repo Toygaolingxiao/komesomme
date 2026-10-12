@@ -5,6 +5,7 @@ import { PairView } from "@/components/pair/PairView";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { resolvePairingBySlug } from "@/lib/editorial/pairings";
 import {
@@ -87,10 +88,7 @@ export default async function PairDishPage({ params }: PageProps) {
         ]}
       />
       <SiteHeader active="pair" />
-      <Breadcrumbs
-        className="mx-auto w-full min-w-0 max-w-[1440px] px-4 pt-5 sm:px-5"
-        crumbs={trail}
-      />
+      <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={trail} />
       <PairView resolved={resolved} />
       <SiteFooter />
     </main>

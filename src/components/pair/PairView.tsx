@@ -98,9 +98,9 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
               aria-hidden
               className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-transparent to-[rgba(48,40,32,0.12)] lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[rgba(246,235,221,0.22)]"
             />
-            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 lg:hidden">
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:hidden">
               <p className="text-[12px] tracking-[0.14em] text-white/75">料理で選ぶ</p>
-              <h1 className="mt-2 font-serif text-[1.85rem] font-semibold text-white sm:text-[2.05rem]">
+              <h1 className="mt-2 font-serif text-[1.85rem] font-semibold text-white sm:text-[2.1rem]">
                 {page.dishLabel}に合う米
               </h1>
             </div>
@@ -108,12 +108,12 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
           <div aria-hidden className="hidden flex-1 bg-[var(--km-surface-warm)] lg:block" />
         </aside>
 
-        <div className="pair-stage-enter bg-[var(--km-bg)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 xl:px-14">
+        <div className="pair-stage-enter bg-[var(--km-bg)] px-4 py-8 sm:px-5 sm:py-10 lg:px-8 lg:py-12 xl:px-10">
           <div className="mx-auto max-w-[40rem] lg:mx-0 lg:max-w-[42rem]">
             <p className="hidden text-[12px] tracking-[0.14em] text-[var(--km-muted)] lg:block">
               料理で選ぶ
             </p>
-            <h1 className="mt-2 hidden font-serif text-[2.35rem] font-semibold leading-[1.12] tracking-tight lg:block">
+            <h1 className="mt-2 hidden font-serif text-[1.85rem] font-semibold leading-[1.12] tracking-tight sm:text-[2.1rem] lg:block">
               {page.dishLabel}に合う米
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">{page.dek}</p>

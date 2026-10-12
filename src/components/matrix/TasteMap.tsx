@@ -355,7 +355,7 @@ export function TasteMap({
             className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.1rem] border border-[var(--km-border)]"
             style={{
               background:
-                "linear-gradient(180deg, #fffdf7 0%, #fff8ef 55%, #fff5e5 100%)",
+                "linear-gradient(180deg, var(--km-surface) 0%, color-mix(in srgb, var(--km-surface) 70%, var(--km-surface-warm)) 55%, var(--km-surface-warm) 100%)",
             }}
           >
             <MatrixGrid />
@@ -411,8 +411,8 @@ export function TasteMap({
                     }
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   />
-                  <span className="grid h-4 w-4 place-items-center rounded-full border border-[#704522]/35 bg-[var(--km-brown)] shadow-[0_4px_12px_rgba(112,69,34,0.22)]">
-                    <Drop size={9} weight="fill" className="text-[#fff5e5]" />
+                  <span className="grid h-4 w-4 place-items-center rounded-full border border-[var(--km-brown)]/35 bg-[var(--km-brown)] shadow-[0_4px_12px_rgba(112,69,34,0.22)]">
+                    <Drop size={9} weight="fill" className="text-[var(--km-surface-warm)]" />
                   </span>
                 </div>
               </motion.div>

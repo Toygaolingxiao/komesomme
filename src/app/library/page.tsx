@@ -5,6 +5,7 @@ import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreload
 import { LibraryMasthead } from "@/components/editorial/LibraryMasthead";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { mastheadArtSrc } from "@/lib/editorial/art";
 import { itemListLd } from "@/lib/seo/jsonLd";
@@ -46,8 +47,8 @@ export default function LibraryPage() {
       <LibraryChrome />
 
       {entries.length === 0 ? (
-        <div className="mx-auto max-w-[640px] px-4 py-20 text-center sm:px-5">
-          <h1 className="font-serif text-2xl font-semibold">銘柄ライブラリ準備中</h1>
+        <div className={`${SITE_COLUMN} py-20 text-center`}>
+          <h1 className={PAGE_TITLE}>銘柄ライブラリ準備中</h1>
           <p className="mt-3 text-sm text-[var(--km-muted)]">
             記事がまだ生成されていません。ローカルで{" "}
             <code className="rounded bg-[var(--km-surface)] px-1.5 py-0.5">

@@ -19,9 +19,9 @@ export const BAND = 100 - INSET * 2;
  * Wording is KomeSomme's own, not a copy of other tasting maps.
  */
 export const AXIS_POLES = {
-  sweetLow: "すっきり軽い",
-  sweetHigh: "甘みふくよか",
-  firm: "粒立ち、しっかり",
+  sweetLow: "すっきり澄む",
+  sweetHigh: "甘みふくらむ",
+  firm: "粒立ちしっかり",
   soft: "やわらか、ほどける",
   sweetLowShort: "すっきり",
   sweetHighShort: "甘み",
@@ -30,11 +30,11 @@ export const AXIS_POLES = {
 } as const;
 
 export const TAG_TONES = [
-  { bg: "#fff5e5", border: "#e29a35", text: "#704522" },
-  { bg: "#fdece8", border: "#e56b3f", text: "#7a2e18" },
-  { bg: "#eef6e8", border: "#7ca83b", text: "#3f5a1c" },
-  { bg: "#f8e8ee", border: "#c85a72", text: "#6b2a3a" },
-  { bg: "#e8f3f5", border: "#3f8fa3", text: "#245a68" },
+  { bg: "var(--km-surface-warm)", border: "var(--km-gold)", text: "var(--km-brown)" },
+  { bg: "#fdece8", border: "var(--km-accent)", text: "#7a2e18" },
+  { bg: "#eef6e8", border: "var(--km-leaf)", text: "#3f5a1c" },
+  { bg: "#f8e8ee", border: "var(--km-plum)", text: "#6b2a3a" },
+  { bg: "#e8f3f5", border: "var(--km-aqua)", text: "#245a68" },
 ] as const;
 
 export type MapDensity = "full" | "sparse" | "focus";
@@ -43,7 +43,7 @@ export const MATCH_LIMIT = 4;
 export const NEIGHBOUR_LIMIT = 3;
 
 export const ICON_WEIGHT = "bold" as const;
-export const ACCENT = "#e56b3f";
+export const ACCENT = "var(--km-accent)";
 
 export const LAYER = {
   grid: 0,

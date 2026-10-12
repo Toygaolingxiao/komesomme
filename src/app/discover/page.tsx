@@ -7,7 +7,7 @@ import { TodaysBowl } from "@/components/editorial/TodaysBowl";
 import { DiscoverPairTeaser } from "@/components/pair/DiscoverPairTeaser";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
@@ -21,7 +21,7 @@ export const revalidate = 600;
 export const metadata: Metadata = {
   title: "ピックアップ",
   description:
-    "きょうの三銘柄と旬の特集。日付と食卓の場面で入れ替わる、米ソムリエのピックアップです。",
+    "きょうの三銘柄と旬の特集。日付と食卓の場面で入れ替わる、侍米師のピックアップです。",
   alternates: { canonical: "/discover" },
 };
 
@@ -67,14 +67,12 @@ export default function DiscoverPage() {
       <EditorialArtPreloads hrefs={preloadHrefs} />
       <DiscoverChrome />
 
-      <div className="pb-16 pt-8 sm:pb-20 sm:pt-10">
+      <div className="pb-16 pt-5 sm:pb-20">
         <div className={SITE_COLUMN}>
           <header className="max-w-xl">
             <SteamMark className="h-8 w-8" />
-            <h1 className="mt-4 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.15rem]">
-              ピックアップ
-            </h1>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--km-ink-soft)]">
+            <h1 className={`mt-3 ${PAGE_TITLE}`}>ピックアップ</h1>
+            <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
               日付と旬で入れ替わる、きょうの銘柄と特集です。
             </p>
           </header>

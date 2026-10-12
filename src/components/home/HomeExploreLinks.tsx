@@ -4,7 +4,7 @@ import { SITE_COLUMN } from "@/components/siteChrome";
 
 /**
  * Always-visible secondary destinations under the header.
- * Not a first-visit curtain — just wayfinding next to the map product.
+ * Order matches SiteHeader primary nav (after 味わいの地図).
  */
 export function HomeExploreLinks() {
   return (
@@ -23,19 +23,19 @@ export function HomeExploreLinks() {
         ·
       </span>
       <Link
-        href="/discover"
+        href="/library"
         className={`font-serif text-[var(--km-ink-soft)] transition-colors duration-150 ease-out hover:text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
       >
-        ピックアップ
+        ライブラリ
       </Link>
       <span aria-hidden className="text-[var(--km-border)]">
         ·
       </span>
       <Link
-        href="/library"
+        href="/discover"
         className={`font-serif text-[var(--km-ink-soft)] transition-colors duration-150 ease-out hover:text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
       >
-        ライブラリ
+        ピックアップ
       </Link>
     </nav>
   );
