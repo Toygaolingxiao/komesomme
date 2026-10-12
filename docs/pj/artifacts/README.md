@@ -4,7 +4,7 @@
 
 | 工件 | 路径 | 说明 |
 | --- | --- | --- |
-| Case Study **1.4.1**（现行正本） | [`../../assets/komesomme-1.4.1-case-study.html`](../../assets/komesomme-1.4.1-case-study.html) | G2+G4；Lenis/GSAP；流光・ゲート回廊；跟 VERSION |
+| Case Study **1.4.1**（现行正本） | [`../../assets/komesomme-1.4.1-case-study.html`](../../assets/komesomme-1.4.1-case-study.html) | G2+G4；Lenis/GSAP；hero 視差 pin；流光・ゲート回廊；跟 VERSION |
 | Case Study 1.0.0（归档） | [`../../assets/komesomme-1.0.0-case-study.html`](../../assets/komesomme-1.0.0-case-study.html) | 发版当时叙事快照；对照见 [`case-study-1.0-vs-1.4.1-comparison-2026-09-11.md`](./case-study-1.0-vs-1.4.1-comparison-2026-09-11.md) |
 | Case Study 日文用语基准 | [`./case-study-ja-glossary-2026-09-11.md`](./case-study-ja-glossary-2026-09-11.md) | GPT-5.5 用语表归档；改 1.4.1 HTML 日文先对照 |
 | Case Study redesign 对照 | [`../../assets/old/komesomme-1.0.0-case-study-copilot-redesign-ref.html`](../../assets/old/komesomme-1.0.0-case-study-copilot-redesign-ref.html) | Copilot 深色稿；仅作参考，非正本（见 [`../../assets/old/README.md`](../../assets/old/README.md)） |
