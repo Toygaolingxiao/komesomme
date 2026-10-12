@@ -8,8 +8,9 @@
 
 ## 1.5.0 — 2026-10-12
 
+- 編集特集「十月の袋、早生から」を追加（`/collections/jugatsu-wase`）。令和八年産の店頭入りで先に届く早生五銘柄。食味ランキング前の読み方
 - 編集特集「塩むすびで、味を見る」を追加（`/collections/shio-musubi`）。塩だけの握りで銘柄差を読む五銘柄と英雄図
-- `/pair/onigiri` から同特集へ `collectionSlug` で接続
+- `/pair/onigiri` から塩むすび特集へ `collectionSlug` で接続
 
 ## 1.4.5 — 2026-10-12
 

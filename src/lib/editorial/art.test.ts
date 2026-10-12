@@ -50,6 +50,9 @@ describe("collectionArtSrc", () => {
     expect(collectionArtSrc("shio-musubi.webp")).toBe(
       "/brand-art/collections/shio-musubi.webp"
     );
+    expect(collectionArtSrc("jugatsu-wase.webp")).toBe(
+      "/brand-art/collections/jugatsu-wase.webp"
+    );
     expect(collectionArtSrc(null)).toBeNull();
     expect(collectionArtSrc("missing.webp")).toBeNull();
   });

@@ -20,6 +20,26 @@ export type EditorialCollection = {
  */
 export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
   {
+    slug: "jugatsu-wase",
+    title: "十月の袋、早生から",
+    dek: "令和8年産が店頭に並び始めるころ。先に届く早生を五銘柄読みます。",
+    lede: "食味ランキングの前に、刈り入れの早い銘柄から手に取る読み方です。",
+    dateLabel: "2026年10月12日 22時08分",
+    months: [10, 11],
+    riceIds: [
+      "hazuki-minori",
+      "hanaechizen",
+      "yumemizuho",
+      "fusakogane",
+      "koshiibuki",
+    ],
+    artFile: "jugatsu-wase.webp",
+    body: [
+      "十月の店頭では、極早生や早生の令和8年産が先に袋になります。中生の主産地はこれから本格的に並び、食味ランキングは来年2月です。年産の優劣を決めつける時期ではありません。",
+      "ここでは刈り入れが早い銘柄を、産地の違う五本に絞りました。袋の年産表記を確認してから、事典のメモと照らし合わせると、今年の入り口がつかみやすいです。",
+    ],
+  },
+  {
     slug: "shio-musubi",
     title: "塩むすびで、味を見る",
     dek: "具もタレも足さない日に、米そのものの甘みと粒を読みます。",
