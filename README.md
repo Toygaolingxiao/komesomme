@@ -2,25 +2,70 @@
 
 KomeSomme（コメソム）は、日本のブランド米を味わいの地図から探すサイトです。画面の案内役は **侍米師（じべいし）** です。
 
-食べたい料理、今日の気分、合わせたいお酒を言葉にすると、地図上の位置と銘柄の解説から、今日の一膳が見えてきます。
+食べたい料理、今日の気分、合わせたいお酒を言葉にすると、地図上の位置と銘柄の解説から、今日の一膳が見えてきます。インストールは要りません。下の表から、動いているサイトと読み物へ進めます。番号は [`VERSION`](./VERSION)。
 
-## できること
+| 見たいもの | どこを開く |
+| --- | --- |
+| デモ（本番サイト） | [https://komesomme.jp](https://komesomme.jp) |
+| プロジェクト紹介（短い概要） | [docs/00-overview.md](./docs/00-overview.md) |
+| プロジェクト紹介（1.0.0 の記録） | [docs/assets/komesomme-1.0.0-case-study.html](./docs/assets/komesomme-1.0.0-case-study.html) |
 
-- **味わいの地図** 左がすっきり澄む、右が甘みふくらむ。下が粒立ちしっかり、上がやわらか、ほどける。点の色は産地、形は米粒です。
-- **探針** 地図を触ると、近い銘柄がすぐ並びます。相談すると、探針はおすすめの銘柄の位置へ移ります。
-- **侍米師に相談** 「ハイボールと唐揚げに合う米」のように話しかけると、短い返事とおすすめの銘柄が返ります。
-- **銘柄ライブラリ** `/library/[id]` で由来・炊飯まで。購入は **通販**（楽天 / Yahoo / Amazon）と **ふるさと納税**（楽天ふるさと / Yahoo!ふるさと / さとふる？）のタグ切替。
+## デモの見方
 
-対象は、スーパーの棚で迷う人、贈り物を選びたい人、酒とご飯の組み合わせを知りたい人です。
+ブラウザで [https://komesomme.jp](https://komesomme.jp) を開きます。アカウントはありません。パソコンは画面幅を 100% のまま見る想定です。電話では、おすすめ、小さな地図、大きく見る、の順に下がります。
 
-## 使い方
+### 味わいの地図
 
-1. サイトを開く
-2. 地図の好きな位置を置くか、スライダーを動かす
-3. 右の「今日の一膳」から銘柄を開く
-4. 料理やお酒、気分の言葉で相談するときは、下の入力から送る
+[https://komesomme.jp](https://komesomme.jp)
 
-Desktop は 100% 表示で一画面に収まります。Mobile は推薦 → 小さな地図 → 大きく見る、の順です。
+左がすっきり澄む、右が甘みふくらむ。下が粒立ちしっかり、上がやわらか、ほどける。点の色は産地、形は米粒です。
+
+1. 地図の好きな位置を置くか、スライダーを動かす
+2. 右の「今日の一膳」から銘柄を開く
+3. 料理やお酒、気分を言葉にするときは、下の入力に書いて送る。試し文は「ハイボールと唐揚げに合う米」
+
+地図を触ると、近い銘柄が並びます。相談を送ると、探針はおすすめの位置へ移ります。
+
+ヘッダと「地図のほか」から、次のページへ進めます。
+
+| ページ | リンク | 中身 |
+| --- | --- | --- |
+| 料理で選ぶ | [https://komesomme.jp/pair](https://komesomme.jp/pair) | カレー、刺身、弁当、唐揚げなど、料理ごとの銘柄 |
+| 唐揚げの例 | [https://komesomme.jp/pair/karaage](https://komesomme.jp/pair/karaage) | 一品のページ |
+| ライブラリ | [https://komesomme.jp/library](https://komesomme.jp/library) | 銘柄の一覧 |
+| 魚沼コシヒカリの例 | [https://komesomme.jp/library/koshihikari-uonuma](https://komesomme.jp/library/koshihikari-uonuma) | 由来、炊き方、お店で探す |
+| ピックアップ | [https://komesomme.jp/discover](https://komesomme.jp/discover) | きょうの三銘柄と、旬の特集 |
+| 特集の例 | [https://komesomme.jp/collections/bento-cold](https://komesomme.jp/collections/bento-cold) | 「冷めても、弁当に」 |
+
+銘柄ページの「お店で探す」は、通販（楽天 / Yahoo! / Amazon / メルカリ）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
+
+法務のページは [利用規約](https://komesomme.jp/terms)、[プライバシーポリシー](https://komesomme.jp/privacy)、[特定商取引法に基づく表記](https://komesomme.jp/tokushoho) です。
+
+## プロジェクト紹介の見方
+
+紹介は二つです。先に短い概要、あとから一枚の記録、の順が読みやすいです。
+
+### 1. 短い概要
+
+[docs/00-overview.md](./docs/00-overview.md)
+
+いまのサイトが誰向けで、本番に何があるかを数分で読めます。GitHub ではこのファイルを開くと、整形された文章になります。文書の一覧が要るときは [docs/README.md](./docs/README.md) です。
+
+### 2. 1.0.0 の記録
+
+[docs/assets/komesomme-1.0.0-case-study.html](./docs/assets/komesomme-1.0.0-case-study.html)
+
+タイトルは「KomeSomme 1.0.0 — 技術実験の記録」です。本番サイトとは別の HTML で、背景、体験、設計、公開の判断までを一枚にしています。右上の「公開サイト」から [https://komesomme.jp](https://komesomme.jp) に戻れます。
+
+ページ上部の順は、要点、体験、独自性、設計、検証、結論です。本文の「読む順番」では、流れ、体験、独自性、設計、検証、道筋、結論と続きます。
+
+あとの改稿は [docs/assets/komesomme-1.4.1-case-study.html](./docs/assets/komesomme-1.4.1-case-study.html) にあります。紹介として開くのは 1.0.0 のほうです。
+
+GitHub のファイル画面はソースが見えるだけで、ページとしては動きません。次のどちらかでブラウザに出してください。
+
+1. ファイルを保存し、手元のブラウザで開く。リポジトリをクローンしているときは、`docs/assets/komesomme-1.0.0-case-study.html` をブラウザへドロップします。
+2. リポジトリが公開になっているときは、このプレビューで開けます。  
+   [htmlpreview: 技術実験の記録](https://htmlpreview.github.io/?https://github.com/Toygaolingxiao/komesomme/blob/main/docs/assets/komesomme-1.0.0-case-study.html)
 
 ## 開発者向け
 
