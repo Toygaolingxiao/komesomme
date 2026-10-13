@@ -21,6 +21,13 @@ const KNOWN = new Set([
   "akitakomachi",
   "sagabiyori",
   "seiten-no-hekireki",
+  "ryu-no-hitomi",
+  "nitamai",
+  "hazuki-minori",
+  "hanaechizen",
+  "yumemizuho",
+  "fusakogane",
+  "koshiibuki",
 ]);
 
 describe("editorial collections", () => {
@@ -58,11 +65,31 @@ describe("editorial collections", () => {
 
   it("indexes newest dateLabel first", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "jugatsu-wase",
+      "shio-musubi",
       "toku-a",
       "nabe",
       "shinmai",
       "bento-cold",
     ]);
+  });
+
+  it("features jugatsu-wase ahead of shio-musubi in October", () => {
+    const october = Date.UTC(2026, 9, 12, 8, 0);
+    expect(featuredCollections(KNOWN, october).map((row) => row.slug)).toEqual([
+      "jugatsu-wase",
+      "shio-musubi",
+    ]);
+  });
+
+  it("prints jugatsu-wase's first-ship date", () => {
+    const row = EDITORIAL_COLLECTIONS.find((item) => item.slug === "jugatsu-wase");
+    expect(row?.dateLabel).toBe("2026年10月12日 22時08分");
+  });
+
+  it("prints shio-musubi's first-ship date", () => {
+    const row = EDITORIAL_COLLECTIONS.find((item) => item.slug === "shio-musubi");
+    expect(row?.dateLabel).toBe("2026年10月12日 17時10分");
   });
 
   it("prints nabe's first-ship date, not a future November", () => {
