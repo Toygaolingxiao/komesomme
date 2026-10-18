@@ -309,14 +309,16 @@ export function BrandDetailPanel({
                     </p>
                   ) : null}
                 </div>
-                {heroArt?.kind === "brand" ? (
+                {heroArt ? (
                   <EditorialArt
                     src={heroArt.src}
                     alt=""
                     className="aspect-[5/4] w-full overflow-hidden rounded-2xl"
                     sizes="(min-width: 640px) 240px, 160px"
                     objectPosition="50% 42%"
-                    transitionName={artViewTransitionName("brand", rice.id)}
+                    transitionName={
+                      heroArt.kind === "brand" ? artViewTransitionName("brand", rice.id) : undefined
+                    }
                   />
                 ) : null}
               </div>

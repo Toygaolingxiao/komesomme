@@ -5,7 +5,7 @@ import { LibraryChrome } from "@/components/library/LibraryChrome";
 import { LibraryRiceDossier } from "@/components/library/LibraryRiceDossier";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { findRiceProfile, riceProfiles } from "@/data/rice/catalog";
 import {
   encyclopediaManifest,
@@ -88,7 +88,9 @@ export default async function LibraryArticlePage({ params }: PageProps) {
         ]}
       />
       <LibraryChrome />
-      <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={trail} />
+      <div className={`${SITE_COLUMN} pt-5`}>
+        <Breadcrumbs className={READING_COLUMN} crumbs={trail} />
+      </div>
       <LibraryRiceDossier rice={rice} article={article} neighbours={neighbours} />
       <SiteFooter />
     </main>

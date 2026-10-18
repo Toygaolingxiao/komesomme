@@ -249,14 +249,6 @@ export function TasteMap({
 }) {
   const lg = useLgUp();
   const variant: TasteMapVariant = lg ? "desktop" : "preview";
-  const cellCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const rice of points) {
-      const key = `${Math.round(rice.sweetness)}:${Math.round(rice.hardness)}`;
-      map.set(key, (map.get(key) ?? 0) + 1);
-    }
-    return map;
-  }, [points]);
   const probeLeftPct = useTransform(probeLeft, (value) => `${value}%`);
   const probeTopPct = useTransform(probeTop, (value) => `${value}%`);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -412,10 +404,6 @@ export function TasteMap({
                   reduceMotion={reduceMotion}
                   touchFriendly={touchFriendly}
                   isBestMatch={rice.id === bestMatchId}
-                  peers={
-                    cellCounts.get(`${Math.round(rice.sweetness)}:${Math.round(rice.hardness)}`) ??
-                    1
-                  }
                   isRunnerUp={
                     runnerUpIds.has(rice.id) && rice.id !== bestMatchId
                   }

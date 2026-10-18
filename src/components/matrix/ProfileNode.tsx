@@ -52,7 +52,6 @@ function grainPose(id: string) {
 export function ProfileNode({
   rice,
   isBestMatch,
-  peers = 1,
   isRunnerUp,
   isSelected,
   isHighlighted,
@@ -69,7 +68,6 @@ export function ProfileNode({
 }: {
   rice: RiceDisplayPoint;
   isBestMatch: boolean;
-  peers?: number;
   isRunnerUp: boolean;
   isSelected: boolean;
   isHighlighted: boolean;
@@ -196,11 +194,6 @@ export function ProfileNode({
           emphasis={emphasis}
         />
       </motion.span>
-      {isBestMatch && peers > 1 ? (
-        <span className="pointer-events-none absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--km-surface)] px-1 font-serif text-[12px] leading-none text-[var(--km-ink)] shadow-[0_1px_2px_rgba(112,69,34,0.18)]">
-          {peers}
-        </span>
-      ) : null}
 
       {tooltipOpen && !muted ? (
         <span

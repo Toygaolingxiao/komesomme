@@ -113,12 +113,14 @@ body {
   aspect-ratio: 2 / 1;
   width: 100%;
   max-width: 40rem;
+  margin-inline: auto;
 }
 
 .km-figure-wide {
   aspect-ratio: 2 / 1;
   width: 100%;
   max-width: 52rem;
+  margin-inline: auto;
 }
 
 /* Square map sits on the title’s left edge. Desktop fills the card. */

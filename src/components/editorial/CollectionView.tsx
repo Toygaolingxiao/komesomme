@@ -2,7 +2,7 @@ import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { FOCUS } from "@/components/matrix/shared";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { collectionDateDisplay, type EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
 import { BrandThumb } from "@/components/editorial/BrandThumb";
@@ -22,7 +22,7 @@ export function CollectionView({
   return (
     <article className="pb-20">
       <div className={`${SITE_COLUMN} pt-4`}>
-        <header className="max-w-[40rem]">
+        <header className={READING_COLUMN}>
           <SteamMark className="h-7 w-7" />
           <p className="mt-3 text-[12px] text-[var(--km-muted)]">
             {collectionDateDisplay(collection.dateLabel)}
@@ -49,14 +49,15 @@ export function CollectionView({
       </div>
 
       <div className={`${SITE_COLUMN} mt-8`}>
-        <div className="max-w-3xl space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
+        <div className={`${READING_COLUMN} space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]`}>
           {collection.body.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
           ))}
         </div>
       </div>
 
-      <ol className={`${SITE_COLUMN} mt-12 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]`}>
+      <div className={SITE_COLUMN}>
+      <ol className="mx-auto mt-12 max-w-[52rem] divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
         {collection.riceIds.map((id, index) => {
           const entry = byId.get(id);
           if (!entry) return null;
@@ -95,6 +96,7 @@ export function CollectionView({
           );
         })}
       </ol>
+      </div>
     </article>
   );
 }

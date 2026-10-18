@@ -3,8 +3,8 @@ import { regionColor } from "@/components/matrix/shared";
 import { resolveBrandArt } from "@/lib/editorial/art";
 
 /**
- * Small brand mark. Dedicated illustrations stay. Prefecture maps and region
- * washes collapse to a paper tile — a green landmass at 48px does not read as rice.
+ * Brand picture. Uses the dedicated illustration, otherwise the prefecture
+ * or region painting. A paper tile is only the fallback when no file exists.
  */
 export function BrandThumb({
   id,
@@ -24,7 +24,7 @@ export function BrandThumb({
   transitionName?: string;
 }) {
   const art = resolveBrandArt(id, region, prefecture);
-  if (art?.kind === "brand") {
+  if (art) {
     return (
       <EditorialArt
         src={art.src}
@@ -33,7 +33,7 @@ export function BrandThumb({
         sizes={sizes}
         quality={80}
         objectPosition="50% 42%"
-        transitionName={transitionName}
+        transitionName={art.kind === "brand" ? transitionName : undefined}
       />
     );
   }

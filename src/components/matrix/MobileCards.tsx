@@ -18,7 +18,6 @@ export function MobileTodayCard({
   loading,
   caption = "今日の一膳",
   semantic = false,
-  cellNote,
   onOpen,
 }: {
   match: RailMatch | null;
@@ -26,7 +25,6 @@ export function MobileTodayCard({
   loading?: boolean;
   caption?: string;
   semantic?: boolean;
-  cellNote?: string | null;
   onOpen: (id: string) => void;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -67,14 +65,14 @@ export function MobileTodayCard({
       }}
       className={`min-h-[12.5rem] w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
     >
-      <span className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3">
+      <span className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-3">
         <BrandThumb
           id={match.rice.id}
           name={match.rice.name}
           region={match.rice.region}
           prefecture={match.rice.prefecture}
-          className="aspect-square w-full overflow-hidden rounded-xl"
-          sizes="4.5rem"
+          className="aspect-[5/4] w-full overflow-hidden rounded-xl"
+          sizes="240px"
         />
         <span className="min-w-0">
         <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
@@ -105,11 +103,8 @@ export function MobileTodayCard({
       </span>
     </button>
         </motion.div>
-      </AnimatePresence>
-      {cellNote ? (
-        <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-muted)]">{cellNote}</p>
-      ) : null}
-      {runners.length > 0 ? (
+        </AnimatePresence>
+        {runners.length > 0 ? (
         <ol className="mt-2 flex flex-col">
           {runners.map((row, index) => (
             <li key={row.rice.id} className="border-b border-[var(--km-border)] last:border-b-0">

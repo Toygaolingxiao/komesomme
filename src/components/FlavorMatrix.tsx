@@ -505,19 +505,6 @@ export function FlavorMatrix({
   const caption =
     recommendationMode === "semantic" ? "今日の一膳" : "いちばん近い一膳";
 
-  const cellNote = useMemo(() => {
-    const top = railMatches[0]?.rice;
-    if (!top || recommendationMode !== "coordinate") return null;
-    const sweetness = Math.round(top.sweetness);
-    const hardness = Math.round(top.hardness);
-    const count = points.filter(
-      (point) =>
-        Math.round(point.sweetness) === sweetness && Math.round(point.hardness) === hardness
-    ).length;
-    if (count <= 1) return null;
-    return `同じ甘み・粒感の位置に、ほかに${count - 1}銘柄あります。点の間隔は、重なりを避けるためです。`;
-  }, [points, railMatches, recommendationMode]);
-
   const pickGrain = useCallback(
     (id: string) => {
       if (window.matchMedia("(min-width: 1024px)").matches) {
@@ -583,7 +570,6 @@ export function FlavorMatrix({
             loading={loadState === "loading" || semanticState === "pending"}
             caption={caption}
             semantic={recommendationMode === "semantic"}
-            cellNote={cellNote}
             onOpen={openDetail}
           />
         </div>
@@ -636,7 +622,6 @@ export function FlavorMatrix({
             highlightId={hoveredId}
             reduceMotion={reduceMotion}
             caption={caption}
-            cellNote={cellNote}
             onSelect={openFromRail}
             onHover={handleHover}
           />

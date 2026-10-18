@@ -3,7 +3,7 @@ import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { ComparisonTable, type ComparisonRow } from "@/components/pair/ComparisonTable";
 import { FOCUS } from "@/components/matrix/shared";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { pairingPageBySlug } from "@/data/editorial/pairings";
 import {
@@ -76,7 +76,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
 
   return (
     <article className={`${SITE_COLUMN} pair-stage-enter pb-16 text-[var(--km-ink)]`}>
-      <header className="max-w-[40rem] pt-2">
+      <header className={`${READING_COLUMN} pt-2`}>
         <p className="text-[12px] tracking-[0.14em] text-[var(--km-muted)]">料理で選ぶ</p>
         <h1 className="mt-2 font-serif text-[1.85rem] font-semibold leading-[1.12] tracking-tight sm:text-[2.1rem]">
           {page.dishLabel}に合う米
@@ -112,22 +112,22 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
         </div>
       )}
 
-      <div className="mt-8 max-w-[40rem] space-y-3 text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
+      <div className={`${READING_COLUMN} mt-8 space-y-3 text-[14px] leading-[1.9] text-[var(--km-ink-soft)]`}>
         {page.lead.map((paragraph) => (
           <p key={paragraph.slice(0, 28)}>{paragraph}</p>
         ))}
       </div>
 
-      <aside className="mt-8 max-w-[40rem] border-l-2 border-[var(--km-gold)]/55 pl-4">
+      <aside className={`${READING_COLUMN} mt-8 border-l-2 border-[var(--km-gold)]/55 pl-4`}>
         <p className="text-[11px] tracking-wide text-[var(--km-muted)]">並びの根拠</p>
         <p className="mt-1.5 text-[13px] leading-[1.85] text-[var(--km-ink-soft)]">{page.sortNote}</p>
       </aside>
 
-      <div className="mt-12 max-w-[72rem]">
+      <div className="mx-auto mt-12 w-full max-w-[72rem]">
         <ComparisonTable rows={rows} title="今夜の候補" />
       </div>
 
-      <section className="mt-12 max-w-[40rem]" aria-labelledby="pair-avoid-heading">
+      <section className={`${READING_COLUMN} mt-12`} aria-labelledby="pair-avoid-heading">
               <h2
                 id="pair-avoid-heading"
                 className="font-serif text-[1.2rem] font-semibold tracking-tight"
@@ -163,7 +163,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
               </ul>
             </section>
 
-            <section className="mt-12 max-w-[40rem]" aria-labelledby="pair-faq-heading">
+            <section className={`${READING_COLUMN} mt-12`} aria-labelledby="pair-faq-heading">
               <h2 id="pair-faq-heading" className="font-serif text-[1.2rem] font-semibold">
                 よくある質問
               </h2>
@@ -179,7 +179,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
               </dl>
             </section>
 
-            <nav className="mt-12 max-w-[40rem] border-t border-[var(--km-border)] pt-8" aria-label="関連リンク">
+            <nav className={`${READING_COLUMN} mt-12 border-t border-[var(--km-border)] pt-8`} aria-label="関連リンク">
               <h2 className="font-serif text-[1.1rem] font-semibold">ほかの料理</h2>
               <ul className="mt-4 grid gap-x-6 sm:grid-cols-2">
                 {related.map((other) => {

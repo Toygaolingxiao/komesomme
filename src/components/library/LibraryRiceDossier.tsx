@@ -21,7 +21,7 @@ import {
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
-import { SITE_COLUMN } from "@/components/siteChrome";
+import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { joinClauses } from "@/lib/copy/joinClauses";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
@@ -95,7 +95,7 @@ export function LibraryRiceDossier({
 
   return (
     <article className={`${SITE_COLUMN} pb-24 pt-2`}>
-      <div className="max-w-[40rem]">
+      <div className={READING_COLUMN}>
       <header>
         {heroArt ? (
           <EditorialArt

@@ -46,21 +46,21 @@ function BestMatchCard({
       onMouseLeave={() => onHover?.(null)}
       onFocus={() => onHover?.(match.rice.id)}
       onBlur={() => onHover?.(null)}
-      className={`group relative w-full overflow-hidden rounded-xl border-l-[3px] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3 text-left transition duration-200 active:scale-[0.99] ${FOCUS} ${
+      className={`group relative w-full rounded-xl border-l-[3px] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3 text-left transition duration-200 active:scale-[0.99] ${FOCUS} ${
         active || highlighted
           ? "bg-[var(--km-surface)] shadow-[inset_0_0_0_1px_rgba(112,69,34,0.12)]"
           : "hover:bg-[var(--km-surface)]"
       }`}
       style={{ borderLeftColor: fill }}
     >
-      <span className="relative grid grid-cols-[3.25rem_minmax(0,1fr)] gap-3">
+      <span className="relative grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-3">
         <BrandThumb
           id={match.rice.id}
           name={match.rice.name}
           region={match.rice.region}
           prefecture={match.rice.prefecture}
-          className="aspect-square w-full overflow-hidden rounded-lg"
-          sizes="3.25rem"
+          className="aspect-[5/4] w-full overflow-hidden rounded-xl"
+          sizes="240px"
         />
         <span className="min-w-0">
         <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
@@ -191,7 +191,6 @@ export function RecommendationRail({
   highlightId = null,
   reduceMotion,
   caption,
-  cellNote,
   onSelect,
   onHover,
 }: {
@@ -203,7 +202,6 @@ export function RecommendationRail({
   highlightId?: string | null;
   reduceMotion: boolean;
   caption: string;
-  cellNote?: string | null;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
@@ -257,9 +255,6 @@ export function RecommendationRail({
                     onSelect={() => open(primary.rice.id)}
                     onHover={onHover}
                   />
-                  {cellNote ? (
-                    <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-muted)]">{cellNote}</p>
-                  ) : null}
                   {runnerUps.length > 0 ? (
                     <RunnerUpList
                       matches={runnerUps}
