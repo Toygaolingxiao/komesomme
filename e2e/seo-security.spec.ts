@@ -79,7 +79,7 @@ test("TS-ANALYTICS-01 home survives analytics 500", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
-  await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible({
+  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible({
     timeout: 30_000,
   });
 });

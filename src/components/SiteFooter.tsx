@@ -5,9 +5,9 @@ import { TASTE_DISCLAIMER } from "@/lib/affiliate";
 import { FOCUS } from "@/components/matrix/shared";
 
 const LINKS = [
-  { href: "/privacy", label: "プライバシー", short: "プライバシー" },
-  { href: "/terms", label: "利用規約", short: "規約" },
-  { href: "/tokushoho", label: "特定商取引法", short: "特商法" },
+  { href: "/privacy", label: "プライバシー" },
+  { href: "/terms", label: "利用規約" },
+  { href: "/tokushoho", label: "特定商取引法" },
 ] as const;
 
 /** Compact legal links for the home header (keeps Desktop 100dvh intact). */
@@ -15,7 +15,7 @@ export function SiteLegalNav({ className = "" }: { className?: string }) {
   return (
     <nav
       aria-label="法務情報"
-      className={`flex flex-wrap items-center justify-end gap-x-1.5 gap-y-1 text-[10px] text-[var(--km-muted)] sm:gap-x-2 ${className}`}
+      className={`flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-[12px] text-[var(--km-muted)] ${className}`}
     >
       {LINKS.map((link, index) => (
         <span key={link.href} className="inline-flex items-center gap-1.5 sm:gap-2">
@@ -24,8 +24,7 @@ export function SiteLegalNav({ className = "" }: { className?: string }) {
             href={link.href}
             className={`transition hover:text-[var(--km-gold)] ${FOCUS}`}
           >
-            <span className="sm:hidden">{link.short}</span>
-            <span className="hidden sm:inline">{link.label}</span>
+            {link.label}
           </Link>
         </span>
       ))}
@@ -35,9 +34,9 @@ export function SiteLegalNav({ className = "" }: { className?: string }) {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-10 border-t border-[var(--km-border)] py-8">
+    <footer className="mt-10 border-t border-[var(--km-border)] py-8 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] lg:pb-8">
       <div
-        className={`${SITE_COLUMN} flex flex-col gap-3 text-[11px] leading-relaxed text-[var(--km-muted)]`}
+        className={`${SITE_COLUMN} flex flex-col gap-3 text-[12px] leading-relaxed text-[var(--km-muted)]`}
       >
         <SiteLegalNav className="justify-start" />
         <AffiliateDisclosure />

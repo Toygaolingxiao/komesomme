@@ -3,10 +3,11 @@ import { createEmbeddingForConsultation, getEmbeddingModel, resolveProvider } fr
 import { riceProfiles } from "@/data/rice/catalog";
 import { expandConsultationQuery } from "@/lib/rice/consultExpand";
 import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
-import { buildSemanticReason } from "@/lib/rice/flavorBridge";
+import { buildSemanticReason, detectPrefectureStem, queryTargetsPrefecture } from "@/lib/rice/flavorBridge";
 import { calculateTasteNeighbours } from "@/lib/rice/matrix";
 import { nameMatch, semanticDisplayScore, brandCoreQuery, canonicalBrandName } from "@/lib/rice/semanticScore";
 import { generateSommelierReply } from "@/lib/rice/sommelierReply";
+import { pairingForConsultation } from "@/lib/editorial/pairings";
 import { reportServerError } from "@/lib/observability/report";
 import { guardSemanticRecommend } from "@/lib/security/semanticGuard";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -77,6 +78,27 @@ export async function POST(request: Request) {
       query,
       reply,
       embeddingModel: "name-lookup",
+      matches: ranked,
+    });
+  }
+
+  const pairing = pairingForConsultation(query);
+  const prefectureReply = replyForNamedPrefecture(query, matchCount, pairing);
+  if (prefectureReply) return prefectureReply;
+
+  if (pairing) {
+    const ranked = pairing.top
+      .slice(0, matchCount)
+      .map((rice, index) => toMatch(query, rice, index === 0 ? 1 : 0.8));
+    const lead = ranked[0]?.rice;
+    const reply = lead
+      ? `${pairing.label}なら、${lead.name}を先に置いています。料理のページと同じ並びです。`
+      : `${pairing.label}のページで、近い銘柄を並べています。`;
+    return NextResponse.json({
+      query,
+      reply,
+      embeddingModel: "pairing",
+      pairing: { href: pairing.href, label: pairing.label },
       matches: ranked,
     });
   }
@@ -172,6 +194,47 @@ export async function POST(request: Request) {
     reportServerError(cause, { route: "semantic-recommend", kind: "match", status: 502 });
     return NextResponse.json({ message: "銘柄の照合に失敗しました。" }, { status: 502 });
   }
+}
+
+function replyForNamedPrefecture(
+  query: string,
+  matchCount: number,
+  pairing: ReturnType<typeof pairingForConsultation>
+) {
+  if (!detectPrefectureStem(query)) return null;
+
+  const local = riceProfiles
+    .filter((rice) => queryTargetsPrefecture(query, rice.prefecture))
+    .sort((a, b) => a.name.localeCompare(b.name, "ja"));
+  if (local.length === 0) return null;
+
+  const dishIds = new Set((pairing?.top ?? []).map((rice) => rice.id));
+  const ordered = [
+    ...local.filter((rice) => dishIds.has(rice.id)),
+    ...local.filter((rice) => !dishIds.has(rice.id)),
+  ].slice(0, matchCount);
+
+  const ranked = ordered.map((rice, index) => toMatch(query, rice, index === 0 ? 1 : 0.8));
+  const lead = ranked[0]?.rice;
+  if (!lead) return null;
+
+  const listed = ranked.map((row) => row.rice.name).join("、");
+  const reply =
+    pairing && dishIds.has(lead.id)
+      ? `${lead.prefecture}の${pairing.label}なら、${lead.name}を先に置いています。`
+      : local.length === 1
+        ? `${lead.prefecture}の銘柄は、${lead.name}です。`
+        : local.length > ranked.length
+          ? `${lead.prefecture}の銘柄から、${listed}を並べました。`
+          : `${lead.prefecture}の銘柄は、${listed}です。`;
+
+  return NextResponse.json({
+    query,
+    reply,
+    embeddingModel: "prefecture",
+    ...(pairing ? { pairing: { href: pairing.href, label: pairing.label } } : {}),
+    matches: ranked,
+  });
 }
 
 function toMatch(query: string, rice: RiceProfileV2, similarityRaw: unknown) {

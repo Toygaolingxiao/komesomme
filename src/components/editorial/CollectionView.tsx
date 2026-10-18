@@ -1,11 +1,11 @@
-import Link from "next/link";
 import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
-import type { EditorialCollection } from "@/data/editorial/collections";
-import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
+import { collectionDateDisplay, type EditorialCollection } from "@/data/editorial/collections";
+import { collectionArtSrc } from "@/lib/editorial/art";
+import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 
@@ -22,43 +22,30 @@ export function CollectionView({
   return (
     <article className="pb-20">
       <div className={`${SITE_COLUMN} pt-4`}>
-        <p className="text-[12px] text-[var(--km-muted)]">
-          <Link href="/discover#collections" className={`hover:text-[var(--km-gold)] ${FOCUS}`}>
-            ピックアップ
-          </Link>
-          <span className="mx-1.5">/</span>
-          {collection.title}
-        </p>
-
-        <div className="mt-4 grid items-end gap-5 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] md:gap-10">
-          {hero ? (
-            <EditorialArt
-              src={hero}
-              alt=""
-              className="aspect-[16/10] w-full md:aspect-[16/9]"
-              sizes="(min-width: 768px) 55vw, 100vw"
-              quality={90}
-              priority
-              objectPosition="50% 42%"
-              transitionName={artViewTransitionName("collection", collection.slug)}
-            />
-          ) : (
-            <div
-              aria-hidden
-              className="aspect-[16/10] w-full bg-[var(--km-surface-warm)] md:aspect-[16/9]"
-            />
-          )}
-          <div className="min-w-0 pb-1">
-            <SteamMark className="h-7 w-7" />
-            <p className="mt-3 text-[12px] text-[var(--km-muted)]">{collection.dateLabel}</p>
-            <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
-              {collection.title}
-            </h1>
-            <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
-              {collection.dek}
-            </p>
-          </div>
-        </div>
+        <header className="max-w-[40rem]">
+          <SteamMark className="h-7 w-7" />
+          <p className="mt-3 text-[12px] text-[var(--km-muted)]">
+            {collectionDateDisplay(collection.dateLabel)}
+          </p>
+          <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
+            {collection.title}
+          </h1>
+          <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
+            {collection.dek}
+          </p>
+        </header>
+        {hero ? (
+          <EditorialArt
+            src={hero}
+            alt=""
+            className="km-figure-wide mt-6"
+            sizes="(min-width: 768px) 52rem, 100vw"
+            quality={90}
+            priority
+            objectPosition="50% 42%"
+            transitionName={artViewTransitionName("collection", collection.slug)}
+          />
+        ) : null}
       </div>
 
       <div className={`${SITE_COLUMN} mt-8`}>
@@ -73,7 +60,6 @@ export function CollectionView({
         {collection.riceIds.map((id, index) => {
           const entry = byId.get(id);
           if (!entry) return null;
-          const art = resolveBrandArt(entry.id, entry.region, entry.prefecture);
           const odd = index % 2 === 0;
           return (
             <li key={entry.id}>
@@ -81,23 +67,15 @@ export function CollectionView({
                 href={`/library/${entry.id}`}
                 className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
               >
-                {art ? (
-                  <EditorialArt
-                    src={art.src}
-                    alt=""
-                    className={`w-full ${odd ? "aspect-[4/5]" : "aspect-square"}`}
-                    sizes="(min-width: 640px) 6.5rem, 5.75rem"
-                    objectPosition={odd ? "40% 50%" : "60% 40%"}
-                    transitionName={artViewTransitionName("brand", entry.id)}
-                  />
-                ) : (
-                  <div
-                    aria-hidden
-                    className={`w-full bg-[var(--km-surface-warm)] ${
-                      odd ? "aspect-[4/5]" : "aspect-square"
-                    }`}
-                  />
-                )}
+                <BrandThumb
+                  id={entry.id}
+                  name={entry.name}
+                  region={entry.region}
+                  prefecture={entry.prefecture}
+                  className={`w-full overflow-hidden ${odd ? "aspect-[4/5]" : "aspect-square"}`}
+                  sizes="(min-width: 640px) 6.5rem, 5.75rem"
+                  transitionName={artViewTransitionName("brand", entry.id)}
+                />
                 <span className="min-w-0">
                   <span className="text-[12px] text-[var(--km-muted)]">
                     {String(index + 1).padStart(2, "0")}

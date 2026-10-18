@@ -39,3 +39,39 @@ export function allResolvedPairings(): ResolvedPairing[] {
     (row) => row.top.length > 0 && row.avoid.length > 0
   );
 }
+
+export type PairingConsultation = {
+  href: string;
+  label: string;
+  top: RiceProfileV2[];
+};
+
+/** Longest dish alias contained in the query. Ties keep the first page in PAIRING_PAGES. */
+export function pairingForConsultation(query: string): PairingConsultation | null {
+  const text = query.normalize("NFKC").trim();
+  if (!text) return null;
+
+  let bestLength = 0;
+  let bestPage: PairingPage | null = null;
+
+  for (const page of PAIRING_PAGES) {
+    const aliases = [page.dishLabel, ...page.dishAliases];
+    for (const alias of aliases) {
+      const needle = alias.normalize("NFKC").trim();
+      if (needle.length <= bestLength) continue;
+      if (!text.includes(needle)) continue;
+      bestLength = needle.length;
+      bestPage = page;
+    }
+  }
+
+  if (!bestPage) return null;
+  const resolved = resolvePairing(bestPage);
+  if (resolved.top.length === 0) return null;
+
+  return {
+    href: `/pair/${bestPage.slug}`,
+    label: bestPage.dishLabel,
+    top: resolved.top.slice(0, 4),
+  };
+}

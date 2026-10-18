@@ -5,7 +5,7 @@ export async function waitForHomeReady(page: Page, path = "/") {
   await page.goto(path);
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
   // Scope to #matrix so the header tagline「侍米師」is not matched.
-  await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible({
+  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible({
     timeout: 30_000,
   });
   // Dismiss the once-a-day discover tip so it cannot intercept map/rail clicks in e2e.
@@ -39,7 +39,7 @@ export async function scrubHomeSlider(page: Page, id: "#km-sweetness" | "#km-har
 export async function expectHomeAlive(page: Page) {
   await expect(page.getByText("Application error:")).toHaveCount(0);
   await expect(page.locator("#matrix")).toBeVisible();
-  await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible();
+  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
 }
 
 /** Fail like Chrome / WebKit if the app mutates history on every slider tick. */

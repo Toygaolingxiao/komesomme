@@ -1,4 +1,5 @@
 import type { RiceProfileV2 } from "@/types/rice";
+import { joinClauses } from "@/lib/copy/joinClauses";
 import {
   catalogDrinkPairings,
   catalogSeasonPairings,
@@ -35,7 +36,7 @@ export function CatalogPairingGuide({ rice }: { rice: RiceProfileV2 }) {
                   {season}
                 </dt>
                 <dd className="min-w-0 text-[13px] leading-[1.75] text-[var(--km-ink-soft)]">
-                  {items.join("、")}
+                  {joinClauses(items)}
                 </dd>
               </div>
             ))}
@@ -56,7 +57,7 @@ export function CatalogPairingGuide({ rice }: { rice: RiceProfileV2 }) {
                   {label}
                 </dt>
                 <dd className="min-w-0 text-[13px] leading-[1.75] text-[var(--km-ink-soft)]">
-                  {items.join("、")}
+                  {joinClauses(items)}
                 </dd>
               </div>
             ))}
@@ -68,7 +69,7 @@ export function CatalogPairingGuide({ rice }: { rice: RiceProfileV2 }) {
         <p className="mt-8 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
           <span className="font-medium text-[var(--km-ink)]">こんなとき</span>
           <span className="mx-2 text-[var(--km-muted)]">/</span>
-          {scenes.join("、")}
+          {joinClauses(scenes)}
         </p>
       ) : null}
     </section>

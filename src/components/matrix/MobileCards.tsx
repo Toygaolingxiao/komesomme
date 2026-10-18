@@ -2,6 +2,7 @@
 
 import { ArrowRight, MapPin } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { track } from "@/lib/analytics";
 import {
   FOCUS,
@@ -13,13 +14,19 @@ import {
 
 export function MobileTodayCard({
   match,
+  runners = [],
   loading,
+  caption = "今日の一膳",
   semantic = false,
+  cellNote,
   onOpen,
 }: {
   match: RailMatch | null;
+  runners?: RailMatch[];
   loading?: boolean;
+  caption?: string;
   semantic?: boolean;
+  cellNote?: string | null;
   onOpen: (id: string) => void;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -60,16 +67,26 @@ export function MobileTodayCard({
       }}
       className={`min-h-[12.5rem] w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
     >
-      <span className="min-w-0">
-        <span className="text-[11px] font-medium tracking-wide text-[var(--km-brown)]">
-          今日の一膳
+      <span className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3">
+        <BrandThumb
+          id={match.rice.id}
+          name={match.rice.name}
+          region={match.rice.region}
+          prefecture={match.rice.prefecture}
+          className="aspect-square w-full overflow-hidden rounded-xl"
+          sizes="4.5rem"
+        />
+        <span className="min-w-0">
+        <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
+          {caption}
         </span>
         <span className="mt-1.5 block font-serif text-[1.35rem] font-semibold leading-snug tracking-tight text-[var(--km-ink)]">
           {match.rice.name}
         </span>
-        <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-[var(--km-muted)]">
+        <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[12px] text-[var(--km-muted)]">
           <MapPin size={12} weight={ICON_WEIGHT} className="shrink-0" />
           <span>{match.rice.prefecture}産</span>
+        </span>
         </span>
       </span>
 
@@ -82,13 +99,35 @@ export function MobileTodayCard({
           {dishes.join("、")}
         </span>
       ) : null}
-      <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent)]">
+      <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent-ink)]">
         くわしく見る
         <ArrowRight size={13} weight={ICON_WEIGHT} />
       </span>
     </button>
         </motion.div>
       </AnimatePresence>
+      {cellNote ? (
+        <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-muted)]">{cellNote}</p>
+      ) : null}
+      {runners.length > 0 ? (
+        <ol className="mt-2 flex flex-col">
+          {runners.map((row, index) => (
+            <li key={row.rice.id} className="border-b border-[var(--km-border)] last:border-b-0">
+              <button
+                type="button"
+                onClick={() => onOpen(row.rice.id)}
+                className={`flex w-full items-baseline justify-between gap-3 py-2 text-left ${FOCUS}`}
+              >
+                <span className="min-w-0 truncate font-serif text-[15px] text-[var(--km-ink)]">
+                  <span className="mr-2 text-[12px] text-[var(--km-gold-ink)]">0{index + 2}</span>
+                  {row.rice.name}
+                </span>
+                <span className="shrink-0 text-[12px] text-[var(--km-muted)]">{row.rice.prefecture}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      ) : null}
     </div>
   );
 }

@@ -18,7 +18,7 @@ import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
 export const metadata: Metadata = {
   title: "料理で選ぶ米｜甘み・粒感の比較表",
   description:
-    "カレー、刺身、弁当、鍋、寿司など、献立から米を選ぶページです。カタログの相性と座標で並べています。",
+    "カレー、刺身、弁当、鍋、寿司など、献立から米を選ぶページです。当サイトの評価と味の位置で並べています。",
   alternates: { canonical: "/pair" },
 };
 
@@ -67,7 +67,7 @@ export default function PairIndexPage() {
         <SteamMark className="h-8 w-8" />
         <h1 className={`mt-3 ${PAGE_TITLE}`}>料理で選ぶ</h1>
         <p className="mt-3 max-w-2xl text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-          今夜の献立から、甘みと粒感の近い銘柄を並べています。値段の並びではなく、味の座標で選ぶページです。
+          今夜の献立から、甘みと粒感の近い銘柄を並べています。値段の並びではなく、味の位置で選ぶページです。
         </p>
 
         {first ? (

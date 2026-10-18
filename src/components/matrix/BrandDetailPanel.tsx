@@ -32,7 +32,7 @@ import { ShareCardActions } from "@/components/brand/ShareCardActions";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import { resolveBrandArt } from "@/lib/editorial/art";
-import { PurchaseJump, PurchaseLead } from "./PurchaseLinks";
+import { PurchaseJump } from "./PurchaseLinks";
 import { TasteContour } from "./TasteContour";
 import { TastePips } from "./TastePips";
 
@@ -138,6 +138,7 @@ export function BrandDetailPanel({
   const scrollRef = useRef<HTMLDivElement>(null);
   const isMd = useMediaQuery("(min-width: 768px)");
   const dragControls = useDragControls();
+  const articleRef = useRef<HTMLElement>(null);
   const fill = rice.region_color ?? regionColor(rice.region);
   const tags = shortTasteTags(rice);
   const appetite = appetiteLine(rice);
@@ -146,7 +147,24 @@ export function BrandDetailPanel({
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const root = articleRef.current;
+      if (!root) return;
+      const nodes = [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")];
+      if (nodes.length === 0) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -177,6 +195,7 @@ export function BrandDetailPanel({
 
       <div className="pointer-events-none absolute inset-0 flex items-end justify-center md:items-center md:p-6">
         <motion.article
+          ref={articleRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="km-detail-title"
@@ -290,12 +309,12 @@ export function BrandDetailPanel({
                     </p>
                   ) : null}
                 </div>
-                {heroArt ? (
+                {heroArt?.kind === "brand" ? (
                   <EditorialArt
                     src={heroArt.src}
                     alt=""
                     className="aspect-[5/4] w-full overflow-hidden rounded-2xl"
-                    sizes="(min-width: 640px) 200px, 144px"
+                    sizes="(min-width: 640px) 240px, 160px"
                     objectPosition="50% 42%"
                     transitionName={artViewTransitionName("brand", rice.id)}
                   />
@@ -303,7 +322,7 @@ export function BrandDetailPanel({
               </div>
 
               <div className="mt-5">
-                <PurchaseLead rice={rice} bare />
+                <PurchaseJump href={`/library/${rice.id}#km-purchase`} label="お店で探す" />
               </div>
               <ShareCardActions rice={rice} compact />
             </div>

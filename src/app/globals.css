@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-noto-sans-jp), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-noto-serif-jp), "Hiragino Mincho ProN", "Yu Mincho", serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", var(--font-noto-sans-jp), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Hiragino Mincho ProN", "Yu Mincho", var(--font-noto-serif-jp), serif;
+  --font-mono: ui-monospace, monospace;
 }
 
 :root {
@@ -17,7 +17,10 @@
   --km-brown: #704522;
   --km-gold: #d49a2a;
   --km-gold-strong: #c4861c;
+  /* Same hue as gold / harvest, darkened so text clears 4.5:1 on paper. */
+  --km-gold-ink: #8a5f12;
   --km-accent: #e56b3f;
+  --km-accent-ink: #a8481e;
   --km-accent-deep: #c85a28;
   --km-plum: #c85a72;
   --km-leaf: #7ca83b;
@@ -103,6 +106,42 @@ body {
   height: 6px;
   border-radius: 999px;
   background: var(--km-track);
+}
+
+/* Hero under a title. Named so the ratio is not dropped from the CSS bundle. */
+.km-figure {
+  aspect-ratio: 2 / 1;
+  width: 100%;
+  max-width: 40rem;
+}
+
+.km-figure-wide {
+  aspect-ratio: 2 / 1;
+  width: 100%;
+  max-width: 52rem;
+}
+
+/* Square map sits on the title’s left edge. Desktop fills the card. */
+.km-map-frame {
+  width: min(100%, min(58svh, 420px));
+  aspect-ratio: 1;
+  min-height: 240px;
+  margin-right: auto;
+}
+
+@media (min-width: 1024px) {
+  .km-map-frame {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
+  }
 }
 
 @media (min-width: 1024px) {

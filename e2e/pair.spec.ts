@@ -5,7 +5,7 @@ test.describe("TS-PAIR cuisine landings", () => {
     await page.goto("/pair/curry");
     await expect(page.getByRole("heading", { name: "カレーに合う米" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "今夜の候補" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "比較表" })).toBeVisible();
+    await expect(page.getByRole("columnheader", { name: "向いている人" })).toBeVisible();
     await expect(page.getByText("※PR").first()).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "この料理には向かない米" })

@@ -30,7 +30,7 @@
 }
 
 .km-grain-mark {
-  transition: filter 220ms var(--km-ease-out);
+  transition: none;
 }
 
 .km-shop-panel {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
+import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { MobileTabBar } from "@/components/MobileTabBar";
 import { GaSnippet } from "@/components/analytics/GaSnippet";
 import { GtmSnippet } from "@/components/analytics/GtmSnippet";
 import { SkipOnOps } from "@/components/analytics/SkipOnOps";
@@ -10,17 +11,16 @@ import { websiteLd } from "@/lib/seo/jsonLd";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500"],
   variable: "--font-noto-sans-jp",
   display: "swap",
+  preload: false,
 });
 const notoSerifJp = Noto_Serif_JP({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600"],
   variable: "--font-noto-serif-jp",
   display: "swap",
 });
@@ -70,7 +70,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${geist.variable} ${geistMono.variable} ${notoSansJp.variable} ${notoSerifJp.variable}`}
+      className={`${notoSansJp.variable} ${notoSerifJp.variable}`}
     >
       <body>
         <JsonLd data={websiteLd(SITE_DESCRIPTION)} />
@@ -79,6 +79,7 @@ export default function RootLayout({
           <GaSnippet />
         </SkipOnOps>
         <AnalyticsProvider>{children}</AnalyticsProvider>
+        <MobileTabBar />
       </body>
     </html>
   );

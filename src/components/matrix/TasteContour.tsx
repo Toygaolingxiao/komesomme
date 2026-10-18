@@ -65,8 +65,8 @@ export function TasteContour({
       <div
         className={
           compact
-            ? "mt-3 flex flex-col items-center gap-3"
-            : "mt-3 flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-6"
+            ? "mt-3 flex flex-col items-start gap-3"
+            : "mt-3 flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:gap-6"
         }
       >
         <svg
@@ -74,7 +74,7 @@ export function TasteContour({
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           role="img"
           aria-label={summary}
-          className="mx-auto h-auto w-full max-w-[240px] shrink-0 sm:max-w-[280px]"
+          className="h-auto w-full max-w-[240px] shrink-0 sm:max-w-[280px]"
         >
           {LEVELS.map((level) => (
             <polygon
@@ -146,7 +146,7 @@ export function TasteContour({
         <p
           className={
             compact
-              ? "w-full max-w-[36ch] text-center text-[13px] leading-relaxed text-[var(--km-ink-soft)]"
+              ? "w-full max-w-[36ch] text-left text-[13px] leading-relaxed text-[var(--km-ink-soft)]"
               : "mt-0 max-w-[36ch] text-[13px] leading-relaxed text-[var(--km-ink-soft)] sm:mt-6 sm:text-left"
           }
         >

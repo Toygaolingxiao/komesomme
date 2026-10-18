@@ -21,7 +21,8 @@ import {
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
-import { READING_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
+import { joinClauses } from "@/lib/copy/joinClauses";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import type { RiceEncyclopediaArticle } from "@/types/riceEncyclopedia";
 
@@ -93,7 +94,8 @@ export function LibraryRiceDossier({
   const reading = distinctReading(rice.name, article.reading);
 
   return (
-    <article className={`${READING_COLUMN} pb-20 pt-2`}>
+    <article className={`${SITE_COLUMN} pb-24 pt-2`}>
+      <div className="max-w-[40rem]">
       <header>
         {heroArt ? (
           <EditorialArt
@@ -131,6 +133,7 @@ export function LibraryRiceDossier({
         <ShareCardActions rice={rice} />
       </header>
 
+      <div className="min-w-0">
       {/* 1. 味わい — who + contour + scores */}
       <Section title="味わい">
         <div className="flex flex-col gap-10">
@@ -198,7 +201,7 @@ export function LibraryRiceDossier({
           <p className="mt-6 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
             <span className="font-medium text-[var(--km-ink)]">食卓の提案</span>
             <span className="mx-2 text-[var(--km-muted)]">/</span>
-            {article.servingIdeas.join("、")}
+            {joinClauses(article.servingIdeas)}
           </p>
         ) : null}
         {rice.sommelier_note ? (
@@ -275,7 +278,7 @@ export function LibraryRiceDossier({
         <p>{DISCLAIMER}</p>
       </aside>
 
-      <p className="mt-10 text-center">
+      <p className="mt-10">
         <Link
           href="/"
           className={`text-[13px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
@@ -283,6 +286,8 @@ export function LibraryRiceDossier({
           味わいの地図へ戻る
         </Link>
       </p>
+      </div>
+      </div>
     </article>
   );
 }

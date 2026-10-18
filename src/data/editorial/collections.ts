@@ -1,3 +1,8 @@
+/** Magazine date for the page. Sort keys keep the clock in `dateLabel`. */
+export function collectionDateDisplay(dateLabel: string): string {
+  return dateLabel.replace(/\s+\d{1,2}時\d{1,2}分$/, "");
+}
+
 export type EditorialCollection = {
   slug: string;
   title: string;

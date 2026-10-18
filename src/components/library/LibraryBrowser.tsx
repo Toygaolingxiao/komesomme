@@ -6,6 +6,7 @@ import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 import { TastePips } from "@/components/matrix/TastePips";
 import { FOCUS } from "@/components/matrix/shared";
 import { brandI18nSearchBlob } from "@/data/rice/brandI18n";
+import { distinctReading } from "@/lib/editorial/art";
 import { isTokuA } from "@/data/rice/tokuA";
 import { TokuABadge } from "@/components/rice/TokuABadge";
 import { SITE_COLUMN } from "@/components/siteChrome";
@@ -191,9 +192,9 @@ export function LibraryBrowser({
                     </span>
                     {isTokuA(entry.id) ? <TokuABadge compact /> : null}
                   </span>
-                  {entry.reading ? (
-                    <span className="mt-0.5 block text-[11px] text-[var(--km-muted)]">
-                      {entry.reading}
+                  {distinctReading(entry.name, entry.reading) ? (
+                    <span className="mt-0.5 block text-[12px] text-[var(--km-muted)]">
+                      {distinctReading(entry.name, entry.reading)}
                     </span>
                   ) : null}
                 </span>

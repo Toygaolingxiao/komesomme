@@ -26,7 +26,7 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 
 地図を触ると、近い銘柄が並びます。相談を送ると、探針はおすすめの位置へ移ります。
 
-ヘッダと「地図のほか」から、次のページへ進めます。
+ヘッダ（画面が狭いときは下のタブ）から、次のページへ進めます。
 
 | ページ | リンク | 中身 |
 | --- | --- | --- |
@@ -37,7 +37,7 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 | ピックアップ | [https://komesomme.jp/discover](https://komesomme.jp/discover) | きょうの三銘柄と、旬の特集 |
 | 特集の例 | [https://komesomme.jp/collections/bento-cold](https://komesomme.jp/collections/bento-cold) | 「冷めても、弁当に」 |
 
-銘柄ページの「お店で探す」は、通販（楽天 / Yahoo! / Amazon / メルカリ）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
+銘柄ページの「お店で探す」は、通販（楽天 / Yahoo! / Amazon）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
 
 法務のページは [利用規約](https://komesomme.jp/terms)、[プライバシーポリシー](https://komesomme.jp/privacy)、[特定商取引法に基づく表記](https://komesomme.jp/tokushoho) です。
 

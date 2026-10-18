@@ -37,6 +37,16 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    (pathname === "/prototypes" || pathname.startsWith("/prototypes/"))
+  ) {
+    return new NextResponse("Not Found", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8" },
+    });
+  }
+
   if (pathname === "/collections/") {
     return permanentRedirect(request, "/discover");
   }

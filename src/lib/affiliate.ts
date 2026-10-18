@@ -21,7 +21,7 @@ export const AFFILIATE_PR_NOTICE =
 
 /** `/terms` only — names the ASPs. Do not paste into CTA chrome. */
 export const AFFILIATE_PR_NOTICE_DETAIL =
-  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト、メルカリアンバサダー等）。";
+  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト等）。";
 
 /** Footer one-liner. */
 export const TASTE_DISCLAIMER =

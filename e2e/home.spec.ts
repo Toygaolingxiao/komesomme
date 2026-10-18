@@ -4,15 +4,15 @@ import { expectHomeAlive, installHistoryQuota, scrubHomeSlider, waitForHomeReady
 test.describe("TS-HOME Desktop map & rail", () => {
   test.skip(({ isMobile }) => !!isMobile, "desktop project only");
 
-  test("TS-HOME-01/03 home matrix and 今日の一膳 render", async ({ page }) => {
+  test("TS-HOME-01/03 home matrix and いちばん近い一膳 render", async ({ page }) => {
     await waitForHomeReady(page);
     await expect(page.locator("#km-sweetness")).toBeVisible();
     await expect(page.locator("#km-hardness")).toBeVisible();
   });
 
-  test("TS-HOME-13 home shows 地図のほか links", async ({ page }) => {
+  test("TS-HOME-13 primary nav reaches pair, discover, and library", async ({ page }) => {
     await waitForHomeReady(page);
-    const explore = page.getByRole("navigation", { name: "地図のほか" });
+    const explore = page.getByRole("navigation", { name: "主要ナビ" });
     await expect(explore.getByRole("link", { name: "料理で選ぶ" })).toBeVisible();
     await expect(explore.getByRole("link", { name: "ピックアップ" })).toBeVisible();
     await expect(explore.getByRole("link", { name: "ライブラリ" })).toBeVisible();
@@ -39,7 +39,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     await page.locator("#km-hardness").fill("5");
     await page.waitForTimeout(400);
-    await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible();
+    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
     await expect(page.locator("#matrix")).toBeVisible();
   });
 
@@ -49,12 +49,12 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await page.waitForTimeout(400);
     await page.locator("#km-sweetness").fill("5");
     await page.waitForTimeout(400);
-    await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible();
+    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
   });
 
   test("TS-HOME-08/10 shop disclosure expands after discovery", async ({ page }) => {
     await waitForHomeReady(page);
-    const shop = page.locator("[data-shop-strip=disclosure]");
+    const shop = page.locator("[data-shop-strip=disclosure]").locator("visible=true");
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
     await expect(shop.getByText("※PR")).toBeVisible();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toHaveCount(0);
@@ -76,7 +76,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
 
   test("TS-HOME-09 opening detail from today card", async ({ page }) => {
     await waitForHomeReady(page);
-    await page.getByRole("button", { name: /今日の一膳/ }).first().click();
+    await page.getByRole("button", { name: /いちばん近い一膳/ }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
   });
 

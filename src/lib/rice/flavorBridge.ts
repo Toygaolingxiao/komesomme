@@ -82,20 +82,24 @@ export function detectPrefectureStem(query: string): string | null {
   const compact = query.replace(/\s+/g, "");
   if (compact.length < 2) return null;
 
-  const exact = originStem(compact);
-  const exactHit = PREFECTURE_STEMS.find((stem) => exact === stem);
-  if (exactHit) return exactHit;
+  const hits = PREFECTURE_STEMS.flatMap((stem) => {
+    const index = compact.indexOf(stem);
+    return index >= 0 ? [{ stem, index }] : [];
+  }).sort((a, b) => a.index - b.index || b.stem.length - a.stem.length);
 
-  // Prefix only — never substring. 「東京都」 must not match 「京都」.
-  return (
-    PREFECTURE_STEMS.find(
-      (stem) =>
-        compact === `${stem}県` ||
-        compact.startsWith(`${stem}県`) ||
-        compact.startsWith(`${stem}の`) ||
-        compact.startsWith(`${stem}産`)
-    ) ?? null
-  );
+  const kept: Array<{ stem: string; index: number }> = [];
+  for (const hit of hits) {
+    const overlaps = kept.some((other) => {
+      const start = hit.index;
+      const end = hit.index + hit.stem.length;
+      const otherStart = other.index;
+      const otherEnd = other.index + other.stem.length;
+      return start < otherEnd && otherStart < end;
+    });
+    if (!overlaps) kept.push(hit);
+  }
+
+  return kept[0]?.stem ?? null;
 }
 
 export type DrinkCategory =

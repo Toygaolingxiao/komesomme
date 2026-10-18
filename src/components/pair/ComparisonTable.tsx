@@ -26,15 +26,24 @@ function shopHref(rice: RiceProfileV2): string {
  * Fits the pair column (~40rem) without horizontal scroll.
  * Axes share one column; shop lives under the brand name.
  */
-export function ComparisonTable({ rows }: { rows: ComparisonRow[] }) {
+export function ComparisonTable({
+  rows,
+  title = "比較表",
+}: {
+  rows: ComparisonRow[];
+  title?: string;
+}) {
   if (rows.length === 0) return null;
 
   return (
     <div>
       <div className="flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
-            比較表
+          <h2
+            id="pair-top-heading"
+            className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]"
+          >
+            {title}
           </h2>
           <p className="mt-1 text-[12px] text-[var(--km-muted)]">
             甘みと粒感を先に見て、右の文で向き・注意を確かめてください。

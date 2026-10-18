@@ -6,14 +6,14 @@ test.describe("TS-MOBILE", () => {
 
   test("TS-MOBILE-01/02 today card first and no overflow", async ({ page }) => {
     await waitForHomeReady(page);
-    await expect(page.locator("#matrix").getByText("今日の一膳", { exact: true }).first()).toBeVisible();
+    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
     await noHorizontalOverflow(page);
   });
 
   test("TS-MOBILE-03 shop disclosure between map and consult", async ({ page }) => {
     await waitForHomeReady(page);
     const mapPreview = page.locator("[data-taste-map-preview]");
-    const shop = page.locator("[data-shop-strip=disclosure]");
+    const shop = page.locator("[data-shop-strip=disclosure]").locator("visible=true");
     const consult = page.getByRole("heading", { name: "侍米師に聞く" });
     await expect(consult).toBeVisible();
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
@@ -26,7 +26,8 @@ test.describe("TS-MOBILE", () => {
 
     await shop.getByRole("button", { name: /お店で探す/ }).click();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
-    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
+    await expect(shop.getByRole("link", { name: /^楽天市場$/ })).toBeVisible();
+    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toHaveCount(0);
   });
 
   test("TS-MOBILE-04 first tap highlights, second tap opens, slider drops selection", async ({

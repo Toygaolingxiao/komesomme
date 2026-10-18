@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/brand/BrandMark";
-import { SiteLegalNav } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
@@ -28,10 +27,10 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
       <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
         <BrandLockup subtitle={GUIDE_ROLE_ANNOTATED} />
       </Link>
-      <div className="flex max-w-[68%] shrink-0 flex-col items-end gap-0.5">
+      <div className="hidden shrink-0 lg:flex">
         <nav
           aria-label="主要ナビ"
-          className="flex flex-wrap items-center justify-end gap-x-2 gap-y-0.5 sm:gap-x-3"
+          className="flex items-center justify-end gap-x-3"
         >
           {NAV.map((item) => {
             const isActive = active != null && item.id === active;
@@ -40,7 +39,7 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
                 key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`font-serif text-[11px] tracking-wide transition-colors duration-150 ease-out active:scale-[0.97] sm:text-[12px] ${FOCUS} ${
+                className={`font-serif text-[13px] tracking-wide transition-[color,transform] duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
                   isActive
                     ? "font-semibold text-[var(--km-ink)]"
                     : "text-[var(--km-muted)] hover:text-[var(--km-gold)]"
@@ -51,7 +50,6 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
             );
           })}
         </nav>
-        <SiteLegalNav />
       </div>
     </header>
   );

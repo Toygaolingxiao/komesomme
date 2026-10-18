@@ -8,7 +8,7 @@ import type { RiceRegionRecord } from "@/lib/rice/regions";
 import type { RiceDisplayPoint, TasteCoordinate } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
 import { RiceGrainMark } from "./RiceGrainMark";
-import { AXIS_POLES, FOCUS, INSET, LAYER, mapGrainFill, type MapDensity } from "./shared";
+import { AXIS_POLES, FOCUS, INSET, LAYER, type MapDensity } from "./shared";
 import { EmptyPanel, MatrixSkeleton } from "./states";
 
 export type TasteMapVariant = "desktop" | "preview";
@@ -119,7 +119,7 @@ function MapLegend({
         <button
           type="button"
           onClick={onClear}
-          className={`shrink-0 text-[10px] font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS} ${
+          className={`shrink-0 text-[12px] font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS} ${
             variant === "chips" ? "min-h-10 px-2" : "px-1.5 py-0.5"
           }`}
         >
@@ -151,19 +151,19 @@ function MapLegend({
                   idle ? "opacity-40" : "opacity-100"
                 } ${
                   variant === "chips"
-                    ? `min-h-10 border px-3 py-2 text-[11px] ${
+                    ? `min-h-10 border px-3 py-2 text-[12px] ${
                         pressed
                           ? "border-[var(--km-gold)]/70 bg-[var(--km-surface-warm)]"
                           : "border-[var(--km-border)] bg-[var(--km-surface)]"
                       }`
-                    : `px-1.5 py-0.5 text-[10px] ${
+                    : `px-1.5 py-0.5 text-[12px] ${
                         pressed ? "bg-[var(--km-surface-warm)]" : ""
                       }`
                 }`}
               >
                 <RiceGrainMark
                   markId={`legend-${id}`}
-                  fill={mapGrainFill(color)}
+                  fill={color}
                   width={11}
                   height={7}
                   tilt={pressed ? -6 : 8}
@@ -194,6 +194,20 @@ function regionMatches(
  * Plot size follows leftover space and a responsive aspect ratio, so wide screens
  * get a landscape map instead of a locked square.
  */
+function useLgUp() {
+  const [lg, setLg] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setLg(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  return lg;
+}
+
 export function TasteMap({
   points,
   regions = [],
@@ -210,7 +224,6 @@ export function TasteMap({
   interactive,
   loading,
   reduceMotion,
-  variant = "desktop",
   onProbeMove,
   onSelect,
   onHover,
@@ -230,11 +243,20 @@ export function TasteMap({
   interactive: boolean;
   loading: boolean;
   reduceMotion: boolean;
-  variant?: TasteMapVariant;
   onProbeMove: (hardness: number, sweetness: number) => void;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
+  const lg = useLgUp();
+  const variant: TasteMapVariant = lg ? "desktop" : "preview";
+  const cellCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const rice of points) {
+      const key = `${Math.round(rice.sweetness)}:${Math.round(rice.hardness)}`;
+      map.set(key, (map.get(key) ?? 0) + 1);
+    }
+    return map;
+  }, [points]);
   const probeLeftPct = useTransform(probeLeft, (value) => `${value}%`);
   const probeTopPct = useTransform(probeTop, (value) => `${value}%`);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -390,6 +412,10 @@ export function TasteMap({
                   reduceMotion={reduceMotion}
                   touchFriendly={touchFriendly}
                   isBestMatch={rice.id === bestMatchId}
+                  peers={
+                    cellCounts.get(`${Math.round(rice.sweetness)}:${Math.round(rice.hardness)}`) ??
+                    1
+                  }
                   isRunnerUp={
                     runnerUpIds.has(rice.id) && rice.id !== bestMatchId
                   }
@@ -415,9 +441,9 @@ export function TasteMap({
                     animate={
                       reduceMotion || engaged
                         ? { scale: 1, opacity: 0.35 }
-                        : { scale: [0.5, 1.6], opacity: [0.4, 0] }
+                        : { scale: [0.9, 1.35], opacity: [0.45, 0] }
                     }
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
                   />
                   <span className="grid h-4 w-4 place-items-center rounded-full border border-[var(--km-brown)]/35 bg-[var(--km-brown)] shadow-[0_4px_12px_rgba(112,69,34,0.22)]">
                     <Drop size={9} weight="fill" className="text-[var(--km-surface-warm)]" />

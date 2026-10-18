@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, MapPin } from "@phosphor-icons/react";
+import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { track } from "@/lib/analytics";
 import type { RecommendationMode } from "@/types/rice";
 import {
@@ -21,6 +22,7 @@ function BestMatchCard({
   active,
   highlighted,
   semantic,
+  caption,
   onSelect,
   onHover,
 }: {
@@ -28,6 +30,7 @@ function BestMatchCard({
   active: boolean;
   highlighted: boolean;
   semantic: boolean;
+  caption: string;
   onSelect: () => void;
   onHover?: (id: string | null) => void;
 }) {
@@ -43,37 +46,47 @@ function BestMatchCard({
       onMouseLeave={() => onHover?.(null)}
       onFocus={() => onHover?.(match.rice.id)}
       onBlur={() => onHover?.(null)}
-      className={`group relative w-full overflow-hidden rounded-xl border-l-[3px] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3 text-left transition duration-300 active:scale-[0.99] ${FOCUS} ${
+      className={`group relative w-full overflow-hidden rounded-xl border-l-[3px] bg-[var(--km-surface)]/90 py-3 pl-3.5 pr-3 text-left transition duration-200 active:scale-[0.99] ${FOCUS} ${
         active || highlighted
           ? "bg-[var(--km-surface)] shadow-[inset_0_0_0_1px_rgba(112,69,34,0.12)]"
           : "hover:bg-[var(--km-surface)]"
       }`}
       style={{ borderLeftColor: fill }}
     >
-      <span className="relative">
-        <span className="text-[11px] font-medium tracking-wide text-[var(--km-brown)]">
-          今日の一膳
+      <span className="relative grid grid-cols-[3.25rem_minmax(0,1fr)] gap-3">
+        <BrandThumb
+          id={match.rice.id}
+          name={match.rice.name}
+          region={match.rice.region}
+          prefecture={match.rice.prefecture}
+          className="aspect-square w-full overflow-hidden rounded-lg"
+          sizes="3.25rem"
+        />
+        <span className="min-w-0">
+        <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
+          {caption}
         </span>
         <span className="mt-1.5 block font-serif text-[1.25rem] font-semibold leading-tight tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
           {match.rice.name}
         </span>
-        <span className="mt-2 line-clamp-2 block break-words text-[12.5px] leading-relaxed text-[var(--km-ink-soft)] [overflow-wrap:anywhere]">
+        <span className="mt-2 line-clamp-2 block break-words text-[13px] leading-relaxed text-[var(--km-ink-soft)] [overflow-wrap:anywhere]">
           {benefit}
+        </span>
         </span>
       </span>
 
-      <span className="relative mt-3 flex items-center gap-1 text-[11px] text-[var(--km-muted)]">
+      <span className="relative mt-3 flex items-center gap-1 text-[12px] text-[var(--km-muted)]">
         <MapPin size={12} weight={ICON_WEIGHT} />
         {match.rice.prefecture}産
       </span>
 
       {dishes.length > 0 ? (
-        <span className="relative mt-2.5 block text-[11px] leading-snug text-[var(--km-muted)]">
+        <span className="relative mt-2.5 block text-[12px] leading-snug text-[var(--km-muted)]">
           {dishes.slice(0, 3).join("、")}
         </span>
       ) : null}
 
-      <span className="relative mt-3 inline-flex items-center gap-1 text-[11px] text-[var(--km-accent)]">
+      <span className="relative mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent-ink)]">
         くわしく見る
         <ArrowRight size={12} weight={ICON_WEIGHT} />
       </span>
@@ -127,7 +140,7 @@ function RunnerUpList({
                 onFocus={() => onHover?.(match.rice.id)}
                 onBlur={() => onHover?.(null)}
               >
-                <span className="font-serif text-xs text-[var(--km-gold)]">0{index + 2}</span>
+                <span className="font-serif text-[12px] text-[var(--km-gold-ink)]">0{index + 2}</span>
                 <span className="min-w-0">
                   <span className="flex items-center gap-2">
                     <span
@@ -145,10 +158,10 @@ function RunnerUpList({
                       {match.rice.name}
                     </span>
                   </span>
-                  <span className="mt-0.5 block truncate text-[10px] text-[var(--km-muted)]">
+                  <span className="mt-0.5 block truncate text-[12px] text-[var(--km-muted)]">
                     {match.rice.prefecture}
                   </span>
-                  <span className="mt-0.5 line-clamp-1 block text-[10px] leading-snug text-[var(--km-ink-soft)]">
+                  <span className="mt-0.5 line-clamp-1 block text-[12px] leading-snug text-[var(--km-ink-soft)]">
                     {semantic
                       ? match.reason
                       : suitabilityLine(match.rice)}
@@ -177,6 +190,8 @@ export function RecommendationRail({
   selectedId,
   highlightId = null,
   reduceMotion,
+  caption,
+  cellNote,
   onSelect,
   onHover,
 }: {
@@ -187,6 +202,8 @@ export function RecommendationRail({
   selectedId: string | null;
   highlightId?: string | null;
   reduceMotion: boolean;
+  caption: string;
+  cellNote?: string | null;
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
@@ -236,9 +253,13 @@ export function RecommendationRail({
                     active={primary.rice.id === selectedId}
                     highlighted={primary.rice.id === highlightId}
                     semantic={mode === "semantic"}
+                    caption={caption}
                     onSelect={() => open(primary.rice.id)}
                     onHover={onHover}
                   />
+                  {cellNote ? (
+                    <p className="mt-2 text-[12px] leading-relaxed text-[var(--km-muted)]">{cellNote}</p>
+                  ) : null}
                   {runnerUps.length > 0 ? (
                     <RunnerUpList
                       matches={runnerUps}

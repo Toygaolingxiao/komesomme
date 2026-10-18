@@ -1,4 +1,3 @@
-import { brandI18nLine } from "@/data/rice/brandI18n";
 import { isTokuA } from "@/data/rice/tokuA";
 import { TokuABadge } from "@/components/rice/TokuABadge";
 
@@ -9,8 +8,7 @@ export function BrandNameMeta({
   id: string;
   reading?: string | null;
 }) {
-  const i18n = brandI18nLine(id);
-  const bits = [reading?.trim() || null, i18n].filter(Boolean);
+  const bits = [reading?.trim() || null].filter(Boolean);
   const tokuA = isTokuA(id);
 
   if (bits.length === 0 && !tokuA) return null;

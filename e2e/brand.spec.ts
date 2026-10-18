@@ -17,7 +17,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await expect(purchase.getByRole("link", { name: /楽天/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /Yahoo/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /Amazon/ })).toBeVisible();
-    await expect(purchase.getByRole("link", { name: /メルカリ/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /メルカリ/ })).toHaveCount(0);
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toBeVisible();
@@ -35,15 +35,12 @@ test.describe("TS-BRAND / TS-BUY", () => {
     const amazon = purchase.getByRole("link", { name: /Amazon/ });
     const rakuten = purchase.getByRole("link", { name: /楽天/ });
     const yahoo = purchase.getByRole("link", { name: /Yahoo/ });
-    const mercari = purchase.getByRole("link", { name: /メルカリ/ });
 
     await expect(amazon).toHaveAttribute("href", /amazon\.co\.jp/);
     await expect(rakuten).toHaveAttribute("href", /rakuten\.co\.jp|hb\.afl\.rakuten/);
     await expect(yahoo).toHaveAttribute("href", /yahoo\.co\.jp|yahoo\.jp\//);
-    await expect(mercari).toHaveAttribute("href", /jp\.mercari\.com\/search/);
-    await expect(mercari).toHaveAttribute("href", /afid=/);
 
-    for (const link of [amazon, rakuten, yahoo, mercari]) {
+    for (const link of [amazon, rakuten, yahoo]) {
       const rel = (await link.getAttribute("rel")) ?? "";
       expect(rel).toMatch(/noopener/);
       expect(rel).toMatch(/nofollow/);

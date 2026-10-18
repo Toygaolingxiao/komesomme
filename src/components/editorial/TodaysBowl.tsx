@@ -1,9 +1,8 @@
 import { CalendarMark } from "@/components/brand/EditorialMarks";
-import { EditorialArt } from "@/components/editorial/EditorialArt";
+import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { EditorialBowlLink } from "@/components/editorial/EditorialTrackLinks";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
-import { resolveBrandArt } from "@/lib/editorial/art";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 
@@ -38,7 +37,6 @@ export function TodaysBowl({ items }: { items: RiceEncyclopediaManifestEntry[] }
 }
 
 function BowlNewsRow({ entry }: { entry: RiceEncyclopediaManifestEntry }) {
-  const art = resolveBrandArt(entry.id, entry.region, entry.prefecture);
   const blurb = entry.headline.trim();
 
   return (
@@ -47,20 +45,17 @@ function BowlNewsRow({ entry }: { entry: RiceEncyclopediaManifestEntry }) {
       riceId={entry.id}
       className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-3.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
     >
-      {art ? (
-        <EditorialArt
-          src={art.src}
-          alt=""
-          className="aspect-[4/3] w-full"
-          sizes="7rem"
-          objectPosition="50% 45%"
-          transitionName={artViewTransitionName("brand", entry.id)}
-        />
-      ) : (
-        <div aria-hidden className="aspect-[4/3] w-full bg-[var(--km-surface-warm)]" />
-      )}
+      <BrandThumb
+        id={entry.id}
+        name={entry.name}
+        region={entry.region}
+        prefecture={entry.prefecture}
+        className="aspect-[4/3] w-full overflow-hidden"
+        sizes="7rem"
+        transitionName={artViewTransitionName("brand", entry.id)}
+      />
       <span className="min-w-0">
-        <span className="text-[11px] text-[var(--km-muted)]">{entry.prefecture}</span>
+        <span className="text-[12px] text-[var(--km-muted)]">{entry.prefecture}</span>
         <span className="mt-0.5 block font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)] sm:text-[1.25rem]">
           {entry.name}
         </span>

@@ -147,11 +147,11 @@ function PlatformButton({
     >
       {/* Fill lives on a span: :visited on <a> strips background-color (history privacy). */}
       <span
-        className={`inline-flex w-full items-center justify-center rounded-full text-center font-semibold transition hover:brightness-[0.96] ${
-          compact ? "min-h-9 px-2 py-1.5 text-[11px]" : "min-h-11 px-3 py-2.5 text-[12px]"
+        className={`relative inline-flex w-full items-center justify-center overflow-hidden rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] text-center font-medium text-[var(--km-ink)] transition hover:bg-[var(--km-surface-warm)] ${
+          compact ? "min-h-10 px-2 py-2 text-[12px]" : "min-h-11 px-3 py-2.5 text-[13px]"
         }`}
-        style={{ backgroundColor: tone.bg, color: tone.fg }}
       >
+        <span aria-hidden className="absolute inset-y-0 left-0 w-1" style={{ backgroundColor: tone.bar }} />
         {label}
       </span>
     </a>
@@ -162,17 +162,15 @@ function PlatformButton({
 function ModeTabs({
   mode,
   onChange,
-  compact,
 }: {
   mode: ShopMode;
   onChange: (next: ShopMode) => void;
-  compact?: boolean;
 }) {
   return (
     <div
       role="tablist"
       aria-label="購入の種類"
-      className={`grid grid-cols-2 gap-1 ${compact ? "text-[11px]" : "text-[12px]"}`}
+      className="grid grid-cols-2 gap-1 text-[12px]"
     >
       {(
         [
@@ -254,21 +252,19 @@ type ShopLinksStripProps = {
  * Soft versions of each mall's official hue (not invented colors).
  * Inline colors — Tailwind arbitrary / custom class fills have missed JIT on this strip.
  */
-type MallTone = { bg: string; fg: string };
+type MallTone = { bar: string };
 
 const MALL_TONES = {
-  amazon: { bg: "#e8c84a", fg: "#1a1510" },
-  rakuten: { bg: "#c05050", fg: "#ffffff" },
-  yahoo: { bg: "#ef6b7e", fg: "#ffffff" },
-  /** Mercari red family — solid enough for cream rail. */
-  mercari: { bg: "#e04552", fg: "#ffffff" },
-  satofull: { bg: "#3a6b56", fg: "#ffffff" },
+  amazon: { bar: "#e8c84a" },
+  rakuten: { bar: "#bf0000" },
+  yahoo: { bar: "#ff0033" },
+  satofull: { bar: "#3a6b56" },
 } as const satisfies Record<string, MallTone>;
 
 /**
  * Mall CTAs + optional affiliate disclosure.
- * Equal-width stack: 楽天 → Yahoo → Amazon → メルカリ / さとふる.
- * Compact retail is 2×2 so the home rail does not clip the fourth mall.
+ * Retail is 楽天 → Yahoo → Amazon. Furusato stays 楽天 / Yahoo / さとふる.
+ * Compact retail is one row of three so the home rail does not clip.
  */
 export function ShopLinksStrip({
   rice,
@@ -295,10 +291,8 @@ export function ShopLinksStrip({
 
   const short = compact || expandMode === "disclosure";
 
-  // Home rail is 100dvh + overflow hidden: a 4-high stack clips メルカリ.
-  // Compact retail uses 2×2 so all malls stay visible without scrolling the strip.
   const retailGrid = compact
-    ? "mt-1 grid grid-cols-2 gap-1.5"
+    ? "mt-1 grid grid-cols-3 gap-1.5"
     : "mt-2 flex flex-col gap-2";
   const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
 
@@ -325,13 +319,6 @@ export function ShopLinksStrip({
             label={short ? "Amazon" : "Amazonで探す"}
             event="amazon_click"
             tone={MALL_TONES.amazon}
-            compact={compact}
-          />
-          <PlatformButton
-            href={links.mercari}
-            label={short ? "メルカリ" : "メルカリで探す"}
-            event="mercari_click"
-            tone={MALL_TONES.mercari}
             compact={compact}
           />
         </>
@@ -364,7 +351,7 @@ export function ShopLinksStrip({
   );
 
   const tabs = (
-    <ModeTabs mode={shopMode} onChange={setShopMode} compact={compact || expandMode === "disclosure"} />
+    <ModeTabs mode={shopMode} onChange={setShopMode} />
   );
 
   if (expandMode === "disclosure") {
@@ -394,7 +381,7 @@ export function ShopLinksStrip({
                 お店で探す
               </span>
               {mode === "pr" ? (
-                <span className="text-[10px] text-[var(--km-muted)]">{AFFILIATE_PR_LABEL}</span>
+                <span className="text-[12px] text-[var(--km-muted)]">{AFFILIATE_PR_LABEL}</span>
               ) : null}
             </span>
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
@@ -427,7 +414,7 @@ export function ShopLinksStrip({
             <p
               className={
                 compact
-                  ? "text-[10px] tracking-[0.06em] text-[var(--km-muted)]"
+                  ? "text-[12px] tracking-[0.06em] text-[var(--km-muted)]"
                   : "font-serif text-[13px] font-semibold text-[var(--km-ink)]"
               }
             >
