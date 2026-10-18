@@ -1,6 +1,7 @@
 "use client";
 
 import { BeerBottle, Flame, Heart, Snowflake, Sparkle, Warning, X } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "motion/react";
 import { track } from "@/lib/analytics";
 import { GUIDE_CONSULT_LABEL, GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { FOCUS, ICON_WEIGHT, TAG_TONES } from "./shared";
@@ -40,6 +41,7 @@ export function ConsultForm({
 }) {
   const wide = layout === "wide";
   const hasQuery = query.trim().length > 0;
+  const reduceMotion = useReducedMotion() ?? false;
 
   const title = (
     <div className={wide ? "min-w-0 self-center" : undefined}>
@@ -165,16 +167,22 @@ export function ConsultForm({
             wide ? "items-center justify-between" : "flex-col items-stretch"
           }`}
         >
-          <p
+          <motion.p
+            key={reply}
             className={`min-w-0 text-[13px] leading-snug text-[var(--km-ink)] ${
               wide ? "line-clamp-2" : "leading-relaxed"
             }`}
+            initial={
+              reduceMotion ? false : { opacity: 0, y: 4, filter: "blur(4px)" }
+            }
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.26, ease: [0.23, 1, 0.32, 1] }}
           >
             <span className="mr-1.5 text-[11px] font-medium text-[var(--km-brown)]">
               {GUIDE_ROLE}
             </span>
             {reply}
-          </p>
+          </motion.p>
           {onResetMode ? (
             <button
               type="button"

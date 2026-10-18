@@ -9,8 +9,18 @@
  * first tap moves the probe (Top 4 glow); the same grain again opens the panel.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, useMotionValue, useReducedMotion } from "motion/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  animate,
+  useMotionValue,
+  useReducedMotion,
+  type AnimationPlaybackControls,
+} from "motion/react";
+import {
+  markGrainEnterPlayed,
+  readGrainEnterPlayed,
+} from "@/lib/rice/grainEntrance";
 import { track } from "@/lib/analytics";
 import { fetchRiceCatalog } from "@/lib/rice/fetchRiceProfiles";
 import { RICE_REGIONS, type RiceRegionRecord } from "@/lib/rice/regions";
@@ -103,11 +113,11 @@ function useLgUp() {
 }
 
 function probeLeftOf(coordinate: TasteCoordinate) {
-  return `${valueToPosition(coordinate.sweetness, INSET)}%`;
+  return valueToPosition(coordinate.sweetness, INSET);
 }
 
 function probeTopOf(coordinate: TasteCoordinate) {
-  return `${100 - valueToPosition(hardnessToDisplayY(coordinate.hardness), INSET)}%`;
+  return 100 - valueToPosition(hardnessToDisplayY(coordinate.hardness), INSET);
 }
 
 export function FlavorMatrix() {
@@ -131,9 +141,17 @@ export function FlavorMatrix() {
   const [semanticState, setSemanticState] = useState<SemanticState>("idle");
   const [semanticMatches, setSemanticMatches] = useState<RailMatch[]>([]);
   const [semanticReply, setSemanticReply] = useState<string | null>(null);
+  const [probeRippleKey, setProbeRippleKey] = useState(0);
+  const [playEntrance, setPlayEntrance] = useState(false);
+  const [entranceReady, setEntranceReady] = useState(false);
 
   const probeLeft = useMotionValue(probeLeftOf(INITIAL_COORDINATE));
   const probeTop = useMotionValue(probeTopOf(INITIAL_COORDINATE));
+  const probeAnim = useRef<{
+    left?: AnimationPlaybackControls;
+    top?: AnimationPlaybackControls;
+  }>({});
+  const probeGlideGen = useRef(0);
 
   const loadProfiles = useCallback(async () => {
     setLoadState("loading");
@@ -153,9 +171,51 @@ export function FlavorMatrix() {
     void loadProfiles();
   }, [loadProfiles]);
 
+  const jumpProbe = useCallback(
+    (next: TasteCoordinate) => {
+      probeGlideGen.current += 1;
+      probeAnim.current.left?.stop();
+      probeAnim.current.top?.stop();
+      probeLeft.jump(probeLeftOf(next));
+      probeTop.jump(probeTopOf(next));
+    },
+    [probeLeft, probeTop]
+  );
+
+  const glideProbe = useCallback(
+    (next: TasteCoordinate) => {
+      if (reduceMotion) {
+        jumpProbe(next);
+        setProbeRippleKey((key) => key + 1);
+        return;
+      }
+      const gen = ++probeGlideGen.current;
+      probeAnim.current.left?.stop();
+      probeAnim.current.top?.stop();
+      const left = animate(probeLeft, probeLeftOf(next), {
+        type: "spring",
+        visualDuration: 0.4,
+        bounce: 0,
+      });
+      const top = animate(probeTop, probeTopOf(next), {
+        type: "spring",
+        visualDuration: 0.4,
+        bounce: 0,
+      });
+      probeAnim.current = { left, top };
+      void Promise.all([left.finished, top.finished]).then(() => {
+        if (probeGlideGen.current !== gen) return;
+        setProbeRippleKey((key) => key + 1);
+      });
+    },
+    [jumpProbe, probeLeft, probeTop, reduceMotion]
+  );
+
   useEffect(() => {
-    setCoordinate(randomInitialCoordinate());
-  }, []);
+    const next = randomInitialCoordinate();
+    setCoordinate(next);
+    jumpProbe(next);
+  }, [jumpProbe]);
 
   useEffect(() => {
     try {
@@ -166,9 +226,13 @@ export function FlavorMatrix() {
   }, []);
 
   useEffect(() => {
-    probeLeft.set(probeLeftOf(coordinate));
-    probeTop.set(probeTopOf(coordinate));
-  }, [coordinate.hardness, coordinate.sweetness, probeLeft, probeTop]);
+    const played = readGrainEnterPlayed();
+    setPlayEntrance(!played);
+    setEntranceReady(true);
+    if (played) return;
+    const id = window.setTimeout(markGrainEnterPlayed, 800);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const points = useMemo(() => toDisplayPoints(profiles), [profiles]);
 
@@ -276,11 +340,10 @@ export function FlavorMatrix() {
       const placed = points.find((point) => point.id === id);
       if (!placed) return;
       const next = coordinateFromDisplayPoint(placed);
-      probeLeft.set(probeLeftOf(next));
-      probeTop.set(probeTopOf(next));
+      glideProbe(next);
       commitCoordinate(next);
     },
-    [points, commitCoordinate, probeLeft, probeTop, dismissMapHint]
+    [points, commitCoordinate, glideProbe, dismissMapHint]
   );
 
   const pickOnMap = useCallback(
@@ -310,22 +373,26 @@ export function FlavorMatrix() {
       closeDetail();
       setCoordinate((previous) => {
         const next = { ...previous, [axis]: clamp(value) };
-        probeLeft.set(probeLeftOf(next));
-        probeTop.set(probeTopOf(next));
+        jumpProbe(next);
         return next;
       });
       track("slider_change", { axis, value });
       if (recommendationMode === "semantic") resetSemantic();
     },
-    [closeDetail, probeLeft, probeTop, recommendationMode, resetSemantic]
+    [closeDetail, jumpProbe, recommendationMode, resetSemantic]
   );
 
   const moveProbe = useCallback(
     (hardness: number, sweetness: number) => {
       closeDetail();
-      commitCoordinate({ hardness, sweetness });
+      const next = {
+        hardness: clamp(hardness),
+        sweetness: clamp(sweetness),
+      };
+      jumpProbe(next);
+      commitCoordinate(next);
     },
-    [closeDetail, commitCoordinate]
+    [closeDetail, commitCoordinate, jumpProbe]
   );
 
   const runSemantic = useCallback(async () => {
@@ -398,8 +465,7 @@ export function FlavorMatrix() {
               sweetness: clamp(top.sweetness),
             };
         setCoordinate(next);
-        probeLeft.set(probeLeftOf(next));
-        probeTop.set(probeTopOf(next));
+        glideProbe(next);
       }
       setSemanticState("idle");
     } catch (cause) {
@@ -420,7 +486,7 @@ export function FlavorMatrix() {
     } finally {
       window.clearTimeout(timeoutId);
     }
-  }, [query, profiles, points, probeLeft, probeTop]);
+  }, [query, profiles, points, glideProbe]);
 
   const mapShared = {
     points,
@@ -432,9 +498,11 @@ export function FlavorMatrix() {
       recommendationMode === "semantic" ? "今日の一膳" : "いちばん近い一膳",
     probeLeft,
     probeTop,
-    probeKey: `${coordinate.hardness}-${coordinate.sweetness}`,
+    probeRippleKey,
+    probe: coordinate,
+    playEntrance: playEntrance && entranceReady,
     interactive: loadState === "ready",
-    loading: loadState === "loading",
+    loading: loadState === "loading" || !entranceReady,
     reduceMotion,
     onProbeMove: moveProbe,
     onHover: handleHover,

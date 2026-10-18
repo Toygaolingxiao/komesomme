@@ -13,6 +13,8 @@ export function EditorialArt({
   /** Heroes prefer 84–88; thumbs can pass ~72. */
   quality = 84,
   objectPosition = "50% 50%",
+  /** Shared element name for same-art route transitions. */
+  transitionName,
 }: {
   src: string;
   alt: string;
@@ -21,9 +23,13 @@ export function EditorialArt({
   priority?: boolean;
   quality?: number;
   objectPosition?: string;
+  transitionName?: string;
 }) {
   return (
-    <div className={`relative overflow-hidden bg-[var(--km-surface-warm)] ${className ?? ""}`}>
+    <div
+      className={`relative overflow-hidden bg-[var(--km-surface-warm)] ${className ?? ""}`}
+      style={transitionName ? { viewTransitionName: transitionName } : undefined}
+    >
       <Image
         src={src}
         alt={alt}

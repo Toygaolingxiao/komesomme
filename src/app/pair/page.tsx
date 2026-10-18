@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { TransitionLink } from "@/components/editorial/TransitionLink";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BowlMark, SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -70,7 +71,7 @@ export default function PairIndexPage() {
         </p>
 
         {first ? (
-          <Link
+          <TransitionLink
             href={`/pair/${first.page.slug}`}
             className={`group mt-10 block overflow-hidden border border-[var(--km-border)] transition-colors duration-150 ease-out hover:border-[var(--km-brown)]/35 active:scale-[0.995] ${FOCUS}`}
           >
@@ -83,6 +84,7 @@ export default function PairIndexPage() {
                 quality={92}
                 priority
                 objectPosition="50% 42%"
+                transitionName={artViewTransitionName("pair", first.page.slug)}
               />
             ) : (
               <div
@@ -101,7 +103,7 @@ export default function PairIndexPage() {
                 {first.page.dek}
               </span>
             </span>
-          </Link>
+          </TransitionLink>
         ) : null}
 
         {rest.length > 0 ? (
@@ -110,7 +112,7 @@ export default function PairIndexPage() {
               const art = artFor(resolved);
               return (
                 <li key={resolved.page.slug} className="border-t border-[var(--km-border)]">
-                  <Link
+                  <TransitionLink
                     href={`/pair/${resolved.page.slug}`}
                     className={`group grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.25rem_minmax(0,1fr)] sm:gap-4 ${FOCUS}`}
                   >
@@ -122,6 +124,7 @@ export default function PairIndexPage() {
                         sizes="6.25rem"
                         quality={84}
                         objectPosition="50% 42%"
+                        transitionName={artViewTransitionName("pair", resolved.page.slug)}
                       />
                     ) : (
                       <div
@@ -139,7 +142,7 @@ export default function PairIndexPage() {
                         {resolved.page.dek}
                       </span>
                     </span>
-                  </Link>
+                  </TransitionLink>
                 </li>
               );
             })}

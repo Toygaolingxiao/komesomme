@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, MapPin } from "@phosphor-icons/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { track } from "@/lib/analytics";
 import {
   FOCUS,
@@ -21,6 +22,8 @@ export function MobileTodayCard({
   semantic?: boolean;
   onOpen: (id: string) => void;
 }) {
+  const reduceMotion = useReducedMotion() ?? false;
+
   if (loading) {
     return (
       <div className="h-[9rem] animate-pulse rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)]" />
@@ -33,15 +36,29 @@ export function MobileTodayCard({
   const intro = semantic
     ? match.reason?.trim() || appetiteLine(match.rice)
     : appetiteLine(match.rice);
+  const fade = {
+    duration: reduceMotion ? 0 : 0.2,
+    ease: [0.23, 1, 0.32, 1] as const,
+  };
 
   return (
+    <div className="grid">
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={match.rice.id}
+          className="col-start-1 row-start-1"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={reduceMotion ? undefined : { opacity: 0, pointerEvents: "none" }}
+          transition={fade}
+        >
     <button
       type="button"
       onClick={() => {
         track("recommendation_detail_click", { id: match.rice.id });
         onOpen(match.rice.id);
       }}
-      className={`w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
+      className={`min-h-[12.5rem] w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
     >
       <span className="min-w-0">
         <span className="text-[11px] font-medium tracking-wide text-[var(--km-brown)]">
@@ -70,5 +87,8 @@ export function MobileTodayCard({
         <ArrowRight size={13} weight={ICON_WEIGHT} />
       </span>
     </button>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }

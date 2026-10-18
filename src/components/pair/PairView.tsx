@@ -13,6 +13,7 @@ import {
   resolveBrandArt,
 } from "@/lib/editorial/art";
 import type { ResolvedPairing } from "@/lib/editorial/pairings";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceProfileV2 } from "@/types/rice";
 import "@/components/home/sommelier-motion.css";
 
@@ -88,6 +89,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                 quality={92}
                 priority
                 objectPosition="48% 42%"
+                transitionName={artViewTransitionName("pair", page.slug)}
               />
             ) : (
               <div className="absolute inset-0 flex items-end bg-[var(--km-surface-warm)] px-6 pb-6">

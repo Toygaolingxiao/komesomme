@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { TransitionLink } from "@/components/editorial/TransitionLink";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BowlMark, SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { FOCUS } from "@/components/matrix/shared";
@@ -57,7 +59,7 @@ export function DiscoverPairTeaser() {
 
           return (
             <li key={page.slug}>
-              <Link
+              <TransitionLink
                 href={`/pair/${page.slug}`}
                 className={`group grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-3 border-b border-[var(--km-border)] py-3 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/40 sm:grid-cols-[5.5rem_minmax(0,1fr)] ${FOCUS}`}
               >
@@ -69,6 +71,7 @@ export function DiscoverPairTeaser() {
                     sizes="5.5rem"
                     quality={84}
                     objectPosition="50% 42%"
+                    transitionName={artViewTransitionName("pair", page.slug)}
                   />
                 ) : (
                   <div
@@ -86,7 +89,7 @@ export function DiscoverPairTeaser() {
                     {page.dek}
                   </span>
                 </span>
-              </Link>
+              </TransitionLink>
             </li>
           );
         })}

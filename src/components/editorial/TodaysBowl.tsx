@@ -4,6 +4,7 @@ import { EditorialBowlLink } from "@/components/editorial/EditorialTrackLinks";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { resolveBrandArt } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 
 /** News-style rows for /discover — thumb + name + one-line headline. */
@@ -53,6 +54,7 @@ function BowlNewsRow({ entry }: { entry: RiceEncyclopediaManifestEntry }) {
           className="aspect-[4/3] w-full"
           sizes="7rem"
           objectPosition="50% 45%"
+          transitionName={artViewTransitionName("brand", entry.id)}
         />
       ) : (
         <div aria-hidden className="aspect-[4/3] w-full bg-[var(--km-surface-warm)]" />

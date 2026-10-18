@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { track } from "@/lib/analytics";
+import { TransitionLink } from "@/components/editorial/TransitionLink";
 
 export function EditorialBowlLink({
   href,
@@ -16,13 +16,13 @@ export function EditorialBowlLink({
   children: ReactNode;
 }) {
   return (
-    <Link
+    <TransitionLink
       href={href}
       className={className}
       onClick={() => track("editorial_bowl_click", { id: riceId })}
     >
       {children}
-    </Link>
+    </TransitionLink>
   );
 }
 
@@ -38,12 +38,12 @@ export function EditorialCollectionLink({
   children: ReactNode;
 }) {
   return (
-    <Link
+    <TransitionLink
       href={href}
       className={className}
       onClick={() => track("editorial_collection_open", { slug })}
     >
       {children}
-    </Link>
+    </TransitionLink>
   );
 }

@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Drop } from "@phosphor-icons/react";
-import { motion, type MotionValue } from "motion/react";
+import { motion, useTransform, type MotionValue } from "motion/react";
 import { displayYToHardness, positionToValue } from "@/lib/rice/matrix";
 import type { RiceRegionRecord } from "@/lib/rice/regions";
-import type { RiceDisplayPoint } from "@/types/rice";
+import type { RiceDisplayPoint, TasteCoordinate } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
 import { RiceGrainMark } from "./RiceGrainMark";
 import { AXIS_POLES, FOCUS, INSET, LAYER, mapGrainFill, type MapDensity } from "./shared";
@@ -204,7 +204,9 @@ export function TasteMap({
   bestCaption,
   probeLeft,
   probeTop,
-  probeKey,
+  probeRippleKey,
+  probe,
+  playEntrance = false,
   interactive,
   loading,
   reduceMotion,
@@ -220,9 +222,11 @@ export function TasteMap({
   selectedId: string | null;
   highlightId?: string | null;
   bestCaption: string;
-  probeLeft: MotionValue<string>;
-  probeTop: MotionValue<string>;
-  probeKey: string;
+  probeLeft: MotionValue<number>;
+  probeTop: MotionValue<number>;
+  probeRippleKey: number;
+  probe: TasteCoordinate;
+  playEntrance?: boolean;
   interactive: boolean;
   loading: boolean;
   reduceMotion: boolean;
@@ -231,6 +235,8 @@ export function TasteMap({
   onSelect: (id: string) => void;
   onHover?: (id: string | null) => void;
 }) {
+  const probeLeftPct = useTransform(probeLeft, (value) => `${value}%`);
+  const probeTopPct = useTransform(probeTop, (value) => `${value}%`);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [plot, setPlot] = useState({ w: 0, h: 0 });
@@ -392,17 +398,19 @@ export function TasteMap({
                   tooltipOpen={showTooltip && rice.id === activeTooltipId}
                   onSelect={() => onSelect(rice.id)}
                   onHover={onHover}
+                  playEntrance={playEntrance}
+                  probe={probe}
                 />
               ))}
 
               <motion.div
                 aria-hidden
-                style={{ left: probeLeft, top: probeTop, zIndex: LAYER.probe }}
+                style={{ left: probeLeftPct, top: probeTopPct, zIndex: LAYER.probe }}
                 className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
               >
                 <div className="relative grid h-11 w-11 place-items-center">
                   <motion.span
-                    key={probeKey}
+                    key={probeRippleKey}
                     className="absolute inset-0 rounded-full border border-[var(--km-gold)]/30"
                     animate={
                       reduceMotion || engaged

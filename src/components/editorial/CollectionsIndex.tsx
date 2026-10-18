@@ -5,6 +5,7 @@ import { FOCUS } from "@/components/matrix/shared";
 import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import type { EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { jstMonth } from "@/lib/editorial/jst";
 
 export function CollectionsIndex({
@@ -56,7 +57,7 @@ export function CollectionsIndex({
                   slug={collection.slug}
                   className={`group grid grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
                 >
-                  <RowThumb art={art} index={index} />
+                  <RowThumb art={art} index={index} slug={collection.slug} />
                   <RowCopy collection={collection} isCurrent={isCurrent} />
                 </EditorialCollectionLink>
               </li>
@@ -90,6 +91,7 @@ function FeaturedRow({
           sizes="(min-width: 768px) 55vw, 7.5rem"
           quality={90}
           objectPosition="50% 42%"
+          transitionName={artViewTransitionName("collection", collection.slug)}
         />
       ) : (
         <div aria-hidden className="aspect-[5/4] w-full bg-[var(--km-surface-warm)] md:aspect-[16/9]" />
@@ -115,7 +117,15 @@ function FeaturedRow({
   );
 }
 
-function RowThumb({ art, index }: { art: string | null; index: number }) {
+function RowThumb({
+  art,
+  index,
+  slug,
+}: {
+  art: string | null;
+  index: number;
+  slug: string;
+}) {
   const tall = index % 2 === 0;
   if (!art) {
     return (
@@ -132,6 +142,7 @@ function RowThumb({ art, index }: { art: string | null; index: number }) {
       className={`w-full ${tall ? "aspect-[4/5]" : "aspect-[5/4]"}`}
       sizes="(min-width: 640px) 7.5rem, 6.25rem"
       objectPosition={tall ? "50% 40%" : "50% 55%"}
+      transitionName={artViewTransitionName("collection", slug)}
     />
   );
 }

@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import type { EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 
 export function CollectionView({
@@ -38,6 +40,7 @@ export function CollectionView({
               quality={90}
               priority
               objectPosition="50% 42%"
+              transitionName={artViewTransitionName("collection", collection.slug)}
             />
           ) : (
             <div
@@ -74,7 +77,7 @@ export function CollectionView({
           const odd = index % 2 === 0;
           return (
             <li key={entry.id}>
-              <Link
+              <TransitionLink
                 href={`/library/${entry.id}`}
                 className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
               >
@@ -85,6 +88,7 @@ export function CollectionView({
                     className={`w-full ${odd ? "aspect-[4/5]" : "aspect-square"}`}
                     sizes="(min-width: 640px) 6.5rem, 5.75rem"
                     objectPosition={odd ? "40% 50%" : "60% 40%"}
+                    transitionName={artViewTransitionName("brand", entry.id)}
                   />
                 ) : (
                   <div
@@ -108,7 +112,7 @@ export function CollectionView({
                     </span>
                   ) : null}
                 </span>
-              </Link>
+              </TransitionLink>
             </li>
           );
         })}

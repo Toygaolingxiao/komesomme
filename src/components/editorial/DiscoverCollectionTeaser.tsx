@@ -6,6 +6,7 @@ import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import type { EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 
 /** Wide short banners — news-feed density, not magazine hero stacks. */
 export function DiscoverCollectionTeaser({
@@ -59,6 +60,7 @@ export function DiscoverCollectionTeaser({
                       sizes="(min-width: 768px) 900px, 100vw"
                       quality={90}
                       objectPosition="50% 42%"
+                      transitionName={artViewTransitionName("collection", collection.slug)}
                     />
                   ) : (
                     <span

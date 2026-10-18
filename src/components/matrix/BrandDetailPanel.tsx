@@ -8,7 +8,9 @@ import {
   MapPin,
   X,
 } from "@phosphor-icons/react";
-import { motion } from "motion/react";
+import { motion, useDragControls } from "motion/react";
+import { useMediaQuery } from "@/lib/ui/useMediaQuery";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
 import {
   DISCLAIMER,
@@ -134,6 +136,8 @@ export function BrandDetailPanel({
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const dragControls = useDragControls();
   const fill = rice.region_color ?? regionColor(rice.region);
   const tags = shortTasteTags(rice);
   const appetite = appetiteLine(rice);
@@ -154,6 +158,10 @@ export function BrandDetailPanel({
     };
   }, [onClose]);
 
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [rice.id]);
+
   return (
     <div className="fixed inset-0" style={{ zIndex: LAYER.overlay }}>
       <motion.button
@@ -173,13 +181,45 @@ export function BrandDetailPanel({
           aria-modal="true"
           aria-labelledby="km-detail-title"
           aria-describedby="km-detail-summary"
-          initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.99 }}
-          transition={{ type: "spring", stiffness: 260, damping: 28 }}
+          initial={
+            reduceMotion
+              ? false
+              : isMd
+                ? { opacity: 0, y: 18, scale: 0.98 }
+                : { y: "100%" }
+          }
+          animate={isMd ? { opacity: 1, y: 0, scale: 1 } : { y: 0 }}
+          exit={
+            isMd
+              ? reduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: 12, scale: 0.99 }
+              : { y: "100%", transition: { duration: reduceMotion ? 0 : 0.26, ease: [0.32, 0.72, 0, 1] } }
+          }
+          transition={
+            isMd
+              ? { type: "spring", stiffness: 260, damping: 28 }
+              : { duration: reduceMotion ? 0 : 0.4, ease: [0.32, 0.72, 0, 1] }
+          }
+          drag={!isMd && !reduceMotion ? "y" : false}
+          dragControls={dragControls}
+          dragListener={false}
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0.08, bottom: 0.45 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.y > 120 || info.velocity.y > 400) onClose();
+          }}
           className="pointer-events-auto flex max-h-[88dvh] w-full min-w-0 max-w-full flex-col overflow-hidden rounded-t-[1.6rem] border border-[var(--km-border)] bg-[var(--km-surface)] text-[var(--km-ink)] shadow-[0_24px_60px_-24px_rgba(112,69,34,0.45)] md:max-h-[86vh] md:w-[min(92vw,900px)] md:rounded-[1.5rem]"
         >
-          <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-[var(--km-ink)]/15 md:hidden" />
+          <div
+            className="flex cursor-grab touch-none flex-col items-center pt-2 active:cursor-grabbing md:hidden"
+            onPointerDown={(event) => {
+              if (reduceMotion) return;
+              dragControls.start(event);
+            }}
+          >
+            <div className="h-1 w-10 rounded-full bg-[var(--km-ink)]/15" />
+          </div>
 
           <div ref={scrollRef} className="min-h-0 min-w-0 flex-1 overflow-x-clip overflow-y-auto">
             <DetailScrollTracker root={scrollRef} />
@@ -189,7 +229,15 @@ export function BrandDetailPanel({
                 background: `linear-gradient(180deg, ${fill}26 0%, transparent 78%)`,
               }}
             >
-              <div className="flex items-start justify-between gap-4">
+              <div
+                className="flex touch-none items-start justify-between gap-4 md:touch-auto"
+                onPointerDown={(event) => {
+                  if (isMd || reduceMotion) return;
+                  const target = event.target as HTMLElement | null;
+                  if (target?.closest("button, a")) return;
+                  dragControls.start(event);
+                }}
+              >
                 <div className="min-w-0">
                   <h3
                     id="km-detail-title"
@@ -249,6 +297,7 @@ export function BrandDetailPanel({
                     className="aspect-[5/4] w-full overflow-hidden rounded-2xl"
                     sizes="(min-width: 640px) 200px, 144px"
                     objectPosition="50% 42%"
+                    transitionName={artViewTransitionName("brand", rice.id)}
                   />
                 ) : null}
               </div>

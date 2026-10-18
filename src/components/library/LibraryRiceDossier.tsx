@@ -19,6 +19,7 @@ import {
   todayServeLine,
 } from "@/components/matrix/shared";
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import { READING_COLUMN } from "@/components/siteChrome";
 import type { RiceMatchResult, RiceProfileV2 } from "@/types/rice";
@@ -101,6 +102,7 @@ export function LibraryRiceDossier({
             className="mb-6 aspect-[16/9] w-full"
             sizes="(min-width: 640px) 40rem, 100vw"
             priority
+            transitionName={artViewTransitionName("brand", rice.id)}
           />
         ) : null}
         <div

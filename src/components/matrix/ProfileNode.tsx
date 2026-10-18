@@ -1,7 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import type { RiceDisplayPoint } from "@/types/rice";
+import type { RiceDisplayPoint, TasteCoordinate } from "@/types/rice";
+import {
+  GRAIN_ENTER_DURATION_S,
+  GRAIN_ENTER_MAX_DELAY_MS,
+  GRAIN_MOTION_EASE,
+  GRAIN_SCALE_DURATION_S,
+  grainEntranceDelayMs,
+} from "@/lib/rice/grainEntrance";
 import { valueToPosition } from "@/lib/rice/matrix";
 import { RiceGrainMark, type GrainEmphasis } from "./RiceGrainMark";
 import {
@@ -13,6 +21,11 @@ import {
   regionColor,
   type MapDensity,
 } from "./shared";
+
+const FEATURED_GROW = 1.85;
+const RUNNER_GROW = 1.48;
+const HIGHLIGHT_GROW = 1.18;
+const REST_GROW = 0.88;
 
 function grainHash(id: string) {
   let hash = 0;
@@ -46,6 +59,8 @@ export function ProfileNode({
   dimmed,
   bestCaption,
   reduceMotion,
+  playEntrance = false,
+  probe,
   tooltipOpen = false,
   touchFriendly = false,
   onSelect,
@@ -60,6 +75,8 @@ export function ProfileNode({
   dimmed: boolean;
   bestCaption: string;
   reduceMotion: boolean;
+  playEntrance?: boolean;
+  probe: TasteCoordinate;
   tooltipOpen?: boolean;
   touchFriendly?: boolean;
   onSelect: () => void;
@@ -78,9 +95,16 @@ export function ProfileNode({
 
   const baseW = (touchFriendly ? 22 : 20) * pose.plump;
   const baseH = (touchFriendly ? 15 : 13.5) * pose.plump;
-  const grow = featured ? 1.85 : isRunnerUp ? 1.48 : isHighlighted ? 1.18 : 0.88;
+  const grow = featured
+    ? FEATURED_GROW
+    : isRunnerUp
+      ? RUNNER_GROW
+      : isHighlighted
+        ? HIGHLIGHT_GROW
+        : REST_GROW;
   const width = baseW * grow;
-  const height = baseH * grow;
+  const featuredW = baseW * FEATURED_GROW;
+  const featuredH = baseH * FEATURED_GROW;
   const hit = touchFriendly
     ? featured
       ? 36
@@ -93,14 +117,24 @@ export function ProfileNode({
   const fill = mapGrainFill(regionColor(rice.region_id ?? rice.region));
   const tags = pairTasteTags(rice);
   const restOpacity = dimmed ? 0.3 : muted ? 0.5 : 0.88;
-  const grainEase = [0.23, 1, 0.32, 1] as const;
-  const grainScale = reduceMotion
-    ? 1
-    : featured
-      ? 1.06
-      : isRunnerUp
-        ? 1.03
-        : 1;
+  const settleBoost = reduceMotion ? 1 : featured ? 1.06 : isRunnerUp ? 1.03 : 1;
+  const grainScale = (grow / FEATURED_GROW) * settleBoost;
+  const enterDelay =
+    playEntrance && !reduceMotion
+      ? grainEntranceDelayMs(rice.display_x, rice.display_y, probe) / 1000
+      : 0;
+  const [staggerLive, setStaggerLive] = useState(!playEntrance || reduceMotion);
+
+  useEffect(() => {
+    if (!playEntrance || reduceMotion) return;
+    const id = window.setTimeout(
+      () => setStaggerLive(true),
+      GRAIN_ENTER_MAX_DELAY_MS + GRAIN_ENTER_DURATION_S * 1000
+    );
+    return () => window.clearTimeout(id);
+  }, [playEntrance, reduceMotion]);
+
+  const enter = playEntrance && !reduceMotion && !staggerLive;
 
   return (
     <motion.button
@@ -116,8 +150,9 @@ export function ProfileNode({
       initial={reduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: connected ? 1 : restOpacity }}
       transition={{
-        duration: reduceMotion ? 0 : 0.22,
-        ease: grainEase,
+        duration: reduceMotion ? 0 : enter ? GRAIN_ENTER_DURATION_S : 0.22,
+        delay: enter ? enterDelay : 0,
+        ease: GRAIN_MOTION_EASE,
       }}
       style={{
         left: `${left}%`,
@@ -136,18 +171,25 @@ export function ProfileNode({
     >
       <motion.span
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        initial={false}
+        initial={
+          reduceMotion
+            ? false
+            : playEntrance
+              ? { scale: grainScale * 0.6 }
+              : { scale: grainScale }
+        }
         animate={{ scale: grainScale }}
         transition={{
-          duration: reduceMotion ? 0 : 0.22,
-          ease: grainEase,
+          duration: reduceMotion ? 0 : enter ? GRAIN_ENTER_DURATION_S : GRAIN_SCALE_DURATION_S,
+          delay: enter ? enterDelay : 0,
+          ease: GRAIN_MOTION_EASE,
         }}
       >
         <RiceGrainMark
           markId={rice.id}
           fill={fill}
-          width={width}
-          height={height}
+          width={featuredW}
+          height={featuredH}
           tilt={pose.tilt}
           emphasis={emphasis}
         />

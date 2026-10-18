@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import type { RiceProfileV2 } from "@/types/rice";
 import { contourAxes, contourSummary } from "./shared";
 
@@ -15,14 +19,16 @@ function polar(index: number, total: number, ratio: number) {
   };
 }
 
-function polygon(values: number[]) {
-  return values
-    .map((value, index) => {
-      const ratio = (Math.max(1, Math.min(5, value)) - 1) / 4;
-      const point = polar(index, values.length, ratio);
-      return `${point.x.toFixed(1)},${point.y.toFixed(1)}`;
-    })
-    .join(" ");
+function polygonPath(values: number[]) {
+  return (
+    values
+      .map((value, index) => {
+        const ratio = (Math.max(1, Math.min(5, value)) - 1) / 4;
+        const point = polar(index, values.length, ratio);
+        return `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+      })
+      .join(" ") + " Z"
+  );
 }
 
 /**
@@ -39,6 +45,10 @@ export function TasteContour({
   const values = axes.map((axis) => axis.value);
   const summary = contourSummary(rice);
   const Heading = compact ? "h4" : "h2";
+  const svgRef = useRef<SVGSVGElement>(null);
+  const inView = useInView(svgRef, { once: true, amount: 0.4 });
+  const reduceMotion = useReducedMotion() ?? false;
+  const draw = reduceMotion || inView;
 
   return (
     <section>
@@ -60,6 +70,7 @@ export function TasteContour({
         }
       >
         <svg
+          ref={svgRef}
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           role="img"
           aria-label={summary}
@@ -106,12 +117,30 @@ export function TasteContour({
               </g>
             );
           })}
-          <polygon
-            points={polygon(values)}
+          <motion.path
+            d={polygonPath(values)}
             fill="rgba(212,154,42,0.22)"
+            stroke="none"
+            initial={{ opacity: reduceMotion ? 1 : 0 }}
+            animate={{ opacity: draw ? 1 : 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.3,
+              delay: reduceMotion ? 0 : 0.55,
+              ease: [0.77, 0, 0.175, 1],
+            }}
+          />
+          <motion.path
+            d={polygonPath(values)}
+            fill="none"
             stroke="#c4861c"
             strokeWidth={1.6}
             strokeLinejoin="round"
+            initial={{ pathLength: reduceMotion ? 1 : 0 }}
+            animate={{ pathLength: draw ? 1 : 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.8,
+              ease: [0.77, 0, 0.175, 1],
+            }}
           />
         </svg>
         <p

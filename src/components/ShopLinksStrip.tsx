@@ -22,6 +22,7 @@ import type { RiceProfileV2 } from "@/types/rice";
 import { FOCUS } from "@/components/matrix/shared";
 import { isYahooPromoShortHref } from "@/lib/affiliate/yahooShortLinks";
 import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
+import "@/components/home/sommelier-motion.css";
 
 export type ShopLinks = {
   amazon: string;
@@ -410,7 +411,7 @@ export function ShopLinksStrip({
         </button>
 
         {open ? (
-          <div id={panelId} className="mt-2">
+          <div id={panelId} className="km-shop-panel mt-2">
             <ShopModePanel mode={shopMode} tabs={tabs} mallGrid={mallGrid} />
           </div>
         ) : null}
