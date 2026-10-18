@@ -12,16 +12,15 @@ import {
   type RailMatch,
 } from "./shared";
 
+/** Mobile No.1 only — runners stay on the map so the matrix sits closer. */
 export function MobileTodayCard({
   match,
-  runners = [],
   loading,
   caption = "今日の一膳",
   semantic = false,
   onOpen,
 }: {
   match: RailMatch | null;
-  runners?: RailMatch[];
   loading?: boolean;
   caption?: string;
   semantic?: boolean;
@@ -57,72 +56,53 @@ export function MobileTodayCard({
           exit={reduceMotion ? undefined : { opacity: 0, pointerEvents: "none" }}
           transition={fade}
         >
-    <button
-      type="button"
-      onClick={() => {
-        track("recommendation_detail_click", { id: match.rice.id });
-        onOpen(match.rice.id);
-      }}
-      className={`min-h-[12.5rem] w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
-    >
-      <span className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-3">
-        <BrandThumb
-          id={match.rice.id}
-          name={match.rice.name}
-          region={match.rice.region}
-          prefecture={match.rice.prefecture}
-          className="aspect-[5/4] w-full overflow-hidden rounded-xl"
-          sizes="240px"
-        />
-        <span className="min-w-0">
-        <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
-          {caption}
-        </span>
-        <span className="mt-1.5 block font-serif text-[1.35rem] font-semibold leading-snug tracking-tight text-[var(--km-ink)]">
-          {match.rice.name}
-        </span>
-        <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[12px] text-[var(--km-muted)]">
-          <MapPin size={12} weight={ICON_WEIGHT} className="shrink-0" />
-          <span>{match.rice.prefecture}産</span>
-        </span>
-        </span>
-      </span>
-
-      <span className="mt-3.5 block break-words font-serif text-[14px] leading-[1.75] text-[var(--km-ink)] [overflow-wrap:anywhere]">
-        {intro}
-      </span>
-
-      {dishes.length > 0 ? (
-        <span className="mt-3 block text-[12px] leading-snug text-[var(--km-ink-soft)]">
-          {dishes.join("、")}
-        </span>
-      ) : null}
-      <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent-ink)]">
-        くわしく見る
-        <ArrowRight size={13} weight={ICON_WEIGHT} />
-      </span>
-    </button>
-        </motion.div>
-        </AnimatePresence>
-        {runners.length > 0 ? (
-        <ol className="mt-2 flex flex-col">
-          {runners.map((row, index) => (
-            <li key={row.rice.id} className="border-b border-[var(--km-border)] last:border-b-0">
-              <button
-                type="button"
-                onClick={() => onOpen(row.rice.id)}
-                className={`flex w-full items-baseline justify-between gap-3 py-2 text-left ${FOCUS}`}
-              >
-                <span className="min-w-0 truncate font-serif text-[15px] text-[var(--km-ink)]">
-                  <span className="mr-2 text-[12px] text-[var(--km-gold-ink)]">0{index + 2}</span>
-                  {row.rice.name}
+          <button
+            type="button"
+            onClick={() => {
+              track("recommendation_detail_click", { id: match.rice.id });
+              onOpen(match.rice.id);
+            }}
+            className={`min-h-[12.5rem] w-full rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] p-4 text-left shadow-[0_16px_40px_-36px_rgba(112,69,34,0.32)] ${FOCUS}`}
+          >
+            <span className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-3">
+              <BrandThumb
+                id={match.rice.id}
+                name={match.rice.name}
+                region={match.rice.region}
+                prefecture={match.rice.prefecture}
+                className="aspect-[5/4] w-full overflow-hidden rounded-xl"
+                sizes="240px"
+              />
+              <span className="min-w-0">
+                <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">
+                  {caption}
                 </span>
-                <span className="shrink-0 text-[12px] text-[var(--km-muted)]">{row.rice.prefecture}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
-      ) : null}
+                <span className="mt-1.5 block font-serif text-[1.35rem] font-semibold leading-snug tracking-tight text-[var(--km-ink)]">
+                  {match.rice.name}
+                </span>
+                <span className="mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[12px] text-[var(--km-muted)]">
+                  <MapPin size={12} weight={ICON_WEIGHT} className="shrink-0" />
+                  <span>{match.rice.prefecture}産</span>
+                </span>
+              </span>
+            </span>
+
+            <span className="mt-3.5 block break-words font-serif text-[14px] leading-[1.75] text-[var(--km-ink)] [overflow-wrap:anywhere]">
+              {intro}
+            </span>
+
+            {dishes.length > 0 ? (
+              <span className="mt-3 block text-[12px] leading-snug text-[var(--km-ink-soft)]">
+                {dishes.join("、")}
+              </span>
+            ) : null}
+            <span className="mt-3 inline-flex items-center gap-1 text-[12px] text-[var(--km-accent-ink)]">
+              くわしく見る
+              <ArrowRight size={13} weight={ICON_WEIGHT} />
+            </span>
+          </button>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

@@ -566,7 +566,6 @@ export function FlavorMatrix({
         <div className="order-1 min-w-0 lg:hidden">
           <MobileTodayCard
             match={railMatches[0] ?? null}
-            runners={railMatches.slice(1)}
             loading={loadState === "loading" || semanticState === "pending"}
             caption={caption}
             semantic={recommendationMode === "semantic"}
