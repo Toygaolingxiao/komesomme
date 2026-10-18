@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { STABLE_BRAND_ID } from "./helpers";
+import { STABLE_BRAND_ID, visibleRailCaption } from "./helpers";
 
 test("TS-SEO-01 sitemap lists home and library brand", async ({ request }) => {
   const response = await request.get("/sitemap.xml");
@@ -79,7 +79,7 @@ test("TS-ANALYTICS-01 home survives analytics 500", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
-  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible({
+  await expect(visibleRailCaption(page)).toBeVisible({
     timeout: 30_000,
   });
 });

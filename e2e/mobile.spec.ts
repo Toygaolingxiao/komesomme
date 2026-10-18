@@ -1,12 +1,19 @@
 import { expect, test } from "@playwright/test";
-import { expectHomeAlive, installHistoryQuota, noHorizontalOverflow, scrubHomeSlider, waitForHomeReady } from "./helpers";
+import {
+  expectHomeAlive,
+  installHistoryQuota,
+  noHorizontalOverflow,
+  scrubHomeSlider,
+  visibleRailCaption,
+  waitForHomeReady,
+} from "./helpers";
 
 test.describe("TS-MOBILE", () => {
   test.skip(({ isMobile }) => !isMobile, "mobile project only");
 
   test("TS-MOBILE-01/02 today card first and no overflow", async ({ page }) => {
     await waitForHomeReady(page);
-    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
+    await expect(visibleRailCaption(page)).toBeVisible();
     await noHorizontalOverflow(page);
   });
 
@@ -60,7 +67,8 @@ test.describe("TS-MOBILE", () => {
     await page.goto("/discover");
     const collections = page.locator("#collections");
     await expect(collections.getByText("新米のころ")).toBeVisible();
-    const img = collections.locator("img").first();
+    // Featured row uses the wide figure; assert the list-row thumbs only.
+    const img = collections.locator("ul li img").first();
     await expect(img).toBeVisible();
     const box = await img.boundingBox();
     expect(box?.height ?? 999).toBeLessThan(160);

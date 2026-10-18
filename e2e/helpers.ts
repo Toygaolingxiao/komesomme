@@ -1,11 +1,25 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
+
+/**
+ * Coordinate-mode No.1 card. Mobile (`lg:hidden`) and desktop (`hidden lg:flex`)
+ * both mount a copy, and the map tooltip also echoes the caption — target the
+ * visible card button and take the first match (AnimatePresence may leave an
+ * opacity-0 exit sibling that Playwright still counts as visible).
+ */
+export function visibleRailCaption(page: Page): Locator {
+  return page
+    .locator("#matrix")
+    .getByRole("button", { name: /^いちばん近い一膳/ })
+    .filter({ visible: true })
+    .first();
+}
 
 /** Wait until the home matrix is interactive. Pass `path` to keep query/hash (e.g. `/?brand=`). */
 export async function waitForHomeReady(page: Page, path = "/") {
   await page.goto(path);
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
   // Scope to #matrix so the header tagline「侍米師」is not matched.
-  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible({
+  await expect(visibleRailCaption(page)).toBeVisible({
     timeout: 30_000,
   });
   // Dismiss the once-a-day discover tip so it cannot intercept map/rail clicks in e2e.
@@ -39,7 +53,7 @@ export async function scrubHomeSlider(page: Page, id: "#km-sweetness" | "#km-har
 export async function expectHomeAlive(page: Page) {
   await expect(page.getByText("Application error:")).toHaveCount(0);
   await expect(page.locator("#matrix")).toBeVisible();
-  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
+  await expect(visibleRailCaption(page)).toBeVisible();
 }
 
 /** Fail like Chrome / WebKit if the app mutates history on every slider tick. */
