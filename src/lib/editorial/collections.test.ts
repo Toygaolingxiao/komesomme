@@ -21,6 +21,7 @@ const KNOWN = new Set([
   "akitakomachi",
   "sagabiyori",
   "seiten-no-hekireki",
+  "sakihokore",
 ]);
 
 describe("editorial collections", () => {
@@ -58,11 +59,25 @@ describe("editorial collections", () => {
 
   it("indexes newest dateLabel first", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "yakizakana",
       "toku-a",
       "nabe",
       "shinmai",
       "bento-cold",
     ]);
+  });
+
+  it("features yakizakana in October Tokyo time", () => {
+    const october = Date.UTC(2026, 9, 19, 8, 0);
+    expect(featuredCollections(KNOWN, october).map((row) => row.slug)).toEqual([
+      "yakizakana",
+      "shinmai",
+    ]);
+  });
+
+  it("prints yakizakana's first-ship date", () => {
+    const row = EDITORIAL_COLLECTIONS.find((item) => item.slug === "yakizakana");
+    expect(row?.dateLabel).toBe("2026年10月19日 6時45分");
   });
 
   it("prints nabe's first-ship date, not a future November", () => {
