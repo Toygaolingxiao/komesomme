@@ -59,6 +59,7 @@ export function MobileTodayCard({
         >
     <button
       type="button"
+      data-km-today-rail="mobile"
       onClick={() => {
         track("recommendation_detail_click", { id: match.rice.id });
         onOpen(match.rice.id);

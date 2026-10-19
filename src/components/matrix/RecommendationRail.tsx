@@ -41,6 +41,7 @@ function BestMatchCard({
   return (
     <button
       type="button"
+      data-km-today-rail="desktop"
       onClick={onSelect}
       onMouseEnter={() => onHover?.(match.rice.id)}
       onMouseLeave={() => onHover?.(null)}

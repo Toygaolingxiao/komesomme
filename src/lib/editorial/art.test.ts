@@ -47,6 +47,9 @@ describe("collectionArtSrc", () => {
   it("returns the collection path when listed", () => {
     expect(collectionArtSrc("shinmai.webp")).toBe("/brand-art/collections/shinmai.webp");
     expect(collectionArtSrc("toku-a.webp")).toBe("/brand-art/collections/toku-a.webp");
+    expect(collectionArtSrc("yakizakana.webp")).toBe(
+      "/brand-art/collections/yakizakana.webp"
+    );
     expect(collectionArtSrc(null)).toBeNull();
     expect(collectionArtSrc("missing.webp")).toBeNull();
   });

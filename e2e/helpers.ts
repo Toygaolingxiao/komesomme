@@ -1,13 +1,29 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
+
+/**
+ * Coordinate-mode No.1 card. FlavorMatrix mounts either the mobile or desktop
+ * rail (not both); `data-km-today-rail` marks that single button. Prefer this
+ * over caption text — map tooltips can echo the same phrase. Filter visible so
+ * AnimatePresence exit siblings (opacity 0) are ignored.
+ */
+export function visibleRailCaption(page: Page): Locator {
+  return page
+    .locator("#matrix")
+    .locator("[data-km-today-rail]")
+    .filter({ visible: true })
+    .first();
+}
 
 /** Wait until the home matrix is interactive. Pass `path` to keep query/hash (e.g. `/?brand=`). */
 export async function waitForHomeReady(page: Page, path = "/") {
   await page.goto(path);
   await expect(page.locator("#matrix")).toBeVisible({ timeout: 30_000 });
   // Scope to #matrix so the header tagline「侍米師」is not matched.
-  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible({
+  await expect(visibleRailCaption(page)).toBeVisible({
     timeout: 30_000,
   });
+  // Guard the dual-mount regression: only one No.1 rail in the tree.
+  await expect(page.locator("#matrix").locator("[data-km-today-rail]")).toHaveCount(1);
   // Dismiss the once-a-day discover tip so it cannot intercept map/rail clicks in e2e.
   const later = page.getByRole("button", { name: "あとで" });
   if (await later.isVisible().catch(() => false)) {
@@ -39,7 +55,7 @@ export async function scrubHomeSlider(page: Page, id: "#km-sweetness" | "#km-har
 export async function expectHomeAlive(page: Page) {
   await expect(page.getByText("Application error:")).toHaveCount(0);
   await expect(page.locator("#matrix")).toBeVisible();
-  await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
+  await expect(visibleRailCaption(page)).toBeVisible();
 }
 
 /** Fail like Chrome / WebKit if the app mutates history on every slider tick. */
