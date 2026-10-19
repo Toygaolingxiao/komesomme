@@ -43,6 +43,7 @@ import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { SiteLegalNav } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { readBrandQuery } from "@/lib/navigation/brandQuery";
+import { useMediaQuery } from "@/lib/ui/useMediaQuery";
 import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
 import { ConsultForm } from "./matrix/ConsultForm";
@@ -143,6 +144,11 @@ export function FlavorMatrix({
   const [probeRippleKey, setProbeRippleKey] = useState(0);
   const [playEntrance, setPlayEntrance] = useState(false);
   const [entranceReady, setEntranceReady] = useState(false);
+  /**
+   * Mount only one No.1 surface (mobile card XOR desktop rail). Dual CSS-hidden
+   * copies made Playwright/e2e hit `hidden` captions and regressed CI often.
+   */
+  const isDesktopLayout = useMediaQuery("(min-width: 1024px)");
 
   const probeLeft = useMotionValue(probeLeftOf(INITIAL_COORDINATE));
   const probeTop = useMotionValue(probeTopOf(INITIAL_COORDINATE));
@@ -563,16 +569,18 @@ export function FlavorMatrix({
       <div
         className={`${SITE_COLUMN} grid gap-4 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.25rem))] pt-3 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:grid-rows-[minmax(0,1fr)_auto] lg:pb-2 lg:pt-2`}
       >
-        <div className="order-1 min-w-0 lg:hidden">
-          <MobileTodayCard
-            match={railMatches[0] ?? null}
-            runners={railMatches.slice(1)}
-            loading={loadState === "loading" || semanticState === "pending"}
-            caption={caption}
-            semantic={recommendationMode === "semantic"}
-            onOpen={openDetail}
-          />
-        </div>
+        {!isDesktopLayout ? (
+          <div className="order-1 min-w-0">
+            <MobileTodayCard
+              match={railMatches[0] ?? null}
+              runners={railMatches.slice(1)}
+              loading={loadState === "loading" || semanticState === "pending"}
+              caption={caption}
+              semantic={recommendationMode === "semantic"}
+              onOpen={openDetail}
+            />
+          </div>
+        ) : null}
 
         <div className="order-2 flex min-h-[min(72svh,32rem)] min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_18px_48px_-40px_rgba(112,69,34,0.4)] lg:order-none lg:col-start-1 lg:row-start-1 lg:h-full lg:min-h-0">
           <div className="shrink-0 px-4 pt-3.5 sm:px-5">
@@ -602,30 +610,32 @@ export function FlavorMatrix({
           </div>
         </div>
 
-        {shopRice ? (
+        {!isDesktopLayout && shopRice ? (
           <ShopLinksStrip
             rice={shopRice}
             variant="compact"
             expandMode="disclosure"
             disclosure="pr"
-            className="order-3 overflow-visible rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 lg:hidden"
+            className="order-3 overflow-visible rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3"
           />
         ) : null}
 
-        <aside className="hidden h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-4 py-3 shadow-[0_18px_48px_-40px_rgba(112,69,34,0.35)] sm:px-5 lg:col-start-2 lg:row-start-1 lg:flex">
-          <RecommendationRail
-            matches={railMatches}
-            mode={recommendationMode}
-            loading={loadState === "loading"}
-            pending={semanticState === "pending"}
-            selectedId={selectedId}
-            highlightId={hoveredId}
-            reduceMotion={reduceMotion}
-            caption={caption}
-            onSelect={openFromRail}
-            onHover={handleHover}
-          />
-        </aside>
+        {isDesktopLayout ? (
+          <aside className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface-warm)]/80 px-4 py-3 shadow-[0_18px_48px_-40px_rgba(112,69,34,0.35)] sm:px-5 lg:col-start-2 lg:row-start-1">
+            <RecommendationRail
+              matches={railMatches}
+              mode={recommendationMode}
+              loading={loadState === "loading"}
+              pending={semanticState === "pending"}
+              selectedId={selectedId}
+              highlightId={hoveredId}
+              reduceMotion={reduceMotion}
+              caption={caption}
+              onSelect={openFromRail}
+              onHover={handleHover}
+            />
+          </aside>
+        ) : null}
 
         <div className="order-4 min-w-0 rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.3)] lg:col-span-2 lg:row-start-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:pb-1 lg:pt-0 lg:shadow-none">
           {consult}

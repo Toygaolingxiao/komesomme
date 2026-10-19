@@ -1,15 +1,15 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 /**
- * Coordinate-mode No.1 card. Mobile (`lg:hidden`) and desktop (`hidden lg:flex`)
- * both mount a copy, and the map tooltip also echoes the caption — target the
- * visible card button and take the first match (AnimatePresence may leave an
- * opacity-0 exit sibling that Playwright still counts as visible).
+ * Coordinate-mode No.1 card. FlavorMatrix mounts either the mobile or desktop
+ * rail (not both); `data-km-today-rail` marks that single button. Prefer this
+ * over caption text — map tooltips can echo the same phrase. Filter visible so
+ * AnimatePresence exit siblings (opacity 0) are ignored.
  */
 export function visibleRailCaption(page: Page): Locator {
   return page
     .locator("#matrix")
-    .getByRole("button", { name: /^いちばん近い一膳/ })
+    .locator("[data-km-today-rail]")
     .filter({ visible: true })
     .first();
 }
@@ -22,6 +22,8 @@ export async function waitForHomeReady(page: Page, path = "/") {
   await expect(visibleRailCaption(page)).toBeVisible({
     timeout: 30_000,
   });
+  // Guard the dual-mount regression: only one No.1 rail in the tree.
+  await expect(page.locator("#matrix").locator("[data-km-today-rail]")).toHaveCount(1);
   // Dismiss the once-a-day discover tip so it cannot intercept map/rail clicks in e2e.
   const later = page.getByRole("button", { name: "あとで" });
   if (await later.isVisible().catch(() => false)) {

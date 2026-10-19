@@ -165,6 +165,7 @@ Mobile は文書スクロール可。Desktop の `100dvh` ロックは `lg` 以�
 正本は [19-editorial-discovery.md](./19-editorial-discovery.md)。ホーム地図の座標推薦とは別系統。Desktop `100dvh` の地図面には特集もイラスト帯も置かない。
 
 - **ピックアップ** `/discover`：きょうの三銘柄 + 特集一覧（`#collections`）。ナビは一級ここだけ。特集はモバイルもサムネ＋見出し（通欄の大きな正方形は置かない）
+- **ホーム No.1**：モバイルの今日カードとデスクトップ右欄は断点で **どちらか一方だけ** マウントする（`hidden` の二重 DOM 禁止。e2e は `[data-km-today-rail]`）
 - **特集誌面** `/collections/[slug]`：人手編集。索引 `/collections` は `/discover` へリダイレクト。旧 `/library/collections/*` も誌面へ
 - `/library` は編集マストヘッド → 品評表のみ
 - 一覧の味わい表示は数字壁より **金の pips**（`TastePips`）を優先。長文 headline は事典側
