@@ -77,6 +77,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(shop).toHaveAttribute("data-shop-expanded", "true");
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
     await expect(shop.getByRole("link", { name: /楽天/ })).toBeVisible();
+    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
     await expect(
       page.getByText("Amazonのアソシエイトとして", { exact: false }),
     ).toHaveCount(0);

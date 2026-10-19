@@ -34,7 +34,7 @@ test.describe("TS-MOBILE", () => {
     await shop.getByRole("button", { name: /お店で探す/ }).click();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
     await expect(shop.getByRole("link", { name: /^楽天市場$/ })).toBeVisible();
-    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toHaveCount(0);
+    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
   });
 
   test("TS-MOBILE-04 first tap highlights, second tap opens, slider drops selection", async ({

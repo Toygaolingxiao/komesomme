@@ -256,7 +256,7 @@ Yahoo 公式アフィの成果は**購入・発送**。ふるさと納税は寄�
 | プログラム | [メルカリアンバサダー](https://jp-news.mercari.com/articles/2023/12/05/mercari-ambassador/)（個人向け。検索結果・商品ページともリンク成果の対象） |
 | env | `NEXT_PUBLIC_MERCARI_AFID`（公開クエリ `afid=`。未設定時はコード側フォールバック） |
 | 実装 | `mercariSearchUrl()` → `https://jp.mercari.com/search?keyword=…&afid=…` |
-| UI | 1.6.0 で購入ボタンは外した。`mercariSearchUrl()` と env は残し、画面には出さない。公式ウィジェット HTML は埋め込まない |
+| UI | 通販 4 本目。`mercariSearchUrl()` + `NEXT_PUBLIC_MERCARI_AFID`。ホーム compact は 2×2。公式ウィジェット HTML は埋め込まない |
 
 商品ウィジェットではなく**検索リンク**でよい。キーワードは他モールと同じ `shopQuery`（産地・銘柄・白米）。管理画面で発行した afid を本番 env に置く。
 
