@@ -12,7 +12,8 @@ concurrency:
 
 jobs:
   check:
-    name: lint · typecheck · validate · build · unit · e2e
+    # Job name must match main branch protection required check.
+    name: lint · typecheck · validate · build
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
