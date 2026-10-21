@@ -2,7 +2,7 @@
 
 本文是工程设计，**不是法律意见**。条文以乐天现行「ウェブサービス利用規約」「楽天アフィリエイトパートナー規約」为准。Amazon / Yahoo / さとふる / ValueCommerce 的要点与正文链接见 [14-affiliate-programs.md](./14-affiliate-programs.md)。
 
-**已落地：** 通販 3（楽天 / Yahoo / Amazon）+ ふるさと 3。1.6.0 で画面のメルカリ導線は外した（プログラム記録は [14](./14-affiliate-programs.md) §5）。混排卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。乐天官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit) 与 Amazon 第 5 条在 **页脚**（HTML 不改）。CTA 旁只标 ※PR。Yahoo は公式短鎖。表面清单 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
+**已落地：** 通販 4（楽天 / Yahoo / Amazon / メルカリ）+ ふるさと 3。混排卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。乐天官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit) 与 Amazon 第 5 条在 **页脚**（HTML 不改）。CTA 旁只标 ※PR。Yahoo は公式短鎖。表面清单 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
 
 正文：[楽天ウェブサービス規約](https://webservice.rakuten.co.jp/guide/rule)（日本語原文が正文）。
 
@@ -72,7 +72,7 @@ API 拿到的商品信息只用于当场导流，不进公开 catalog、不写�
 
 ```
 [ お店で探す ※PR ]
-  通販: 楽天 | Yahoo | Amazon
+  通販: 楽天 | Yahoo | Amazon | メルカリ
   ふるさと: 楽天ふるさと | Yahoo!ふるさと | さとふる
 ```
 
@@ -105,7 +105,7 @@ Amazon 第5条 / アフィリエイト広告を含みます / Supported by Rakut
 
   section.km-other-shops      ← 禁止出现 API 的任何字段
     見出し: 他の店で銘柄名を探す
-    CTA: Amazon / Yahoo!ショッピング（仅 rice.name 或自有 keyword）
+    CTA: Amazon / Yahoo!ショッピング / メルカリ（仅 rice.name 或自有 keyword）
     ふるさと: Yahoo!ふるさと / さとふる（仅 prefecture + name）
 ```
 

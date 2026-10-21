@@ -258,13 +258,15 @@ const MALL_TONES = {
   amazon: { bar: "#e8c84a" },
   rakuten: { bar: "#bf0000" },
   yahoo: { bar: "#ff0033" },
+  /** Mercari red family — thin bar on cream buttons. */
+  mercari: { bar: "#e04552" },
   satofull: { bar: "#3a6b56" },
 } as const satisfies Record<string, MallTone>;
 
 /**
  * Mall CTAs + optional affiliate disclosure.
- * Retail is 楽天 → Yahoo → Amazon. Furusato stays 楽天 / Yahoo / さとふる.
- * Compact retail is one row of three so the home rail does not clip.
+ * Retail is 楽天 → Yahoo → Amazon → メルカリ. Furusato stays 楽天 / Yahoo / さとふる.
+ * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
   rice,
@@ -291,8 +293,9 @@ export function ShopLinksStrip({
 
   const short = compact || expandMode === "disclosure";
 
+  // Home rail is tight: a 4-high stack clips メルカリ. Compact retail uses 2×2.
   const retailGrid = compact
-    ? "mt-1 grid grid-cols-3 gap-1.5"
+    ? "mt-1 grid grid-cols-2 gap-1.5"
     : "mt-2 flex flex-col gap-2";
   const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
 
@@ -319,6 +322,13 @@ export function ShopLinksStrip({
             label={short ? "Amazon" : "Amazonで探す"}
             event="amazon_click"
             tone={MALL_TONES.amazon}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.mercari}
+            label={short ? "メルカリ" : "メルカリで探す"}
+            event="mercari_click"
+            tone={MALL_TONES.mercari}
             compact={compact}
           />
         </>

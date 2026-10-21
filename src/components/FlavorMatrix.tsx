@@ -561,12 +561,11 @@ export function FlavorMatrix({
   return (
     <section className="w-full min-w-0 overflow-x-clip lg:h-full lg:min-h-0">
       <div
-        className={`${SITE_COLUMN} grid gap-4 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.25rem))] pt-3 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:grid-rows-[minmax(0,1fr)_auto] lg:pb-2 lg:pt-2`}
+        className={`${SITE_COLUMN} grid gap-4 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3.25rem))] pt-3 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:grid-rows-[minmax(0,1fr)_auto_auto] lg:pb-2 lg:pt-2`}
       >
         <div className="order-1 min-w-0 lg:hidden">
           <MobileTodayCard
             match={railMatches[0] ?? null}
-            runners={railMatches.slice(1)}
             loading={loadState === "loading" || semanticState === "pending"}
             caption={caption}
             semantic={recommendationMode === "semantic"}
@@ -627,17 +626,18 @@ export function FlavorMatrix({
           />
         </aside>
 
-        <div className="order-4 min-w-0 rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.3)] lg:col-span-2 lg:row-start-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:pb-1 lg:pt-0 lg:shadow-none">
+        <div className="order-4 min-w-0 rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] px-4 pb-4 pt-3.5 shadow-[0_16px_40px_-36px_rgba(112,69,34,0.3)] lg:col-span-2 lg:row-start-2 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0 lg:shadow-none">
           {consult}
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-1 lg:px-1">
-            <SiteLegalNav className="justify-start" />
-            <Link
-              href="/discover"
-              className={`text-[12px] text-[var(--km-muted)] transition hover:text-[var(--km-gold-ink)] ${FOCUS}`}
-            >
-              きょうの読みもの
-            </Link>
-          </div>
+        </div>
+
+        <div className="order-5 flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 px-1 lg:col-span-2 lg:row-start-3 lg:px-1 lg:pb-1">
+          <SiteLegalNav className="justify-start" />
+          <Link
+            href="/discover"
+            className={`text-[12px] text-[var(--km-muted)] transition hover:text-[var(--km-gold-ink)] ${FOCUS}`}
+          >
+            きょうの読みもの
+          </Link>
         </div>
       </div>
 

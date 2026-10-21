@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { expectHomeAlive, installHistoryQuota, scrubHomeSlider, waitForHomeReady } from "./helpers";
+import {
+  expectHomeAlive,
+  installHistoryQuota,
+  scrubHomeSlider,
+  visibleRailCaption,
+  waitForHomeReady,
+} from "./helpers";
 
 test.describe("TS-HOME Desktop map & rail", () => {
   test.skip(({ isMobile }) => !!isMobile, "desktop project only");
@@ -20,11 +26,10 @@ test.describe("TS-HOME Desktop map & rail", () => {
 
   test("TS-HOME-02 map has plot content", async ({ page }) => {
     await waitForHomeReady(page);
-    const map = page.locator("#matrix");
+    const map = page.locator("[data-taste-map=desktop]");
     await expect(map).toBeVisible();
-    // Profile nodes or SVG/canvas children should exist once ready
-    const nodes = map.locator('[class*="rounded-full"], circle, button').first();
-    await expect(nodes).toBeVisible({ timeout: 30_000 });
+    // Grain buttons on the desktop map (not the lg:hidden mobile today card).
+    await expect(map.locator("button").first()).toBeVisible({ timeout: 30_000 });
   });
 
   test("TS-HOME-06/07 rapid slider input does not crash", async ({ page }) => {
@@ -39,7 +44,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     await page.locator("#km-hardness").fill("5");
     await page.waitForTimeout(400);
-    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
+    await expect(visibleRailCaption(page)).toBeVisible();
     await expect(page.locator("#matrix")).toBeVisible();
   });
 
@@ -49,7 +54,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await page.waitForTimeout(400);
     await page.locator("#km-sweetness").fill("5");
     await page.waitForTimeout(400);
-    await expect(page.locator("#matrix").getByText("いちばん近い一膳", { exact: true }).first()).toBeVisible();
+    await expect(visibleRailCaption(page)).toBeVisible();
   });
 
   test("TS-HOME-08/10 shop disclosure expands after discovery", async ({ page }) => {
@@ -59,7 +64,10 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(shop.getByText("※PR")).toBeVisible();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toHaveCount(0);
 
-    const neighbours = page.getByText("近い味わいの銘柄");
+    const neighbours = page
+      .getByText("近い味わいの銘柄")
+      .filter({ visible: true })
+      .first();
     await expect(neighbours).toBeVisible();
     const neighbourBox = await neighbours.boundingBox();
     const shopBox = await shop.boundingBox();
@@ -69,6 +77,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(shop).toHaveAttribute("data-shop-expanded", "true");
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toBeVisible();
     await expect(shop.getByRole("link", { name: /楽天/ })).toBeVisible();
+    await expect(shop.getByRole("link", { name: /^メルカリ$/ })).toBeVisible();
     await expect(
       page.getByText("Amazonのアソシエイトとして", { exact: false }),
     ).toHaveCount(0);
@@ -76,7 +85,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
 
   test("TS-HOME-09 opening detail from today card", async ({ page }) => {
     await waitForHomeReady(page);
-    await page.getByRole("button", { name: /いちばん近い一膳/ }).first().click();
+    await visibleRailCaption(page).click();
     await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
   });
 
