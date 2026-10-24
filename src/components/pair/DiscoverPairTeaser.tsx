@@ -1,10 +1,16 @@
-import Link from "next/link";
 import { SteamMark } from "@/components/brand/EditorialMarks";
+import { EditorialArt } from "@/components/editorial/EditorialArt";
+import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
+import { pairingArtSrc } from "@/lib/editorial/art";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 
-/** One row of dish names. The full plates live on /pair, not again here. */
+/**
+ * Discover teaser for cuisine landings. Compact plate thumbs — not another
+ * magazine stack (collections already own the wide banners).
+ */
 export function DiscoverPairTeaser() {
   if (PAIRING_PAGES.length === 0) return null;
 
@@ -25,25 +31,43 @@ export function DiscoverPairTeaser() {
             献立から、甘みと粒感の近い銘柄を並べています。
           </p>
         </div>
-        <Link
+        <TransitionLink
           href="/pair"
           className={`shrink-0 text-[12px] text-[var(--km-brown)] hover:text-[var(--km-gold-ink)] ${FOCUS}`}
         >
           一覧へ
-        </Link>
+        </TransitionLink>
       </div>
 
-      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-        {PAIRING_PAGES.map((page) => (
-          <li key={page.slug}>
-            <Link
-              href={`/pair/${page.slug}`}
-              className={`font-serif text-[15px] text-[var(--km-ink)] underline-offset-4 hover:text-[var(--km-brown)] hover:underline ${FOCUS}`}
-            >
-              {page.dishLabel}
-            </Link>
-          </li>
-        ))}
+      <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4">
+        {PAIRING_PAGES.map((page) => {
+          const art = pairingArtSrc(page.artFile);
+          return (
+            <li key={page.slug}>
+              <TransitionLink
+                href={`/pair/${page.slug}`}
+                className={`group block ${FOCUS}`}
+              >
+                <span className="relative block aspect-[5/4] overflow-hidden rounded-lg bg-[var(--km-surface-warm)]">
+                  {art ? (
+                    <EditorialArt
+                      src={art}
+                      alt=""
+                      className="absolute inset-0 h-full w-full motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
+                      sizes="(min-width: 768px) 220px, 45vw"
+                      quality={80}
+                      objectPosition="50% 42%"
+                      transitionName={artViewTransitionName("pair", page.slug)}
+                    />
+                  ) : null}
+                </span>
+                <span className="mt-2 block font-serif text-[15px] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
+                  {page.dishLabel}
+                </span>
+              </TransitionLink>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

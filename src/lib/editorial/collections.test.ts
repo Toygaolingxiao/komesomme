@@ -21,6 +21,14 @@ const KNOWN = new Set([
   "akitakomachi",
   "sagabiyori",
   "seiten-no-hekireki",
+  "ryu-no-hitomi",
+  "nitamai",
+  "hazuki-minori",
+  "hanaechizen",
+  "yumemizuho",
+  "fusakogane",
+  "koshiibuki",
+  "sakihokore",
 ]);
 
 describe("editorial collections", () => {
@@ -58,10 +66,21 @@ describe("editorial collections", () => {
 
   it("indexes newest dateLabel first", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "yakizakana",
+      "jugatsu-wase",
+      "shio-musubi",
       "toku-a",
       "nabe",
       "shinmai",
       "bento-cold",
+    ]);
+  });
+
+  it("features the two newest October collections", () => {
+    const october = Date.UTC(2026, 9, 24, 3, 0);
+    expect(featuredCollections(KNOWN, october).map((row) => row.slug)).toEqual([
+      "yakizakana",
+      "jugatsu-wase",
     ]);
   });
 

@@ -31,6 +31,66 @@ export type EditorialCollection = {
  */
 export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
   {
+    slug: "yakizakana",
+    title: "焼き魚の夜",
+    dek: "塩気の立つ魚に、白飯が静かに寄り添う銘柄を集めました。",
+    lede: "秋刀魚のころから定食の焼き魚まで。米が魚を邪魔しない帯です。",
+    dateLabel: "2026年10月19日 6時45分",
+    months: [10, 11],
+    riceIds: [
+      "seiten-no-hekireki",
+      "tentakaku",
+      "sasanishiki",
+      "sakihokore",
+      "tsuyahime",
+    ],
+    artFile: "yakizakana.webp",
+    body: [
+      "塩焼きの魚は、皮の香ばしさと塩気が先に来ます。米は甘みが強すぎず、後味が短く残るほうが、次の一口の魚に戻りやすいです。",
+      "ここでは焼き魚の定食に向きやすい銘柄を、産地の違う五本に絞りました。すっきりした帯と、塩気を受け止める甘みの帯を両方置いてあります。",
+    ],
+  },
+  {
+    slug: "jugatsu-wase",
+    title: "十月の袋、早生から",
+    dek: "令和8年産が店頭に並び始めるころ。先に届く早生を五銘柄読みます。",
+    lede: "食味ランキングの前に、刈り入れの早い銘柄から手に取る読み方です。",
+    dateLabel: "2026年10月12日 22時08分",
+    months: [10, 11],
+    riceIds: [
+      "hazuki-minori",
+      "hanaechizen",
+      "yumemizuho",
+      "fusakogane",
+      "koshiibuki",
+    ],
+    artFile: "jugatsu-wase.webp",
+    body: [
+      "十月の店頭では、極早生や早生の令和8年産が先に袋になります。中生の主産地はこれから本格的に並び、食味ランキングは来年2月です。年産の優劣を決めつける時期ではありません。",
+      "ここでは刈り入れが早い銘柄を、産地の違う五本に絞りました。袋の年産表記を確認してから、事典のメモと照らし合わせると、今年の入り口がつかみやすいです。",
+    ],
+  },
+  {
+    slug: "shio-musubi",
+    title: "塩むすびで、味を見る",
+    dek: "具もタレも足さない日に、米そのものの甘みと粒を読みます。",
+    lede: "塩だけの握りは、銘柄の差が一番わかりやすい食べ方です。",
+    dateLabel: "2026年10月12日 17時10分",
+    months: [3, 4, 5, 6, 10, 11],
+    riceIds: [
+      "ryu-no-hitomi",
+      "yumepirika",
+      "koshihikari-uonuma",
+      "nitamai",
+      "sasanishiki",
+    ],
+    artFile: "shio-musubi.webp",
+    body: [
+      "塩だけの握りは、おかずに隠されない分、甘みの出方と粒の感触がはっきりします。同じ「おいしい」でも、大粒の厚みと、すっきりした後味では印象が変わります。",
+      "ここでは塩むすびに向きやすい銘柄を、産地の違う五本に絞りました。まず塩で食べてから、事典のメモを読むと、選び方がつかみやすいです。",
+    ],
+  },
+  {
     slug: "bento-cold",
     title: "冷めても、弁当に",
     dek: "昼の弁当箱で、粒がばらけすぎない米を集めました。",
