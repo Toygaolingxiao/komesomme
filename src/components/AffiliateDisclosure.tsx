@@ -11,7 +11,7 @@ type DisclosureVariant = "full" | "pr";
 
 /**
  * `full` — Amazon Art.5 + short PR + Rakuten Developers credit. SiteFooter only.
- * `pr` — ※PR chip next to mall CTAs. Copy lives in `src/lib/affiliate.ts`.
+ * `pr` — ※PR plus the short affiliate sentence, visible without hover. Copy lives in `src/lib/affiliate.ts`.
  * Surfaces: `docs/15-disclosure-surfaces.md`.
  */
 export function AffiliateDisclosure({
@@ -23,11 +23,9 @@ export function AffiliateDisclosure({
 }) {
   if (variant === "pr") {
     return (
-      <p
-        className={`text-[10px] leading-none tracking-wide text-[var(--km-muted)] ${className}`}
-        title={AFFILIATE_PR_NOTICE}
-      >
-        {AFFILIATE_PR_LABEL}
+      <p className={`text-[12px] leading-snug text-[var(--km-muted)] ${className}`}>
+        <span className="tracking-wide">{AFFILIATE_PR_LABEL}</span>
+        <span className="ml-1.5">{AFFILIATE_PR_NOTICE}</span>
       </p>
     );
   }

@@ -8,6 +8,7 @@ import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
   AFFILIATE_PR_LABEL,
+  AFFILIATE_PR_NOTICE,
   amazonSearchUrl,
   furusatoQuery,
   mercariSearchUrl,
@@ -390,10 +391,12 @@ export function ShopLinksStrip({
               <span className="font-serif text-[15px] font-semibold tracking-tight text-[var(--km-ink)]">
                 お店で探す
               </span>
-              {mode === "pr" ? (
-                <span className="text-[12px] text-[var(--km-muted)]">{AFFILIATE_PR_LABEL}</span>
-              ) : null}
             </span>
+            {mode === "pr" ? (
+              <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
+                {AFFILIATE_PR_LABEL} {AFFILIATE_PR_NOTICE}
+              </span>
+            ) : null}
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
               {open ? "とじる" : `${rice.name}を探す`}
             </span>
@@ -419,7 +422,7 @@ export function ShopLinksStrip({
   return (
     <div className={className} data-shop-strip="brand" data-shop-mode={shopMode}>
       {title || mode === "pr" ? (
-        <div className="flex items-center justify-between gap-2">
+        <div>
           {title ? (
             <p
               className={
@@ -430,10 +433,10 @@ export function ShopLinksStrip({
             >
               {title}
             </p>
-          ) : (
-            <span />
-          )}
-          {mode === "pr" ? <AffiliateDisclosure variant="pr" /> : null}
+          ) : null}
+          {mode === "pr" ? (
+            <AffiliateDisclosure variant="pr" className={title ? "mt-1" : ""} />
+          ) : null}
         </div>
       ) : null}
 

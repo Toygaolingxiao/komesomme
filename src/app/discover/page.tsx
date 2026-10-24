@@ -18,11 +18,23 @@ import { itemListLd } from "@/lib/seo/jsonLd";
 /** Tokyo calendar bowl + featured months. Refresh often enough to cross midnight. */
 export const revalidate = 600;
 
+const DISCOVER_DESCRIPTION =
+  "きょうの三銘柄と旬の特集。日付と食卓の場面で入れ替わる、侍米師のピックアップです。";
+
 export const metadata: Metadata = {
   title: "ピックアップ",
-  description:
-    "きょうの三銘柄と旬の特集。日付と食卓の場面で入れ替わる、侍米師のピックアップです。",
+  description: DISCOVER_DESCRIPTION,
   alternates: { canonical: "/discover" },
+  openGraph: {
+    title: "ピックアップ",
+    description: DISCOVER_DESCRIPTION,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ピックアップ",
+    description: DISCOVER_DESCRIPTION,
+  },
 };
 
 export default function DiscoverPage() {

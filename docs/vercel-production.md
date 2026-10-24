@@ -33,6 +33,7 @@ Vercel → Project → **Settings → Environment Variables**。
 | `YAHOO_CLIENT_ID` | Yahoo ショッピング appid | 同左 | **Server only**。未設定なら検索 URL。通販は公式短鎖テーブル優先 |
 | `SATOFULL_SEARCH_BASE_URL` | さとふる検索ベース | 同左 | 未設定時は公式 list.php |
 | `NEXT_PUBLIC_SHOP_LINKS_ENABLED` | 購入 CTA | 同左 | 未設定 = 表示。`0` で「お店で探す」全体を隠す |
+| `NEXT_PUBLIC_SHARE_CARD_ENABLED` | 未設定 = 表示 | 同左 | 一键分享卡。`0` でボタンと `/api/rice/share-card` を止める。本番で以前 `1` を入れている場合はそのままでよい |
 | `SHOP_LINKS_ENABLED` | 同上（サーバ） | 同左 | クライアント非表示には `NEXT_PUBLIC_` も `0` |
 | ~~`YAHOO_VC_*` / `SATOFULL_VC_*` / `VALUE_COMMERCE_WRAP`~~ | ValueCommerce | **置かない** | **廃止**（2026-09）。[17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md) |
 

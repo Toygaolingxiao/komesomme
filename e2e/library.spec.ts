@@ -54,7 +54,7 @@ test.describe("TS-LIBRARY", () => {
 
     await page.goto("/collections/shinmai");
     await expect(page.getByRole("heading", { level: 1, name: "新米のころ" })).toBeVisible();
-    await expect(page.getByRole("link", { name: /ゆめぴりか/ })).toBeVisible();
+    await expect(page.locator('a[href="/library/yumepirika"]')).toBeVisible();
 
     await page.goto("/library/collections/shinmai");
     await expect(page).toHaveURL(/\/collections\/shinmai/);

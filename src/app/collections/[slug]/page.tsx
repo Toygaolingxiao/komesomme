@@ -37,8 +37,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${collection.title}｜特集`,
     description: collection.dek,
     alternates: { canonical: `/collections/${collection.slug}` },
-    openGraph: { description: collection.dek, type: "article" },
-    twitter: { description: collection.dek },
+    openGraph: {
+      title: `${collection.title}｜特集`,
+      description: collection.dek,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${collection.title}｜特集`,
+      description: collection.dek,
+    },
   };
 }
 
@@ -59,8 +67,11 @@ export default async function CollectionPage({ params }: PageProps) {
             headline: `${collection.title}｜特集`,
             description: collection.dek,
             path: `/collections/${collection.slug}`,
-            imagePath: "/opengraph-image",
+            imagePath: `/collections/${collection.slug}/opengraph-image`,
             datePublished: collectionPublishedIso(collection.dateLabel),
+            dateModified: collection.updatedLabel
+              ? collectionPublishedIso(collection.updatedLabel)
+              : undefined,
           }),
           breadcrumbListLd(trail),
         ]}

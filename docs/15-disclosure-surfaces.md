@@ -10,7 +10,7 @@
 
 | 层 | 显示什么 | 为什么 |
 | --- | --- | --- |
-| CTA 旁 | `AFFILIATE_PR_LABEL`（`※PR`） | 景表法：链接附近能认出是宣传。不堆 Amazon 定型、不列 ASP 名 |
+| CTA 旁 | `AFFILIATE_PR_LABEL`（`※PR`）+ `AFFILIATE_PR_NOTICE`（「アフィリエイト広告」短句） | 景表法：链接附近能认出是宣传，且手机上不用悬停就能读到短句。不堆 Amazon 定型、不列 ASP 名 |
 | `SiteFooter`（全站唯一 `full`） | Amazon 第 5 条 + `AFFILIATE_PR_NOTICE`（含「アフィリエイト広告」）+ 乐天官方クレジット + `TASTE_DISCLAIMER` | Amazon 目立つ位置；乐天クレジットガイド；产品诚实 |
 | `/terms` | `AFFILIATE_PR_NOTICE_DETAIL`（列 ASP）+ Amazon 定型 + 不赞助声明 | 名单只放法务页 |
 | `/privacy` `/tokushoho` | privacy=计量与 Cookie；tokushoho=特商法表。味わい长说明互链 `/terms` §3，勿三页复读 | 不是 chrome 定型，勿与 CTA 文案混用 |
@@ -36,7 +36,7 @@
 
 组件：[`src/components/AffiliateDisclosure.tsx`](../src/components/AffiliateDisclosure.tsx)
 
-- `variant="pr"` → label + `title={AFFILIATE_PR_NOTICE}`
+- `variant="pr"` → `※PR` 与短句并排，12px，不用 `title` 悬停代替正文
 - `variant="full"` → Amazon + 短 PR + 乐天クレジット
 
 页脚：[`src/components/SiteFooter.tsx`](../src/components/SiteFooter.tsx)（唯一默认 `full`）。
@@ -47,10 +47,10 @@
 
 | 表面 | 文件 | 披露 |
 | --- | --- | --- |
-| 首页 Desktop 右栏「お店で探す」 | `FlavorMatrix.tsx` + `RecommendationRail.tsx` → `ShopLinksStrip` `expandMode="disclosure"` `disclosure="pr"` | `※PR`。**无** Amazon 定型、**无** 乐天クレジット（`e2e/home.spec.ts` 锁定） |
+| 首页 Desktop 右栏「お店で探す」 | `FlavorMatrix.tsx` + `RecommendationRail.tsx` → `ShopLinksStrip` `expandMode="disclosure"` `disclosure="pr"` | `※PR` + 短句，按钮上直接可见。**无** Amazon 定型、**无** 乐天クレジット（`e2e/home.spec.ts` 锁定） |
 | 首页 Mobile 地图下商店条 | `FlavorMatrix.tsx` 同上 | 同上 |
-| 品鉴 overlay 顶部条 | `PurchaseLead` → `ShopLinksStrip` `disclosure="pr"` | `※PR` |
-| 品鉴 overlay / ライブラリ `#km-purchase` | `PurchaseLinks` → `RiceProductCard` → `ShopLinksStrip` `disclosure="pr"` | `※PR`。完整定型在同页 `SiteFooter`（overlay 无页脚，Amazon 定型靠 `/terms` 与ライブラリ页脚） |
+| 品鉴 overlay 顶部条 | `PurchaseLead` → `ShopLinksStrip` `disclosure="pr"` | `※PR` + 短句 |
+| 品鉴 overlay / ライブラリ `#km-purchase` | `PurchaseLinks` → `RiceProductCard` → `ShopLinksStrip` `disclosure="pr"` | `※PR` + 短句。Amazon 定型仍只在同页 `SiteFooter`（overlay 无页脚，靠 `/terms` 与ライブラリ页脚） |
 | ライブラリ一覧・記事 | `src/app/library/page.tsx`、`library/[id]/page.tsx` | `SiteFooter` = `full` |
 | 法务三页 | `LegalPage.tsx` | 同上 |
 | 首页整体 | `src/app/page.tsx` | **没有** `SiteFooter`（Desktop `100dvh`）。顶栏 `SiteLegalNav` 链到规约。Amazon 第 5 条不出现在首页（有意） |

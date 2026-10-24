@@ -1,4 +1,5 @@
 import { recordAccess } from "@/lib/analytics/accessClient";
+import { readLandingAttribution } from "@/lib/analytics/attribution";
 import { analyticsLayerEntry, gtagEventParams } from "@/lib/analytics/layer";
 import { isOpsPath } from "@/lib/ops/paths";
 
@@ -60,8 +61,12 @@ export function track(event: AnalyticsEvent, payload: AnalyticsPayload = {}) {
   }
 
   const pagePath = window.location.pathname;
+  // dataLayer / access log only. gtag page_view stays path + title so GA4
+  // keeps document.location (and the utm_* on it) as page_location.
+  const attribution = readLandingAttribution();
   const entry = {
     ...analyticsLayerEntry(event, payload, pagePath),
+    ...attribution,
     ts: Date.now(),
   };
   window.dataLayer = window.dataLayer ?? [];

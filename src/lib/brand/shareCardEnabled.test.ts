@@ -12,8 +12,14 @@ describe("isShareCardEnabled", () => {
     else process.env.SHARE_CARD_ENABLED = prevServer;
   });
 
-  it("is off by default", () => {
+  it("is on when neither flag is set", () => {
     delete process.env.NEXT_PUBLIC_SHARE_CARD_ENABLED;
+    delete process.env.SHARE_CARD_ENABLED;
+    expect(isShareCardEnabled()).toBe(true);
+  });
+
+  it("turns off with NEXT_PUBLIC_SHARE_CARD_ENABLED=0", () => {
+    process.env.NEXT_PUBLIC_SHARE_CARD_ENABLED = "0";
     delete process.env.SHARE_CARD_ENABLED;
     expect(isShareCardEnabled()).toBe(false);
   });
