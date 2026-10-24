@@ -69,6 +69,9 @@ export default async function CollectionPage({ params }: PageProps) {
             path: `/collections/${collection.slug}`,
             imagePath: `/collections/${collection.slug}/opengraph-image`,
             datePublished: collectionPublishedIso(collection.dateLabel),
+            dateModified: collection.updatedLabel
+              ? collectionPublishedIso(collection.updatedLabel)
+              : undefined,
           }),
           breadcrumbListLd(trail),
         ]}

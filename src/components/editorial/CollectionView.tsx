@@ -26,6 +26,9 @@ export function CollectionView({
           <SteamMark className="h-7 w-7" />
           <p className="mt-3 text-[12px] text-[var(--km-muted)]">
             {collectionDateDisplay(collection.dateLabel)}
+            {collection.updatedLabel ? (
+              <span className="ml-3">{`更新 ${collectionDateDisplay(collection.updatedLabel)}`}</span>
+            ) : null}
           </p>
           <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
             {collection.title}
@@ -52,6 +55,18 @@ export function CollectionView({
         <div className={`${READING_COLUMN} space-y-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]`}>
           {collection.body.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+          ))}
+          {collection.sections?.map((section) => (
+            <section key={section.heading} className="pt-6">
+              <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
+                {section.heading}
+              </h2>
+              <ul className="mt-3 list-disc space-y-2 pl-5">
+                {section.items.map((item) => (
+                  <li key={item.slice(0, 24)}>{item}</li>
+                ))}
+              </ul>
+            </section>
           ))}
         </div>
       </div>
@@ -88,6 +103,11 @@ export function CollectionView({
                   {entry.headline ? (
                     <span className="mt-1.5 line-clamp-2 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
                       {entry.headline}
+                    </span>
+                  ) : null}
+                  {collection.riceNotes?.[entry.id] ? (
+                    <span className="mt-1.5 block text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+                      {collection.riceNotes[entry.id]}
                     </span>
                   ) : null}
                 </span>

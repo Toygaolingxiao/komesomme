@@ -108,6 +108,18 @@ describe("collectionPublishedIso", () => {
   it("parses every shipped collection label", () => {
     for (const row of EDITORIAL_COLLECTIONS) {
       expect(collectionPublishedIso(row.dateLabel)).toBeDefined();
+      if (row.updatedLabel) {
+        expect(collectionPublishedIso(row.updatedLabel)).toBeDefined();
+      }
     }
+  });
+
+  it("parses shinmai's updatedLabel without moving the publish date", () => {
+    const shinmai = EDITORIAL_COLLECTIONS.find((row) => row.slug === "shinmai");
+    expect(shinmai?.dateLabel).toBe("2026年9月3日 16時48分");
+    expect(shinmai?.updatedLabel).toBe("2026年10月24日 16時48分");
+    expect(collectionPublishedIso(shinmai?.updatedLabel ?? "")).toBe("2026-10-24T16:48:00+09:00");
+    const keys = (shinmai?.body ?? []).map((paragraph) => paragraph.slice(0, 24));
+    expect(new Set(keys).size).toBe(keys.length);
   });
 });
