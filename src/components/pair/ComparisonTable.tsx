@@ -37,7 +37,7 @@ export function ComparisonTable({
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
         <div>
           <h2
             id="pair-top-heading"

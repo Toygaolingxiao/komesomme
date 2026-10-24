@@ -1,3 +1,4 @@
+import { readLandingAttribution } from "@/lib/analytics/attribution";
 import { isOpsPath } from "@/lib/ops/paths";
 
 const SESSION_KEY = "km_sid";
@@ -36,7 +37,8 @@ export function recordAccess(
     event: event.slice(0, 64),
     path: resolved,
     sessionId: sessionId(),
-    meta,
+    // First-touch utm_* / referrer. Caller fields stay if they use the same key.
+    meta: { ...readLandingAttribution(), ...meta },
   });
 
   try {

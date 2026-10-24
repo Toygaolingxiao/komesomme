@@ -3,7 +3,7 @@
  * Yahoo Item Search and Rakuten Item Search stay in server modules.
  */
 
-export const AFFILIATE_LINK_REL = "noopener noreferrer nofollow" as const;
+export const AFFILIATE_LINK_REL = "noopener noreferrer nofollow sponsored" as const;
 
 /** Amazon Associates Operating Agreement art. 5 (required, prominent). Footer only. */
 export const AMAZON_ASSOCIATE_DISCLOSURE =
