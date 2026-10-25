@@ -87,6 +87,14 @@ describe("editorial collections", () => {
   it("prints nabe's first-ship date, not a future November", () => {
     const nabe = EDITORIAL_COLLECTIONS.find((row) => row.slug === "nabe");
     expect(nabe?.dateLabel).toBe("2026年9月3日 18時53分");
+    expect(nabe?.updatedLabel).toBe("2026年10月25日 18時53分");
+    expect(collectionPublishedIso(nabe?.updatedLabel ?? "")).toBe("2026-10-25T18:53:00+09:00");
+    expect(nabe?.months).toEqual([11, 12, 1, 2]);
+    expect(nabe?.riceIds).toContain("nijinokirameki");
+    expect(nabe?.riceNotes?.nijinokirameki).toBe("汁気のある料理でも形が崩れにくいお米です。");
+    expect(nabe?.body.join("")).toBe(
+      "鍋のあとの雑炊や、取り分けた具をごはんにのせる日。汁を吸ってもべちゃっとしにくい、粒のしっかりした銘柄を中心に選びました。甘みの強い銘柄とすっきりした銘柄を両方置いているので、寄せ鍋やキムチ鍋など、その日の味の濃さで選んでください。"
+    );
   });
 
   it("prints bento's date in September, not a fake April", () => {
@@ -136,8 +144,15 @@ describe("collectionPublishedIso", () => {
   it("parses shinmai's updatedLabel without moving the publish date", () => {
     const shinmai = EDITORIAL_COLLECTIONS.find((row) => row.slug === "shinmai");
     expect(shinmai?.dateLabel).toBe("2026年9月3日 16時48分");
-    expect(shinmai?.updatedLabel).toBe("2026年10月24日 16時48分");
-    expect(collectionPublishedIso(shinmai?.updatedLabel ?? "")).toBe("2026-10-24T16:48:00+09:00");
+    expect(shinmai?.updatedLabel).toBe("2026年10月25日 16時48分");
+    expect(collectionPublishedIso(shinmai?.updatedLabel ?? "")).toBe("2026-10-25T16:48:00+09:00");
+    const memo = shinmai?.sections?.find((section) => section.heading === "今年の新米メモ");
+    const emi = memo?.items.find((item) => item.includes("えみほころ"));
+    expect(emi).toContain("[えみほころ](/library/emihokoro)");
+    expect(emi).toContain(
+      "（出典：埼玉県「[“えみほころ”で食欲の秋を楽しもう！](https://www.pref.saitama.lg.jp/a0314/sainokuni/sainokuni-kensei-202610p02.html)」2026年10月1日）"
+    );
+    expect(memo?.items.find((item) => item.includes("2,821円"))).toContain("2,821円");
     const keys = (shinmai?.body ?? []).map((paragraph) => paragraph.slice(0, 24));
     expect(new Set(keys).size).toBe(keys.length);
   });

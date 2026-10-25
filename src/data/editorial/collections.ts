@@ -110,7 +110,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
     dek: "令和8年産の新米を、産地を変えて食べ比べる。",
     lede: "早く出回る銘柄から特Aの常連まで、12銘柄を並べました。",
     dateLabel: "2026年9月3日 16時48分",
-    updatedLabel: "2026年10月24日 16時48分",
+    updatedLabel: "2026年10月25日 16時48分",
     months: [9, 10, 11],
     riceIds: [
       "hazuki-minori",
@@ -140,6 +140,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
           "8月末時点の1等比率は65.9%で、前年同時期（66.5%）とほぼ同じ水準です。まだ検査の途中経過で、9月分は前年より高くなる見込みとされています。（出典：農林水産省「農産物検査結果」2026年9月）",
           "高温に強い品種の作付けは、令和7年産で主食用米の18.2%まで広がりました。令和8年産の割合はまだ公表されていません。（出典：農林水産省「令和7年地球温暖化影響調査レポート（速報）」2026年3月）",
           "令和8年産の食味ランキングは、例年どおりなら2027年2月ごろの発表です。下の銘柄の特Aは、令和7年産の結果にもとづいています。（出典：日本穀物検定協会「令和7年産米の食味ランキング」2026年2月）",
+          "埼玉県の新品種『[えみほころ](/library/emihokoro)』は、令和8年産から本格流通が始まりました。県内のスーパーなどでは11月下旬から販売予定とされています。（出典：埼玉県「[“えみほころ”で食欲の秋を楽しもう！](https://www.pref.saitama.lg.jp/a0314/sainokuni/sainokuni-kensei-202610p02.html)」2026年10月1日）",
         ],
       },
       {
@@ -173,13 +174,23 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
     dek: "汁気の多い料理に、しっかりした粒。",
     lede: "汁がかかっても粒が残りやすい米を中心に置いてあります。",
     dateLabel: "2026年9月3日 18時53分",
+    updatedLabel: "2026年10月25日 18時53分",
     months: [11, 12, 1, 2],
-    riceIds: ["yumepirika", "koshihikari-uonuma", "akitakomachi", "tsuyahime", "sagabiyori"],
+    riceIds: [
+      "yumepirika",
+      "koshihikari-uonuma",
+      "akitakomachi",
+      "tsuyahime",
+      "sagabiyori",
+      "nijinokirameki",
+    ],
     artFile: "nabe.webp",
     body: [
-      "すき焼きや寄せ鍋のあと、ご飯に汁がかかることがあります。溶ける米より、粒が残る米のほうが合いやすい日です。",
-      "甘みの強い銘柄と、すっきりした銘柄を両方置いてあります。今夜の鍋に合わせて選んでください。",
+      "鍋のあとの雑炊や、取り分けた具をごはんにのせる日。汁を吸ってもべちゃっとしにくい、粒のしっかりした銘柄を中心に選びました。甘みの強い銘柄とすっきりした銘柄を両方置いているので、寄せ鍋やキムチ鍋など、その日の味の濃さで選んでください。",
     ],
+    riceNotes: {
+      nijinokirameki: "汁気のある料理でも形が崩れにくいお米です。",
+    },
   },
   {
     slug: "toku-a",

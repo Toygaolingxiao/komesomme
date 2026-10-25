@@ -5,6 +5,7 @@ import { FOCUS } from "@/components/matrix/shared";
 import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { collectionDateDisplay, type EditorialCollection } from "@/data/editorial/collections";
 import { collectionArtSrc } from "@/lib/editorial/art";
+import { splitInlineLinks } from "@/lib/editorial/inlineLinks";
 import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
@@ -63,7 +64,9 @@ export function CollectionView({
               </h2>
               <ul className="mt-3 list-disc space-y-2 pl-5">
                 {section.items.map((item) => (
-                  <li key={item.slice(0, 24)}>{item}</li>
+                  <li key={item.slice(0, 24)}>
+                    <MemoItem item={item} />
+                  </li>
                 ))}
               </ul>
             </section>
@@ -119,4 +122,30 @@ export function CollectionView({
       </div>
     </article>
   );
+}
+
+const MEMO_LINK_CLASS = `text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`;
+
+function MemoItem({ item }: { item: string }) {
+  return splitInlineLinks(item).map((part, index) => {
+    if (part.type === "text") return <span key={`${index}-${part.text}`}>{part.text}</span>;
+    if (part.href.startsWith("/")) {
+      return (
+        <TransitionLink key={`${part.href}-${part.label}`} href={part.href} className={MEMO_LINK_CLASS}>
+          {part.label}
+        </TransitionLink>
+      );
+    }
+    return (
+      <a
+        key={`${part.href}-${part.label}`}
+        href={part.href}
+        className={MEMO_LINK_CLASS}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {part.label}
+      </a>
+    );
+  });
 }
