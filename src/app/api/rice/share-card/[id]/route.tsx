@@ -98,7 +98,12 @@ export async function GET(request: Request, { params }: RouteProps) {
       fonts,
       headers: {
         "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
+        // The card depends only on static catalogue data, so let shared
+        // caches hold it: s-maxage is what the CDN in front actually keys
+        // on (max-age alone left generation — ~20s of font/image work —
+        // running per request).
+        "Cache-Control":
+          "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
         "Content-Disposition": `inline; filename="${rice.id}-komesomme${withQr ? "-qr" : ""}.png"`,
       },
     }

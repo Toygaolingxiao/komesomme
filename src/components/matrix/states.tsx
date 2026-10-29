@@ -4,6 +4,7 @@ import { Warning } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { ICON_WEIGHT, LAYER } from "./shared";
+import { useLateStage } from "./useStagedWait";
 
 export function MatrixSkeleton() {
   const seeds: Array<[number, number]> = [
@@ -50,10 +51,11 @@ export function RailSkeleton({ reduceMotion = false }: { reduceMotion?: boolean 
 }
 
 export function SemanticReading({ reduceMotion }: { reduceMotion: boolean }) {
+  const late = useLateStage(true);
   return (
     <RailAwaiting
       kicker={GUIDE_ROLE}
-      message="近い銘柄を探しています"
+      message={late ? "侍米師のひとことを用意しています" : "近い銘柄を探しています"}
       reduceMotion={reduceMotion}
     />
   );

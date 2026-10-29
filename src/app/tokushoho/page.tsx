@@ -5,6 +5,7 @@ import { LegalShell } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "特定商取引法に基づく表記",
   description: "KomeSomme の特定商取引法に基づく表記。",
+  alternates: { canonical: "/tokushoho" },
 };
 
 const ROWS: [string, string][] = [

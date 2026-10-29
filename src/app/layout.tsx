@@ -32,6 +32,9 @@ const SITE_TITLE = `KomeSomme | ${GUIDE_ROLE}`;
 
 export const metadata: Metadata = {
   metadataBase: siteMetadataBase(),
+  // Pages with their own alternates.canonical replace this wholesale; the
+  // legal pages set theirs explicitly so they do not inherit "/".
+  alternates: { canonical: "/" },
   title: {
     default: SITE_TITLE,
     template: "%s | KomeSomme",

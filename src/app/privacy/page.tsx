@@ -5,6 +5,7 @@ import { LegalShell } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
   description: "KomeSomme における個人情報・通信データの取扱いについて。",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
