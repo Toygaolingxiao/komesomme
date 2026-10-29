@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+- Case Study HTML（`komesomme-1.4.1-case-study.html`）の hero を短距 pin + 層速差の視差スクロールに強化（作品集向け。製品 UI には入れない）
+
 ## 1.8.1 — 2026-10-25
 
 - 鍋の季節の前文を直し、にじのきらめきを足す。更新日は 2026年10月25日
