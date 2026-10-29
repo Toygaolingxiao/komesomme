@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { track } from "@/lib/analytics";
 import { GUIDE_CONSULT_LABEL, GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { FOCUS, ICON_WEIGHT } from "./shared";
+import { useLateStage } from "./useStagedWait";
 
 const EXAMPLES: Array<{ text: string; Icon: typeof Sparkle }> = [
   { text: "ハイボールと唐揚げに合う米", Icon: BeerBottle },
@@ -43,6 +44,7 @@ export function ConsultForm({
   const hasQuery = query.trim().length > 0;
   const reduceMotion = useReducedMotion() ?? false;
   const empty = !hasQuery && !pending;
+  const waitLate = useLateStage(pending);
 
   const title = (
     <div className="min-w-0 lg:self-center">
@@ -52,9 +54,13 @@ export function ConsultForm({
       <p className="mt-0.5 text-[12px] leading-snug text-[var(--km-muted)]">
         {failed
           ? "言葉を変えるか、味わいの地図から探してみてください。"
-          : reply
-            ? "言葉を変えて、続けて聞けます。"
-            : "料理の名前でも、今夜の気分でも構いません。"}
+          : pending
+            ? waitLate
+              ? "侍米師のひとことを用意しています。"
+              : "近い銘柄を探しています。"
+            : reply
+              ? "言葉を変えて、続けて聞けます。"
+              : "料理の名前でも、今夜の気分でも構いません。"}
       </p>
     </div>
   );

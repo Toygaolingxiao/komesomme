@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createEmbeddingForConsultation, getEmbeddingModel, resolveProvider } from "@/lib/embedding";
+import { getCachedEmbedding, setCachedEmbedding } from "@/lib/embedding/cache";
 import { riceProfiles } from "@/data/rice/catalog";
 import { expandConsultationQuery } from "@/lib/rice/consultExpand";
 import { mapRowToRiceProfile, RICE_PROFILE_COLUMNS } from "@/lib/rice/mapRiceRow";
@@ -22,6 +23,37 @@ const MAX_MATCH_COUNT = 10;
 const MAX_QUERY_LENGTH = 500;
 /** Cosine similarity floor. Low enough that an unusual phrasing still returns something. */
 const MATCH_THRESHOLD = 0.1;
+/**
+ * Wall-clock budget for the spoken reply, enforced at the route.
+ *
+ * generateSommelierReply time-boxes each provider attempt at 5s internally,
+ * but its Gemini chain plus OpenAI fallback can still stack to ~10s, on top
+ * of embedding (two attempts × 5s worst case) and the match RPC — past both
+ * maxDuration (15s) and the client's 12s abort. Capping the reply at 5s
+ * keeps the worst case near 5 (embed) + match + 5 (reply), and a timeout
+ * simply lands on the same Flavor Bridge fallback the failure path uses:
+ * the ranked matches are never held hostage to the prose.
+ */
+const REPLY_BUDGET_MS = 5_000;
+
+async function sommelierReplyWithinBudget(
+  query: string,
+  picks: Array<{ name: string; prefecture: string; reason: string }>
+): Promise<string | null> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      generateSommelierReply(query, picks),
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), REPLY_BUDGET_MS);
+      }),
+    ]);
+  } catch {
+    return null;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
 
 /**
  * Semantic recommendation ("侍米師に相談").
@@ -66,14 +98,15 @@ export async function POST(request: Request) {
       toMatch(query, namedHit, 1),
       ...neighbours.map((row) => toMatch(query, row.rice, 0)),
     ];
-    const reply = await generateSommelierReply(
-      query,
-      ranked.map((match) => ({
-        name: match.rice.name,
-        prefecture: match.rice.prefecture,
-        reason: match.reason,
-      }))
-    );
+    const reply =
+      (await sommelierReplyWithinBudget(
+        query,
+        ranked.map((match) => ({
+          name: match.rice.name,
+          prefecture: match.rice.prefecture,
+          reason: match.reason,
+        }))
+      )) ?? `${namedHit.prefecture}の${namedHit.name}です。${ranked[0].reason}`;
     return NextResponse.json({
       query,
       reply,
@@ -119,14 +152,20 @@ export async function POST(request: Request) {
   const searchText = expandConsultationQuery(query);
 
   let embedding: number[];
-  try {
-    embedding = await createEmbeddingForConsultation(searchText, provider);
-  } catch (cause) {
-    reportServerError(cause, { route: "semantic-recommend", kind: "embed", status: 502 });
-    return NextResponse.json(
-      { message: "検索ベクトルの生成に失敗しました。" },
-      { status: 502 }
-    );
+  const cachedEmbedding = getCachedEmbedding(provider, searchText);
+  if (cachedEmbedding) {
+    embedding = cachedEmbedding;
+  } else {
+    try {
+      embedding = await createEmbeddingForConsultation(searchText, provider);
+      setCachedEmbedding(provider, searchText, embedding);
+    } catch (cause) {
+      reportServerError(cause, { route: "semantic-recommend", kind: "embed", status: 502 });
+      return NextResponse.json(
+        { message: "検索ベクトルの生成に失敗しました。" },
+        { status: 502 }
+      );
+    }
   }
 
   try {
@@ -167,17 +206,17 @@ export async function POST(request: Request) {
 
     const ranked = unique.slice(0, matchCount);
     let reply = "";
-    try {
-      reply = await generateSommelierReply(
-        query,
-        ranked.map((match) => ({
-          name: match.rice.name,
-          prefecture: match.rice.prefecture,
-          reason: match.reason,
-        }))
-      );
-    } catch (cause) {
-      console.error("Sommelier reply generation failed:", cause);
+    const budgetedReply = await sommelierReplyWithinBudget(
+      query,
+      ranked.map((match) => ({
+        name: match.rice.name,
+        prefecture: match.rice.prefecture,
+        reason: match.reason,
+      }))
+    );
+    if (budgetedReply !== null) {
+      reply = budgetedReply;
+    } else {
       const top = ranked[0]?.rice;
       reply = top
         ? `${top.prefecture}の${top.name}です。${ranked[0].reason}`

@@ -9,6 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "利用規約",
   description: "KomeSomme の利用条件について。",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

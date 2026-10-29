@@ -321,6 +321,39 @@ const SCENE_RULES: Array<[keywords: string[], build: (rice: RiceProfileV2) => st
 ];
 
 /**
+ * Brand-specific tail for shared-template reasons.
+ *
+ * The drink bridges and scene rules above are written per category, so every
+ * brand landing in the same branch would otherwise read byte-identically —
+ * live, ranks #2 and #4 of one consultation shared a reason word for word.
+ * Append one clause drawn from the brand's own catalogue entry (a dish it
+ * suits, else a pairing it avoids) so two different brands do not present
+ * the same text. The clause only states what the catalogue already claims
+ * for that brand; matching and ranking are untouched.
+ */
+function brandNote(query: string, rice: RiceProfileV2, base: string): string {
+  // Dishes the guest already named, or the base text already mentions, add
+  // nothing — the note must bring information the rest of the reason lacks.
+  const dishes = rice.best_match_dishes.map((dish) => dish.trim()).filter(Boolean);
+  const fresh = dishes.filter((dish) => !base.includes(dish) && !query.includes(dish));
+  const picked = fresh.slice(0, 2);
+  if (picked.length >= 2) return `とくに${picked[0]}や${picked[1]}の日に合います。`;
+  if (picked.length === 1) return `とくに${picked[0]}の日に合います。`;
+
+  const avoid = rice.avoid_pairings
+    .map((pairing) => pairing.trim())
+    .find((pairing) => pairing && !base.includes(pairing));
+  if (avoid) return `${avoid}には向かない一膳です。`;
+
+  return "";
+}
+
+function withBrandNote(query: string, rice: RiceProfileV2, base: string): string {
+  const note = brandNote(query, rice, base);
+  return note ? `${base}${note}` : base;
+}
+
+/**
  * Explanation for a semantic match.
  *
  * Named-brand + cooking questions use catalogue dishes. Exact lookup says so
@@ -359,24 +392,28 @@ export function buildSemanticReason(query: string, rice: RiceProfileV2): string 
   }
 
   if (queryTargetsPrefecture(query, rice.prefecture)) {
-    return `${rice.prefecture}産の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`;
+    return withBrandNote(
+      query,
+      rice,
+      `${rice.prefecture}産の、${rice.texture_label}・${rice.sweetness_label}な一膳です。`
+    );
   }
 
   const category = detectDrinkCategory(query);
   if (category) {
-    return BRIDGES[category](rice);
+    return withBrandNote(query, rice, BRIDGES[category](rice));
   }
 
   const normalized = query.toLowerCase();
   for (const [keywords, build] of SCENE_RULES) {
     if (keywords.some((keyword) => normalized.includes(keyword.toLowerCase()))) {
-      return build(rice);
+      return withBrandNote(query, rice, build(rice));
     }
   }
 
   if (rice.pairing_reason.trim()) {
-    return rice.pairing_reason;
+    return withBrandNote(query, rice, rice.pairing_reason);
   }
 
-  return "料理や気分の言葉に、味わいの特徴がよく重なる一膳です。";
+  return withBrandNote(query, rice, "料理や気分の言葉に、味わいの特徴がよく重なる一膳です。");
 }

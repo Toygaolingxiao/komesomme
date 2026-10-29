@@ -480,6 +480,8 @@ export function FlavorMatrix({
         setCoordinate(next);
         glideProbe(next);
       }
+      // The answer is on the rail now; free the field for the next question.
+      setQuery("");
       setSemanticState("idle");
     } catch (cause) {
       console.error("Semantic recommend failed:", cause);
