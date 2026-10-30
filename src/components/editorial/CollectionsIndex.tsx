@@ -99,7 +99,7 @@ function FeaturedRow({
       <span className="mt-4 block min-w-0">
         <span className="flex flex-wrap items-baseline gap-x-2 text-[11px] tracking-wide text-[var(--km-muted)]">
           {isCurrent ? <span className="text-[var(--km-brown)]">今月</span> : null}
-          <span>{collectionDateDisplay(collection.dateLabel)}</span>
+          <span>{collection.updatedLabel ? `更新 ${collectionDateDisplay(collection.updatedLabel)}` : collectionDateDisplay(collection.dateLabel)}</span>
         </span>
         <span className="mt-1 block font-serif text-[1.5rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)] sm:text-[1.65rem]">
           {collection.title}
@@ -158,7 +158,7 @@ function RowCopy({
     <span className="min-w-0">
       <span className="flex flex-wrap items-baseline gap-x-2 text-[11px] tracking-wide text-[var(--km-muted)]">
         {isCurrent ? <span className="text-[var(--km-brown)]">今月</span> : null}
-        <span>{collectionDateDisplay(collection.dateLabel)}</span>
+        <span>{collection.updatedLabel ? `更新 ${collectionDateDisplay(collection.updatedLabel)}` : collectionDateDisplay(collection.dateLabel)}</span>
       </span>
       <span className="mt-0.5 block font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)] sm:text-[1.35rem]">
         {collection.title}

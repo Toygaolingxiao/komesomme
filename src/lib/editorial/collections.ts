@@ -45,18 +45,23 @@ function publishedMs(dateLabel: string): number {
   return Number.isFinite(t) ? t : 0;
 }
 
-function byPublishedDesc(a: EditorialCollection, b: EditorialCollection): number {
-  const delta = publishedMs(b.dateLabel) - publishedMs(a.dateLabel);
+/** The label that stands for an article's freshness: an update wins over the publish date. */
+export function collectionLatestLabel(collection: EditorialCollection): string {
+  return collection.updatedLabel ?? collection.dateLabel;
+}
+
+function byLatestDesc(a: EditorialCollection, b: EditorialCollection): number {
+  const delta = publishedMs(collectionLatestLabel(b)) - publishedMs(collectionLatestLabel(a));
   if (delta !== 0) return delta;
   return a.slug.localeCompare(b.slug);
 }
 
-/** Index / discover order: newest first (by dateLabel). */
+/** Index / discover order: most recently updated (or published) first. */
 export function collectionsForIndex(knownIds: Set<string>): EditorialCollection[] {
-  return [...allCollections(knownIds)].sort(byPublishedDesc);
+  return [...allCollections(knownIds)].sort(byLatestDesc);
 }
 
-/** Seasonal picks, newest first within the month. */
+/** Seasonal picks, most recently updated (or published) first within the month. */
 export function featuredCollections(
   knownIds: Set<string>,
   now: Date | number = Date.now(),
@@ -65,6 +70,6 @@ export function featuredCollections(
   const month = jstMonth(now);
   return allCollections(knownIds)
     .filter((row) => row.months.includes(month))
-    .sort(byPublishedDesc)
+    .sort(byLatestDesc)
     .slice(0, cap);
 }

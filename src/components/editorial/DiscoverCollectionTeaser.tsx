@@ -71,7 +71,7 @@ export function DiscoverCollectionTeaser({
                   <span className="absolute inset-0 bg-gradient-to-t from-[rgba(48,40,32,0.55)] via-[rgba(48,40,32,0.12)] to-transparent" />
                   <span className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
                     <span className="text-[11px] tracking-wide text-white/85">
-                      {collectionDateDisplay(collection.dateLabel)}
+                      {collection.updatedLabel ? `更新 ${collectionDateDisplay(collection.updatedLabel)}` : collectionDateDisplay(collection.dateLabel)}
                     </span>
                     <span className="mt-0.5 block font-serif text-[1.15rem] font-semibold tracking-tight text-white sm:text-[1.3rem]">
                       {collection.title}
