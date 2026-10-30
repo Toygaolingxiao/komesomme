@@ -11,7 +11,7 @@ export type EditorialCollection = {
   lede?: string;
   /** 誌面に出す公開日時（東京）。季節の `months` とは別。 */
   dateLabel: string;
-  /** 同じ書式の更新日時。並びは dateLabel のまま。 */
+  /** 同じ書式の更新日時。一覧の並びと日付表示は、更新日時があればそちらを優先する。 */
   updatedLabel?: string;
   /** Calendar months 1–12 when this collection is featured on /collections. */
   months: number[];

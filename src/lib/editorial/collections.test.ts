@@ -64,23 +64,23 @@ describe("editorial collections", () => {
     );
   });
 
-  it("indexes newest dateLabel first", () => {
+  it("indexes most recently updated first (updatedLabel wins over dateLabel)", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "nabe",
+      "shinmai",
       "yakizakana",
       "jugatsu-wase",
       "shio-musubi",
       "toku-a",
-      "nabe",
-      "shinmai",
       "bento-cold",
     ]);
   });
 
-  it("features the two newest October collections", () => {
+  it("features the two freshest October collections", () => {
     const october = Date.UTC(2026, 9, 24, 3, 0);
     expect(featuredCollections(KNOWN, october).map((row) => row.slug)).toEqual([
+      "shinmai",
       "yakizakana",
-      "jugatsu-wase",
     ]);
   });
 
