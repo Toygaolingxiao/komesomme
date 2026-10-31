@@ -3,11 +3,11 @@ import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { riceProfiles } from "@/data/rice/catalog";
 import { toDisplayPoints } from "@/lib/rice/matrix";
 import { regionColor } from "@/lib/rice/regions";
-import type { RiceDisplayPoint, RiceProfileV2 } from "@/types/rice";
+import type { MapDisplayPoint, RiceProfileV2 } from "@/types/rice";
 
 /** Same separated layout as the home TasteMap (sunflower + repulsion). */
-let cachedMapPoints: RiceDisplayPoint[] | null = null;
-function shareCardMapPoints(): RiceDisplayPoint[] {
+let cachedMapPoints: MapDisplayPoint[] | null = null;
+function shareCardMapPoints(): MapDisplayPoint[] {
   if (!cachedMapPoints) {
     cachedMapPoints = toDisplayPoints(riceProfiles);
   }

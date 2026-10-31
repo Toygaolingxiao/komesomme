@@ -5,7 +5,7 @@ import { Drop } from "@phosphor-icons/react";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { displayYToHardness, positionToValue } from "@/lib/rice/matrix";
 import type { RiceRegionRecord } from "@/lib/rice/regions";
-import type { RiceDisplayPoint, TasteCoordinate } from "@/types/rice";
+import type { MapDisplayPoint, TasteCoordinate } from "@/types/rice";
 import { ProfileNode } from "./ProfileNode";
 import { RiceGrainMark } from "./RiceGrainMark";
 import { AXIS_POLES, FOCUS, INSET, LAYER, type MapDensity } from "./shared";
@@ -179,7 +179,7 @@ function MapLegend({
 }
 
 function regionMatches(
-  rice: RiceDisplayPoint,
+  rice: MapDisplayPoint,
   regionId: string,
   regions: RiceRegionRecord[]
 ) {
@@ -228,7 +228,7 @@ export function TasteMap({
   onSelect,
   onHover,
 }: {
-  points: RiceDisplayPoint[];
+  points: MapDisplayPoint[];
   regions: RiceRegionRecord[];
   bestMatchId: string | null;
   runnerUpIds: ReadonlySet<string>;

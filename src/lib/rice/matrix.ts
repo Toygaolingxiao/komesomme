@@ -1,7 +1,7 @@
 import type {
-  RiceDisplayPoint,
+  MapDisplayPoint,
+  MapProfile,
   RiceMatchResult,
-  RiceProfileV2,
   TasteCoordinate,
 } from "@/types/rice";
 
@@ -59,7 +59,7 @@ export function displayYToHardness(displayY: number) {
   return AXIS_MAX + AXIS_MIN - normalizeTasteValue(displayY);
 }
 
-export function calculateMatrixDisplayPoint(rice: RiceProfileV2): RiceDisplayPoint {
+export function calculateMatrixDisplayPoint(rice: MapProfile): MapDisplayPoint {
   const baseX = normalizeTasteValue(rice.sweetness);
   const baseY = hardnessToDisplayY(rice.hardness);
 
@@ -87,7 +87,7 @@ export function calculateMatrixDisplayPoint(rice: RiceProfileV2): RiceDisplayPoi
  * in a pile. A few damped repulsion steps then separate neighbouring cells. Ranking uses
  * these same coordinates, so No.1 stays the nearest visible dot.
  */
-function separateDisplayPoints(points: RiceDisplayPoint[]): RiceDisplayPoint[] {
+function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
   const xs = points.map((point) => point.display_x);
   const ys = points.map((point) => point.display_y);
   const groups = new Map<string, number[]>();
@@ -157,7 +157,7 @@ function separateDisplayPoints(points: RiceDisplayPoint[]): RiceDisplayPoint[] {
   }));
 }
 
-export function toDisplayPoints(riceList: RiceProfileV2[]): RiceDisplayPoint[] {
+export function toDisplayPoints(riceList: readonly MapProfile[]): MapDisplayPoint[] {
   return separateDisplayPoints(riceList.map(calculateMatrixDisplayPoint));
 }
 
@@ -196,9 +196,9 @@ export function coordinateFromDisplayPoint(point: {
 }
 
 function hasDisplayCoordinates(
-  rice: RiceProfileV2 | RiceDisplayPoint
-): rice is RiceDisplayPoint {
-  return "display_x" in rice && "display_y" in rice;
+  rice: MapProfile & { display_x?: number; display_y?: number }
+): rice is MapDisplayPoint {
+  return typeof rice.display_x === "number" && typeof rice.display_y === "number";
 }
 
 /**
@@ -209,7 +209,7 @@ function hasDisplayCoordinates(
  */
 export function calculateCoordinateDistance(
   target: TasteCoordinate,
-  rice: RiceProfileV2 | RiceDisplayPoint
+  rice: MapProfile & { display_x?: number; display_y?: number }
 ) {
   const targetX = normalizeTasteValue(target.sweetness);
   const targetY = hardnessToDisplayY(target.hardness);
@@ -250,7 +250,7 @@ function withPeriod(text: string) {
  */
 export function generateCoordinateReason(
   _target: TasteCoordinate,
-  rice: RiceProfileV2
+  rice: MapProfile
 ) {
   const short = withPeriod(rice.short_ ?? "");
   if (short) return short;
@@ -302,11 +302,11 @@ export function generateCoordinateReason(
  * Runs entirely on the client so map clicks, probe drags and slider moves respond
  * instantly and never trigger an embedding or vector-search request.
  */
-export function calculateTopCoordinateMatches(
-  riceList: Array<RiceProfileV2 | RiceDisplayPoint>,
+export function calculateTopCoordinateMatches<T extends MapProfile>(
+  riceList: readonly T[],
   target: TasteCoordinate,
   limit = 4
-): RiceMatchResult[] {
+): Array<RiceMatchResult<T>> {
   return riceList
     .map((rice) => {
       const distance = calculateCoordinateDistance(target, rice);
@@ -337,7 +337,7 @@ const NEIGHBOUR_DIMENSIONS = [
   "cold_rice_quality",
   "sauce_absorption",
   "oil_compatibility",
-] as const satisfies ReadonlyArray<keyof RiceProfileV2>;
+] as const satisfies ReadonlyArray<keyof MapProfile>;
 
 const MAX_NEIGHBOUR_DISTANCE = Math.sqrt(NEIGHBOUR_DIMENSIONS.length) * 4;
 
@@ -348,11 +348,11 @@ const MAX_NEIGHBOUR_DISTANCE = Math.sqrt(NEIGHBOUR_DIMENSIONS.length) * 4;
  * catalogue of vectors would be megabytes of transfer for a panel that only needs three
  * names, and the taste scores are what the comparison is actually about.
  */
-export function calculateTasteNeighbours(
-  riceList: RiceProfileV2[],
-  reference: RiceProfileV2,
+export function calculateTasteNeighbours<T extends MapProfile>(
+  riceList: readonly T[],
+  reference: MapProfile,
   limit = 3
-): RiceMatchResult[] {
+): Array<RiceMatchResult<T>> {
   return riceList
     .filter((rice) => rice.id !== reference.id)
     .map((rice) => {

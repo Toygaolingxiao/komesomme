@@ -135,13 +135,57 @@ export type RiceSource = Pick<
   overrides?: Partial<RiceProfileV2>;
 };
 
+/**
+ * The slice of a profile the home map needs before any detail is opened.
+ *
+ * Carries identity, the twelve taste scores (map offsets and neighbour
+ * ranking read them), the labels and short lines the rail renders, the dish
+ * lists the cards show, and the shop keywords. Editorial long text and the
+ * pairing/scene lists stay server-side and arrive per brand through
+ * `/api/rice/profile/[id]` when the detail panel opens.
+ */
+export type MapProfile = Pick<
+  RiceProfileV2,
+  | "id"
+  | "name"
+  | "prefecture"
+  | "region"
+  | "region_id"
+  | "region_color"
+  | "sweetness"
+  | "hardness"
+  | "stickiness"
+  | "aroma"
+  | "umami"
+  | "aftertaste"
+  | "grain_size"
+  | "clarity"
+  | "richness"
+  | "cold_rice_quality"
+  | "sauce_absorption"
+  | "oil_compatibility"
+  | "texture_label"
+  | "sweetness_label"
+  | "short_"
+  | "best_match_dishes"
+  | "good_with"
+  | "rakuten_search_keyword"
+  | "amazon_search_keyword"
+  | "furusato_keywords"
+>;
+
+export type MapDisplayPoint = MapProfile & {
+  display_x: number;
+  display_y: number;
+};
+
 export type RiceDisplayPoint = RiceProfileV2 & {
   display_x: number;
   display_y: number;
 };
 
-export type RiceMatchResult = {
-  rice: RiceProfileV2;
+export type RiceMatchResult<T extends MapProfile = RiceProfileV2> = {
+  rice: T;
   score: number;
   distance: number;
   reason: string;

@@ -116,7 +116,9 @@ export function shortTasteTags(rice: RiceProfileV2): string[] {
   return Array.from(new Set(tags.filter(Boolean))).slice(0, 3);
 }
 
-export function pairTasteTags(rice: RiceProfileV2): string[] {
+export function pairTasteTags(
+  rice: Pick<RiceProfileV2, "texture_label" | "sweetness_label">
+): string[] {
   return [rice.texture_label, rice.sweetness_label].filter(Boolean).slice(0, 2);
 }
 
