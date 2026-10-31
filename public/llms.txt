@@ -1,0 +1,30 @@
+# KomeSomme（こめそめ）| 侍米師 — 日本のブランド米の味わい図鑑
+
+> KomeSomme は、日本のブランド米 106 銘柄を「甘み・硬さ（粒感）・粘り」の味わいの軸で整理し、料理や気分に合う銘柄を案内する図鑑サイトです。銘柄ごとの事典ページ、料理から選ぶペアリング、季節の特集記事、トップページの「侍米師への相談」で構成されています。運営は KomeSomme 運営事務局です。
+
+## サイトの構成
+
+- [味わいの地図（トップページ）](https://komesomme.jp/): 106 銘柄を味わいの座標に置いた地図。甘み・硬さ・粘りの位置関係から銘柄を探せます。言葉で相談すると、近い銘柄と理由を返す「侍米師への相談」もここにあります。
+- [見つける](https://komesomme.jp/discover): 季節の特集記事と、銘柄・料理への入口を集めたページです。
+- [料理で選ぶ](https://komesomme.jp/pair): カレー、焼き魚、丼ものなど 10 の料理ごとに、合う銘柄を理由つきで並べます。各料理のページは `https://komesomme.jp/pair/{料理ID}` の形式です（例: [カレー](https://komesomme.jp/pair/curry)）。
+- 特集記事: 「新米のころ」など季節の読み物。各記事は `https://komesomme.jp/collections/{特集ID}` の形式です（例: [新米のころ](https://komesomme.jp/collections/shinmai)）。内容を更新した記事は更新日を表示し、一覧は更新の新しい順に並びます。
+
+## 銘柄ページの形式
+
+- 各銘柄に事典ページがあり、URL は `https://komesomme.jp/library/{銘柄ID}` の形式です。産地、味わいの特徴、向く料理、炊き方のメモを載せています。
+- [魚沼産コシヒカリ](https://komesomme.jp/library/koshihikari-uonuma): 新潟県魚沼産。粘りと甘みの強い、食べ比べの基準になる銘柄。
+- [ゆめぴりか](https://komesomme.jp/library/yumepirika): 北海道産。粘りと甘みがしっかりした銘柄。
+- [ななつぼし](https://komesomme.jp/library/nanatsuboshi): 北海道産。釣り合いのとれた味わい。
+- [つや姫](https://komesomme.jp/library/tsuyahime): 山形県産。炊き上がりの白さとツヤが持ち味。
+- [あきたこまち](https://komesomme.jp/library/akitakomachi): 秋田県産。香りとほどよい粘りの定番。
+- [ささにしき](https://komesomme.jp/library/sasanishiki): 宮城県産。あっさりした後味で、寿司や焼き魚に向く。
+
+## データと評価について
+
+- 味わいのスコア（甘み・硬さ・粘りなど）は当サイト独自の編集評価です。日本穀物検定協会の食味ランキングとは別の物差しで、特集記事の中で公的データを引く場合は出典を明示しています。
+- 銘柄の基本情報は、産地や公的機関の公開情報をもとに編集しています。価格や購入先は各販売店のページをご確認ください（銘柄ページに ※PR 表記つきの購入リンクがあります）。
+
+## 運営について
+
+- [特定商取引法に基づく表記](https://komesomme.jp/tokushoho): 運営者情報。
+- [プライバシーポリシー](https://komesomme.jp/privacy) / [利用規約](https://komesomme.jp/terms)
