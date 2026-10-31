@@ -1,5 +1,16 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type APIRequestContext } from "@playwright/test";
 import { STABLE_BRAND_ID, visibleRailCaption } from "./helpers";
+
+/** next start sometimes resets a keep-alive socket on the next document GET. */
+async function getDocument(request: APIRequestContext, path: string) {
+  try {
+    return await request.get(path);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (!message.includes("ECONNRESET")) throw error;
+    return request.get(path);
+  }
+}
 
 test("TS-SEO-01 sitemap lists home and library brand", async ({ request }) => {
   const response = await request.get("/sitemap.xml");
@@ -30,6 +41,20 @@ test("TS-SEO-03 brand page carries Article and BreadcrumbList JSON-LD", async ({
   expect(types).toContain("Article");
   expect(types).toContain("BreadcrumbList");
   expect(types).toContain("WebSite");
+
+  const article = blocks
+    .flatMap((block) => (Array.isArray(block) ? block : [block]))
+    .find((node) => (node as { "@type"?: string })["@type"] === "Article") as {
+    author?: { "@type"?: string; name?: string; url?: string; sameAs?: string[] };
+    publisher?: { "@type"?: string };
+  };
+  expect(article.author).toMatchObject({
+    "@type": "Person",
+    name: "高江Takae",
+    sameAs: ["https://x.com/Toy_Takae"],
+  });
+  expect(article.author?.url).toMatch(/\/about$/);
+  expect(article.publisher?.["@type"]).toBe("Organization");
 });
 
 test("TS-SEO-04 large image previews are allowed and OG image is per brand", async ({
@@ -59,7 +84,7 @@ test("TS-SEO-06 brand page shows a breadcrumb trail", async ({ page }) => {
 });
 
 test("TS-SEC-01 security headers on document", async ({ request }) => {
-  const response = await request.get("/");
+  const response = await getDocument(request, "/");
   expect(response.ok()).toBeTruthy();
   const headers = response.headers();
   expect(headers["x-content-type-options"]?.toLowerCase()).toBe("nosniff");
@@ -67,8 +92,8 @@ test("TS-SEC-01 security headers on document", async ({ request }) => {
 });
 
 test("TS-SEC-02 HTML does not embed service_role", async ({ request }) => {
-  const home = await (await request.get("/")).text();
-  const brand = await (await request.get(`/library/${STABLE_BRAND_ID}`)).text();
+  const home = await (await getDocument(request, "/")).text();
+  const brand = await (await getDocument(request, `/library/${STABLE_BRAND_ID}`)).text();
   expect(home).not.toContain("service_role");
   expect(brand).not.toContain("service_role");
 });

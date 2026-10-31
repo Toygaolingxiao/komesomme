@@ -5,6 +5,7 @@ import { TASTE_DISCLAIMER } from "@/lib/affiliate";
 import { FOCUS } from "@/components/matrix/shared";
 
 const LINKS = [
+  { href: "/about", label: "サイトについて" },
   { href: "/privacy", label: "プライバシー" },
   { href: "/terms", label: "利用規約" },
   { href: "/tokushoho", label: "特定商取引法" },

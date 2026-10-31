@@ -57,7 +57,12 @@ export function CollectionsIndex({
                   slug={collection.slug}
                   className={`group grid grid-cols-[6.25rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
                 >
-                  <RowThumb art={art} index={index} slug={collection.slug} />
+                  <RowThumb
+                    art={art}
+                    index={index}
+                    slug={collection.slug}
+                    alt={collection.title}
+                  />
                   <RowCopy collection={collection} isCurrent={isCurrent} />
                 </EditorialCollectionLink>
               </li>
@@ -86,7 +91,7 @@ function FeaturedRow({
       {art ? (
         <EditorialArt
           src={art}
-          alt=""
+          alt={collection.title}
           className="km-figure-wide"
           sizes="(min-width: 768px) 52rem, 100vw"
           quality={90}
@@ -121,10 +126,12 @@ function RowThumb({
   art,
   index,
   slug,
+  alt,
 }: {
   art: string | null;
   index: number;
   slug: string;
+  alt: string;
 }) {
   const tall = index % 2 === 0;
   if (!art) {
@@ -138,7 +145,7 @@ function RowThumb({
   return (
     <EditorialArt
       src={art}
-      alt=""
+      alt={alt}
       className={`w-full ${tall ? "aspect-[4/5]" : "aspect-[5/4]"}`}
       sizes="(min-width: 640px) 7.5rem, 6.25rem"
       objectPosition={tall ? "50% 40%" : "50% 55%"}

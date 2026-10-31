@@ -312,7 +312,7 @@ export function BrandDetailPanel({
                 {heroArt ? (
                   <EditorialArt
                     src={heroArt.src}
-                    alt=""
+                    alt={rice.name}
                     className="aspect-[5/4] w-full overflow-hidden rounded-2xl"
                     sizes="(min-width: 640px) 240px, 160px"
                     objectPosition="50% 42%"

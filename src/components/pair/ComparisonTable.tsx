@@ -46,7 +46,7 @@ export function ComparisonTable({
             {title}
           </h2>
           <p className="mt-1 text-[12px] text-[var(--km-muted)]">
-            甘みと粒感を先に見て、右の文で向き・注意を確かめてください。
+            甘みと粒感を先に見て、右の欄で向きと控えたい組み合わせを確かめてください。
           </p>
         </div>
         <AffiliateDisclosure variant="pr" />
@@ -84,7 +84,7 @@ export function ComparisonTable({
                 scope="col"
                 className="py-3 pr-0 pl-2 text-[11px] font-medium tracking-[0.12em] text-[var(--km-muted)]"
               >
-                気をつける点
+                控えたい組み合わせ
               </th>
             </tr>
           </thead>

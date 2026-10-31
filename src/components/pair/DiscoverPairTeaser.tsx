@@ -52,7 +52,7 @@ export function DiscoverPairTeaser() {
                   {art ? (
                     <EditorialArt
                       src={art}
-                      alt=""
+                      alt={page.dishLabel}
                       className="absolute inset-0 h-full w-full motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
                       sizes="(min-width: 768px) 220px, 45vw"
                       quality={80}

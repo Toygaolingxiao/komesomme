@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", var(--font-noto-sans-jp), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Hiragino Mincho ProN", "Yu Mincho", var(--font-noto-serif-jp), serif;
+  /* Local faces only. next/font Noto CJK shipped ~250 unicode-range files
+     and a render-blocking stylesheet on every page. */
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI", "Noto Sans JP", "Noto Sans CJK JP", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Noto Serif CJK JP", serif;
   --font-mono: ui-monospace, monospace;
 }
 

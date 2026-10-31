@@ -38,7 +38,7 @@ export function HomeReadingStrip({
         </h2>
         <p className="mt-3 max-w-[40rem] text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
           日本のブランド米{brandCount}
-          銘柄を、甘みと粒感を軸にした味わいの地図に置いて探せるサイトです。銘柄ごとに、味わいの目安と合う料理、産地のことを事典にまとめています。地図で探すほか、料理から選んだり、侍米師に相談したりもできます。
+          銘柄を、甘みと粒感を軸にした味わいの地図に置いて探せるサイトです。銘柄ごとに、味わいの目安と合う料理、産地のことを事典にまとめています。地図で探すほか、料理から選んだり、侍米師に相談したりもできます。運営と価格の出所は<Link href="/about" className={`text-[var(--km-brown)] hover:underline ${FOCUS}`}>サイトについて</Link>にまとめています。
         </p>
 
         <div className="mt-10 grid gap-9 sm:grid-cols-3 sm:gap-6">

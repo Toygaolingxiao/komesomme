@@ -23,9 +23,11 @@ function suitedFor(rice: RiceProfileV2): string {
 }
 
 function caution(rice: RiceProfileV2): string {
-  const avoid = rice.avoid_pairings[0];
-  if (avoid) return `${avoid}には向きにくい、と当サイトの評価にあります。`;
-  return rice.pairing_reason.slice(0, 48) || "甘みと粒感のバランスを事典で確認してください。";
+  const avoid = rice.avoid_pairings[0]?.trim();
+  if (avoid) return avoid;
+  const reason = rice.pairing_reason.trim();
+  if (!reason) return "甘みと粒感は事典で確認できます。";
+  return reason.length > 48 ? `${reason.slice(0, 47)}…` : reason;
 }
 
 function heroSrc(page: ResolvedPairing["page"], lead: RiceProfileV2 | undefined): string | null {
@@ -55,7 +57,7 @@ function avoidLabel(
   const hit =
     rice.avoid_pairings.find((item) => aliases.some((alias) => item.includes(alias))) ||
     rice.avoid_pairings[0];
-  return `${hit}には向きにくい`;
+  return hit ?? "味の位置がこの献立からは遠いです。";
 }
 
 /**
@@ -98,7 +100,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
       {hero ? (
         <EditorialArt
           src={hero}
-          alt=""
+          alt={page.dishLabel}
           className="km-figure mt-6"
           sizes="(min-width: 1024px) 40rem, 100vw"
           quality={92}
@@ -194,7 +196,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                         {thumb ? (
                           <EditorialArt
                             src={thumb}
-                            alt=""
+                            alt={other.dishLabel}
                             className="aspect-[5/4] w-full"
                             sizes="4rem"
                             quality={84}

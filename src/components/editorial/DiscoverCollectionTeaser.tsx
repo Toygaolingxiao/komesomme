@@ -55,7 +55,7 @@ export function DiscoverCollectionTeaser({
                   {art ? (
                     <EditorialArt
                       src={art}
-                      alt=""
+                      alt={collection.title}
                       className="absolute inset-0 h-full w-full"
                       sizes="(min-width: 768px) 900px, 100vw"
                       quality={90}

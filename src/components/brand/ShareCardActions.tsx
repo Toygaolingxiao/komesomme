@@ -137,8 +137,8 @@ export function ShareCardActions({ rice, compact = false }: Props) {
       });
       setNote(
         withQr
-          ? "QR付きカードを保存しました（X・印刷向け）"
-          : "カードを保存しました（小紅書向け・QRなし）"
+          ? "QR付きのカードを保存しました"
+          : "カードを保存しました"
       );
     } catch {
       setNote("保存できませんでした。通信を確認してください");
@@ -193,7 +193,7 @@ export function ShareCardActions({ rice, compact = false }: Props) {
           className={btn}
           disabled={busy !== null}
           onClick={() => void onSave(true)}
-          title="Xや印刷向け。小紅書のノートにはおすすめしません"
+          title="Xや印刷用です"
         >
           <QrCode size={15} weight={ICON_WEIGHT} />
           {busy === "save_qr" ? "作成中…" : "QR付きで保存"}
@@ -209,7 +209,7 @@ export function ShareCardActions({ rice, compact = false }: Props) {
         </button>
       </div>
       <p className="mt-2 max-w-[42rem] text-[11px] leading-relaxed text-[var(--km-muted)]">
-        縦長カード（3:4）。価格や順位の断定は含みません。小紅書は外链QRが規約リスクのため、通常保存はQRなし。X・印刷は「QR付きで保存」をどうぞ。
+        縦長（3:4）のカードです。QRは付いていません。Xや印刷には「QR付きで保存」を使ってください。
       </p>
       {note ? (
         <p className="mt-1.5 text-[11px] text-[var(--km-brown)]" role="status">

@@ -10,6 +10,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   AnimatePresence,
   animate,
@@ -49,7 +50,6 @@ import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { SiteLegalNav } from "@/components/SiteFooter";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { readBrandQuery } from "@/lib/navigation/brandQuery";
-import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { prefetchBrandArt } from "@/lib/editorial/prefetchArt";
 import { ConsultForm } from "./matrix/ConsultForm";
 import { RecommendationRail } from "./matrix/RecommendationRail";
@@ -64,6 +64,11 @@ import {
   type RailMatch,
 } from "./matrix/shared";
 import { ErrorPanel } from "./matrix/states";
+
+const BrandDetailPanel = dynamic(
+  () => import("./matrix/BrandDetailPanel").then((mod) => mod.BrandDetailPanel),
+  { loading: () => null }
+);
 
 type LoadState = "loading" | "ready" | "error";
 type SemanticState = "idle" | "pending" | "error";
