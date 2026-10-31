@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   scrubShareCopy,
   shareCardBlurb,
-  shareCardConstellation,
   shareCardInkArtFile,
   shareCardScores,
   SHARE_CARD_INK_ARTS,
 } from "@/lib/brand/shareCard";
+import { shareCardConstellation } from "@/lib/brand/shareCardLayout";
 import { shareCardQrDataUrl } from "@/lib/brand/shareCardQr";
 import type { RiceProfileV2 } from "@/types/rice";
 

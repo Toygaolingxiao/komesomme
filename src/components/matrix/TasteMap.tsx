@@ -356,6 +356,11 @@ export function TasteMap({
           ref={canvasRef}
           onPointerDown={(event) => {
             if (!interactive) return;
+            // A grain is a button inside this plot. Its press must not be a
+            // probe drag: moveProbe closes the detail sheet, so the same
+            // gesture that opens a brand would shut it again.
+            const target = event.target;
+            if (target instanceof Element && target.closest("button")) return;
             event.currentTarget.setPointerCapture(event.pointerId);
             setEngaged(true);
             moveProbe(event.clientX, event.clientY);
