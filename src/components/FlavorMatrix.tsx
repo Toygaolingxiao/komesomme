@@ -23,6 +23,11 @@ import {
 } from "@/lib/rice/grainEntrance";
 import { track } from "@/lib/analytics";
 import { fetchRiceCatalog } from "@/lib/rice/fetchRiceProfiles";
+import {
+  fetchRiceProfileById,
+  getCachedRiceProfile,
+} from "@/lib/rice/fetchRiceProfile";
+import { expandMapProfile, toMapProfile } from "@/lib/rice/mapProfile";
 import type { RiceRegionRecord } from "@/lib/rice/regions";
 import {
   calculateTasteNeighbours,
@@ -34,6 +39,7 @@ import {
   valueToPosition,
 } from "@/lib/rice/matrix";
 import type {
+  MapProfile,
   RecommendationMode,
   RiceProfileV2,
   TasteCoordinate,
@@ -112,13 +118,13 @@ export function FlavorMatrix({
   initialProfiles,
   initialRegions,
 }: {
-  initialProfiles: RiceProfileV2[];
+  initialProfiles: MapProfile[];
   initialRegions: RiceRegionRecord[];
 }) {
   const reduceMotion = useReducedMotion() ?? false;
   const seeded = useRef(initialProfiles.length > 0);
 
-  const [profiles, setProfiles] = useState<RiceProfileV2[]>(initialProfiles);
+  const [profiles, setProfiles] = useState<MapProfile[]>(initialProfiles);
   const [regions, setRegions] = useState<RiceRegionRecord[]>(initialRegions);
   const [loadState, setLoadState] = useState<LoadState>(
     initialProfiles.length > 0 ? "ready" : "loading"
@@ -128,6 +134,8 @@ export function FlavorMatrix({
   const [coordinate, setCoordinate] = useState<TasteCoordinate>(INITIAL_COORDINATE);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [detailProfile, setDetailProfile] = useState<RiceProfileV2 | null>(null);
+  const detailWantedRef = useRef<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [showMapHint, setShowMapHint] = useState(false);
@@ -153,18 +161,19 @@ export function FlavorMatrix({
   const probeGlideGen = useRef(0);
 
   const loadProfiles = useCallback(async () => {
-    if (!seeded.current) {
-      setLoadState("loading");
-      setLoadError(null);
-    }
+    // The server hands over the full map projection, so there is nothing
+    // to load in the normal path. The client fetch remains only as the
+    // fallback for an empty hand-over.
+    if (seeded.current) return;
+    setLoadState("loading");
+    setLoadError(null);
     try {
       const catalog = await fetchRiceCatalog();
-      setProfiles(catalog.profiles);
+      setProfiles(catalog.profiles.map(toMapProfile));
       setRegions(catalog.regions);
       seeded.current = true;
       setLoadState("ready");
     } catch (cause) {
-      if (seeded.current) return;
       setLoadError(cause instanceof Error ? cause.message : String(cause));
       setLoadState("error");
     }
@@ -247,24 +256,59 @@ export function FlavorMatrix({
   const railMatches: RailMatch[] = useMemo(() => {
     if (recommendationMode === "semantic") return semanticMatches;
     return coordinateMatches.map((match) => ({
-      rice: match.rice,
+      rice: expandMapProfile(match.rice),
       score: match.score,
       reason: match.reason,
     }));
   }, [recommendationMode, semanticMatches, coordinateMatches]);
 
-  const selected = useMemo(
+  const selectedMap = useMemo(
     () => profiles.find((rice) => rice.id === selectedId) ?? null,
     [profiles, selectedId]
   );
 
+  // The panel opens on the projection and upgrades to the fetched full
+  // profile when it lands; a failed fetch keeps the projection rendering.
+  const panelRice = useMemo(() => {
+    if (!selectedMap) return null;
+    return detailProfile && detailProfile.id === selectedMap.id
+      ? detailProfile
+      : expandMapProfile(selectedMap);
+  }, [selectedMap, detailProfile]);
+
   const neighbours = useMemo(
     () =>
-      selected
-        ? calculateTasteNeighbours(profiles, selected, NEIGHBOUR_LIMIT)
+      selectedMap
+        ? calculateTasteNeighbours(
+            profiles,
+            selectedMap,
+            NEIGHBOUR_LIMIT
+          ).map((neighbour) => ({
+            ...neighbour,
+            rice: expandMapProfile(neighbour.rice),
+          }))
         : [],
-    [profiles, selected]
+    [profiles, selectedMap]
   );
+
+  useEffect(() => {
+    if (!detailOpen || !selectedId) return;
+    detailWantedRef.current = selectedId;
+    const cached = getCachedRiceProfile(selectedId);
+    if (cached) {
+      setDetailProfile(cached);
+      return;
+    }
+    let cancelled = false;
+    void fetchRiceProfileById(selectedId).then((profile) => {
+      if (cancelled || !profile) return;
+      if (detailWantedRef.current !== profile.id) return;
+      setDetailProfile(profile);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [detailOpen, selectedId]);
 
   const bestMatchId = railMatches[0]?.rice.id ?? null;
   const runnerUpIds = useMemo(
@@ -450,7 +494,8 @@ export function FlavorMatrix({
         .map((match) => {
           const id = match.rice?.id;
           if (!id) return null;
-          const rice = profiles.find((profile) => profile.id === id) ?? match.rice;
+          const local = profiles.find((profile) => profile.id === id);
+          const rice = local ? expandMapProfile(local) : match.rice;
           if (!rice) return null;
           return {
             rice,
@@ -578,7 +623,7 @@ export function FlavorMatrix({
         <div className="order-2 flex min-h-[min(72svh,32rem)] min-w-0 flex-col overflow-hidden rounded-[1.25rem] border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_18px_48px_-40px_rgba(112,69,34,0.4)] lg:order-none lg:col-start-1 lg:row-start-1 lg:h-full lg:min-h-0">
           <div className="shrink-0 px-4 pt-3.5 sm:px-5">
             <h1 className="font-serif text-[1.35rem] font-semibold tracking-tight text-[var(--km-ink)]">
-              味わいの地図
+              ブランド米の味わいの地図
             </h1>
             <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
           </div>
@@ -644,9 +689,9 @@ export function FlavorMatrix({
       </div>
 
       <AnimatePresence>
-        {selected && detailOpen ? (
+        {panelRice && detailOpen ? (
           <BrandDetailPanel
-            rice={selected}
+            rice={panelRice}
             neighbours={neighbours}
             reduceMotion={reduceMotion}
             onSelect={openDetail}

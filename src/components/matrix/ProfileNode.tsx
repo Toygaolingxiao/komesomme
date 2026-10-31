@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import type { RiceDisplayPoint, TasteCoordinate } from "@/types/rice";
+import type { MapDisplayPoint, TasteCoordinate } from "@/types/rice";
 import {
   GRAIN_ENTER_DURATION_S,
   GRAIN_ENTER_MAX_DELAY_MS,
@@ -66,7 +66,7 @@ export function ProfileNode({
   onSelect,
   onHover,
 }: {
-  rice: RiceDisplayPoint;
+  rice: MapDisplayPoint;
   isBestMatch: boolean;
   isRunnerUp: boolean;
   isSelected: boolean;
