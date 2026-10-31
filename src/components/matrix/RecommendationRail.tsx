@@ -231,7 +231,7 @@ export function RecommendationRail({
           </p>
         ) : (
           <div className="grid">
-            <AnimatePresence initial={false}>
+            <AnimatePresence initial={false} mode="wait">
               <motion.div
                 key={signature}
                 className="col-start-1 row-start-1"
