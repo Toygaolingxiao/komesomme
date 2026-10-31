@@ -2,6 +2,10 @@ import Link from "next/link";
 import { FOCUS } from "@/components/matrix/shared";
 import { SITE_COLUMN } from "@/components/siteChrome";
 
+const CARD =
+  "overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-brown)]/[0.035]";
+const ROW = `flex min-h-11 items-center justify-between gap-2 rounded-lg px-2.5 py-2 transition hover:bg-[var(--km-brown)]/[0.06] ${FOCUS}`;
+
 export type HomeStripPairing = { slug: string; dishLabel: string };
 export type HomeStripCollection = { slug: string; title: string };
 export type HomeStripBrand = { id: string; name: string; prefecture: string };
@@ -41,15 +45,15 @@ export function HomeReadingStrip({
           銘柄を、甘みと粒感を軸にした味わいの地図に置いて探せるサイトです。銘柄ごとに、味わいの目安と合う料理、産地のことを事典にまとめています。地図で探すほか、料理から選んだり、侍米師に相談したりもできます。運営と価格の出所は<Link href="/about" className={`text-[var(--km-brown)] hover:underline ${FOCUS}`}>サイトについて</Link>にまとめています。
         </p>
 
-        <div className="mt-10 grid gap-9 sm:grid-cols-3 sm:gap-6">
-          <nav aria-label="料理で選ぶ">
-            <h3 className="font-serif text-[15px] font-semibold">料理で選ぶ</h3>
-            <ul className="mt-3 space-y-2 text-[13px] leading-relaxed">
+        <div className="mt-9 grid gap-4 sm:grid-cols-3 sm:gap-5">
+          <nav className={CARD} aria-label="料理で選ぶ">
+            <h3 className="px-4 pb-1 pt-4 font-serif text-[15px] font-semibold">料理で選ぶ</h3>
+            <ul className="px-1.5 pb-2 text-[13px] leading-relaxed">
               {pairings.map((pairing) => (
                 <li key={pairing.slug}>
                   <Link
                     href={`/pair/${pairing.slug}`}
-                    className={`text-[var(--km-ink-soft)] transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                    className={`${ROW} text-[var(--km-ink-soft)] hover:text-[var(--km-brown)]`}
                   >
                     {pairing.dishLabel}に合う米
                   </Link>
@@ -58,7 +62,7 @@ export function HomeReadingStrip({
               <li>
                 <Link
                   href="/pair"
-                  className={`font-medium text-[var(--km-brown)] transition hover:text-[var(--km-gold-ink)] ${FOCUS}`}
+                  className={`${ROW} font-medium text-[var(--km-brown)] hover:text-[var(--km-gold-ink)]`}
                 >
                   料理の一覧へ
                 </Link>
@@ -66,14 +70,14 @@ export function HomeReadingStrip({
             </ul>
           </nav>
 
-          <nav aria-label="特集">
-            <h3 className="font-serif text-[15px] font-semibold">特集</h3>
-            <ul className="mt-3 space-y-2 text-[13px] leading-relaxed">
+          <nav className={CARD} aria-label="特集">
+            <h3 className="px-4 pb-1 pt-4 font-serif text-[15px] font-semibold">特集</h3>
+            <ul className="px-1.5 pb-2 text-[13px] leading-relaxed">
               {collections.map((collection) => (
                 <li key={collection.slug}>
                   <Link
                     href={`/collections/${collection.slug}`}
-                    className={`text-[var(--km-ink-soft)] transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                    className={`${ROW} text-[var(--km-ink-soft)] hover:text-[var(--km-brown)]`}
                   >
                     {collection.title}
                   </Link>
@@ -82,7 +86,7 @@ export function HomeReadingStrip({
               <li>
                 <Link
                   href="/discover"
-                  className={`font-medium text-[var(--km-brown)] transition hover:text-[var(--km-gold-ink)] ${FOCUS}`}
+                  className={`${ROW} font-medium text-[var(--km-brown)] hover:text-[var(--km-gold-ink)]`}
                 >
                   ピックアップへ
                 </Link>
@@ -90,14 +94,14 @@ export function HomeReadingStrip({
             </ul>
           </nav>
 
-          <nav aria-label="きょうの銘柄">
-            <h3 className="font-serif text-[15px] font-semibold">きょうの銘柄</h3>
-            <ul className="mt-3 space-y-2 text-[13px] leading-relaxed">
+          <nav className={CARD} aria-label="きょうの銘柄">
+            <h3 className="px-4 pb-1 pt-4 font-serif text-[15px] font-semibold">きょうの銘柄</h3>
+            <ul className="px-1.5 pb-2 text-[13px] leading-relaxed">
               {bowl.map((brand) => (
                 <li key={brand.id}>
                   <Link
                     href={`/library/${brand.id}`}
-                    className={`text-[var(--km-ink-soft)] transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                    className={`${ROW} text-[var(--km-ink-soft)] hover:text-[var(--km-brown)]`}
                   >
                     {brand.name}
                     <span className="text-[var(--km-muted)]">
@@ -109,7 +113,7 @@ export function HomeReadingStrip({
               <li>
                 <Link
                   href="/library"
-                  className={`font-medium text-[var(--km-brown)] transition hover:text-[var(--km-gold-ink)] ${FOCUS}`}
+                  className={`${ROW} font-medium text-[var(--km-brown)] hover:text-[var(--km-gold-ink)]`}
                 >
                   ライブラリへ
                 </Link>

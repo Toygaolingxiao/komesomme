@@ -163,13 +163,13 @@ export function ShareCardActions({ rice, compact = false }: Props) {
   }
 
   const btn =
-    "inline-flex h-10 items-center justify-center gap-1.5 rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-3.5 text-[12px] font-medium text-[var(--km-ink)] transition hover:border-[var(--km-gold)]/45 hover:text-[var(--km-brown)] disabled:opacity-45";
+    "inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--km-brown)]/[0.07] px-3 text-[12.5px] font-medium text-[var(--km-ink)] transition hover:bg-[var(--km-brown)]/[0.12] hover:text-[var(--km-brown)] disabled:opacity-45";
 
   if (!enabled) return null;
 
   return (
     <div className={compact ? "mt-4" : "mt-5"}>
-      <div className={`flex flex-wrap gap-2 ${FOCUS}`}>
+      <div className={`grid grid-cols-2 gap-2 sm:flex sm:flex-wrap ${FOCUS}`}>
         <button
           type="button"
           className={btn}
