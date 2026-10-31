@@ -19,6 +19,8 @@ alwaysApply: true
 
 **不升号：** 仅 Cursor rule、纯注释、文档整理、与运行时无关的内部整理。changelog 只写 `## Unreleased`。
 
+并行 PR 不占用同一个版本号。后合并的人 rebase 到最新 `main` 后再升到下一个号。详见 [`docs/24-collaboration.md`](../../docs/24-collaboration.md)。
+
 用户明确说发版 / bump / `1.0.0` 时，按用户指定升。
 
 ## 升哪一位
