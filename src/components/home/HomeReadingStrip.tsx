@@ -37,13 +37,23 @@ export function HomeReadingStrip({
       <div
         className={`${SITE_COLUMN} pb-[max(6.5rem,calc(env(safe-area-inset-bottom)+5rem))] pt-10 sm:pt-12 lg:pb-14`}
       >
-        <h2 className="font-serif text-[1.3rem] font-semibold tracking-tight">
-          このサイトについて
-        </h2>
-        <p className="mt-3 max-w-[40rem] text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
-          日本のブランド米{brandCount}
-          銘柄を、甘みと粒感を軸にした味わいの地図に置いて探せるサイトです。銘柄ごとに、味わいの目安と合う料理、産地のことを事典にまとめています。地図で探すほか、料理から選んだり、侍米師に相談したりもできます。運営と価格の出所は<Link href="/about" className={`text-[var(--km-brown)] hover:underline ${FOCUS}`}>サイトについて</Link>にまとめています。
-        </p>
+        {/* Collapsed by default; the text stays in the server HTML (native
+            details), so readers and crawlers still get it, and one tap opens it. */}
+        <details className="group max-w-[40rem]">
+          <summary
+            className={`flex cursor-pointer list-none items-center gap-2 font-serif text-[1.3rem] font-semibold tracking-tight marker:content-none [&::-webkit-details-marker]:hidden ${FOCUS}`}
+          >
+            このサイトについて
+            <span
+              aria-hidden
+              className="inline-block h-2 w-2 rotate-45 border-b-2 border-r-2 border-[var(--km-muted)] transition group-open:-rotate-[135deg]"
+            />
+          </summary>
+          <p className="mt-3 text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
+            日本のブランド米{brandCount}
+            銘柄を、甘みと粒感を軸にした味わいの地図に置いて探せるサイトです。銘柄ごとに、味わいの目安と合う料理、産地のことを事典にまとめています。地図で探すほか、料理から選んだり、侍米師に相談したりもできます。運営と価格の出所は<Link href="/about" className={`text-[var(--km-brown)] hover:underline ${FOCUS}`}>サイトについて</Link>にまとめています。
+          </p>
+        </details>
 
         <div className="mt-9 grid gap-4 sm:grid-cols-3 sm:gap-5">
           <nav className={CARD} aria-label="料理で選ぶ">
