@@ -16,6 +16,8 @@ export type SeoLink = {
 
 const CONTEXT = "https://schema.org";
 const SITE_NAME = "KomeSomme";
+const AUTHOR_NAME = "高江Takae";
+const AUTHOR_SAME_AS = "https://x.com/Toy_Takae";
 
 /** schema.org recommends keeping Article.headline within 110 characters. */
 const HEADLINE_MAX = 110;
@@ -42,6 +44,15 @@ function organization(origin: string): JsonLdObject {
       "@type": "ImageObject",
       url: absoluteUrl("/icon", origin),
     },
+  };
+}
+
+function personAuthor(origin: string): JsonLdObject {
+  return {
+    "@type": "Person",
+    name: AUTHOR_NAME,
+    url: absoluteUrl("/about", origin),
+    sameAs: [AUTHOR_SAME_AS],
   };
 }
 
@@ -95,7 +106,7 @@ export function articleLd(input: {
     description: input.description.trim(),
     image: [absoluteUrl(input.imagePath, origin)],
     inLanguage: "ja-JP",
-    author: organization(origin),
+    author: personAuthor(origin),
     publisher: organization(origin),
     ...(published ? { datePublished: published } : {}),
     ...(modified ? { dateModified: modified } : {}),

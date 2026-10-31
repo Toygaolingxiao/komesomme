@@ -100,7 +100,7 @@ export function LibraryRiceDossier({
         {heroArt ? (
           <EditorialArt
             src={heroArt.src}
-            alt=""
+            alt={rice.name}
             className="mb-6 aspect-[16/9] w-full"
             sizes="(min-width: 640px) 40rem, 100vw"
             priority

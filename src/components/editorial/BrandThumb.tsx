@@ -14,6 +14,7 @@ export function BrandThumb({
   className = "",
   sizes = "4rem",
   transitionName,
+  priority = false,
 }: {
   id: string;
   name: string;
@@ -22,16 +23,19 @@ export function BrandThumb({
   className?: string;
   sizes?: string;
   transitionName?: string;
+  /** Above-the-fold card that is the likely LCP image. */
+  priority?: boolean;
 }) {
   const art = resolveBrandArt(id, region, prefecture);
   if (art) {
     return (
       <EditorialArt
         src={art.src}
-        alt=""
+        alt={name}
         className={className}
         sizes={sizes}
         quality={80}
+        priority={priority}
         objectPosition="50% 42%"
         transitionName={art.kind === "brand" ? transitionName : undefined}
       />

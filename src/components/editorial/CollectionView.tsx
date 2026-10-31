@@ -41,7 +41,7 @@ export function CollectionView({
         {hero ? (
           <EditorialArt
             src={hero}
-            alt=""
+            alt={collection.title}
             className="km-figure-wide mt-6"
             sizes="(min-width: 768px) 52rem, 100vw"
             quality={90}

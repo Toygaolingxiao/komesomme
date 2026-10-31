@@ -47,6 +47,9 @@ const optimizedImageCache = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["@phosphor-icons/react"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     /** Cache optimized variants for 30 days (source files change with deploys). */

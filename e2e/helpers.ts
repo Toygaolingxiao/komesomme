@@ -9,7 +9,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export function visibleRailCaption(page: Page): Locator {
   return page
     .locator("#matrix")
-    .getByRole("button", { name: /^いちばん近い一膳/ })
+    .getByRole("button", { name: /いちばん近い一膳/ })
     .filter({ visible: true })
     .first();
 }

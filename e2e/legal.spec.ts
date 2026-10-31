@@ -4,6 +4,7 @@ const PAGES = [
   { path: "/privacy", id: "TS-LEGAL-01", needle: /プライバシー/ },
   { path: "/terms", id: "TS-LEGAL-02", needle: /利用規約/ },
   { path: "/tokushoho", id: "TS-LEGAL-03", needle: /特定商取引|特商法|運営/ },
+  { path: "/about", id: "TS-LEGAL-04", needle: /高江Takae/ },
 ] as const;
 
 for (const pageCase of PAGES) {

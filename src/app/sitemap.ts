@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/library",
     "/discover",
     "/pair",
+    "/about",
     "/privacy",
     "/terms",
     "/tokushoho",

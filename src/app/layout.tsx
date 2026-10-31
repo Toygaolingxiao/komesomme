@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { GaSnippet } from "@/components/analytics/GaSnippet";
@@ -10,20 +9,6 @@ import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import { websiteLd } from "@/lib/seo/jsonLd";
 import { siteMetadataBase } from "@/lib/site";
 import "./globals.css";
-
-const notoSansJp = Noto_Sans_JP({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-noto-sans-jp",
-  display: "swap",
-  preload: false,
-});
-const notoSerifJp = Noto_Serif_JP({
-  subsets: ["latin"],
-  weight: ["600"],
-  variable: "--font-noto-serif-jp",
-  display: "swap",
-});
 
 const SITE_DESCRIPTION =
   "味わいの地図から、今日のごはんに合う日本のブランド米を。料理や気分に合わせてご案内します。";
@@ -71,10 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ja"
-      className={`${notoSansJp.variable} ${notoSerifJp.variable}`}
-    >
+    <html lang="ja">
       <body>
         <JsonLd data={websiteLd(SITE_DESCRIPTION)} />
         <SkipOnOps>

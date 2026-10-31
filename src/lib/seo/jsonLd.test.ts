@@ -102,6 +102,25 @@ describe("articleLd", () => {
     expect(ld).not.toHaveProperty("dateModified");
   });
 
+  it("names a person as author and keeps the publisher organization", () => {
+    const ld = articleLd(base);
+    expect(ld.author).toEqual({
+      "@type": "Person",
+      name: "高江Takae",
+      url: `${ORIGIN}/about`,
+      sameAs: ["https://x.com/Toy_Takae"],
+    });
+    expect(ld.publisher).toEqual({
+      "@type": "Organization",
+      name: "KomeSomme",
+      url: ORIGIN,
+      logo: {
+        "@type": "ImageObject",
+        url: `${ORIGIN}/icon`,
+      },
+    });
+  });
+
   it("caps the headline at 110 characters", () => {
     const ld = articleLd({ ...base, headline: "あ".repeat(200) });
     expect(String(ld.headline)).toHaveLength(110);

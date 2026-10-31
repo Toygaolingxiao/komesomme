@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ArrowRight, MapPin } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BrandThumb } from "@/components/editorial/BrandThumb";
@@ -27,6 +28,10 @@ export function MobileTodayCard({
   onOpen: (id: string) => void;
 }) {
   const reduceMotion = useReducedMotion() ?? false;
+  const seen = useRef(false);
+  useEffect(() => {
+    seen.current = true;
+  }, []);
 
   if (loading) {
     return (
@@ -51,7 +56,7 @@ export function MobileTodayCard({
         <motion.div
           key={match.rice.id}
           className="col-start-1 row-start-1"
-          initial={reduceMotion ? false : { opacity: 0 }}
+          initial={reduceMotion || !seen.current ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduceMotion ? undefined : { opacity: 0, pointerEvents: "none" }}
           transition={fade}
@@ -72,6 +77,7 @@ export function MobileTodayCard({
                 prefecture={match.rice.prefecture}
                 className="aspect-[5/4] w-full overflow-hidden rounded-xl"
                 sizes="240px"
+                priority
               />
               <span className="min-w-0">
                 <span className="text-[12px] font-medium tracking-wide text-[var(--km-brown)]">

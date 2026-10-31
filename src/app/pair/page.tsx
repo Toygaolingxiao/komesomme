@@ -78,7 +78,7 @@ export default function PairIndexPage() {
             {firstArt ? (
               <EditorialArt
                 src={firstArt}
-                alt=""
+                alt={first.page.dishLabel}
                 className="aspect-[16/9] w-full"
                 sizes="(min-width: 768px) 1100px, 100vw"
                 quality={92}
@@ -119,7 +119,7 @@ export default function PairIndexPage() {
                     {art ? (
                       <EditorialArt
                         src={art}
-                        alt=""
+                        alt={resolved.page.dishLabel}
                         className="aspect-[5/4] w-full"
                         sizes="6.25rem"
                         quality={84}
