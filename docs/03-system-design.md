@@ -63,6 +63,7 @@ scripts/
 ├── audit-shop-inventory.ts
 ├── generate-rice-encyclopedia.ts
 ├── apply-taste-consensus.ts
+├── patch-next-image-abort.js         # postinstall: next/image の中断済み要求のハング回避
 └── data/                             # 味わい再校正・在庫ギャップ表
 ```
 

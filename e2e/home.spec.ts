@@ -59,19 +59,29 @@ test.describe("TS-HOME Desktop map & rail", () => {
 
   test("TS-HOME-08/10 shop disclosure expands after discovery", async ({ page }) => {
     await waitForHomeReady(page);
-    const shop = page.locator("[data-shop-strip=disclosure]").locator("visible=true");
+    // Desktop rail only. A second disclosure lives in the lg:hidden column and
+    // must not be the box we compare.
+    const rail = page.locator("aside");
+    const shop = rail.locator("[data-shop-strip=disclosure]");
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
     await expect(shop.getByText("※PR")).toBeVisible();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toHaveCount(0);
 
-    const neighbours = page
-      .getByText("近い味わいの銘柄")
-      .filter({ visible: true })
-      .first();
+    const neighbours = rail.getByText("近い味わいの銘柄").first();
     await expect(neighbours).toBeVisible();
-    const neighbourBox = await neighbours.boundingBox();
-    const shopBox = await shop.boundingBox();
-    expect(neighbourBox && shopBox && neighbourBox.y < shopBox.y).toBeTruthy();
+    await expect
+      .poll(async () => {
+        const neighbourBox = await neighbours.boundingBox();
+        const shopBox = await shop.boundingBox();
+        return Boolean(
+          neighbourBox &&
+            shopBox &&
+            neighbourBox.height > 0 &&
+            shopBox.height > 0 &&
+            neighbourBox.y < shopBox.y,
+        );
+      })
+      .toBe(true);
 
     await shop.getByRole("button", { name: /お店で探す/ }).click();
     await expect(shop).toHaveAttribute("data-shop-expanded", "true");

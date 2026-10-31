@@ -10,7 +10,6 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import {
   AnimatePresence,
   animate,
@@ -63,12 +62,8 @@ import {
   NEIGHBOUR_LIMIT,
   type RailMatch,
 } from "./matrix/shared";
+import { BrandDetailPanel } from "./matrix/BrandDetailPanel";
 import { ErrorPanel } from "./matrix/states";
-
-const BrandDetailPanel = dynamic(
-  () => import("./matrix/BrandDetailPanel").then((mod) => mod.BrandDetailPanel),
-  { loading: () => null }
-);
 
 type LoadState = "loading" | "ready" | "error";
 type SemanticState = "idle" | "pending" | "error";

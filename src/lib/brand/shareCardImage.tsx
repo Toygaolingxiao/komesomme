@@ -10,12 +10,11 @@ import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 import {
   SHARE_CARD_SIZE,
   SHARE_CARD_SLOGAN,
-  shareCardConstellation,
-  shareCardHeroPoint,
   shareCardScores,
   type ShareCardScore,
   type ShareCardStar,
 } from "@/lib/brand/shareCard";
+import { shareCardConstellation, shareCardHeroPoint } from "@/lib/brand/shareCardLayout";
 import { valueToPosition } from "@/lib/rice/matrix";
 import { RICE_REGIONS, regionColor } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";

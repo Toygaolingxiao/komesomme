@@ -1,18 +1,6 @@
 import { appetiteLine, shortTasteTags } from "@/components/matrix/shared";
 import { GUIDE_ROLE } from "@/lib/brand/guideRole";
-import { riceProfiles } from "@/data/rice/catalog";
-import { toDisplayPoints } from "@/lib/rice/matrix";
-import { regionColor } from "@/lib/rice/regions";
-import type { MapDisplayPoint, RiceProfileV2 } from "@/types/rice";
-
-/** Same separated layout as the home TasteMap (sunflower + repulsion). */
-let cachedMapPoints: MapDisplayPoint[] | null = null;
-function shareCardMapPoints(): MapDisplayPoint[] {
-  if (!cachedMapPoints) {
-    cachedMapPoints = toDisplayPoints(riceProfiles);
-  }
-  return cachedMapPoints;
-}
+import type { RiceProfileV2 } from "@/types/rice";
 
 /** Phone-portrait 3:4 share card (Xiaohongshu / Stories). */
 export const SHARE_CARD_SIZE = { width: 1080, height: 1440 } as const;
@@ -101,27 +89,6 @@ export function shareCaption(rice: RiceProfileV2, pageUrl: string): string {
   ].join("\n");
 }
 
-/**
- * Full-catalog constellation for the share-card matrix (home-map feel).
- * Uses the same `toDisplayPoints` spread as FlavorMatrix / TasteMap.
- */
-export function shareCardConstellation(rice: RiceProfileV2): ShareCardStar[] {
-  return shareCardMapPoints()
-    .filter((point) => point.id !== rice.id)
-    .map((point) => ({
-      id: point.id,
-      display_x: point.display_x,
-      display_y: point.display_y,
-      region: point.region,
-      region_color: point.region_color || regionColor(point.region),
-    }));
-}
-
-/** @deprecated use shareCardConstellation */
-export function shareCardGhosts(rice: RiceProfileV2): ShareCardStar[] {
-  return shareCardConstellation(rice);
-}
-
 /** Radar essence as discrete 1–5 grain scores (not a radar chart). */
 export function shareCardScores(rice: RiceProfileV2): ShareCardScore[] {
   const round = (n: number) => Math.max(1, Math.min(5, Math.round(n)));
@@ -131,14 +98,6 @@ export function shareCardScores(rice: RiceProfileV2): ShareCardScore[] {
     { label: "硬さ", value: round(rice.hardness) },
     { label: "冷めた時の旨み", value: round(rice.cold_rice_quality) },
   ];
-}
-
-export function shareCardHeroPoint(rice: RiceProfileV2) {
-  const point = shareCardMapPoints().find((p) => p.id === rice.id);
-  if (point) {
-    return { display_x: point.display_x, display_y: point.display_y };
-  }
-  return { display_x: 3, display_y: 3 };
 }
 
 function stableHash(input: string): number {
