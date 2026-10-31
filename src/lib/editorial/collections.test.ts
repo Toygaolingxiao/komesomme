@@ -66,8 +66,8 @@ describe("editorial collections", () => {
 
   it("indexes most recently updated first (updatedLabel wins over dateLabel)", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
-      "nabe",
       "shinmai",
+      "nabe",
       "yakizakana",
       "jugatsu-wase",
       "shio-musubi",
@@ -144,15 +144,24 @@ describe("collectionPublishedIso", () => {
   it("parses shinmai's updatedLabel without moving the publish date", () => {
     const shinmai = EDITORIAL_COLLECTIONS.find((row) => row.slug === "shinmai");
     expect(shinmai?.dateLabel).toBe("2026年9月3日 16時48分");
-    expect(shinmai?.updatedLabel).toBe("2026年10月25日 16時48分");
-    expect(collectionPublishedIso(shinmai?.updatedLabel ?? "")).toBe("2026-10-25T16:48:00+09:00");
+    expect(shinmai?.updatedLabel).toBe("2026年10月31日 14時05分");
+    expect(collectionPublishedIso(shinmai?.updatedLabel ?? "")).toBe("2026-10-31T14:05:00+09:00");
     const memo = shinmai?.sections?.find((section) => section.heading === "今年の新米メモ");
     const emi = memo?.items.find((item) => item.includes("えみほころ"));
     expect(emi).toContain("[えみほころ](/library/emihokoro)");
     expect(emi).toContain(
       "（出典：埼玉県「[“えみほころ”で食欲の秋を楽しもう！](https://www.pref.saitama.lg.jp/a0314/sainokuni/sainokuni-kensei-202610p02.html)」2026年10月1日）"
     );
-    expect(memo?.items.find((item) => item.includes("2,821円"))).toContain("2,821円");
+    const price = memo?.items.find((item) => item.includes("2,788円"));
+    expect(price).toContain("10月19日〜25日");
+    expect(price).toContain("前の週より33円安く、値下がりは11週続いています");
+    expect(price).toContain("前年の同じ時期より1,420円安く");
+    expect(price).toContain("銘柄米（販売数量の83%）は5kgあたり2,811円で前の週より61円安く");
+    expect(price).toContain("ブレンド米など（17%）は2,678円で69円高く");
+    expect(price).toContain(
+      "（出典：農林水産省「[スーパーでの販売数量・価格の推移](https://www.maff.go.jp/j/nousan/kokumotu/ksppos.pdf)」2026年10月30日）"
+    );
+    expect(price).not.toContain("2,821円");
     const keys = (shinmai?.body ?? []).map((paragraph) => paragraph.slice(0, 24));
     expect(new Set(keys).size).toBe(keys.length);
   });
