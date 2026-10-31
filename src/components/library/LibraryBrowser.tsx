@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
 import { TastePips } from "@/components/matrix/TastePips";
 import { FOCUS } from "@/components/matrix/shared";
@@ -23,6 +23,9 @@ const REGIONS = [
 ] as const;
 
 type SortKey = "default" | "sweetness" | "hardness" | "stickiness";
+
+/** Cards rendered up front (and on the server); the rest follow on scroll. */
+const PAGE_SIZE = 24;
 
 const SORT_OPTIONS: { id: SortKey; label: string }[] = [
   { id: "default", label: "五十音" },
@@ -93,6 +96,37 @@ export function LibraryBrowser({
       return a.name.localeCompare(b.name, "ja");
     });
   }, [entries, query, region, sort]);
+
+  // Progressive rendering: the first PAGE_SIZE rows are in the server HTML so
+  // the page is usable at once; the rest render in as the reader scrolls.
+  // While searching/filtering/sorting, every match renders immediately.
+  const filtering = query.trim() !== "" || region !== "すべて" || sort !== "default";
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [query, region, sort]);
+
+  const hasMore = !filtering && visibleCount < filtered.length;
+
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (observed) => {
+        if (observed.some((entry) => entry.isIntersecting)) {
+          setVisibleCount((count) => Math.min(count + PAGE_SIZE, filtered.length));
+        }
+      },
+      { rootMargin: "600px 0px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, filtered.length]);
+
+  const visible = filtering ? filtered : filtered.slice(0, visibleCount);
 
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
@@ -174,7 +208,7 @@ export function LibraryBrowser({
         </div>
 
         <ul className="divide-y divide-[var(--km-border)] border-b border-[var(--km-border)] sm:border-t-0">
-          {filtered.map((entry) => (
+          {visible.map((entry) => (
             <li key={entry.id}>
               <Link
                 href={`/library/${entry.id}`}
@@ -208,6 +242,14 @@ export function LibraryBrowser({
             </li>
           ))}
         </ul>
+
+        {hasMore ? (
+          <div ref={sentinelRef} aria-hidden className="pt-6 text-center">
+            <p className="text-[12px] text-[var(--km-muted)]">
+              続きはスクロールすると表示されます（{filtered.length} 件中 {visible.length} 件）
+            </p>
+          </div>
+        ) : null}
 
         {filtered.length === 0 ? (
           <p className="mt-10 text-center text-sm text-[var(--km-muted)]">
