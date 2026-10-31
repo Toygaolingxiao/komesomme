@@ -7,6 +7,8 @@ alwaysApply: true
 
 用户说「推送 / push / 推到本番」= 授权把 **当前 `main` 推到 `origin`**。Vercel Production 跟 `origin/main`。不要改成 PR 流程来「绕过」push。
 
+日常并行开发不直接 commit `main`。分支、PR、审查的正本是 [`docs/24-collaboration.md`](../../docs/24-collaboration.md)。本文只在主人说「推送」时使用。
+
 ## 智能模式不是失败
 
 `git push origin HEAD` **第一次被 Auto-review 拦住是预期行为**（共享远程、会推进本番）。不是命令写错。

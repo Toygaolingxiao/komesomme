@@ -2,6 +2,12 @@
 
 <!-- 为什么改（不是文件清单） -->
 
+## 作者
+
+- 作者: <!-- 主人 / Cursor 云代理（Komesomme）/ Muse / 其他（写名字） -->
+- 改动范围: <!-- 目录或文件 -->
+- 相关 open PR: <!-- 没有就写无。开 PR 前、合并前再对一次。见 docs/24-collaboration.md -->
+
 ## WBS / Issue
 
 - Checklist / Issue: <!-- 例: P0-5d / #12 -->

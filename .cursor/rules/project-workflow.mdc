@@ -20,11 +20,13 @@ alwaysApply: true
 | 联盟合规 | [`docs/13-affiliate-compliance.md`](../../docs/13-affiliate-compliance.md)、[`docs/14-affiliate-programs.md`](../../docs/14-affiliate-programs.md)、披露表面 [`docs/15-disclosure-surfaces.md`](../../docs/15-disclosure-surfaces.md) |
 | 1.x 成长 / Phase | [`docs/20-growth-plan.md`](../../docs/20-growth-plan.md) |
 | 职业定位（对 GAO；对外站不写） | [`docs/22-career-positioning.md`](../../docs/22-career-positioning.md) |
+| 并行协作（分支 / PR / 审查） | [`docs/24-collaboration.md`](../../docs/24-collaboration.md) |
 
 ## Issue / PR
 
 - 用 `.github/ISSUE_TEMPLATE/`（bug / feature / task）。标题可带 checklist ID，如 `[P0-3b] …`。
 - PR 用 `.github/pull_request_template.md`：写清验证步骤与 SemVer 意图。
+- 多人 / 多 agent 并行时以 [`docs/24-collaboration.md`](../../docs/24-collaboration.md) 为准：一人一条分支，不 push 别人的分支，不直接 commit 到 `main`。
 - **P0 未清时不要开 P2 花活**（Auth / PWA / 多轮咨询等）。
 
 ## 测试

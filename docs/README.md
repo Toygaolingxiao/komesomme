@@ -15,6 +15,7 @@
 | なぜ時間を投じるか | [22-career-positioning.md](./22-career-positioning.md) | 公開ページへ書かない |
 | どうここまで来たか | [12-product-journey.md](./12-product-journey.md) | 手順の正本にしない |
 | 変更の日付 | [10-changelog.md](./10-changelog.md) | 他文書の文頭に現在バージョンを書かない |
+| 誰がどの分支で触るか | [24-collaboration.md](./24-collaboration.md) | 手順を workflow rule に複製しない |
 
 ## 正本（実装・運用）
 
@@ -38,6 +39,7 @@
 | [21-seo-intent-content.md](./21-seo-intent-content.md) | **SEO 意图与内容** 长尾词库・EEAT・权威锚点・AI 引用门禁（中文） |
 | [22-career-positioning.md](./22-career-positioning.md) | **职业定位** 作品集・咨询杠杆・轻 B2B（中文・対外页不写） |
 | [23-ai-search-geo.md](./23-ai-search-geo.md) | **AI 検索対応（GEO）** 発端・思考過程・llms.txt と robots 明示放行の方針（中文） |
+| [24-collaboration.md](./24-collaboration.md) | **并行协作** 一人一分支・交叉审查・合并门禁（中文） |
 | [vercel-production.md](./vercel-production.md) | 本番 env・ドメイン・GSC・CF 防護 |
 | [smoke-test.md](./smoke-test.md) | 本番スモーク手順と記録 |
 | [test-specification.md](./test-specification.md) | 試験式样（TS-*） |
