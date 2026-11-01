@@ -36,6 +36,7 @@ YYYY-MM-DD-<source>[-topic].md
 
 | 文件 | 来源 | 状态 |
 | --- | --- | --- |
+| [2026-11-01-cursor-unslop-ui-audit.md](./2026-11-01-cursor-unslop-ui-audit.md) | Cursor · UI unslop 页面设计审查 | `open` |
 | [2026-09-09-gpt-5.5-case-study.md](./2026-09-09-gpt-5.5-case-study.md) | GPT-5.5 · 第一轮 | `absorbed` |
 | [2026-09-09-gpt-5.5-case-study-r2.md](./2026-09-09-gpt-5.5-case-study-r2.md) | GPT-5.5 · 第二轮 | `absorbed` |
 | [2026-09-09-copilot-case-study-red-team.md](./2026-09-09-copilot-case-study-red-team.md) | Copilot SDK · 技术实验前提下的红队评审 | `triaged` |

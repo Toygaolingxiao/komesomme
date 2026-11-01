@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+- 锐评留档：UI unslop 页面设计审查（`docs/pj/reviews/2026-11-01-cursor-unslop-ui-audit.md`）。不升号
+
 ## 1.9.3 — 2026-11-02
 
 - ホーム下の案内帯は HTML に残し、パソコンでも携帯でも画面には出さない

@@ -2,6 +2,8 @@
 
 KomeSomme の UI デザイン正本。実装・レビューは本書を基準にする。
 
+点在の UI 向け unslop 審査メモ（実行計画付き・正本ではない）: [pj/reviews/2026-11-01-cursor-unslop-ui-audit.md](./pj/reviews/2026-11-01-cursor-unslop-ui-audit.md)。
+
 ## 1. 体験コンセプト
 
 KomeSomme は、AI ダッシュボードではなく「和紙の味わい地図に触れ、炊きたての一膳を選ぶ」体験である。AI やベクトル検索は裏側に置き、画面では米、産地、料理との相性を主役にする。
