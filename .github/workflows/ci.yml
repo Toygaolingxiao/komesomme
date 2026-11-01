@@ -77,6 +77,11 @@ jobs:
         run: npm run test:report
         continue-on-error: true
 
+      - name: Summarise E2E failures
+        if: failure()
+        run: node scripts/ci-failure-summary.mjs
+        continue-on-error: true
+
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
