@@ -2,7 +2,7 @@
 
 KomeSomme の UI デザイン正本。実装・レビューは本書を基準にする。
 
-点在の UI 向け unslop 審査メモ（実行計画付き・正本ではない）: [pj/reviews/2026-11-01-cursor-unslop-ui-audit.md](./pj/reviews/2026-11-01-cursor-unslop-ui-audit.md)。
+時点の UI 向け unslop 審査メモ（実行計画付き・正本ではない）: [pj/reviews/2026-11-01-cursor-unslop-ui-audit.md](./pj/reviews/2026-11-01-cursor-unslop-ui-audit.md)。
 
 ## 1. 体験コンセプト
 
