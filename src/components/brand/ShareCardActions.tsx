@@ -32,6 +32,8 @@ function absoluteUrl(path: string): string {
 export function ShareCardActions({ rice, compact = false }: Props) {
   const [busy, setBusy] = useState<Busy>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFailed, setPreviewFailed] = useState(false);
   const blobCache = useRef<{ noQr: Blob | null; withQr: Blob | null }>({
     noQr: null,
     withQr: null,
@@ -56,17 +58,40 @@ export function ShareCardActions({ rice, compact = false }: Props) {
     [cardPath, cardPathQr]
   );
 
-  // Prefetch the Xiaohongshu-safe (no-QR) card while the panel is open.
+  // Prefetch the Xiaohongshu-safe (no-QR) card while the panel is open and
+  // show it as a preview as soon as it exists, so the reader sees the card
+  // before deciding to share. The QR variant follows on an idle timer:
+  // first generation is slow (~20s of font/image work server-side), so
+  // neither variant should start at tap time.
   useEffect(() => {
     if (!enabled) return;
     blobCache.current = { noQr: null, withQr: null };
     prefetchAbort.current?.abort();
     const ctrl = new AbortController();
     prefetchAbort.current = ctrl;
-    void fetchCardBlob(false, ctrl.signal).catch(() => {
-      /* prefetch is best-effort */
-    });
-    return () => ctrl.abort();
+    let objectUrl: string | null = null;
+    let qrTimer: ReturnType<typeof setTimeout> | null = null;
+    setPreviewUrl(null);
+    setPreviewFailed(false);
+    void fetchCardBlob(false, ctrl.signal)
+      .then((blob) => {
+        if (ctrl.signal.aborted) return;
+        objectUrl = URL.createObjectURL(blob);
+        setPreviewUrl(objectUrl);
+        qrTimer = setTimeout(() => {
+          void fetchCardBlob(true, ctrl.signal).catch(() => {
+            /* prefetch is best-effort */
+          });
+        }, 1500);
+      })
+      .catch(() => {
+        if (!ctrl.signal.aborted) setPreviewFailed(true);
+      });
+    return () => {
+      ctrl.abort();
+      if (qrTimer) clearTimeout(qrTimer);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [enabled, fetchCardBlob]);
 
   async function onShare() {
@@ -169,6 +194,31 @@ export function ShareCardActions({ rice, compact = false }: Props) {
 
   return (
     <div className={compact ? "mt-4" : "mt-5"}>
+      {previewUrl ? (
+        <figure className="mb-3">
+          {/* The generated card itself, from the prefetched blob. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={previewUrl}
+            alt={`${rice.name}のシェアカード`}
+            className={`${compact ? "h-40" : "h-48"} w-auto rounded-xl border border-[var(--km-border)] shadow-sm`}
+          />
+          <figcaption className="mt-1.5 text-[11px] text-[var(--km-muted)]">
+            カードのプレビュー（この画像が共有・保存されます）
+          </figcaption>
+        </figure>
+      ) : previewFailed ? null : (
+        <div
+          className={`mb-3 flex ${compact ? "h-40" : "h-48"} aspect-[3/4] w-auto items-center justify-center rounded-xl border border-dashed border-[var(--km-border)] bg-[var(--km-brown)]/[0.03] px-3 text-center`}
+          role="status"
+        >
+          <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
+            カードを作成しています…
+            <br />
+            初回は少し時間がかかります
+          </p>
+        </div>
+      )}
       <div className={`grid grid-cols-2 gap-2 sm:flex sm:flex-wrap ${FOCUS}`}>
         <button
           type="button"
