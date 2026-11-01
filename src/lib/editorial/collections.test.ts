@@ -152,6 +152,11 @@ describe("collectionPublishedIso", () => {
     expect(emi).toContain(
       "（出典：埼玉県「[“えみほころ”で食欲の秋を楽しもう！](https://www.pref.saitama.lg.jp/a0314/sainokuni/sainokuni-kensei-202610p02.html)」2026年10月1日）"
     );
+    const grade = memo?.items.find((item) => item.includes("1等比率"));
+    expect(grade).toBe(
+      "令和8年産の1等比率（水稲うるち玄米）は、9月末時点の速報で79.8%でした。前年の同じ時点（77.0%）より2.8ポイント高くなっています。検査はまだ途中のため、今後の数字は変わります。（出典：農林水産省「令和8年産米の農産物検査結果（速報値、9月〓3日現在）」2026年10月30日）。"
+    );
+    expect(grade).not.toContain("65.9%");
     const price = memo?.items.find((item) => item.includes("2,788円"));
     expect(price).toContain("10月19日〜25日");
     expect(price).toContain("前の週より33円安く、値下がりは11週続いています");
