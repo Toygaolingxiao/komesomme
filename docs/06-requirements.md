@@ -33,8 +33,8 @@
 
 - 詳細パネル（銘柄品鑑）は重点説明（味わい・今日の食べ方・料理相性）と購入 CTA を優先し、お酒・お茶・季節の詳細相性は出さない
 - `/library/[id]` が銘柄の統合事典。旧 URL の 1 ホップは [03-system-design.md](./03-system-design.md) §6
-- 購入 UI: **通販**（楽天 / Yahoo / Amazon）と **ふるさと納税**（楽天ふるさと / Yahoo!ふるさと / さとふる）のタグ切替。クリーム地にモール色の細い帯（検索 URL）。銘柄品鑑はモール列を出さず、事典の購入欄へ飛ぶ
-- アフィタグ配線（楽天 wrap・Amazon Associate・VC 用ヘルパ）はコード済み。**商品 API / deep link と VC 本番 SID・成果突合**は未完（P1/P2）
+- 購入 UI: **通販**（楽天 / Yahoo / Amazon / メルカリ）と **ふるさと納税**（楽天ふるさと / Yahoo!ふるさと / さとふる）のタグ切替。クリーム地にモール色の細い帯（検索 URL。直リンクがある銘柄だけ直リンク）。銘柄品鑑はモール列を出さず、事典の購入欄へ飛ぶ
+- アフィタグ配線（楽天 wrap・Amazon Associate）はコード済み。ValueCommerce は廃止（[17](./17-valuecommerce-reapply.md)）。商品 API を主線にしない（[20 §4.0](./20-growth-plan.md)）
 - 味わい値を公的測定値として表示しない
 
 ### 1.5 データと状態
@@ -55,19 +55,16 @@
 
 ## 3. 将来要件と実装状況
 
-[11-launch-checklist.md](./11-launch-checklist.md) が実行リスト。ここに「将来」と書いてあっても、チェックリスト側が新しい。
+1.0 門禁の記録は [11-launch-checklist.md](./11-launch-checklist.md)。**1.x で次に作るものは [20-growth-plan.md](./20-growth-plan.md) §4.0。** ここに「将来」と書いてあっても、20 / 11 側が新しい。
 
 **1.0 前に入ったもの:** 相談 API のレート制限と kill switch、本番デプロイ（Vercel / `komesomme.jp`）、RLS 0004、匿名 `access_events`、GA4 gtag（測定 ID は env）、Sentry SDK（DSN は env）、法務草案、Vitest / Playwright / CI、購入タグ UI、編集発見。
 
-**1.x で入ったもの:** 百科の合稿と公式 URL（0013）、旧 URL の 1 ホップ 308、地図で選んだ粒の短い強調と推薦欄の交叉フェード。
+**1.x で入ったもの:** `/pair` 十面、百科の合稿と公式 URL（0013）、旧 URL の 1 ホップ 308、共有カード、`/about`、地図の短い強調。
 
-**まだ残り（門禁の詳細は 11）:**
+**運用で見る（チケットにしない。週 30 分は 20 §6.3）:** Affiliate 成果突合、GSC インデックス、Sentry に新しい issue があれば当週処理。
 
-- Affiliate 成果突合（クリック ↔ 管理画面）
-- branch protection（CI 必須化）
-- Library / 銘柄 URL の Search Console インデックス定着
-- Sentry DSN 本番投入と失敗率アラート
+**まだ作っていない（20 §4.0）:** `/compare`、`/ops` の page_type 漏斗。
 
-**1.0 後（P2）:** Rakuten 商品 API / deep link、お気に入り・履歴・Auth、grounded LLM 長文・炊飯アドバイス、PWA。
+**近端やらない:** お気に入り・履歴・Auth、PWA、PA-API を主線にする、第二条 Somme。
 
 将来要件を現行機能として README や UI に記載しない。

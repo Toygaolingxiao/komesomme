@@ -1,6 +1,6 @@
 # KomeSomme システム設計書
 
-本書はリポジトリの現行実装を説明する。UI 正本は [08-ui-design.md](./08-ui-design.md)。未完了の本番タスクは [11-launch-checklist.md](./11-launch-checklist.md)。全体像は [02-tech-retrospective.md](./02-tech-retrospective.md)。
+本書はリポジトリの現行実装を説明する。UI 正本は [08-ui-design.md](./08-ui-design.md)。1.x の次の一手は [20-growth-plan.md](./20-growth-plan.md) §4.0。1.0 門禁の記録は [11-launch-checklist.md](./11-launch-checklist.md)。全体像は [02-tech-retrospective.md](./02-tech-retrospective.md)。
 
 ## 1. 技術スタック
 

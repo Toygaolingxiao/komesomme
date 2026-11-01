@@ -2,7 +2,7 @@
 
 对 GAO。这里放**正本之外**仍要进仓留档的东西：调研备份、对外 Case Study 快照、外部 AI 锐评、固定提示词。
 
-**不是** pmo-kit 的 WBS/甘特替代品。可执行正本仍在 `docs/00`–`22` 与 `.cursor/rules/`。兄弟仓 [pmo-kit](https://github.com/Toygaolingxiao/pmo-kit) 只管咨询交付渲染。
+**不是** pmo-kit 的 WBS/甘特替代品。可执行正本仍在 `docs/00`–`25` 与 `.cursor/rules/`。下一程只看 [20 §4.0](../20-growth-plan.md)。兄弟仓 [pmo-kit](https://github.com/Toygaolingxiao/pmo-kit) 只管咨询交付渲染。
 
 **本仓在职业设计里的位置（2026-09）：** KomeSomme = 可展示的数据产品证据 + 咨询信任背书；常规アフィ不当主 KPI。正本见 [../22-career-positioning.md](../22-career-positioning.md)。**`komesomme.jp` 产品页不要写这套。**
 

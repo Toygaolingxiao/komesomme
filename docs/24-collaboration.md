@@ -2,7 +2,7 @@
 
 正本。主人、Cursor 云代理（Grok Bot「Komesomme」）、Muse，以及其他助手，都用 GitHub 账号 `Toygaolingxiao` 推送。作者靠分支前缀和 PR 正文区分，不靠 commit 的显示名。
 
-版本号政策见 [01-versioning.md](./01-versioning.md)。主人当场说「推送 / push / 推到本番」时，按 `.cursor/rules/ship-main.mdc` 把**已经在 `main` 上的提交**推到 `origin`。那不是往 `main` 上直接 commit 的许可。
+版本号政策见 [01-versioning.md](./01-versioning.md)。主人当场说「推送 / push / 推到本番」时，按 `.cursor/rules/ship-main.mdc` 把**已经在 `main` 上的提交**推到 `origin`。那不是往 `main` 上直接 commit 的许可。近端做什么、不做什么，各端都守 [25-dev-playbook.md](./25-dev-playbook.md) 和 `.cursor/rules/dev-playbook.mdc`。
 
 ## 1. 一人一条分支
 

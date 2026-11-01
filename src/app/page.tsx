@@ -32,7 +32,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Below the first screen: visible, server-rendered reading strip. */}
+      {/* Crawler HTML only. Not in the visual scroll on any viewport. */}
       <HomeReadingStrip
         brandCount={riceProfiles.length}
         pairings={PAIRING_PAGES.slice(0, 6).map((row) => ({

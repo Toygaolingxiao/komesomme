@@ -1,6 +1,6 @@
 # KomeSomme 历程回顾（构想 → 现行）
 
-本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。日语并置版已废止（旧链接见 [12.ja  stub](./12-product-journey.ja.md)）。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。未完成的上线任务见 [11-launch-checklist.md](./11-launch-checklist.md)。
+本文用中文记录：从零构想，到仓库根目录 [`VERSION`](../VERSION) 所标版本为止。日语并置版已废止（旧链接见 [12.ja  stub](./12-product-journey.ja.md)）。技术栈与 RAG 细节见日文 [02-tech-retrospective.md](./02-tech-retrospective.md)。1.0 门禁记录见 [11-launch-checklist.md](./11-launch-checklist.md)。下一程见 [20 §4.0](./20-growth-plan.md)。
 
 读者：产品主理人 GAO，以及之后接手的开发者 / 顾问。
 
@@ -112,7 +112,9 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 | 改打分 / 短文案 | `src/data/rice/sources/`，再 `validate:rice` / `seed:rice` |
 | 再校正依据 | `scripts/data/` |
 | 改检索 / 回复 | `05`、`src/lib/rice/`、semantic route |
-| 上线还差什么 | `11` |
+| 上线门禁记录 | `11` |
+| 1.x 下一程 | `20` §4.0 |
+| 怎么干活 | `25` |
 | 环境变量 | `.env.example`、`vercel-production.md` |
 | 版本号 | 只动 `VERSION`、`package.json`、`10-changelog.md` |
 
@@ -120,18 +122,9 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 
 ---
 
-## 5. 课题（还压在桌上的）
+## 5. 课题
 
-按「产品可信 / 案例可讲」优先，而不是「アフィ回本」：
-
-1. Phase 2 续：Wave 2B（比較・直リンク・页型漏斗）与 2C（季节面）——见 [20](./20-growth-plan.md)  
-2. 百科与官方 URL 继续硬化（claims / registry）——见百科治理文  
-3. 烟雾与观测留档（每次 Production 后 `smoke-test.md`）  
-4. （建议）至少一个アフィ渠道对账——合规完整性，非停更门槛  
-5. Phase 3 再访（シェア / LINE）——环路闭合后再认真谈構想横展  
-6. （可选）轻 B2B 要约 + 嵌入原型——见 [22](./22-career-positioning.md)  
-
-独自ドメイン与特商法草案已落地。不要在这之前展开 Auth、收藏、自营 D2C 履约。
+下一程只写在 [20 §4.0](./20-growth-plan.md)。本文不维护第二份 backlog。烟雾每次 Production 后填 `smoke-test.md`。观测是每周 30 分钟，不是开着的 Issue。
 
 ---
 
@@ -147,11 +140,12 @@ KomeSomme 不是「米的数据库网站」，也不是「用 LLM 聊天荐米�
 
 ---
 
-## 7. 和 02 / 20 / 22 的分工
+## 7. 和 02 / 20 / 22 / 25 的分工
 
 - **02（日文）:** 为什么选 Next / Supabase / Gemini，RAG 层怎么切，生成式开发怎么用。
 - **12（本文，中文）:** 为什么做这个产品、怎么走到这里、开发约束里哪些真的提高了效率。
-- **20（中文）:** 1.x Phase / Wave / KPI / SOP——**产品**下一步做什么。
+- **20（中文）:** 1.x Phase / Wave / KPI / SOP——**产品**下一步做什么（§4.0）。
 - **22（中文）:** 职业设计与回报假设——**为什么还投时间**；对外站不写。
+- **25（中文）:** 复盘与怎么干活。切片不在这里另写一份。
 
-改技术决策时改 02；改「我们怎么走到这里」时改 12；改排期与验收时改 20；改「主 KPI / 商业取舍」时改 22。
+改技术决策时改 02；改「我们怎么走到这里」时改 12；改排期与验收时改 20；改「主 KPI / 商业取舍」时改 22；改干活习惯时改 25。

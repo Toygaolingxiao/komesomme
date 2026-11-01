@@ -2,7 +2,8 @@
 
 対象: **B）アフィリエイト収益を伴う正式サイト**。  
 現状: **P0 公開門禁は 2026-09-08 判定で充足**（下記メモ）。番号は [`VERSION`](../VERSION)。  
-ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。
+ゴール: SemVer **1.0.0** — [01-versioning.md](./01-versioning.md) / [06-requirements.md](./06-requirements.md) §3。  
+**1.x で次に作るものは本文に足さない。** 正本は [20-growth-plan.md](./20-growth-plan.md) §4.0。P1 観測は毎週 30 分（20 §6.3）であり、GA4 / Sentry / GSC のために Issue を開かない。
 
 ### 1.0.0 判定メモ（2026-09-08 · GAO）
 

@@ -466,13 +466,9 @@ flowchart LR
 
 ## 10. 验收与下一步（实现衔接）
 
-Wave 2A 开工时（代码不在本正本）:
+Wave 2A（`/pair` 十面）已交付。本正本只管意图与文案门禁。
 
-1. `src/data/editorial/pairings.ts`（typed；slug · dish · lead · faq · 引用 A-ID）
-2. 扩展 `validate:rice`：slug 唯一、銘柄 id 存在、TopN 非空、リード非空、向かない非空
-3. `/pair/[dish]` SSG + `opengraph-image` + JSON-LD + sitemap
-4. Playwright smoke 1 条 / 页型
-5. Diff Gate 人工抽检：AI 摘要模拟再跑首发 5 cluster
+下一程是 [20 §4.0](./20-growth-plan.md) 的 `/compare`。比较页上线前，按 §7–9 对目标 cluster 再跑一轮 Diff Gate，记录追加到本节表。不要在本文件另开实现清单。
 
 ---
 

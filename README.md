@@ -92,11 +92,11 @@ npm run dev
 http://localhost:3000 で:
 
 - 点色が産地凡例と一致する
-- Desktop で第一画面にページ全体のスクロールが出ない。マップが左ペインいっぱいに広がり、その下にサイト説明と読みものへのリンク帯が続く
+- Desktop で第一画面にページ全体のスクロールが出ない。マップが左ペインいっぱいに広がる。サイト説明の案内帯は HTML に残し、画面では届かない
 - 探針やスライダーを動かすと、No.1 が常に最近傍
 - 「ハイボールと唐揚げに合う米」で Top 4 が返る
 - 銘柄事典 `/library/[id]` から通販 / ふるさと納税の各モールが開く（旧 `/{id}` はリダイレクト）
 
 本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
-画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、構想からの経緯は [docs/12-product-journey.md](./docs/12-product-journey.md)（中文）、1.x 成長は [docs/20-growth-plan.md](./docs/20-growth-plan.md)、職業定位（運営者向け・中文）は [docs/22-career-positioning.md](./docs/22-career-positioning.md)、並行作業は [docs/24-collaboration.md](./docs/24-collaboration.md)（中文）、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。
+画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、構想からの経緯は [docs/12-product-journey.md](./docs/12-product-journey.md)（中文）、1.x 成長は [docs/20-growth-plan.md](./docs/20-growth-plan.md)（次の一手は §4.0）、進め方は [docs/25-dev-playbook.md](./docs/25-dev-playbook.md)、職業定位（運営者向け・中文）は [docs/22-career-positioning.md](./docs/22-career-positioning.md)、並行作業は [docs/24-collaboration.md](./docs/24-collaboration.md)（中文）、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。

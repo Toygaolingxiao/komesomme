@@ -11,12 +11,12 @@ export type HomeStripCollection = { slug: string; title: string };
 export type HomeStripBrand = { id: string; name: string; prefecture: string };
 
 /**
- * Visible reading strip under the home map's first screen.
+ * Crawler-facing reading copy under the home map.
  *
- * Server-rendered from the same editorial data as /discover and /pair, so
- * the home page carries real, followable text and links below the map
- * instead of only the client-side matrix. The first screen itself is
- * unchanged; this sits under it and is reached by scrolling.
+ * Server-rendered from the same editorial data as /discover and /pair so
+ * the home HTML still has followable text. It is visually hidden on every
+ * viewport (`sr-only`): people stay on the map; crawlers still get the
+ * links. Do not put it back in the document flow.
  */
 export function HomeReadingStrip({
   brandCount,
@@ -32,7 +32,7 @@ export function HomeReadingStrip({
   return (
     <section
       aria-label="サイトの案内"
-      className="border-t border-[var(--km-border)] bg-[var(--km-surface)] text-[var(--km-ink)]"
+      className="sr-only"
     >
       <div
         className={`${SITE_COLUMN} pb-[max(6.5rem,calc(env(safe-area-inset-bottom)+5rem))] pt-10 sm:pt-12 lg:pb-14`}

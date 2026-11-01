@@ -7,6 +7,7 @@
 | 分层栈 / 架构原则 | [02-tech-retrospective.md](./02-tech-retrospective.md) §2–3 |
 | 目录与数据流 | [03-system-design.md](./03-system-design.md) |
 | 上线门禁 | [11-launch-checklist.md](./11-launch-checklist.md) |
+| 1.x 下一程 | [20-growth-plan.md](./20-growth-plan.md) §4.0 |
 | 产品复盘 | [12-product-journey.md](./12-product-journey.md) |
 | 本番 env | [vercel-production.md](./vercel-production.md) |
 | 开放 Issue | GitHub Issues（标题带 `[P0-…]` / `[P1-…]`） |

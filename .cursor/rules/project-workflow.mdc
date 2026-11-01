@@ -21,6 +21,7 @@ alwaysApply: true
 | 1.x 成长 / Phase | [`docs/20-growth-plan.md`](../../docs/20-growth-plan.md) |
 | 职业定位（对 GAO；对外站不写） | [`docs/22-career-positioning.md`](../../docs/22-career-positioning.md) |
 | 并行协作（分支 / PR / 审查） | [`docs/24-collaboration.md`](../../docs/24-collaboration.md) |
+| 开发方案 / 复盘（近 8 周纪律） | [`docs/25-dev-playbook.md`](../../docs/25-dev-playbook.md) + rule `dev-playbook.mdc`（各端 alwaysApply） |
 
 ## Issue / PR
 
