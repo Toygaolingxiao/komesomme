@@ -52,12 +52,24 @@ body {
   min-width: 0;
   overflow-x: clip;
   color: var(--km-ink);
+  background: var(--km-bg);
+  font-family: var(--font-sans);
+}
+
+/* Ambient colour wash. Kept on a viewport-fixed layer so the gradient box
+   is always the viewport: as a body background the ellipses resolved
+   against the full document height and stretched into a giant diagonal
+   sweep in full-page screenshots (and on very long pages). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
     radial-gradient(ellipse at 8% 0%, rgba(226, 154, 53, 0.16), transparent 36%),
     radial-gradient(ellipse at 96% 8%, rgba(229, 107, 63, 0.12), transparent 32%),
-    radial-gradient(ellipse at 70% 100%, rgba(124, 168, 59, 0.1), transparent 38%),
-    var(--km-bg);
-  font-family: var(--font-sans);
+    radial-gradient(ellipse at 70% 100%, rgba(124, 168, 59, 0.1), transparent 38%);
 }
 
 ::selection {
