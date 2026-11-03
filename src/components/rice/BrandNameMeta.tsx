@@ -15,7 +15,7 @@ export function BrandNameMeta({
 
   return (
     <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-      {tokuA ? <TokuABadge /> : null}
+      {tokuA ? <TokuABadge id={id} /> : null}
       {bits.length > 0 ? (
         <p className="text-[13px] text-[var(--km-muted)]">{bits.join(" · ")}</p>
       ) : null}

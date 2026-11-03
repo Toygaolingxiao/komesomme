@@ -224,7 +224,7 @@ export function LibraryBrowser({
                     <span className="font-serif text-[1.125rem] font-semibold tracking-tight text-[var(--km-ink)] group-hover:text-[var(--km-brown)]">
                       {entry.name}
                     </span>
-                    {isTokuA(entry.id) ? <TokuABadge compact /> : null}
+                    {isTokuA(entry.id) ? <TokuABadge id={entry.id} compact /> : null}
                   </span>
                   {distinctReading(entry.name, entry.reading) ? (
                     <span className="mt-0.5 block text-[12px] text-[var(--km-muted)]">
