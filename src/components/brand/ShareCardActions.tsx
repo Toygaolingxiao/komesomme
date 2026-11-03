@@ -21,6 +21,9 @@ type Props = {
 
 type Busy = "share" | "save" | "save_qr" | "link" | null;
 
+/** Which card action the preview dialog is confirming. */
+type DialogMode = "share" | "save" | "save_qr";
+
 function absoluteUrl(path: string): string {
   if (typeof window === "undefined") return path;
   return new URL(path, window.location.origin).toString();
@@ -33,9 +36,12 @@ function absoluteUrl(path: string): string {
 export function ShareCardActions({ rice, compact = false }: Props) {
   const [busy, setBusy] = useState<Busy>(null);
   const [note, setNote] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewFailed, setPreviewFailed] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState<{
+    noQr: string | null;
+    qr: string | null;
+  }>({ noQr: null, qr: null });
+  const [previewFailed, setPreviewFailed] = useState({ noQr: false, qr: false });
+  const [dialogMode, setDialogMode] = useState<DialogMode | null>(null);
   const blobCache = useRef<{ noQr: Blob | null; withQr: Blob | null }>({
     noQr: null,
     withQr: null,
@@ -61,11 +67,12 @@ export function ShareCardActions({ rice, compact = false }: Props) {
   );
 
   // Prefetch both card variants while the panel is open (no-QR first, the
-  // QR variant on an idle timer) so that opening the share preview is
-  // instant: first generation is slow (~20s of font/image work
-  // server-side), so neither variant should start at tap time. The
-  // preview itself is only shown in the dialog behind the share button —
-  // the page stays clean until the reader actually wants to share.
+  // QR variant on an idle timer) so the preview dialog opens instantly:
+  // first generation is slow (~20s of font/image work server-side), so
+  // neither variant should start at tap time. Every card action (share /
+  // save / QR save) goes through the preview dialog first — the reader
+  // sees the exact image, of the exact variant, before anything is
+  // shared or downloaded.
   useEffect(() => {
     if (!enabled) return;
     blobCache.current = { noQr: null, withQr: null };
@@ -73,39 +80,49 @@ export function ShareCardActions({ rice, compact = false }: Props) {
     const ctrl = new AbortController();
     prefetchAbort.current = ctrl;
     let objectUrl: string | null = null;
+    let qrObjectUrl: string | null = null;
     let qrTimer: ReturnType<typeof setTimeout> | null = null;
-    setPreviewUrl(null);
-    setPreviewFailed(false);
+    setPreviewUrls({ noQr: null, qr: null });
+    setPreviewFailed({ noQr: false, qr: false });
     void fetchCardBlob(false, ctrl.signal)
       .then((blob) => {
         if (ctrl.signal.aborted) return;
         objectUrl = URL.createObjectURL(blob);
-        setPreviewUrl(objectUrl);
+        setPreviewUrls((u) => ({ ...u, noQr: objectUrl }));
         qrTimer = setTimeout(() => {
-          void fetchCardBlob(true, ctrl.signal).catch(() => {
-            /* prefetch is best-effort */
-          });
+          void fetchCardBlob(true, ctrl.signal)
+            .then((qrBlob) => {
+              if (ctrl.signal.aborted) return;
+              qrObjectUrl = URL.createObjectURL(qrBlob);
+              setPreviewUrls((u) => ({ ...u, qr: qrObjectUrl }));
+            })
+            .catch(() => {
+              if (!ctrl.signal.aborted)
+                setPreviewFailed((f) => ({ ...f, qr: true }));
+            });
         }, 1500);
       })
       .catch(() => {
-        if (!ctrl.signal.aborted) setPreviewFailed(true);
+        if (!ctrl.signal.aborted)
+          setPreviewFailed((f) => ({ ...f, noQr: true }));
       });
     return () => {
       ctrl.abort();
       if (qrTimer) clearTimeout(qrTimer);
       if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (qrObjectUrl) URL.revokeObjectURL(qrObjectUrl);
     };
   }, [enabled, fetchCardBlob]);
 
   // Close the preview dialog with Escape.
   useEffect(() => {
-    if (!dialogOpen) return;
+    if (!dialogMode) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setDialogOpen(false);
+      if (e.key === "Escape") setDialogMode(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [dialogOpen]);
+  }, [dialogMode]);
 
   async function onShare() {
     setBusy("share");
@@ -203,6 +220,12 @@ export function ShareCardActions({ rice, compact = false }: Props) {
   const btn =
     "inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--km-brown)]/[0.07] px-3 text-[12.5px] font-medium text-[var(--km-ink)] transition hover:bg-[var(--km-brown)]/[0.12] hover:text-[var(--km-brown)] disabled:opacity-45";
 
+  // The dialog always shows the variant its action will actually use:
+  // share and plain save use the no-QR card, QR save uses the QR card.
+  const dialogQr = dialogMode === "save_qr";
+  const dialogUrl = dialogQr ? previewUrls.qr : previewUrls.noQr;
+  const dialogFailed = dialogQr ? previewFailed.qr : previewFailed.noQr;
+
   if (!enabled) return null;
 
   return (
@@ -212,7 +235,7 @@ export function ShareCardActions({ rice, compact = false }: Props) {
           type="button"
           className={btn}
           disabled={busy !== null}
-          onClick={() => setDialogOpen(true)}
+          onClick={() => setDialogMode("share")}
         >
           <ShareNetwork size={15} weight={ICON_WEIGHT} />
           シェア
@@ -221,20 +244,20 @@ export function ShareCardActions({ rice, compact = false }: Props) {
           type="button"
           className={btn}
           disabled={busy !== null}
-          onClick={() => void onSave(false)}
+          onClick={() => setDialogMode("save")}
         >
           <DownloadSimple size={15} weight={ICON_WEIGHT} />
-          {busy === "save" ? "作成中…" : "カードを保存"}
+          カードを保存
         </button>
         <button
           type="button"
           className={btn}
           disabled={busy !== null}
-          onClick={() => void onSave(true)}
+          onClick={() => setDialogMode("save_qr")}
           title="Xや印刷用です"
         >
           <QrCode size={15} weight={ICON_WEIGHT} />
-          {busy === "save_qr" ? "作成中…" : "QR付きで保存"}
+          QR付きで保存
         </button>
         <button
           type="button"
@@ -246,20 +269,17 @@ export function ShareCardActions({ rice, compact = false }: Props) {
           {busy === "link" ? "…" : "リンクをコピー"}
         </button>
       </div>
-      <p className="mt-2 max-w-[42rem] text-[11px] leading-relaxed text-[var(--km-muted)]">
-        縦長（3:4）のカードです。QRは付いていません。Xや印刷には「QR付きで保存」を使ってください。
-      </p>
       {note ? (
         <p className="mt-1.5 text-[11px] text-[var(--km-brown)]" role="status">
           {note}
         </p>
       ) : null}
-      {dialogOpen
+      {dialogMode
         ? createPortal(
             <div
               className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 sm:items-center"
               onClick={(e) => {
-                if (e.target === e.currentTarget) setDialogOpen(false);
+                if (e.target === e.currentTarget) setDialogMode(null);
               }}
             >
               <div
@@ -274,23 +294,25 @@ export function ShareCardActions({ rice, compact = false }: Props) {
                   </p>
                   <button
                     type="button"
-                    onClick={() => setDialogOpen(false)}
+                    onClick={() => setDialogMode(null)}
                     className="rounded-lg px-2 py-1 text-[12px] text-[var(--km-muted)] transition hover:bg-[var(--km-brown)]/[0.07]"
                   >
                     閉じる
                   </button>
                 </div>
-                {previewUrl ? (
+                {dialogUrl ? (
                   <>
                     {/* The generated card itself, from the prefetched blob. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={previewUrl}
+                      src={dialogUrl}
                       alt={`${rice.name}のシェアカード`}
                       className="mx-auto max-h-[44vh] w-auto rounded-xl border border-[var(--km-border)] shadow-sm"
                     />
                     <p className="mt-2 text-center text-[11px] text-[var(--km-muted)]">
-                      この画像が共有・保存されます
+                      {dialogQr
+                        ? "QR付き・縦長（3:4）のカードです。この画像が保存されます"
+                        : "QRなし・縦長（3:4）のカードです。この画像が共有・保存されます"}
                     </p>
                   </>
                 ) : (
@@ -299,8 +321,12 @@ export function ShareCardActions({ rice, compact = false }: Props) {
                     role="status"
                   >
                     <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
-                      {previewFailed ? (
-                        "プレビューは表示できませんが、そのまま共有できます"
+                      {dialogFailed ? (
+                        dialogQr ? (
+                          "プレビューは表示できませんが、そのまま保存できます"
+                        ) : (
+                          "プレビューは表示できませんが、そのまま共有・保存できます"
+                        )
                       ) : (
                         <>
                           カードを作成しています…
@@ -311,47 +337,52 @@ export function ShareCardActions({ rice, compact = false }: Props) {
                     </p>
                   </div>
                 )}
-                <div className="mt-3 flex flex-col gap-2">
-                  <button
-                    type="button"
-                    className={`${btn} w-full`}
-                    disabled={busy !== null}
-                    onClick={() => {
-                      setDialogOpen(false);
-                      void onShare();
-                    }}
-                  >
-                    <ShareNetwork size={15} weight={ICON_WEIGHT} />
-                    {busy === "share" ? "作成中…" : "このカードを共有する"}
-                  </button>
-                  <button
-                    type="button"
-                    className={`${btn} w-full`}
-                    disabled={busy !== null}
-                    onClick={() => void onSave(false)}
-                  >
-                    <DownloadSimple size={15} weight={ICON_WEIGHT} />
-                    {busy === "save" ? "作成中…" : "カードを保存"}
-                  </button>
-                  <button
-                    type="button"
-                    className={`${btn} w-full`}
-                    disabled={busy !== null}
-                    onClick={() => void onSave(true)}
-                    title="Xや印刷用です"
-                  >
-                    <QrCode size={15} weight={ICON_WEIGHT} />
-                    {busy === "save_qr" ? "作成中…" : "QR付きで保存"}
-                  </button>
-                  <button
-                    type="button"
-                    className={`${btn} w-full`}
-                    disabled={busy !== null}
-                    onClick={() => void onCopyLink()}
-                  >
-                    <LinkSimple size={15} weight={ICON_WEIGHT} />
-                    {busy === "link" ? "…" : "リンクをコピー"}
-                  </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDialogMode(dialogQr ? "save" : "save_qr")
+                  }
+                  className="mt-2 w-full text-center text-[11.5px] text-[var(--km-brown)] underline decoration-dotted underline-offset-2"
+                >
+                  {dialogQr
+                    ? "通常カード（QRなし）を見る"
+                    : "QR付きカードを見る"}
+                </button>
+                <div className="mt-3">
+                  {dialogMode === "share" ? (
+                    <button
+                      type="button"
+                      className={`${btn} w-full`}
+                      disabled={busy !== null}
+                      onClick={() => {
+                        setDialogMode(null);
+                        void onShare();
+                      }}
+                    >
+                      <ShareNetwork size={15} weight={ICON_WEIGHT} />
+                      {busy === "share" ? "作成中…" : "このカードを共有する"}
+                    </button>
+                  ) : dialogMode === "save" ? (
+                    <button
+                      type="button"
+                      className={`${btn} w-full`}
+                      disabled={busy !== null}
+                      onClick={() => void onSave(false)}
+                    >
+                      <DownloadSimple size={15} weight={ICON_WEIGHT} />
+                      {busy === "save" ? "作成中…" : "このカードを保存する"}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={`${btn} w-full`}
+                      disabled={busy !== null}
+                      onClick={() => void onSave(true)}
+                    >
+                      <QrCode size={15} weight={ICON_WEIGHT} />
+                      {busy === "save_qr" ? "作成中…" : "QR付きで保存する"}
+                    </button>
+                  )}
                 </div>
                 {note ? (
                   <p
