@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       mode: ${{ steps.mode.outputs.mode }}
+      matrix: ${{ steps.matrixflag.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +43,18 @@ jobs:
               - 'package.json'
               - 'package-lock.json'
               - 'playwright.config.ts'
+            matrix:
+              - 'src/components/matrix/**'
+              - 'src/components/home/**'
+              - 'src/components/FlavorMatrix.tsx'
+              - 'src/app/page.tsx'
+              - 'src/lib/rice/matrix.ts'
+              - 'src/lib/rice/mapProfile.ts'
+              - 'src/lib/rice/mapRiceRow.ts'
+              - 'src/data/rice/sources/**'
+              - 'src/data/rice/catalog.ts'
+              - 'src/data/rice/overlay.ts'
+              - 'e2e/home.spec.ts'
 
       - name: Decide CI mode
         id: mode
@@ -65,6 +78,22 @@ jobs:
             echo "mode=data_only" >> "$GITHUB_OUTPUT"
           else
             echo "mode=full" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decide matrix involvement
+        id: matrixflag
+        env:
+          IS_MAIN_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          CI_FULL: ${{ steps.filter.outputs.ci_full }}
+          MATRIX: ${{ steps.filter.outputs.matrix }}
+        run: |
+          # Main pushes and CI-definition changes always exercise the
+          # matrix/homepage suite; PRs skip it when the diff never touches
+          # the matrix, the homepage that hosts it, or the data feeding it.
+          if [ "$IS_MAIN_PUSH" = "true" ] || [ "$CI_FULL" = "true" ] || [ "$MATRIX" = "true" ]; then
+            echo "matrix=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "matrix=false" >> "$GITHUB_OUTPUT"
           fi
 
   docs-check:
@@ -180,8 +209,18 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: E2E tests (full)
-        if: needs.changes.outputs.mode == 'full'
+        if: needs.changes.outputs.mode == 'full' && needs.changes.outputs.matrix == 'true'
         run: npm run test:e2e
+        env:
+          CI: "true"
+          SEMANTIC_RECOMMEND_ENABLED: "false"
+          ACCESS_LOG_ENABLED: "false"
+          SUPABASE_SERVICE_ROLE_KEY: ci-service-placeholder
+          EMBEDDING_PROVIDER: gemini
+
+      - name: E2E tests (full, matrix untouched — home suite skipped)
+        if: needs.changes.outputs.mode == 'full' && needs.changes.outputs.matrix != 'true'
+        run: npx playwright test e2e/brand.spec.ts e2e/consult.spec.ts e2e/legal.spec.ts e2e/library.spec.ts e2e/mobile.spec.ts e2e/ops.spec.ts e2e/pair.spec.ts e2e/seo-security.spec.ts
         env:
           CI: "true"
           SEMANTIC_RECOMMEND_ENABLED: "false"
@@ -192,7 +231,17 @@ jobs:
 
       - name: E2E smoke (data-only)
         if: needs.changes.outputs.mode == 'data_only'
-        run: npx playwright test e2e/home.spec.ts e2e/library.spec.ts
+        run: npx playwright test e2e/library.spec.ts
+        env:
+          CI: "true"
+          SEMANTIC_RECOMMEND_ENABLED: "false"
+          ACCESS_LOG_ENABLED: "false"
+          SUPABASE_SERVICE_ROLE_KEY: ci-service-placeholder
+          EMBEDDING_PROVIDER: gemini
+
+      - name: E2E smoke (data-only, matrix data touched — home suite too)
+        if: needs.changes.outputs.mode == 'data_only' && needs.changes.outputs.matrix == 'true'
+        run: npx playwright test e2e/home.spec.ts
         env:
           CI: "true"
           SEMANTIC_RECOMMEND_ENABLED: "false"
