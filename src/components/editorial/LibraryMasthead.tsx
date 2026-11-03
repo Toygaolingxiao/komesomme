@@ -14,7 +14,7 @@ export function LibraryMasthead({ brandCount }: { brandCount: number }) {
           <BowlMark className="h-8 w-8" title="椀" />
           <h1 className={`mt-3 ${PAGE_TITLE}`}>銘柄ライブラリ</h1>
           <p className="mt-3 max-w-md text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-            約{brandCount}銘柄の味わいと由来を並べています。
+            {brandCount}銘柄の味わいと由来を並べています。
           </p>
         </div>
         {art ? (

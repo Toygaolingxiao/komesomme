@@ -24,7 +24,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["あっさりした白身魚の刺身", "淡い出汁の吸い物"],
     sake_pairings: ["純米酒の熱燗", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "甘みのあるハイボール"],
-    short_: "低アミロース由来の強い粘りとふくよかな甘み。北海道の上級銘柄。",
+    short_: "低アミロース由来の強い粘りとふくよかな甘み。北海道を代表する銘柄。",
     description:
       "北海道が育てた甘みの豊かなブランド。もっちりとした粘りと炊き上がりのツヤが際立ち、冷めてもやわらかさが残ります。タレの絡んだ焼肉やハンバーグなど、味の濃いおかずにも負けずに食卓の中心を担います。",
     sommelier_note:
@@ -241,7 +241,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["塩だけの握り"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール", "バーボン"],
-    short_: "大粒で粘り控えめ、業務用にも通る力強さ。",
+    short_: "大粒で粘り控えめ、業務用にも通用する力強さ。",
     description:
       "粒が大きく粘りが控えめな北海道の品種。汁気を含んでも形が残るため、カレーやリゾットのような煮込み系の料理と釣り合います。噛むと穀物らしい香りが立ちます。",
     sommelier_note:
@@ -396,7 +396,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["濃厚な洋風ソース"],
     sake_pairings: ["淡麗な吟醸", "冷酒"],
     whisky_pairings: ["ジャパニーズウイスキー", "スモーキーウイスキー"],
-    short_: "白く軽やか。岩手の上品な日常〜贈答米。",
+    short_: "白く軽やか。日常にも贈答にも使える岩手米。",
     description:
       "際立つ白さと透き通るようなツヤを備えた岩手の品種。軽やかな食感と程よい粒感があり、噛むほどに爽やかな甘みが滲みます。朝食の焼き魚やおひたしに静かに寄り添います。",
     sommelier_note:
@@ -429,7 +429,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     whisky_pairings: ["シェリー樽のウイスキー", "バーボン"],
     short_: "ふんわりした口当たりと豊かな甘み。",
     description:
-      "岩手が上級銘柄として育てた品種。ふくよかな甘みとやわらかな粒感が同居し、噛むと旨みが長く残ります。上質な肉料理と並べても、米の側から食卓を支えます。",
+      "岩手が力を入れて育てた品種。ふくよかな甘みとやわらかな粒感が同居し、噛むと旨みが長く残ります。上質な肉料理と並べても、米の側から食卓を支えます。",
     sommelier_note:
       "おかずを少なくして、米の甘みを主役にする食べ方が似合います。",
     pairing_reason:
@@ -675,7 +675,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "香りと甘みが乗る、秋田の上級銘柄。",
+    short_: "香りと甘みが乗る、秋田を代表する銘柄。",
     description:
       "あきたこまちの系譜を継ぐ秋田のフラッグシップ。粒が立ち、噛むほどに甘みと香りが広がります。和食の出汁や焼き魚と合わせると持ち味が出ます。",
     sommelier_note:
@@ -830,7 +830,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "白いつやと上品な甘み。粒揃いのよい山形の上級銘柄。",
+    short_: "白いつやと上品な甘み。粒揃いのよい山形を代表する銘柄。",
     description:
       "炊き上がりの輝きが目を引く山形の銘柄。旨み成分が豊富で、ひとくちで上品な甘みが広がります。粒の形が美しく、素材を大切にする和食や焼き魚の定食をひとつ上の御膳に押し上げます。",
     sommelier_note:
@@ -954,9 +954,9 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー", "シェリー樽のウイスキー"],
-    short_: "福島の新しい上級銘柄。甘みとやわらかさが目立つ。",
+    short_: "福島の新しいブランド米。甘みとやわらかさが目立つ。",
     description:
-      "福島が上級銘柄として育てた品種。炊きたての香りが豊かに立ち、甘みと旨みの余韻が長く残ります。おかずを控えて米そのものを味わう食べ方が似合う一膳です。",
+      "福島が力を入れて育てた品種。炊きたての香りが豊かに立ち、甘みと旨みの余韻が長く残ります。おかずを控えて米そのものを味わう食べ方が似合う一膳です。",
     sommelier_note:
       "塩だけの握りにして、香りと余韻を確かめてみてください。",
     pairing_reason:
@@ -991,7 +991,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     sommelier_note:
       "白ごはん単独より、タレや加工の土台として向きがはっきりします。",
     pairing_reason:
-      "粘りが少なく、汁気や加工工程でも粒が残りやすい。",
+      "粘りが少なく、汁気や加工工程でも粒が残りやすいです。",
     rakuten_search_keyword: "ふくひびき 白米 5kg 福島県産",
   },
   {
