@@ -18,6 +18,12 @@ export type PairRankOptions = {
   bias: PairTasteBias;
   topN?: number;
   avoidN?: number;
+  /** Sort the matched pool by cold_rice_quality first (弁当・おにぎり). */
+  coldFirst?: boolean;
+  /** Editorial calibration: these ids lead the top list (寿司のササニシキ等). */
+  pinTopIds?: string[];
+  /** Editorial calibration: these ids never enter the top list (刺身の魚沼等). */
+  topExcludeIds?: string[];
   /**
    * When no avoid_pairings text hits, take brands farthest from the bias
    * (and not in the top list). Labelled as coordinate opposites on the page.
@@ -84,16 +90,30 @@ export function rankPairingCandidates(
     ? options.avoidAliases
     : options.aliases;
 
-  const matched = profiles.filter((rice) =>
-    listMatchesAliases(rice.best_match_dishes, options.aliases)
+  const excluded = new Set(options.topExcludeIds ?? []);
+  const matched = profiles.filter(
+    (rice) =>
+      !excluded.has(rice.id) &&
+      listMatchesAliases(rice.best_match_dishes, options.aliases)
   );
   const byBiasAsc = (a: RiceProfileV2, b: RiceProfileV2) => {
+    if (options.coldFirst && a.cold_rice_quality !== b.cold_rice_quality) {
+      return b.cold_rice_quality - a.cold_rice_quality;
+    }
     const da = pairFitScore(a, options.bias);
     const db = pairFitScore(b, options.bias);
     if (da !== db) return da - db;
     return a.id.localeCompare(b.id);
   };
-  let top = [...matched].sort(byBiasAsc).slice(0, topN);
+  let top = [...matched].sort(byBiasAsc);
+  if (options.pinTopIds?.length) {
+    const pins = options.pinTopIds
+      .map((id) => top.find((rice) => rice.id === id))
+      .filter((rice): rice is RiceProfileV2 => Boolean(rice));
+    const pinIds = new Set(pins.map((rice) => rice.id));
+    top = [...pins, ...top.filter((rice) => !pinIds.has(rice.id))];
+  }
+  top = top.slice(0, topN);
 
   if (options.allowBiasFillTop && top.length < topN) {
     const taken = new Set(top.map((rice) => rice.id));
@@ -126,7 +146,15 @@ export function rankPairingCandidates(
   }
 
   const opposites = profiles
-    .filter((rice) => !topIds.has(rice.id))
+    .filter(
+      (rice) =>
+        !topIds.has(rice.id) &&
+        // On cold-served pages (bias carries a cold target), a brand the
+        // site itself scores as strong when cold can never be the
+        // "does not suit" pick — taste distance alone once listed the
+        // classic cold-rice brands (ミルキークイーン等) as unsuited.
+        (options.bias.coldRice == null || rice.cold_rice_quality < 4)
+    )
     .sort((a, b) => {
       const da = pairFitScore(a, options.bias);
       const db = pairFitScore(b, options.bias);

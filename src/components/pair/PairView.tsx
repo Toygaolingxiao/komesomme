@@ -126,7 +126,7 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
       </aside>
 
       <div className="mx-auto mt-12 w-full max-w-[72rem]">
-        <ComparisonTable rows={rows} title="今夜の候補" />
+        <ComparisonTable rows={rows} title={page.candidateTitle ?? "今夜の候補"} />
       </div>
 
       <section className={`${READING_COLUMN} mt-12`} aria-labelledby="pair-avoid-heading">

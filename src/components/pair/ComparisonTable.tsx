@@ -78,7 +78,7 @@ export function ComparisonTable({
                 scope="col"
                 className="px-2 py-3 text-[11px] font-medium tracking-[0.12em] text-[var(--km-muted)]"
               >
-                向いている人
+                向いている料理・場面
               </th>
               <th
                 scope="col"

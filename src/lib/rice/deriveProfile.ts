@@ -26,12 +26,20 @@ function pick(rules: Rule[], fallback: string[], max = 3): string[] {
   return Array.from(new Set(values)).slice(0, max);
 }
 
+/** Brown-rice-first brands do not get white-rice dish suggestions. */
+function isBrownRiceFirst(r: RiceSource): boolean {
+  return (
+    r.best_match_dishes.some((dish) => dish.includes("玄米")) ||
+    /玄米向き|玄米として/.test(`${r.description}${r.short_}`)
+  );
+}
+
 function deriveSpring(r: RiceSource): string[] {
   return pick(
     [
       [r.clarity >= 4, "山菜の天ぷら"],
       [r.aroma >= 4, "桜えびの炊き込みご飯"],
-      [r.hardness >= 4, "ちらし寿司"],
+      [r.hardness >= 4 && r.stickiness >= 2 && !isBrownRiceFirst(r), "ちらし寿司"],
       [r.sweetness >= 4, "新玉ねぎの味噌汁"],
       [r.stickiness >= 4, "菜の花のおひたし"],
       [r.clarity >= 3, "鯛の刺身"],
@@ -77,6 +85,8 @@ function deriveWinter(r: RiceSource): string[] {
       [r.clarity >= 4, "湯豆腐"],
       [r.umami >= 4, "牡蠣ごはん"],
       [r.stickiness >= 4, "おでん"],
+      [r.sweetness >= 4, "金時豆の煮物"],
+      [r.clarity >= 3, "白菜と豚肉の重ね煮"],
     ],
     ["冬野菜の煮物"]
   );
@@ -95,18 +105,38 @@ function deriveBeer(r: RiceSource): string[] {
   );
 }
 
+const HEARTY_DISH = /肉|タレ|丼|カレー|煮物|すき焼き|焼肉|ステーキ|とんかつ|唐揚げ|角煮|ハンバーグ|麻婆/;
+const RAW_DELICATE_DISH = /刺身|白身魚|お造り|海鮮丼/;
+
 function deriveWine(r: RiceSource): string[] {
+  // Tannin-heavy reds fight raw fish and delicate dishes. Offer reds only
+  // when the brand's own dish list is hearty and names no raw fish.
+  const dishes = [...r.best_match_dishes, ...r.good_with];
+  const redsOk =
+    dishes.some((dish) => HEARTY_DISH.test(dish)) &&
+    !dishes.some((dish) => RAW_DELICATE_DISH.test(dish));
   return pick(
     [
       [r.clarity >= 4, "辛口の白ワイン"],
-      [r.richness >= 4, "フルボディの赤ワイン"],
+      [redsOk && r.richness >= 4, "フルボディの赤ワイン"],
       [r.aroma >= 4, "スパークリング"],
-      [r.oil_compatibility >= 4, "ミディアムボディの赤ワイン"],
+      [redsOk && r.oil_compatibility >= 4, "ミディアムボディの赤ワイン"],
       [r.sweetness >= 4, "まろやかな白ワイン"],
-      [r.umami >= 4, "ミディアムボディの赤ワイン"],
+      [redsOk && r.umami >= 4, "ミディアムボディの赤ワイン"],
     ],
     ["軽やかな白ワイン"]
   );
+}
+
+/** Drop seasonal suggestions that contradict the brand's own avoid list. */
+function withoutAvoidConflicts(items: string[], r: RiceSource): string[] {
+  const kept = items.filter((item) => {
+    const core = item.replace(/^冷やし/, "").replace(/^温かい/, "");
+    return !r.avoid_pairings.some(
+      (avoid) => avoid.includes(core) || core.includes(avoid)
+    );
+  });
+  return kept.length > 0 ? kept : items;
 }
 
 function deriveTea(r: RiceSource): string[] {
@@ -174,7 +204,7 @@ function deriveSemanticTags(
     labels.sweetness,
     r.region,
     r.prefecture,
-    r.cold_rice_quality >= 4 ? "冷めても美味しい" : "",
+    r.cold_rice_quality >= 5 ? "冷めても美味しい" : "",
     r.stickiness >= 4 ? "もっちり" : "",
     r.stickiness <= 2 ? "粘り控えめ" : "",
     r.clarity >= 4 ? "淡麗" : "",
@@ -242,10 +272,10 @@ export function deriveRiceProfile(source: RiceSource): RiceProfileV2 {
     good_with: source.good_with,
     avoid_pairings: source.avoid_pairings,
 
-    spring_pairings: deriveSpring(source),
-    summer_pairings: deriveSummer(source),
-    autumn_pairings: deriveAutumn(source),
-    winter_pairings: deriveWinter(source),
+    spring_pairings: withoutAvoidConflicts(deriveSpring(source), source),
+    summer_pairings: withoutAvoidConflicts(deriveSummer(source), source),
+    autumn_pairings: withoutAvoidConflicts(deriveAutumn(source), source),
+    winter_pairings: withoutAvoidConflicts(deriveWinter(source), source),
 
     sake_pairings: source.sake_pairings,
     beer_pairings: deriveBeer(source),

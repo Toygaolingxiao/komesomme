@@ -88,6 +88,6 @@ export function dossierExtraTags(rice: {
   cold_rice_quality: number;
 }): string[] {
   const tags: string[] = [];
-  if (rice.cold_rice_quality >= 4) tags.push("冷めても美味しい");
+  if (rice.cold_rice_quality >= 5) tags.push("冷めても美味しい");
   return tags;
 }
