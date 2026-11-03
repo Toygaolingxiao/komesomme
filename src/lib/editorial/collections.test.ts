@@ -91,7 +91,9 @@ describe("editorial collections", () => {
     expect(collectionPublishedIso(nabe?.updatedLabel ?? "")).toBe("2026-10-25T18:53:00+09:00");
     expect(nabe?.months).toEqual([11, 12, 1, 2]);
     expect(nabe?.riceIds).toContain("nijinokirameki");
-    expect(nabe?.riceNotes?.nijinokirameki).toBe("汁気のある料理でも形が崩れにくいお米です。");
+    expect(nabe?.riceNotes?.nijinokirameki).toBe(
+      "大粒で粒の輪郭がはっきりした新しい品種。鍋の具をのせても、ご飯の存在感が負けません。",
+    );
     expect(nabe?.body.join("")).toBe(
       "鍋のあとの雑炊や、取り分けた具をごはんにのせる日。汁を吸ってもべちゃっとしにくい、粒のしっかりした銘柄を中心に選びました。甘みの強い銘柄とすっきりした銘柄を両方置いているので、寄せ鍋やキムチ鍋など、その日の味の濃さで選んでください。"
     );
