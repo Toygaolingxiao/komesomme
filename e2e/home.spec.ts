@@ -69,9 +69,19 @@ test.describe("TS-HOME Desktop map & rail", () => {
       .filter({ visible: true })
       .first();
     await expect(neighbours).toBeVisible();
-    const neighbourBox = await neighbours.boundingBox();
-    const shopBox = await shop.boundingBox();
-    expect(neighbourBox && shopBox && neighbourBox.y < shopBox.y).toBeTruthy();
+    // Layout is still settling while fonts and async strips land, so a
+    // one-shot boundingBox comparison flips under load. Poll the geometry
+    // until it holds instead of measuring exactly once.
+    await expect
+      .poll(
+        async () => {
+          const neighbourBox = await neighbours.boundingBox();
+          const shopBox = await shop.boundingBox();
+          return Boolean(neighbourBox && shopBox && neighbourBox.y < shopBox.y);
+        },
+        { timeout: 15_000 },
+      )
+      .toBe(true);
 
     await shop.getByRole("button", { name: /お店で探す/ }).click();
     await expect(shop).toHaveAttribute("data-shop-expanded", "true");
@@ -93,12 +103,14 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     const map = page.locator("[data-taste-map=desktop]");
     await map.locator("[aria-current=true]").click();
-    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
     await page.locator("#km-sweetness").fill("1");
-    await page.waitForTimeout(300);
+    await expect(page.locator("#km-sweetness")).toHaveValue("1");
     await page.locator("#km-sweetness").fill("5");
-    await page.waitForTimeout(300);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
+    // No fixed sleeps: these assertions auto-retry, so they observe the
+    // release whenever the UI settles instead of racing a 300 ms timer
+    // (the old version timed out intermittently under CI load).
+    await expect(page.getByRole("dialog")).toHaveCount(0, { timeout: 15_000 });
     await expect(map.locator("[aria-current=true]")).toHaveCount(1);
   });
 
