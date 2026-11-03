@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { DownloadSimple, LinkSimple, QrCode, ShareNetwork } from "@phosphor-icons/react";
 import { track } from "@/lib/analytics";
 import {
@@ -34,6 +35,7 @@ export function ShareCardActions({ rice, compact = false }: Props) {
   const [note, setNote] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFailed, setPreviewFailed] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const blobCache = useRef<{ noQr: Blob | null; withQr: Blob | null }>({
     noQr: null,
     withQr: null,
@@ -58,11 +60,12 @@ export function ShareCardActions({ rice, compact = false }: Props) {
     [cardPath, cardPathQr]
   );
 
-  // Prefetch the Xiaohongshu-safe (no-QR) card while the panel is open and
-  // show it as a preview as soon as it exists, so the reader sees the card
-  // before deciding to share. The QR variant follows on an idle timer:
-  // first generation is slow (~20s of font/image work server-side), so
-  // neither variant should start at tap time.
+  // Prefetch both card variants while the panel is open (no-QR first, the
+  // QR variant on an idle timer) so that opening the share preview is
+  // instant: first generation is slow (~20s of font/image work
+  // server-side), so neither variant should start at tap time. The
+  // preview itself is only shown in the dialog behind the share button —
+  // the page stays clean until the reader actually wants to share.
   useEffect(() => {
     if (!enabled) return;
     blobCache.current = { noQr: null, withQr: null };
@@ -93,6 +96,16 @@ export function ShareCardActions({ rice, compact = false }: Props) {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [enabled, fetchCardBlob]);
+
+  // Close the preview dialog with Escape.
+  useEffect(() => {
+    if (!dialogOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDialogOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dialogOpen]);
 
   async function onShare() {
     setBusy("share");
@@ -194,40 +207,15 @@ export function ShareCardActions({ rice, compact = false }: Props) {
 
   return (
     <div className={compact ? "mt-4" : "mt-5"}>
-      {previewUrl ? (
-        <figure className="mb-3">
-          {/* The generated card itself, from the prefetched blob. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={previewUrl}
-            alt={`${rice.name}のシェアカード`}
-            className={`${compact ? "h-40" : "h-48"} w-auto rounded-xl border border-[var(--km-border)] shadow-sm`}
-          />
-          <figcaption className="mt-1.5 text-[11px] text-[var(--km-muted)]">
-            カードのプレビュー（この画像が共有・保存されます）
-          </figcaption>
-        </figure>
-      ) : previewFailed ? null : (
-        <div
-          className={`mb-3 flex ${compact ? "h-40" : "h-48"} aspect-[3/4] w-auto items-center justify-center rounded-xl border border-dashed border-[var(--km-border)] bg-[var(--km-brown)]/[0.03] px-3 text-center`}
-          role="status"
-        >
-          <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
-            カードを作成しています…
-            <br />
-            初回は少し時間がかかります
-          </p>
-        </div>
-      )}
       <div className={`grid grid-cols-2 gap-2 sm:flex sm:flex-wrap ${FOCUS}`}>
         <button
           type="button"
           className={btn}
           disabled={busy !== null}
-          onClick={() => void onShare()}
+          onClick={() => setDialogOpen(true)}
         >
           <ShareNetwork size={15} weight={ICON_WEIGHT} />
-          {busy === "share" ? "作成中…" : "シェア"}
+          シェア
         </button>
         <button
           type="button"
@@ -266,6 +254,118 @@ export function ShareCardActions({ rice, compact = false }: Props) {
           {note}
         </p>
       ) : null}
+      {dialogOpen
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 sm:items-center"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setDialogOpen(false);
+              }}
+            >
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="シェアカードのプレビュー"
+                className="w-full max-w-xs rounded-2xl bg-[var(--km-surface)] p-4 shadow-xl"
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-[13px] font-semibold text-[var(--km-ink)]">
+                    シェアカード
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setDialogOpen(false)}
+                    className="rounded-lg px-2 py-1 text-[12px] text-[var(--km-muted)] transition hover:bg-[var(--km-brown)]/[0.07]"
+                  >
+                    閉じる
+                  </button>
+                </div>
+                {previewUrl ? (
+                  <>
+                    {/* The generated card itself, from the prefetched blob. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={previewUrl}
+                      alt={`${rice.name}のシェアカード`}
+                      className="mx-auto max-h-[44vh] w-auto rounded-xl border border-[var(--km-border)] shadow-sm"
+                    />
+                    <p className="mt-2 text-center text-[11px] text-[var(--km-muted)]">
+                      この画像が共有・保存されます
+                    </p>
+                  </>
+                ) : (
+                  <div
+                    className="flex h-56 items-center justify-center rounded-xl border border-dashed border-[var(--km-border)] bg-[var(--km-brown)]/[0.03] px-3 text-center"
+                    role="status"
+                  >
+                    <p className="text-[11px] leading-relaxed text-[var(--km-muted)]">
+                      {previewFailed ? (
+                        "プレビューは表示できませんが、そのまま共有できます"
+                      ) : (
+                        <>
+                          カードを作成しています…
+                          <br />
+                          初回は少し時間がかかります
+                        </>
+                      )}
+                    </p>
+                  </div>
+                )}
+                <div className="mt-3 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    className={`${btn} w-full`}
+                    disabled={busy !== null}
+                    onClick={() => {
+                      setDialogOpen(false);
+                      void onShare();
+                    }}
+                  >
+                    <ShareNetwork size={15} weight={ICON_WEIGHT} />
+                    {busy === "share" ? "作成中…" : "このカードを共有する"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`${btn} w-full`}
+                    disabled={busy !== null}
+                    onClick={() => void onSave(false)}
+                  >
+                    <DownloadSimple size={15} weight={ICON_WEIGHT} />
+                    {busy === "save" ? "作成中…" : "カードを保存"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`${btn} w-full`}
+                    disabled={busy !== null}
+                    onClick={() => void onSave(true)}
+                    title="Xや印刷用です"
+                  >
+                    <QrCode size={15} weight={ICON_WEIGHT} />
+                    {busy === "save_qr" ? "作成中…" : "QR付きで保存"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`${btn} w-full`}
+                    disabled={busy !== null}
+                    onClick={() => void onCopyLink()}
+                  >
+                    <LinkSimple size={15} weight={ICON_WEIGHT} />
+                    {busy === "link" ? "…" : "リンクをコピー"}
+                  </button>
+                </div>
+                {note ? (
+                  <p
+                    className="mt-2 text-[11px] text-[var(--km-brown)]"
+                    role="status"
+                  >
+                    {note}
+                  </p>
+                ) : null}
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
