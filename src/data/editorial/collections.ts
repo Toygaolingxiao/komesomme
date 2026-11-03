@@ -163,7 +163,7 @@ export const EDITORIAL_COLLECTIONS: EditorialCollection[] = [
       nanatsuboshi: "同じく北海道の特A。釣り合いのとれた味で、ゆめぴりかとの食べ比べに向きます。",
       "seiten-no-hekireki": "津軽産が令和7年産で特Aに戻りました。すっきりした後味で、焼き魚の日に。",
       sakihokore: "秋田の新しい銘柄で、令和5〜7年産と特Aが続いています。",
-      tsuyahime: "村山・置賜産が3年続けて特A。炊き上がりの白さとツヤを新米で。",
+      tsuyahime: "村山・置賜産が3年続けて特A。炊き上がりの白さとつやを新米で。",
       yukiwakamaru: "山形のもう一つの銘柄。庄内・置賜産が令和7年産で特A、粒感が好きな方に。",
       "koshihikari-uonuma": "魚沼産は令和7年産も特A。食べ比べの基準になる一膳です。",
       tenkomori: "令和5・6年産のAから、令和7年産で特Aに上がった富山の銘柄です。",

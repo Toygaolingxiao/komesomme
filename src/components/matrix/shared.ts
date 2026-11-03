@@ -112,7 +112,7 @@ export function furusatoUrl(keyword: string): string {
 
 export function shortTasteTags(rice: RiceProfileV2): string[] {
   const tags = [rice.texture_label, rice.sweetness_label];
-  if (rice.cold_rice_quality >= 4) tags.push("冷めても美味しい");
+  if (rice.cold_rice_quality >= 5) tags.push("冷めても美味しい");
   return Array.from(new Set(tags.filter(Boolean))).slice(0, 3);
 }
 
@@ -349,18 +349,45 @@ export function contourAxes(rice: RiceProfileV2): ContourAxis[] {
   ];
 }
 
+const CONTOUR_NOUN: Record<string, string> = {
+  甘み: "甘み",
+  粒感: "粒感",
+  粘り: "粘り",
+  旨み: "旨み",
+  香り: "香り",
+  冷めても: "冷めたときの味わい",
+};
+
 export function contourSummary(rice: RiceProfileV2): string {
   const ranked = [...contourAxes(rice)].sort((a, b) => b.value - a.value);
   const top = ranked[0];
   const second = ranked[1];
   if (!top) return "味わいの輪郭は、編集の目安です。";
-  if (top.label === "冷めても" || second?.label === "冷めても") {
-    return `${top.label}と${second?.label ?? "粒感"}が先に来ます。弁当や煮物にも合います。`;
-  }
-  if (top.label === "旨み" || rice.sauce_absorption >= 4) {
-    return `${top.label}と${second?.label ?? "甘み"}が立ちます。煮物やタレ料理に寄せやすいです。`;
-  }
-  return `${top.label}と${second?.label ?? "粒感"}がはっきりしていて、毎日の食卓に合わせやすいです。`;
+  const a = CONTOUR_NOUN[top.label] ?? top.label;
+  const b = CONTOUR_NOUN[second?.label ?? "粒感"] ?? "粒感";
+  // Rotate the opening pattern by brand so neighbouring pages do not
+  // read identically; the axis name 冷めても is never used as a noun.
+  const variant =
+    [...rice.id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 3;
+  const opening =
+    variant === 0
+      ? `${a}と${b}が前に出ます。`
+      : variant === 1
+        ? `${a}が中心で、${b}が続きます。`
+        : `${a}と${b}の組み合わせが持ち味です。`;
+  const use =
+    rice.cold_rice_quality >= 5
+      ? "弁当やおにぎりにも向きます。"
+      : rice.sauce_absorption >= 4
+        ? "煮物やタレの料理に寄せやすいです。"
+        : rice.stickiness >= 4.5
+          ? "握りや丼でも形が保てます。"
+          : rice.hardness >= 4.5
+            ? "丼ものやカレーでも粒が残ります。"
+            : rice.sweetness >= 4.5
+              ? "白ごはんそのものを楽しむ向きです。"
+              : "毎日の食卓に合わせやすいです。";
+  return `${opening}${use}`;
 }
 
 /**

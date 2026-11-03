@@ -210,7 +210,7 @@ export const chugokuShikoku: RiceSource[] = [
     avoid_pairings: ["重たいクリーム煮"],
     sake_pairings: ["淡麗辛口", "純米酒"],
     whisky_pairings: ["ジャパニーズウイスキー", "ハイボール"],
-    short_: "甘みとうまみが立つ高知の銘柄。",
+    short_: "甘みと旨みが立つ高知の銘柄。",
     description:
       "高知が育てた品種で、香りと甘みが穏やかに立ちます。鰹のたたきや皿鉢料理のように、香りの強い魚料理と合わせても米の側が埋もれません。柚子や生姜の香りとも釣り合います。",
     sommelier_note:
