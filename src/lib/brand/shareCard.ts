@@ -82,7 +82,7 @@ export function shareCardPath(
   opts?: { /** Include styled QR (X / offline). Default omits QR for Xiaohongshu. */ qr?: boolean }
 ): string {
   const base = `/api/rice/share-card/${encodeURIComponent(id)}`;
-  return opts?.qr ? `${base}?qr=1` : base;
+  return opts?.qr ? `${base}/qr` : base;
 }
 
 export function libraryPath(id: string): string {

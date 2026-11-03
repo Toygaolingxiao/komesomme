@@ -8,7 +8,16 @@ export type OgFont = {
   weight: 500 | 700;
 };
 
-const FONT_DIR = path.join(process.cwd(), "public", "share", "fonts");
+/**
+ * Subset faces (see scripts/subset-og-fonts.py). The full Noto TTFs are
+ * ~6.5 MB together and loading them dominated image generation time; the
+ * subsets carry only the characters the OG/share-card surfaces can render
+ * (~1.3 MB together). The full faces remain next to them as the subset
+ * script's source. fonts.coverage.test.ts guards the subsets against
+ * catalogue growth: if a new brand name uses a character the subsets do
+ * not have, CI fails and the fix is to re-run the subset script.
+ */
+const FONT_DIR = path.join(process.cwd(), "public", "share", "fonts", "subset");
 
 let cached: Promise<OgFont[]> | null = null;
 
