@@ -148,7 +148,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["辛口の純米"],
     whisky_pairings: ["ハイボール", "ジャパニーズウイスキー"],
-    short_: "大粒で噛み応えのある、栃木の上級銘柄。",
+    short_: "大粒で噛み応えのある、栃木を代表する銘柄。",
     description:
       "粒が大きく、しっかりした噛み応えを持つ栃木の品種。旨みに厚みがあり、噛むごとに味わいが出てきます。餃子の定食や丼もののように、油やタレを伴う献立と釣り合います。",
     sommelier_note:
@@ -210,7 +210,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["粘りを楽しむおこわ風の食べ方"],
     sake_pairings: ["辛口の本醸造"],
     whisky_pairings: ["ハイボール"],
-    short_: "あっさりした業務用向きの淡麗。",
+    short_: "あっさりした業務用向きの淡麗な味わい。",
     description:
       "粘りが控えめであっさりした関東の品種。汁気を含んでも粒が崩れにくく、外食の現場でも扱われてきました。カレーや炒飯のように、粒を残したい料理に向きます。",
     sommelier_note:
@@ -309,7 +309,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     sommelier_note:
       "お弁当に詰めた翌日でも口当たりが残ります。",
     pairing_reason:
-      "粘りとやわらかさが、和洋どちらのおかずにも合わせやすい。",
+      "粘りとやわらかさが、和洋どちらのおかずにも合わせやすいです。",
     rakuten_search_keyword: "彩のきずな 白米 5kg 埼玉県産",
   },
   {
@@ -489,7 +489,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "ふっくらまとまる、コンテスト受賞歴もある実力派。",
+    short_: "ふっくらまとまる、神奈川の実力派。",
     description:
       "コシヒカリの系統から生まれた品種で、香りと甘みの均衡がよく整っています。粒のツヤが美しく、上品な後味が残ります。相模湾の魚を使った和食と静かに重なります。",
     sommelier_note:
@@ -644,7 +644,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["粘りを楽しむおこわ風の食べ方"],
     sake_pairings: ["淡麗辛口"],
     whisky_pairings: ["ハイボール"],
-    short_: "大粒であっさり。新潟の早生第3位。",
+    short_: "大粒であっさり。新潟で作付け3位の早生。",
     description:
       "ゆきの精とどまんなかの交配から生まれた新潟の早生。県内作付けはコシヒカリ、こしいぶきに次ぐ規模です。粒が大きめで粘りが少なく、あっさりした甘みと歯ごたえがあります。炒飯や丼、カレーのように粒を立てたい料理に向きます。",
     sommelier_note:
@@ -675,7 +675,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "淡麗辛口"],
     whisky_pairings: ["ジャパニーズウイスキー"],
-    short_: "甘みと粘りの均衡がとれた、全国の基準となる銘柄。",
+    short_: "甘みと粘りの均衡がとれた、味のものさしにされることが多い銘柄。",
     description:
       "いもち病への抵抗性を備えた新潟コシヒカリの系統で、現在の県産コシヒカリの主流です。香りと甘み、粘りの均衡は従来の食味を受け継いでいます。和食の食卓に静かに寄り添います。",
     sommelier_note:

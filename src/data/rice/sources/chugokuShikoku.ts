@@ -86,7 +86,7 @@ export const chugokuShikoku: RiceSource[] = [
     avoid_pairings: ["やわらかく炊いた粥"],
     sake_pairings: ["辛口の純米", "淡麗な吟醸"],
     whisky_pairings: ["ハイボール", "スモーキーウイスキー"],
-    short_: "しっかりした粒感と豊かな旨みの山口米です。",
+    short_: "しっかりした粒感と豊かな旨みの山口米。",
     description:
       "農研機構が育成し、山口県が奨励品種とした高温に強い中生。ヒノヒカリ並みの食味を保ちつつ、粒が立ち、粘りは控えめで後味が軽い。冷めても形が残るため、弁当や丼ものの土台に向きます。",
     sommelier_note:
@@ -117,7 +117,7 @@ export const chugokuShikoku: RiceSource[] = [
     avoid_pairings: ["濃厚なデミグラスソース"],
     sake_pairings: ["純米酒"],
     whisky_pairings: ["ハイボール"],
-    short_: "広島の銘柄。日常のおかずを選ばない。",
+    short_: "広島の銘柄。穏やかな甘みで、日常のおかずを選ばない。",
     description:
       "広島の食卓を支えてきた品種。甘みと粘りが穏やかに調和し、味わいの起伏が小さい性格です。和食のおかずと自然に釣り合い、飽きのこない一膳になります。",
     sommelier_note:

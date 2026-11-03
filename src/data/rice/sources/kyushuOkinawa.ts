@@ -174,7 +174,7 @@ export const kyushuOkinawa: RiceSource[] = [
     cold_rice_quality: 4,
     sauce_absorption: 5,
     oil_compatibility: 4,
-    best_match_dishes: ["長崎ちゃんぽん", "皿うどん", "煮物"],
+    best_match_dishes: ["ちゃんぽん・皿うどんの残り汁かけご飯", "あんかけ料理", "煮物"],
     good_with: ["とろみのあるあん", "豚肉", "野菜"],
     avoid_pairings: ["酸の強い酢飯"],
     sake_pairings: ["純米酒", "ぬる燗"],
