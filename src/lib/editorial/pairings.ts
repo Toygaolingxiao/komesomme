@@ -16,6 +16,7 @@ export function resolvePairing(page: PairingPage): ResolvedPairing {
     avoidAliases: page.avoidAliases,
     bias: page.bias,
     allowAxisOppositeAvoid: page.allowAxisOppositeAvoid,
+    avoidBias: page.avoidBias,
     allowBiasFillTop: page.allowBiasFillTop,
     coldFirst: page.coldFirst,
     pinTopIds: page.pinTopIds,
@@ -39,7 +40,7 @@ export function resolvePairingBySlug(slug: string): ResolvedPairing | null {
 
 export function allResolvedPairings(): ResolvedPairing[] {
   return PAIRING_PAGES.map(resolvePairing).filter(
-    (row) => row.top.length > 0 && row.avoid.length > 0
+    (row) => row.top.length > 0 && row.avoid.length > 0,
   );
 }
 
@@ -50,7 +51,9 @@ export type PairingConsultation = {
 };
 
 /** Longest dish alias contained in the query. Ties keep the first page in PAIRING_PAGES. */
-export function pairingForConsultation(query: string): PairingConsultation | null {
+export function pairingForConsultation(
+  query: string,
+): PairingConsultation | null {
   const text = query.normalize("NFKC").trim();
   if (!text) return null;
 

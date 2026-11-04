@@ -174,7 +174,7 @@ export const tokaiHokuriku: RiceSource[] = [
     cold_rice_quality: 4,
     sauce_absorption: 4,
     oil_compatibility: 5,
-    best_match_dishes: ["とんかつ", "ステーキ", "炊き込みご飯"],
+    best_match_dishes: ["とんかつ", "ステーキ", "卵かけご飯"],
     good_with: ["揚げ物", "和牛", "きのこ"],
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["純米大吟醸", "旨口の純米"],

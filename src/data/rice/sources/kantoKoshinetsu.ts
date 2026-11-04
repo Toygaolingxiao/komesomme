@@ -515,7 +515,7 @@ export const kantoKoshinetsu: RiceSource[] = [
     cold_rice_quality: 4,
     sauce_absorption: 4,
     oil_compatibility: 4,
-    best_match_dishes: ["すき焼き", "ハンバーグ", "洋食全般"],
+    best_match_dishes: ["すき焼き", "ハンバーグ", "唐揚げ"],
     good_with: ["デミグラス", "和牛", "バター"],
     avoid_pairings: ["淡い塩味の吸い物だけの献立"],
     sake_pairings: ["旨口の純米", "純米大吟醸"],
