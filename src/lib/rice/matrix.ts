@@ -39,19 +39,18 @@ function stableNoise(id: string, axis: "x" | "y") {
  * its decimal taste position. Tuned with the owner (2026-11-04): the
  * original unbounded spread drifted up to 1.03 and put taste neighbours
  * 2.5 units apart; a 0.3 cap kept positions honest but collapsed the map
- * into clumps. 0.75 from a data-derived decimal position keeps ~90% of
- * the original airiness (mean neighbour distance 0.20 vs 0.22) while the
- * worst drift and neighbour distortion stay well below the original.
+ * into clumps.
  */
 const MAX_DRIFT = 0.75;
 
-/** Widest radius of the per-cell sunflower spiral, in axis units. */
-const SPIRAL_RADIUS_MAX = 0.55;
-
-/** Minimum axis-unit gap after jitter, so integer-scored brands do not pile up. */
-const SEPARATION = 0.15;
-const SEPARATION_ITERS = 90;
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+/**
+ * Reach of the soft repulsion in the layout relaxation below. Inside this
+ * range points push each other gently (linear falloff), so a crowded area
+ * expands smoothly into the space around it instead of stopping at a
+ * fixed gap.
+ */
+const SPREAD_RANGE = 0.34;
+const SPREAD_ITERS = 220;
 
 /**
  * Spreads brands that share the same hardness / sweetness pair.
@@ -108,16 +107,22 @@ export function calculateMatrixDisplayPoint(rice: MapProfile): MapDisplayPoint {
 }
 
 /**
- * Spreads brands that share a hardness / sweetness cell so the map stays
- * readable, starting from their decimal taste positions.
+ * Spreads the brands so the map stays readable, starting from their
+ * decimal taste positions.
  *
- * Each crowded cell is laid out on a sunflower spiral around the cell's
- * decimal centroid, with members ordered by their decimal direction from
- * the centroid — taste neighbours stay neighbours around the spiral. The
- * spiral radius is capped (SPIRAL_RADIUS_MAX), then damped repulsion
- * polishes the gaps, with every point held within MAX_DRIFT of its own
- * decimal position. Ranking uses these same coordinates, so No.1 stays
- * the nearest visible dot.
+ * One global relaxation over the whole map: a soft, long-reach repulsion
+ * (SPREAD_RANGE, linear falloff) lets crowded areas expand smoothly into
+ * the space around them, while a gentle spring holds every point near its
+ * decimal position and MAX_DRIFT caps the total move. An earlier per-cell
+ * sunflower-spiral layout was replaced after the owner spotted its
+ * geometric artifact — the dense centre read as a beaded ring (and a
+ * jittered variant settled into a honeycomb). The relaxation has no
+ * per-cell structure, so density simply follows the data: measured on the
+ * catalogue it keeps the original map's airiness (mean neighbour distance
+ * 0.22) with a 0.137 minimum gap, worst drift 0.78 from a brand's integer
+ * cell, and taste neighbours (tsubuzoroi × yumeobako) 1.07 apart against
+ * a true axis distance of 1.01. Ranking uses these same coordinates, so
+ * No.1 stays the nearest visible dot.
  */
 function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
   const xs = points.map((point) => point.display_x);
@@ -136,44 +141,9 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
     }
   };
 
-  const groups = new Map<string, number[]>();
+  for (let iter = 0; iter < SPREAD_ITERS; iter += 1) {
+    const damp = 1 - iter / 300;
 
-  points.forEach((point, index) => {
-    const key = `${Math.round(normalizeTasteValue(point.hardness))}:${Math.round(normalizeTasteValue(point.sweetness))}`;
-    const members = groups.get(key);
-    if (members) members.push(index);
-    else groups.set(key, [index]);
-  });
-
-  for (const [key, indexes] of groups) {
-    if (indexes.length <= 1) continue;
-
-    const cx =
-      indexes.reduce((sum, index) => sum + xs[index], 0) / indexes.length;
-    const cy =
-      indexes.reduce((sum, index) => sum + ys[index], 0) / indexes.length;
-    const rot = (stableHash(key) % 360) * (Math.PI / 180);
-
-    // Order by decimal direction from the centroid: the spiral unfolds in
-    // taste order instead of id order.
-    indexes.sort((a, b) => {
-      const angleA = Math.atan2(baseYs[a] - cy, baseXs[a] - cx);
-      const angleB = Math.atan2(baseYs[b] - cy, baseXs[b] - cx);
-      return angleA - angleB || points[a].id.localeCompare(points[b].id);
-    });
-
-    indexes.forEach((index, i) => {
-      const radius = Math.min(SEPARATION * Math.sqrt(i), SPIRAL_RADIUS_MAX);
-      const angle = rot + i * GOLDEN_ANGLE;
-      xs[index] = clamp(cx + Math.cos(angle) * radius);
-      ys[index] = clamp(cy + Math.sin(angle) * radius);
-      capDrift(index);
-    });
-  }
-
-  const minSq = SEPARATION * SEPARATION;
-
-  for (let iter = 0; iter < SEPARATION_ITERS; iter += 1) {
     for (let i = 0; i < points.length; i += 1) {
       for (let j = i + 1; j < points.length; j += 1) {
         let dx = xs[j] - xs[i];
@@ -189,20 +159,22 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
           distSq = dx * dx + dy * dy;
         }
 
-        if (distSq >= minSq) continue;
-
         const dist = Math.sqrt(distSq);
-        const push = ((SEPARATION - dist) / 2) * 0.6;
+        if (dist >= SPREAD_RANGE) continue;
+
+        const force = (1 - dist / SPREAD_RANGE) * 0.034 * damp;
         const ux = dx / dist;
         const uy = dy / dist;
-        xs[i] -= ux * push;
-        ys[i] -= uy * push;
-        xs[j] += ux * push;
-        ys[j] += uy * push;
+        xs[i] -= ux * force;
+        ys[i] -= uy * force;
+        xs[j] += ux * force;
+        ys[j] += uy * force;
       }
     }
 
     for (let i = 0; i < points.length; i += 1) {
+      xs[i] += (baseXs[i] - xs[i]) * 0.016;
+      ys[i] += (baseYs[i] - ys[i]) * 0.016;
       capDrift(i);
       xs[i] = clamp(xs[i]);
       ys[i] = clamp(ys[i]);

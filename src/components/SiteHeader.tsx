@@ -22,16 +22,44 @@ const NAV = [
  */
 export function SiteHeader({ active }: { active?: SiteNavActive }) {
   return (
-    <header
-      className={`${SITE_COLUMN} flex h-12 shrink-0 items-center justify-between gap-2 sm:gap-3`}
-    >
-      <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
-        <BrandLockup subtitle={GUIDE_ROLE_ANNOTATED} />
-      </Link>
-      <div className="hidden shrink-0 lg:flex">
+    <>
+      <header
+        className={`${SITE_COLUMN} flex h-12 shrink-0 items-center justify-between gap-2 sm:gap-3`}
+      >
+        <Link href="/" className={`min-w-0 flex-1 ${FOCUS}`}>
+          <BrandLockup subtitle={GUIDE_ROLE_ANNOTATED} />
+        </Link>
+        <div className="hidden shrink-0 lg:flex">
+          <nav
+            aria-label="主要ナビ"
+            className="flex items-center justify-end gap-x-3"
+          >
+            {NAV.map((item) => {
+              const isActive = active != null && item.id === active;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`font-serif text-[13px] tracking-wide transition-[color,transform] duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
+                    isActive
+                      ? "font-semibold text-[var(--km-ink)]"
+                      : "text-[var(--km-muted)] hover:text-[var(--km-gold)]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+      {/* Mobile nav: the desktop row above is hidden below lg, which left
+        phones with no section links at all (owner report, 2026-11-04). */}
+      <div className="border-b border-[var(--km-border)] lg:hidden">
         <nav
-          aria-label="主要ナビ"
-          className="flex items-center justify-end gap-x-3"
+          aria-label="主要ナビ（モバイル）"
+          className={`${SITE_COLUMN} flex gap-1 overflow-x-auto py-2`}
         >
           {NAV.map((item) => {
             const isActive = active != null && item.id === active;
@@ -40,10 +68,10 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
                 key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`font-serif text-[13px] tracking-wide transition-[color,transform] duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
+                className={`flex-none rounded-full px-3 py-1.5 font-serif text-[13px] tracking-wide transition-transform duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
                   isActive
-                    ? "font-semibold text-[var(--km-ink)]"
-                    : "text-[var(--km-muted)] hover:text-[var(--km-gold)]"
+                    ? "bg-[var(--km-surface-warm)] font-semibold text-[var(--km-ink)] ring-1 ring-[var(--km-gold)]"
+                    : "text-[var(--km-muted)] ring-1 ring-[var(--km-border)]"
                 }`}
               >
                 {item.label}
@@ -52,6 +80,6 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
           })}
         </nav>
       </div>
-    </header>
+    </>
   );
 }
