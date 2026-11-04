@@ -35,17 +35,33 @@ function FreeMap({
   const pa = byId.get(a.id);
   const pb = byId.get(b.id);
   if (!pa || !pb) return null;
-  const label = (p: { x: number; y: number }, dy: number) => {
+  const label = (p: { x: number; y: number }, role: "a" | "b") => {
     const px = sx(p.x);
+    const py = sy(p.y);
     const fromRight = px > W - 200;
+    // Near the top edge the "above" slot collides with the axis captions, and
+    // near the bottom edge "below" falls off the frame: stack both labels on
+    // the free side instead.
+    const dy =
+      py < 64
+        ? role === "a"
+          ? 27
+          : 47
+        : py > H - 64
+          ? role === "a"
+            ? -30
+            : -12
+          : role === "a"
+            ? -12
+            : 24;
     return {
       x: fromRight ? px - 16 : px + 16,
-      y: sy(p.y) + dy,
+      y: py + dy,
       anchor: fromRight ? ("end" as const) : ("start" as const),
     };
   };
-  const labelA = label(pa, -12);
-  const labelB = label(pb, 24);
+  const labelA = label(pa, "a");
+  const labelB = label(pb, "b");
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
