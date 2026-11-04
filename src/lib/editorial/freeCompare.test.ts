@@ -55,3 +55,18 @@ describe("summarizeComparison", () => {
     expect(summary.bLeads).toEqual(["粒の大きさ"]);
   });
 });
+
+describe("free-compare map coordinates", () => {
+  it("keeps data neighbours as map neighbours (no crowd-spreading)", () => {
+    const points = new Map(dataset.points.map((p) => [p.id, p]));
+    const tsubu = points.get("tsubuzoroi")!;
+    const obako = points.get("yumeobako")!;
+    // sweetness 3 vs 4, hardness both 3: adjacent on the map, never flung apart
+    expect(Math.abs(tsubu.x - obako.x)).toBeLessThan(1.4);
+    expect(Math.abs(tsubu.y - obako.y)).toBeLessThan(0.4);
+    const yume = points.get("yumepirika")!;
+    const milky = points.get("milky-queen")!;
+    expect(Math.abs(yume.x - milky.x)).toBeLessThan(0.4);
+    expect(Math.abs(yume.y - milky.y)).toBeLessThan(0.4);
+  });
+});

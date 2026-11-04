@@ -1,6 +1,6 @@
 import { riceProfiles } from "@/data/rice/catalog";
 import { toMapProfiles } from "@/lib/rice/mapProfile";
-import { toDisplayPoints } from "@/lib/rice/matrix";
+import { calculateMatrixDisplayPoint } from "@/lib/rice/matrix";
 import { regionColor } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";
 
@@ -17,8 +17,11 @@ function sy(v: number): number {
 
 /**
  * Static taste-map excerpt for a comparison page: every brand faint, the two
- * compared brands highlighted at their real display coordinates (the same
- * calculateMatrixDisplayPoint pipeline as the home map).
+ * compared brands highlighted at their raw taste coordinates
+ * (calculateMatrixDisplayPoint WITHOUT the home map's crowd-spreading
+ * separation — here the map is evidence, so neighbours in the data must
+ * stay neighbours on the page). If the two would overlap, they are nudged
+ * apart slightly on x; the page copy discloses that where it applies.
  */
 export function CompareMiniMap({
   a,
@@ -27,11 +30,22 @@ export function CompareMiniMap({
   a: RiceProfileV2;
   b: RiceProfileV2;
 }) {
-  const points = toDisplayPoints(toMapProfiles(riceProfiles));
+  const points = toMapProfiles(riceProfiles).map((profile) =>
+    calculateMatrixDisplayPoint(profile),
+  );
   const byId = new Map(points.map((point) => [point.id, point]));
-  const pa = byId.get(a.id);
-  const pb = byId.get(b.id);
-  if (!pa || !pb) return null;
+  const rawA = byId.get(a.id);
+  const rawB = byId.get(b.id);
+  if (!rawA || !rawB) return null;
+  const pa = { ...rawA };
+  const pb = { ...rawB };
+  if (
+    Math.abs(pa.display_x - pb.display_x) < 0.3 &&
+    Math.abs(pa.display_y - pb.display_y) < 0.3
+  ) {
+    pa.display_x = Math.max(1, pa.display_x - 0.15);
+    pb.display_x = Math.min(5, pb.display_x + 0.15);
+  }
 
   const labelA = {
     x: Math.min(sx(pa.display_x) + 14, W - 120),

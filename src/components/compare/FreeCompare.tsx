@@ -32,9 +32,15 @@ function FreeMap({
   b: FreeBrand;
 }) {
   const byId = new Map(points.map((point) => [point.id, point]));
-  const pa = byId.get(a.id);
-  const pb = byId.get(b.id);
-  if (!pa || !pb) return null;
+  const rawA = byId.get(a.id);
+  const rawB = byId.get(b.id);
+  if (!rawA || !rawB) return null;
+  const pa = { ...rawA };
+  const pb = { ...rawB };
+  if (Math.abs(pa.x - pb.x) < 0.3 && Math.abs(pa.y - pb.y) < 0.3) {
+    pa.x = Math.max(1, pa.x - 0.15);
+    pb.x = Math.min(5, pb.x + 0.15);
+  }
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
@@ -246,7 +252,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
             <FreeMap points={points} a={a} b={b} />
             <p className="rounded-lg border border-[var(--km-border)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
               {summary.coordinateNote}
-              地図の点は、ホームの味わい地図と同じ決め方で置いています。
+              ここでは味の値そのままの位置に置いています（重なる場合は左右に少しずらします）。ホームの味わい地図は、混み合う中心部を読みやすく広げて描くため、同じ銘柄でも少し違う場所に見えることがあります。
             </p>
           </div>
 
