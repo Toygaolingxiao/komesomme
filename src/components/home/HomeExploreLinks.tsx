@@ -23,6 +23,15 @@ export function HomeExploreLinks() {
         ·
       </span>
       <Link
+        href="/compare"
+        className={`font-serif text-[var(--km-ink-soft)] transition-colors duration-150 ease-out hover:text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
+      >
+        銘柄くらべ
+      </Link>
+      <span aria-hidden className="text-[var(--km-border)]">
+        ·
+      </span>
+      <Link
         href="/library"
         className={`font-serif text-[var(--km-ink-soft)] transition-colors duration-150 ease-out hover:text-[var(--km-brown)] active:scale-[0.97] ${FOCUS}`}
       >
