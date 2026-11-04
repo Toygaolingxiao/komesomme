@@ -15,6 +15,7 @@ export type PairingPage = {
   avoidAliases?: string[];
   /** When catalog avoid is empty, allow axis-opposite fallback. */
   allowAxisOppositeAvoid?: boolean;
+  avoidBias?: PairTasteBias;
   /** When dish matches are few, fill Top with nearest bias brands. */
   allowBiasFillTop?: boolean;
   /** Comparison-table heading override (弁当は「お昼の候補」等). */
@@ -49,7 +50,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishLabel: "カレー",
     dishAliases: ["カレー", "カレーライス", "スープカレー"],
     avoidAliases: ["カレー", "カレーライス"],
-    bias: { sweetness: 2.5, hardness: 3.5, stickiness: 2 },
+    bias: { sweetness: 2.5, hardness: 3.5, stickiness: 2, sauceAbsorption: 4 },
     title: "カレーに合う米の選び方｜甘み・粒感と比較表",
     dek: "ルーが主役の日は、甘みと粒の残り方で印象が変わります。当サイトの評価から五銘柄を並べました。",
     lead: [
@@ -58,7 +59,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       "合わない組み合わせも、当サイトの評価で「向かない」から拾っています。ルーの辛さに負けやすい米は、そこから外れます。",
     ],
     sortNote:
-      "候補は当サイトの評価で「合う料理」に「カレー」「カレーライス」「スープカレー」を含む銘柄。並びは甘み2.5・硬さ3.5・粘り2に近い味の位置を優先しています。",
+      "候補は当サイトの評価で「合う料理」に「カレー」「カレーライス」「スープカレー」を含む銘柄。並びは甘み2.5・硬さ3.5・粘り2に近い味の位置を優先し、ルーの絡み（タレの絡み4）も加味しています。",
     faq: [
       {
         q: "なぜ値段ではなく味で選ぶのですか。",
@@ -82,7 +83,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishAliases: ["刺身", "お刺身", "白身魚の刺身"],
     avoidAliases: ["刺身", "お刺身", "白身魚", "白身"],
     topExcludeIds: ["koshihikari-uonuma"],
-    bias: { sweetness: 2.2, hardness: 2.5, stickiness: 2.5 },
+    bias: { sweetness: 2.2, hardness: 2.5, stickiness: 2.5, clarity: 4.5 },
     title: "刺身に合う米の選び方｜甘み・粒感と比較表",
     dek: "魚の脂や塩気を邪魔しない米を、当サイトの評価から拾います。",
     lead: [
@@ -91,7 +92,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       "濃いタレや強い甘み向きの米は、向かない欄に寄せました。同じ白飯でも、献立で役割が分かれます。",
     ],
     sortNote:
-      "候補は当サイトの評価で「合う料理」に刺身系の語を含む銘柄。並びは甘み2.2・硬さ2.5・粘り2.5に近い味の位置を優先しています。甘みの強い魚沼産コシヒカリは、魚の味を覆いやすいため候補から外しています。",
+      "候補は当サイトの評価で「合う料理」に刺身系の語を含む銘柄。並びは甘み2.2・硬さ2.5・粘り2.5に近い味の位置を優先し、後味のすっきり感（4.5）も加味しています。甘みの強い魚沼産コシヒカリは、魚の味を覆いやすいため候補から外しています。",
     faq: [
       {
         q: "なぜ味の位置で選ぶのですか。",
@@ -117,6 +118,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     allowAxisOppositeAvoid: true,
     candidateTitle: "お昼の候補",
     coldFirst: true,
+    avoidBias: { coldRice: 1.5, hardness: 4.5, stickiness: 2 },
     bias: { sweetness: 2.6, hardness: 3.6, stickiness: 2.4, coldRice: 5 },
     title: "お弁当に合う米の選び方｜冷めても粒が残る比較表",
     dek: "朝に炊いて昼に蓋を開ける日は、冷めたあとの粒感が大事です。",
@@ -128,7 +130,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     sortNote:
       "候補は当サイトの評価で「合う料理」に「弁当」「お弁当」を含む銘柄。並びは冷めたときの指標が高い順を最優先にし、同じ指標の中では甘み2.6・硬さ3.6・粘り2.4に近い味の位置で整えています。",
     axisAvoidNote:
-      "当サイトの評価に「弁当には向かない」と明記された銘柄が少ないため、ここでは冷めた弁当向きの味の位置から遠い銘柄を挙げています。",
+      "当サイトの評価に「弁当には向かない」と明記された銘柄が少ないため、ここでは冷めると締まって硬くなりやすい味の位置（硬さが強く、冷めてからの持ちが弱いあたり）に近い銘柄を挙げています。",
     faq: [
       {
         q: "冷めてもおいしい、とは何を見ていますか。",
@@ -153,6 +155,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishAliases: ["鍋", "すき焼き", "きりたんぽ", "もつ鍋", "水炊き"],
     avoidAliases: ["鍋", "すき焼き"],
     allowAxisOppositeAvoid: true,
+    avoidBias: { stickiness: 5, sweetness: 4.5, hardness: 1.5 },
     bias: { sweetness: 3.2, hardness: 3.6, stickiness: 2.6 },
     title: "鍋に合う米の選び方｜汁がかかっても粒が残る比較表",
     dek: "寄せ鍋やすき焼きのあと、ご飯に汁がかかることがあります。溶ける米より、粒が残るあたりを見ます。",
@@ -164,7 +167,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     sortNote:
       "候補は当サイトの評価で「合う料理」に鍋・すき焼き・きりたんぽ等を含む銘柄。並びは甘み3.2・硬さ3.6・粘り2.6に近い味の位置を優先しています。",
     axisAvoidNote:
-      "当サイトの評価に「鍋には向かない」と書いてある銘柄が少ないため、汁気の多い献立向きの味の位置から遠い銘柄を挙げています。",
+      "当サイトの評価に「鍋には向かない」と書いてある銘柄が少ないため、締めの雑炊で粘りが出すぎて溶け崩れやすい味の位置（粘り・甘みが強く、やわらかいあたり）に近い銘柄を挙げています。",
     faq: [
       {
         q: "鍋の締めの雑炊向きと、添える白飯は同じですか。",
@@ -189,7 +192,14 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishAliases: ["寿司", "お寿司", "手巻き寿司", "ちらし寿司", "酢飯"],
     avoidAliases: ["寿司", "酢飯", "シャリ"],
     pinTopIds: ["sasanishiki"],
-    bias: { sweetness: 2.4, hardness: 3.2, stickiness: 2.2 },
+    bias: {
+      sweetness: 2.4,
+      hardness: 3.8,
+      stickiness: 1.8,
+      clarity: 4.8,
+      sauceAbsorption: 4.5,
+      coldRice: 4,
+    },
     title: "寿司に合う米の選び方｜酢飯向きの甘み・粒感と比較表",
     dek: "酢との馴染みと、口の中でほどける粒。当サイトの評価の寿司向きから五銘柄を並べます。",
     lead: [
@@ -198,7 +208,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       "当サイトの評価で、酸の強い酢飯には向かないとした銘柄は、向かない欄へ寄せました。家で握る日の目安にしてください。",
     ],
     sortNote:
-      "候補は当サイトの評価で「合う料理」に寿司・酢飯系の語を含む銘柄。並びは甘み2.4・硬さ3.2・粘り2.2に近い味の位置を優先しています。酢飯の定番とされるササニシキは、編集の判断で先頭に置いています。",
+      "候補は当サイトの評価で「合う料理」に寿司・酢飯系の語を含む銘柄。並びは酢飯の条件——硬さ3.8・粘り1.8の粒立ち、すっきり感4.8、酢の絡み（タレの絡み4.5）、冷めてからの持ち4——に近い味の位置を優先しています。酢飯の定番とされるササニシキは、編集の判断で先頭に置いています。",
     faq: [
       {
         q: "業務用の酢飯向け銘柄と、家の手巻きは同じですか。",
@@ -221,7 +231,12 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishLabel: "丼もの",
     dishAliases: ["丼", "丼もの", "親子丼", "牛丼", "海鮮丼", "天丼"],
     avoidAliases: ["丼", "丼もの", "甘辛いタレの丼"],
-    bias: { sweetness: 3, hardness: 3.2, stickiness: 2.8 },
+    bias: {
+      sweetness: 3,
+      hardness: 3.2,
+      stickiness: 2.8,
+      sauceAbsorption: 4.2,
+    },
     title: "丼ものに合う米の選び方｜タレがかかっても粒が残る比較表",
     dek: "つゆだくの日も、粒の輪郭が残るあたりを当サイトの評価から拾います。",
     lead: [
@@ -230,7 +245,7 @@ export const PAIRING_PAGES: PairingPage[] = [
       "あっさりした丼には向かない、と当サイトの評価に書かれた銘柄は向かない欄へ寄せました。濃いタレの日と薄い出汁の日では、選ぶあたりが少し違います。",
     ],
     sortNote:
-      "候補は当サイトの評価で「合う料理」に丼系の語を含む銘柄。並びは甘み3・硬さ3.2・粘り2.8に近い味の位置を優先しています。",
+      "候補は当サイトの評価で「合う料理」に丼系の語を含む銘柄。並びは甘み3・硬さ3.2・粘り2.8に近い味の位置を優先し、つゆ・タレの絡み（4.2）も加味しています。",
     faq: [
       {
         q: "つゆだくの牛丼と、海鮮丼で米は分けた方がよいですか。",
@@ -255,6 +270,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     avoidAliases: ["おにぎり", "おむすび", "塩おにぎり"],
     allowAxisOppositeAvoid: true,
     coldFirst: true,
+    avoidBias: { coldRice: 2, stickiness: 1, hardness: 4.5 },
     bias: { sweetness: 2.8, hardness: 3.4, stickiness: 2.8, coldRice: 5 },
     title: "おにぎりに合う米の選び方｜握っても粒が残る比較表",
     dek: "塩だけで食べる日も、具を包む日も、冷めたあとの粘りが効きます。",
@@ -266,7 +282,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     sortNote:
       "候補は当サイトの評価で「合う料理」におにぎり系の語を含む銘柄。並びは冷めたときの指標が高い順を最優先にし、同じ指標の中では甘み2.8・硬さ3.4・粘り2.8に近い味の位置で整えています。",
     axisAvoidNote:
-      "当サイトの評価に「おにぎりには向かない」と書いてある銘柄が少ないため、握り向きの味の位置から遠い銘柄を挙げています。",
+      "当サイトの評価に「おにぎりには向かない」と書いてある銘柄が少ないため、冷めると崩れやすく締まりやすい味の位置（粘りが少なく、冷めてからの持ちが弱いあたり）に近い銘柄を挙げています。",
     faq: [
       {
         q: "塩むすびと具入りで、米は変えた方がよいですか。",
@@ -288,10 +304,23 @@ export const PAIRING_PAGES: PairingPage[] = [
   {
     slug: "karaage",
     dishLabel: "唐揚げ",
-    dishAliases: ["唐揚げ", "から揚げ", "からあげ", "とんかつ", "揚げ物", "焼き鳥"],
+    dishAliases: [
+      "唐揚げ",
+      "から揚げ",
+      "からあげ",
+      "とんかつ",
+      "揚げ物",
+      "焼き鳥",
+    ],
     avoidAliases: ["唐揚げ", "から揚げ", "揚げ物"],
     allowAxisOppositeAvoid: true,
     allowBiasFillTop: true,
+    avoidBias: {
+      oilCompatibility: 1,
+      stickiness: 5,
+      hardness: 1.5,
+      sweetness: 5,
+    },
     bias: {
       sweetness: 3.1,
       hardness: 3.5,
@@ -332,7 +361,13 @@ export const PAIRING_PAGES: PairingPage[] = [
     dishAliases: ["チャーハン", "炒飯", "焼き飯"],
     avoidAliases: ["チャーハン", "炒飯", "パラパラのチャーハン"],
     allowAxisOppositeAvoid: true,
-    bias: { sweetness: 2.2, hardness: 3.8, stickiness: 1.8 },
+    avoidBias: { stickiness: 5, hardness: 1.5, oilCompatibility: 1.5 },
+    bias: {
+      sweetness: 2.2,
+      hardness: 3.8,
+      stickiness: 1.8,
+      oilCompatibility: 4.5,
+    },
     title: "チャーハンに合う米の選び方｜パラパラ粒感の比較表",
     dek: "炒めたあとに粒がくっつきすぎないあたりを、当サイトの評価から拾います。",
     lead: [
@@ -341,9 +376,9 @@ export const PAIRING_PAGES: PairingPage[] = [
       "向かない欄は、当サイトの評価に「向かない」とある銘柄が少ないため、このあたりから遠い銘柄を示しています。もっちり甘い米は、炒飯ではまとまりすぎることがあります。",
     ],
     sortNote:
-      "候補は当サイトの評価で「合う料理」にチャーハン・炒飯系の語を含む銘柄。並びは甘み2.2・硬さ3.8・粘り1.8に近い味の位置を優先しています。",
+      "候補は当サイトの評価で「合う料理」にチャーハン・炒飯系の語を含む銘柄。並びは甘み2.2・硬さ3.8・粘り1.8に近い味の位置を優先し、油との相性（4.5）も加味しています。",
     axisAvoidNote:
-      "当サイトの評価に「チャーハンには向かない」と書いてある銘柄が少ないため、パラパラ炒飯向きの味の位置から遠い銘柄を挙げています。",
+      "当サイトの評価に「チャーハンには向かない」と書いてある銘柄が少ないため、油の中でまとまりすぎる味の位置（粘りが強く、油との相性が弱いあたり）に近い銘柄を挙げています。",
     faq: [
       {
         q: "炊きたてのごはんで炒めてもよいですか。",
@@ -369,6 +404,7 @@ export const PAIRING_PAGES: PairingPage[] = [
     avoidAliases: ["卵かけ", "たまごかけ"],
     allowAxisOppositeAvoid: true,
     allowBiasFillTop: true,
+    avoidBias: { stickiness: 1.5, clarity: 4.8, sweetness: 2 },
     bias: { sweetness: 3.6, hardness: 2.8, stickiness: 3.4 },
     title: "卵かけご飯に合う米の選び方｜甘みと粘りの比較表",
     dek: "醤油と卵黄の朝は、米の甘みが先に立つあたりを見ます。",

@@ -9,6 +9,10 @@ export type PairTasteBias = {
   coldRice?: number;
   /** Prefer higher oil_compatibility when set (唐揚げなど). */
   oilCompatibility?: number;
+  /** Target clarity (すっきり感) when set (寿司・刺身など). */
+  clarity?: number;
+  /** Target sauce absorption (タレ・酢の絡み) when set (寿司・丼・カレー). */
+  sauceAbsorption?: number;
 };
 
 export type PairRankOptions = {
@@ -29,6 +33,14 @@ export type PairRankOptions = {
    * (and not in the top list). Labelled as coordinate opposites on the page.
    */
   allowAxisOppositeAvoid?: boolean;
+  /**
+   * The taste profile that least suits the dish, for the axis fallback:
+   * when set, the fallback picks brands CLOSEST to this anti-profile
+   * instead of farthest from the bias. Pages whose "wrong" direction is
+   * specific (鍋の雑炊なら粘り過多) declare it here, so fallback lists
+   * stop collapsing onto the same brands for every dish.
+   */
+  avoidBias?: PairTasteBias;
   /**
    * When catalogue dish matches are fewer than topN, fill the rest from
    * brands nearest the bias. Disclose this in the page sortNote.
@@ -72,6 +84,8 @@ function distanceToBias(rice: RiceProfileV2, bias: PairTasteBias): number {
   add(rice.stickiness, bias.stickiness, 1);
   add(rice.cold_rice_quality, bias.coldRice, 1.4);
   add(rice.oil_compatibility, bias.oilCompatibility, 1.3);
+  add(rice.clarity, bias.clarity, 1);
+  add(rice.sauce_absorption, bias.sauceAbsorption, 1.1);
   return weight === 0 ? 0 : sum / weight;
 }
 
@@ -82,7 +96,7 @@ export function pairFitScore(rice: RiceProfileV2, bias: PairTasteBias): number {
 
 export function rankPairingCandidates(
   profiles: RiceProfileV2[],
-  options: PairRankOptions
+  options: PairRankOptions,
 ): PairRankResult {
   const topN = options.topN ?? 5;
   const avoidN = options.avoidN ?? 5;
@@ -94,7 +108,7 @@ export function rankPairingCandidates(
   const matched = profiles.filter(
     (rice) =>
       !excluded.has(rice.id) &&
-      listMatchesAliases(rice.best_match_dishes, options.aliases)
+      listMatchesAliases(rice.best_match_dishes, options.aliases),
   );
   const byBiasAsc = (a: RiceProfileV2, b: RiceProfileV2) => {
     if (options.coldFirst && a.cold_rice_quality !== b.cold_rice_quality) {
@@ -129,7 +143,7 @@ export function rankPairingCandidates(
   const catalogAvoid = profiles.filter(
     (rice) =>
       !topIds.has(rice.id) &&
-      listMatchesAliases(rice.avoid_pairings, avoidAliases)
+      listMatchesAliases(rice.avoid_pairings, avoidAliases),
   );
   if (catalogAvoid.length > 0) {
     return {
@@ -153,9 +167,15 @@ export function rankPairingCandidates(
         // site itself scores as strong when cold can never be the
         // "does not suit" pick — taste distance alone once listed the
         // classic cold-rice brands (ミルキークイーン等) as unsuited.
-        (options.bias.coldRice == null || rice.cold_rice_quality < 4)
+        (options.bias.coldRice == null || rice.cold_rice_quality < 4),
     )
     .sort((a, b) => {
+      if (options.avoidBias) {
+        const da = pairFitScore(a, options.avoidBias);
+        const db = pairFitScore(b, options.avoidBias);
+        if (da !== db) return da - db;
+        return a.id.localeCompare(b.id);
+      }
       const da = pairFitScore(a, options.bias);
       const db = pairFitScore(b, options.bias);
       if (da !== db) return db - da;
@@ -168,7 +188,7 @@ export function rankPairingCandidates(
 
 export function pairingBySlug<T extends { slug: string }>(
   pages: T[],
-  slug: string
+  slug: string,
 ): T | null {
   return pages.find((page) => page.slug === slug) ?? null;
 }

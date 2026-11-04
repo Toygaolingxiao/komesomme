@@ -825,7 +825,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     cold_rice_quality: 4,
     sauce_absorption: 4,
     oil_compatibility: 3,
-    best_match_dishes: ["焼き魚", "おひたし", "和食"],
+    best_match_dishes: ["焼き魚", "おひたし", "卵かけご飯"],
     good_with: ["出汁", "青菜", "白身魚"],
     avoid_pairings: ["強い香辛料のカレー"],
     sake_pairings: ["純米大吟醸", "冷やした吟醸"],
