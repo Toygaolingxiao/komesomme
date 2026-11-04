@@ -8,7 +8,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { FreeCompare } from "@/components/compare/FreeCompare";
+import { GrainMark } from "@/components/compare/GrainMark";
 import { freeCompareDataset } from "@/lib/editorial/freeCompare";
+import { regionColor } from "@/lib/rice/regions";
 import {
   COMPARISON_INDICATORS,
   allResolvedComparisons,
@@ -58,7 +60,7 @@ export default function CompareIndexPage() {
           aria-label="2つ選んで比べる"
           className="mt-10 rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] p-5 sm:p-6"
         >
-          <h2 className="font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
+          <h2 className="border-b-2 border-[var(--km-gold)] pb-2 font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
             2つ選んで比べる
           </h2>
           <p className="mb-5 mt-2 text-[13.5px] leading-[1.85] text-[var(--km-ink-soft)]">
@@ -69,7 +71,7 @@ export default function CompareIndexPage() {
           </Suspense>
         </section>
 
-        <h2 className="mt-14 font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
+        <h2 className="mt-14 border-b-2 border-[var(--km-gold)] pb-2 font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
           よく比べられる組み合わせ
         </h2>
         <p className="mt-2 text-[13.5px] leading-[1.85] text-[var(--km-ink-soft)]">
@@ -78,25 +80,50 @@ export default function CompareIndexPage() {
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pages.map(({ page, a, b }) => {
-            const diffCount = COMPARISON_INDICATORS.filter(
-              ({ key }) => (a[key] as number) !== (b[key] as number),
-            ).length;
+            const diffs = COMPARISON_INDICATORS.map(({ key, label }) => ({
+              label,
+              d: Math.abs((a[key] as number) - (b[key] as number)),
+            }))
+              .filter((row) => row.d > 0)
+              .sort((x, y) => y.d - x.d);
             return (
               <Link
                 key={page.slug}
                 href={`/compare/${page.slug}`}
-                className={`group block rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] p-5 transition-colors duration-150 ease-out hover:border-[var(--km-brown)]/35 active:scale-[0.995] ${FOCUS}`}
+                className={`group block rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] p-5 shadow-[0_1px_3px_rgba(48,40,32,0.05)] transition-colors duration-150 ease-out hover:border-[var(--km-brown)]/35 active:scale-[0.995] ${FOCUS}`}
               >
-                <div className="font-serif text-[17px] font-semibold leading-[1.5] text-[var(--km-ink)]">
-                  {a.name}
-                  <span className="mx-1 text-[var(--km-muted)]">×</span>
-                  {b.name}
+                <div className="flex items-center gap-2">
+                  <GrainMark
+                    color={regionColor(a.region)}
+                    width={17}
+                    height={21}
+                  />
+                  <span className="font-serif text-[16.5px] font-semibold leading-[1.45] text-[var(--km-ink)]">
+                    {a.name}
+                    <span className="mx-1 text-[var(--km-muted)]">×</span>
+                    {b.name}
+                  </span>
+                  <GrainMark
+                    color={regionColor(b.region)}
+                    width={17}
+                    height={21}
+                  />
                 </div>
                 <p className="mt-2 line-clamp-3 text-[13px] leading-[1.8] text-[var(--km-ink-soft)]">
                   {page.dek}
                 </p>
-                <div className="mt-3 text-[12px] text-[var(--km-muted)]">
-                  12指標中、差があるのは{diffCount}つ
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  <span className="rounded-full bg-[var(--km-surface-warm)] px-2.5 py-[2px] text-[11.5px] font-bold text-[var(--km-brown)] ring-1 ring-[var(--km-border)]">
+                    差 {diffs.length} 指標
+                  </span>
+                  {diffs.slice(0, 3).map((row) => (
+                    <span
+                      key={row.label}
+                      className="rounded-full bg-white px-2.5 py-[2px] text-[11.5px] text-[var(--km-ink-soft)] ring-1 ring-[var(--km-border)]"
+                    >
+                      {row.label}
+                    </span>
+                  ))}
                 </div>
               </Link>
             );

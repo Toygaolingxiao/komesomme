@@ -237,7 +237,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
         </p>
       ) : summary ? (
         <div className="mt-6">
-          <div className="rounded-lg border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-4">
+          <div className="rounded-lg border border-[var(--km-border)] border-t-4 border-t-[var(--km-gold)] bg-[var(--km-surface-warm)] p-4 shadow-[0_1px_3px_rgba(48,40,32,0.06)]">
             <div className="font-serif text-[16.5px] font-semibold text-[var(--km-ink)]">
               {a.name} × {b.name}
             </div>
@@ -248,6 +248,31 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
               12指標のうち、同点は{summary.equalCount}つ。数値は KomeSomme
               の編集評価（1〜5）です。
             </p>
+            {summary.aLeads.length > 0 || summary.bLeads.length > 0 ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {[
+                  { brand: a, leads: summary.aLeads },
+                  { brand: b, leads: summary.bLeads },
+                ]
+                  .filter(({ leads }) => leads.length > 0)
+                  .map(({ brand, leads }) => (
+                    <div
+                      key={brand.id}
+                      className="rounded-lg border border-[var(--km-border)] bg-white p-3"
+                      style={{
+                        borderTop: `3px solid ${regionColor(brand.region)}`,
+                      }}
+                    >
+                      <div className="text-[12.5px] font-semibold text-[var(--km-ink)]">
+                        {brand.name}が上回る点
+                      </div>
+                      <div className="mt-2">
+                        <Chips items={leads} />
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : null}
             {curatedSlug ? (
               <p className="mt-2 text-[13.5px]">
                 <Link
@@ -266,7 +291,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
 
           <div className="mt-6 grid items-stretch gap-4 md:grid-cols-[1.15fr_0.85fr]">
             <FreeMap points={points} a={a} b={b} />
-            <p className="rounded-lg border border-[var(--km-border)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
+            <p className="rounded-lg border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
               {summary.coordinateNote}
               この地図は、ホームの味わい地図と同じ配置です。
             </p>

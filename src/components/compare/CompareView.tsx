@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CompareMiniMap } from "@/components/compare/CompareMiniMap";
+import { GrainMark } from "@/components/compare/GrainMark";
 import { IndicatorTable } from "@/components/compare/IndicatorTable";
 import { TokuABadge } from "@/components/rice/TokuABadge";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
@@ -10,7 +11,8 @@ import type { RiceProfileV2 } from "@/types/rice";
 
 function SectionTitle({ children, note }: { children: string; note?: string }) {
   return (
-    <h2 className="flex flex-wrap items-baseline gap-x-3 border-b-2 border-[var(--km-gold)] pb-2 font-serif text-[1.3rem] font-semibold text-[var(--km-ink)]">
+    <h2 className="flex flex-wrap items-center gap-x-3 border-b-2 border-[var(--km-gold)] pb-2 font-serif text-[1.3rem] font-semibold text-[var(--km-ink)]">
+      <GrainMark color="var(--km-gold)" width={11} height={14} />
       {children}
       {note ? (
         <small className="text-[11.5px] font-normal tracking-wide text-[var(--km-muted)]">
@@ -54,9 +56,11 @@ function BrandHead({ rice }: { rice: RiceProfileV2 }) {
 function Chips({
   items,
   tone,
+  color,
 }: {
   items: string[];
   tone?: "a" | "b" | "shared";
+  color?: string;
 }) {
   if (items.length === 0) return null;
   const cls =
@@ -68,8 +72,15 @@ function Chips({
       {items.map((item) => (
         <span
           key={item}
-          className={`rounded-full border px-3 py-[3px] text-[13px] ${cls}`}
+          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-[3px] text-[13px] ${cls}`}
         >
+          {color ? (
+            <span
+              aria-hidden="true"
+              className="h-[7px] w-[7px] rounded-full"
+              style={{ background: color }}
+            />
+          ) : null}
           {item}
         </span>
       ))}
@@ -89,9 +100,26 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
 
   return (
     <div className="mx-auto w-full min-w-0 max-w-[56rem] pb-20 pt-2">
-      <span className="inline-block rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-3 py-[3px] text-[12px] tracking-[0.14em] text-[var(--km-brown)]">
-        銘柄くらべ
-      </span>
+      <div className="flex items-start justify-between gap-4">
+        <span className="inline-block rounded-full border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-3 py-[3px] text-[12px] tracking-[0.14em] text-[var(--km-brown)]">
+          銘柄くらべ
+        </span>
+        <span aria-hidden="true" className="flex flex-none items-center pt-1">
+          <GrainMark
+            color={regionColor(a.region)}
+            width={24}
+            height={30}
+            className="-rotate-12"
+          />
+          <span className="mx-1 text-[13px] text-[var(--km-muted)]">×</span>
+          <GrainMark
+            color={regionColor(b.region)}
+            width={24}
+            height={30}
+            className="rotate-12"
+          />
+        </span>
+      </div>
       <h1 className="mt-4 font-serif text-[1.75rem] font-semibold leading-[1.5] tracking-tight text-[var(--km-ink)] sm:text-[1.9rem]">
         {a.name}と{b.name}、どう違う？
       </h1>
@@ -107,13 +135,18 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
         ].map(({ rice, verdict }) => (
           <div
             key={rice.id}
-            className="rounded-lg border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-4"
+            className="rounded-lg border border-[var(--km-border)] bg-[var(--km-surface-warm)] p-4 shadow-[0_1px_3px_rgba(48,40,32,0.06)]"
             style={{ borderTop: `4px solid ${regionColor(rice.region)}` }}
           >
             <div className="text-[12.5px] text-[var(--km-muted)]">
               {verdict.when}
             </div>
-            <div className="mt-1 font-serif text-[17px] font-semibold text-[var(--km-ink)]">
+            <div className="mt-1 flex items-center gap-2 font-serif text-[17px] font-semibold text-[var(--km-ink)]">
+              <GrainMark
+                color={regionColor(rice.region)}
+                width={15}
+                height={19}
+              />
               → {rice.name}
             </div>
             <p className="mt-1 text-[13.5px] leading-[1.75] text-[var(--km-ink-soft)]">
@@ -154,7 +187,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
         </SectionTitle>
         <div className="mt-4 grid items-stretch gap-4 md:grid-cols-[1.15fr_0.85fr]">
           <CompareMiniMap a={a} b={b} />
-          <p className="rounded-lg border border-[var(--km-border)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
+          <p className="rounded-lg border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
             {page.coordinateNote}
           </p>
         </div>
@@ -176,13 +209,21 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
           {a.name}に向く
         </div>
         <div className="mt-2">
-          <Chips items={[...a.best_match_dishes, ...a.good_with]} tone="a" />
+          <Chips
+            items={[...a.best_match_dishes, ...a.good_with]}
+            tone="a"
+            color={regionColor(a.region)}
+          />
         </div>
         <div className="mt-4 text-[12.5px] text-[var(--km-muted)]">
           {b.name}に向く
         </div>
         <div className="mt-2">
-          <Chips items={[...b.best_match_dishes, ...b.good_with]} tone="b" />
+          <Chips
+            items={[...b.best_match_dishes, ...b.good_with]}
+            tone="b"
+            color={regionColor(b.region)}
+          />
         </div>
       </section>
 
@@ -217,7 +258,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
           {page.faq.map((item) => (
             <div
               key={item.q}
-              className="border-b border-[var(--km-border)] py-3"
+              className="mb-3 rounded-lg border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-white p-4 last:mb-0"
             >
               <div className="text-[14.5px] font-bold">
                 <span className="text-[var(--km-accent-ink)]">Q. </span>
@@ -258,14 +299,20 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
       {related.length > 0 ? (
         <section aria-label="ほかの銘柄くらべ" className="mt-12">
           <SectionTitle>ほかの銘柄くらべ</SectionTitle>
-          <ul className="mt-3 space-y-1 text-[14px] leading-[2.1]">
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {related.map((row) => (
               <li key={row.slug}>
                 <Link
                   href={`/compare/${row.slug}`}
-                  className={`text-[var(--km-brown)] underline-offset-4 hover:underline ${FOCUS}`}
+                  className={`flex h-full items-center gap-2 rounded-lg border border-[var(--km-border)] bg-white px-4 py-3 text-[14px] font-semibold text-[var(--km-ink)] transition-colors duration-150 hover:border-[var(--km-brown)]/35 ${FOCUS}`}
                 >
-                  {row.title.split("｜")[0]}
+                  <GrainMark color="var(--km-gold)" width={12} height={15} />
+                  <span className="min-w-0 flex-1 leading-[1.6]">
+                    {row.title.split("｜")[0]}
+                  </span>
+                  <span aria-hidden="true" className="text-[var(--km-muted)]">
+                    →
+                  </span>
                 </Link>
               </li>
             ))}
