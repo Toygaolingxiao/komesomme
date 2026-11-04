@@ -5,7 +5,7 @@ import {
   type ComparisonIndicatorKey,
 } from "@/lib/editorial/comparisons";
 import { toMapProfiles } from "@/lib/rice/mapProfile";
-import { toDisplayPoints } from "@/lib/rice/matrix";
+import { calculateMatrixDisplayPoint } from "@/lib/rice/matrix";
 import type { RiceProfileV2 } from "@/types/rice";
 
 /** Serializable brand shape the free-compare tool needs (nothing more). */
@@ -24,7 +24,11 @@ export type FreeBrand = Pick<
 
 export type FreeCompareDataset = {
   brands: FreeBrand[];
-  /** Display coordinates for every brand, same pipeline as the home map. */
+  /**
+   * Raw taste coordinates for every brand (calculateMatrixDisplayPoint,
+   * WITHOUT the home map's crowd-spreading separation): on a comparison
+   * page the map is evidence, so neighbours in the data stay neighbours.
+   */
   points: { id: string; x: number; y: number }[];
   /** "<idA>|<idB>" (sorted) -> curated comparison slug, when one exists. */
   curated: Record<string, string>;
@@ -53,11 +57,10 @@ export function freeCompareDataset(): FreeCompareDataset {
     }
     return brand;
   });
-  const points = toDisplayPoints(toMapProfiles(riceProfiles)).map((point) => ({
-    id: point.id,
-    x: point.display_x,
-    y: point.display_y,
-  }));
+  const points = toMapProfiles(riceProfiles).map((profile) => {
+    const point = calculateMatrixDisplayPoint(profile);
+    return { id: point.id, x: point.display_x, y: point.display_y };
+  });
   const curated: Record<string, string> = {};
   for (const page of COMPARISON_PAGES) {
     curated[curatedKey(page.aId, page.bId)] = page.slug;
