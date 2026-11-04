@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -6,6 +7,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
+import { FreeCompare } from "@/components/compare/FreeCompare";
+import { freeCompareDataset } from "@/lib/editorial/freeCompare";
 import {
   COMPARISON_INDICATORS,
   allResolvedComparisons,
@@ -15,7 +18,7 @@ import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
 export const metadata: Metadata = {
   title: "銘柄くらべ｜2つの米を、味で並べて比べる",
   description:
-    "ゆめぴりかとミルキークイーン、魚沼と佐渡など、迷いやすい2銘柄を12指標の並排表と味わいの地図で比べるページの一覧です。値段ではなく、味の違いで選びます。",
+    "全銘柄から2つを自由に選んで比べられる道具と、迷いやすい組み合わせを手書きで比べたページの一覧です。12指標の並排表と味わいの地図で、値段ではなく味の違いで選びます。",
   alternates: { canonical: "/compare" },
 };
 
@@ -26,6 +29,7 @@ const TRAIL = [
 
 export default function CompareIndexPage() {
   const pages = allResolvedComparisons();
+  const dataset = freeCompareDataset();
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
@@ -50,7 +54,29 @@ export default function CompareIndexPage() {
           「どっちがいいか」ではなく、「どう違うか」を並べるページです。迷いやすい2銘柄を、12指標の並排表と味わいの地図の位置で比べます。値段の並びは扱いません。
         </p>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section
+          aria-label="2つ選んで比べる"
+          className="mt-10 rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] p-5 sm:p-6"
+        >
+          <h2 className="font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
+            2つ選んで比べる
+          </h2>
+          <p className="mb-5 mt-2 text-[13.5px] leading-[1.85] text-[var(--km-ink-soft)]">
+            全銘柄から、気になる2つを自由に選べます。選ぶと、その場で12指標の並排表と味わいの地図が出ます。
+          </p>
+          <Suspense fallback={null}>
+            <FreeCompare dataset={dataset} />
+          </Suspense>
+        </section>
+
+        <h2 className="mt-14 font-serif text-[1.25rem] font-semibold text-[var(--km-ink)]">
+          よく比べられる組み合わせ
+        </h2>
+        <p className="mt-2 text-[13.5px] leading-[1.85] text-[var(--km-ink-soft)]">
+          迷いやすい組み合わせは、手書きのページで詳しく比べています。
+        </p>
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pages.map(({ page, a, b }) => {
             const diffCount = COMPARISON_INDICATORS.filter(
               ({ key }) => (a[key] as number) !== (b[key] as number),
