@@ -5,11 +5,12 @@ import { FOCUS } from "@/components/matrix/shared";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 
 /** Primary nav. Collection magazine pages highlight ピックアップ. */
-export type SiteNavActive = "map" | "pair" | "library" | "discover";
+export type SiteNavActive = "map" | "pair" | "compare" | "library" | "discover";
 
 const NAV = [
   { id: "map" as const, href: "/", label: "味わいの地図" },
   { id: "pair" as const, href: "/pair", label: "料理で選ぶ" },
+  { id: "compare" as const, href: "/compare", label: "銘柄くらべ" },
   { id: "library" as const, href: "/library", label: "ライブラリ" },
   { id: "discover" as const, href: "/discover", label: "ピックアップ" },
 ] as const;
