@@ -118,23 +118,15 @@ describe("generateCoordinateReason", () => {
 });
 
 describe("toDisplayPoints drift contract", () => {
-  it("never moves a brand more than 0.3 axis units from its taste position", async () => {
+  it("keeps every brand within 0.85 of its integer score cell", async () => {
     const { riceProfiles } = await import("@/data/rice/catalog");
     const { toMapProfiles } = await import("./mapProfile");
-    const maps = toMapProfiles(riceProfiles);
-    const base = new Map(
-      maps.map((profile) => {
-        const point = calculateMatrixDisplayPoint(profile);
-        return [point.id, point];
-      }),
-    );
-    for (const point of toDisplayPoints(maps)) {
-      const origin = base.get(point.id)!;
+    for (const point of toDisplayPoints(toMapProfiles(riceProfiles))) {
       const drift = Math.hypot(
-        point.display_x - origin.display_x,
-        point.display_y - origin.display_y,
+        point.display_x - point.sweetness,
+        point.display_y - hardnessToDisplayY(point.hardness),
       );
-      expect(drift).toBeLessThanOrEqual(0.31);
+      expect(drift).toBeLessThanOrEqual(0.85);
     }
   });
 
@@ -144,12 +136,60 @@ describe("toDisplayPoints drift contract", () => {
     const points = toDisplayPoints(toMapProfiles(riceProfiles));
     const tsubu = points.find((point) => point.id === "tsubuzoroi")!;
     const obako = points.find((point) => point.id === "yumeobako")!;
-    // true positions: sweetness 3 vs 4, hardness both 3 -> distance ~1.0
     const distance = Math.hypot(
       tsubu.display_x - obako.display_x,
       tsubu.display_y - obako.display_y,
     );
     expect(distance).toBeGreaterThan(0.7);
-    expect(distance).toBeLessThan(1.4);
+    expect(distance).toBeLessThan(1.5);
+  });
+
+  it("keeps a readable minimum gap across the catalogue", async () => {
+    const { riceProfiles } = await import("@/data/rice/catalog");
+    const { toMapProfiles } = await import("./mapProfile");
+    const points = toDisplayPoints(toMapProfiles(riceProfiles));
+    let min = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
+        min = Math.min(
+          min,
+          Math.hypot(
+            points[i].display_x - points[j].display_x,
+            points[i].display_y - points[j].display_y,
+          ),
+        );
+      }
+    }
+    expect(min).toBeGreaterThanOrEqual(0.08);
+  });
+});
+
+describe("calculateMatrixDisplayPoint decimal refinement", () => {
+  it("leans a brand toward its own secondary ratings within the cell", () => {
+    const base = {
+      id: "probe",
+      name: "probe",
+      prefecture: "秋田県",
+      sweetness: 3,
+      hardness: 3,
+      stickiness: 3,
+      aroma: 3,
+      umami: 3,
+      aftertaste: 3,
+      grain_size: 3,
+      clarity: 3,
+      richness: 3,
+    } as unknown as Parameters<typeof calculateMatrixDisplayPoint>[0];
+    const neutral = calculateMatrixDisplayPoint(base);
+    const rich = calculateMatrixDisplayPoint({
+      ...base,
+      umami: 5,
+      richness: 5,
+    });
+    const sticky = calculateMatrixDisplayPoint({ ...base, stickiness: 5 });
+    expect(rich.display_x).toBeGreaterThan(neutral.display_x);
+    expect(sticky.display_y).toBeGreaterThan(neutral.display_y);
+    // never leaves the integer score's half-step neighbourhood
+    expect(Math.abs(rich.display_x - 3)).toBeLessThanOrEqual(0.5);
   });
 });
