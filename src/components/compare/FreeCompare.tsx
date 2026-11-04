@@ -32,15 +32,20 @@ function FreeMap({
   b: FreeBrand;
 }) {
   const byId = new Map(points.map((point) => [point.id, point]));
-  const rawA = byId.get(a.id);
-  const rawB = byId.get(b.id);
-  if (!rawA || !rawB) return null;
-  const pa = { ...rawA };
-  const pb = { ...rawB };
-  if (Math.abs(pa.x - pb.x) < 0.3 && Math.abs(pa.y - pb.y) < 0.3) {
-    pa.x = Math.max(1, pa.x - 0.15);
-    pb.x = Math.min(5, pb.x + 0.15);
-  }
+  const pa = byId.get(a.id);
+  const pb = byId.get(b.id);
+  if (!pa || !pb) return null;
+  const label = (p: { x: number; y: number }, dy: number) => {
+    const px = sx(p.x);
+    const fromRight = px > W - 200;
+    return {
+      x: fromRight ? px - 16 : px + 16,
+      y: sy(p.y) + dy,
+      anchor: fromRight ? ("end" as const) : ("start" as const),
+    };
+  };
+  const labelA = label(pa, -12);
+  const labelB = label(pb, 24);
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
@@ -56,47 +61,58 @@ function FreeMap({
       ))}
       {points.map((point) =>
         point.id === a.id || point.id === b.id ? null : (
-          <circle
+          <ellipse
             key={point.id}
             cx={sx(point.x)}
             cy={sy(point.y)}
-            r="3"
-            fill="var(--km-brown)"
-            opacity="0.16"
+            rx="6.5"
+            ry="4"
+            fill={point.color}
+            opacity="0.45"
           />
         ),
       )}
-      <circle
+      <ellipse
         cx={sx(pa.x)}
         cy={sy(pa.y)}
-        r="8"
+        rx="11"
+        ry="7"
         fill={regionColor(a.region)}
-        stroke="#fff"
-        strokeWidth="2"
+        stroke="#FFFDF7"
+        strokeWidth="2.5"
       />
-      <circle
+      <ellipse
         cx={sx(pb.x)}
         cy={sy(pb.y)}
-        r="8"
+        rx="11"
+        ry="7"
         fill={regionColor(b.region)}
-        stroke="#fff"
-        strokeWidth="2"
+        stroke="#FFFDF7"
+        strokeWidth="2.5"
       />
       <text
-        x={Math.min(sx(pa.x) + 14, W - 130)}
-        y={sy(pa.y) - 10}
-        fontSize="13"
-        fontWeight="600"
+        x={labelA.x}
+        y={labelA.y}
+        textAnchor={labelA.anchor}
+        fontSize="13.5"
+        fontWeight="700"
         fill="var(--km-ink)"
+        stroke="#FFFDF7"
+        strokeWidth="4"
+        paintOrder="stroke"
       >
         {a.name}
       </text>
       <text
-        x={Math.min(sx(pb.x) + 14, W - 150)}
-        y={sy(pb.y) + 22}
-        fontSize="13"
-        fontWeight="600"
+        x={labelB.x}
+        y={labelB.y}
+        textAnchor={labelB.anchor}
+        fontSize="13.5"
+        fontWeight="700"
         fill="var(--km-ink)"
+        stroke="#FFFDF7"
+        strokeWidth="4"
+        paintOrder="stroke"
       >
         {b.name}
       </text>
@@ -176,7 +192,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
     value: string,
     onChange: (id: string) => void,
   ) => (
-    <label className="block min-w-0 flex-1">
+    <label className="block min-w-0 flex-1 basis-full sm:basis-auto">
       <span className="mb-1 block text-[12px] text-[var(--km-muted)]">
         {label}
       </span>
@@ -202,7 +218,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
 
   return (
     <div>
-      <div className="flex items-end gap-2 sm:gap-3">
+      <div className="flex flex-wrap items-end gap-2 sm:flex-nowrap sm:gap-3">
         {picker("1つ目", a.id, (id) => setPair(id, b.id))}
         <button
           type="button"
@@ -252,7 +268,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
             <FreeMap points={points} a={a} b={b} />
             <p className="rounded-lg border border-[var(--km-border)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
               {summary.coordinateNote}
-              ここでは味の値そのままの位置に置いています（重なる場合は左右に少しずらします）。ホームの味わい地図は、混み合う中心部を読みやすく広げて描くため、同じ銘柄でも少し違う場所に見えることがあります。
+              この地図は、ホームの味わい地図と同じ配置です。
             </p>
           </div>
 

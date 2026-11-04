@@ -1,6 +1,6 @@
 import { riceProfiles } from "@/data/rice/catalog";
 import { toMapProfiles } from "@/lib/rice/mapProfile";
-import { calculateMatrixDisplayPoint } from "@/lib/rice/matrix";
+import { toDisplayPoints } from "@/lib/rice/matrix";
 import { regionColor } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";
 
@@ -16,12 +16,11 @@ function sy(v: number): number {
 }
 
 /**
- * Static taste-map excerpt for a comparison page: every brand faint, the two
- * compared brands highlighted at their raw taste coordinates
- * (calculateMatrixDisplayPoint WITHOUT the home map's crowd-spreading
- * separation — here the map is evidence, so neighbours in the data must
- * stay neighbours on the page). If the two would overlap, they are nudged
- * apart slightly on x; the page copy discloses that where it applies.
+ * Static taste-map excerpt for a comparison page. Uses the very same
+ * display points as the home taste map (decimal positions plus the
+ * crowd-spreading layout), rendered in the home map's language: every
+ * brand a small grain in its region colour, the two compared brands as
+ * large grains. One map, one set of positions, everywhere on the site.
  */
 export function CompareMiniMap({
   a,
@@ -30,31 +29,23 @@ export function CompareMiniMap({
   a: RiceProfileV2;
   b: RiceProfileV2;
 }) {
-  const points = toMapProfiles(riceProfiles).map((profile) =>
-    calculateMatrixDisplayPoint(profile),
-  );
+  const points = toDisplayPoints(toMapProfiles(riceProfiles));
   const byId = new Map(points.map((point) => [point.id, point]));
-  const rawA = byId.get(a.id);
-  const rawB = byId.get(b.id);
-  if (!rawA || !rawB) return null;
-  const pa = { ...rawA };
-  const pb = { ...rawB };
-  if (
-    Math.abs(pa.display_x - pb.display_x) < 0.3 &&
-    Math.abs(pa.display_y - pb.display_y) < 0.3
-  ) {
-    pa.display_x = Math.max(1, pa.display_x - 0.15);
-    pb.display_x = Math.min(5, pb.display_x + 0.15);
-  }
+  const pa = byId.get(a.id);
+  const pb = byId.get(b.id);
+  if (!pa || !pb) return null;
 
-  const labelA = {
-    x: Math.min(sx(pa.display_x) + 14, W - 120),
-    y: sy(pa.display_y) - 10,
+  const label = (x: number, y: number, dy: number) => {
+    const px = sx(x);
+    const fromRight = px > W - 200;
+    return {
+      x: fromRight ? px - 16 : px + 16,
+      y: sy(y) + dy,
+      anchor: fromRight ? ("end" as const) : ("start" as const),
+    };
   };
-  const labelB = {
-    x: Math.min(sx(pb.display_x) + 14, W - 140),
-    y: sy(pb.display_y) + 22,
-  };
+  const labelA = label(pa.display_x, pa.display_y, -12);
+  const labelB = label(pb.display_x, pb.display_y, 24);
 
   return (
     <figure className="min-w-0">
@@ -72,47 +63,58 @@ export function CompareMiniMap({
         ))}
         {points.map((point) =>
           point.id === a.id || point.id === b.id ? null : (
-            <circle
+            <ellipse
               key={point.id}
               cx={sx(point.display_x)}
               cy={sy(point.display_y)}
-              r="3"
-              fill="var(--km-brown)"
-              opacity="0.16"
+              rx="6.5"
+              ry="4"
+              fill={regionColor(point.region)}
+              opacity="0.45"
             />
           ),
         )}
-        <circle
+        <ellipse
           cx={sx(pa.display_x)}
           cy={sy(pa.display_y)}
-          r="8"
+          rx="11"
+          ry="7"
           fill={regionColor(a.region)}
-          stroke="#fff"
-          strokeWidth="2"
+          stroke="#FFFDF7"
+          strokeWidth="2.5"
         />
-        <circle
+        <ellipse
           cx={sx(pb.display_x)}
           cy={sy(pb.display_y)}
-          r="8"
+          rx="11"
+          ry="7"
           fill={regionColor(b.region)}
-          stroke="#fff"
-          strokeWidth="2"
+          stroke="#FFFDF7"
+          strokeWidth="2.5"
         />
         <text
           x={labelA.x}
           y={labelA.y}
-          fontSize="13"
-          fontWeight="600"
+          textAnchor={labelA.anchor}
+          fontSize="13.5"
+          fontWeight="700"
           fill="var(--km-ink)"
+          stroke="#FFFDF7"
+          strokeWidth="4"
+          paintOrder="stroke"
         >
           {a.name}
         </text>
         <text
           x={labelB.x}
           y={labelB.y}
-          fontSize="13"
-          fontWeight="600"
+          textAnchor={labelB.anchor}
+          fontSize="13.5"
+          fontWeight="700"
           fill="var(--km-ink)"
+          stroke="#FFFDF7"
+          strokeWidth="4"
+          paintOrder="stroke"
         >
           {b.name}
         </text>

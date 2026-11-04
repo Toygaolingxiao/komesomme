@@ -5,7 +5,8 @@ import {
   type ComparisonIndicatorKey,
 } from "@/lib/editorial/comparisons";
 import { toMapProfiles } from "@/lib/rice/mapProfile";
-import { calculateMatrixDisplayPoint } from "@/lib/rice/matrix";
+import { toDisplayPoints } from "@/lib/rice/matrix";
+import { regionColor } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";
 
 /** Serializable brand shape the free-compare tool needs (nothing more). */
@@ -25,16 +26,30 @@ export type FreeBrand = Pick<
 export type FreeCompareDataset = {
   brands: FreeBrand[];
   /**
-   * Raw taste coordinates for every brand (calculateMatrixDisplayPoint,
-   * WITHOUT the home map's crowd-spreading separation): on a comparison
-   * page the map is evidence, so neighbours in the data stay neighbours.
+   * Display points for every brand — the same positions as the home taste
+   * map (decimal taste positions plus the shared spreading layout), so a
+   * brand sits in the same place on every map on the site.
    */
-  points: { id: string; x: number; y: number }[];
+  points: { id: string; x: number; y: number; color: string }[];
   /** "<idA>|<idB>" (sorted) -> curated comparison slug, when one exists. */
   curated: Record<string, string>;
 };
 
 const INDICATOR_KEYS = COMPARISON_INDICATORS.map((row) => row.key);
+
+let cachedDisplayPoints: Map<string, { x: number; y: number }> | null = null;
+
+function displayPointById(): Map<string, { x: number; y: number }> {
+  if (!cachedDisplayPoints) {
+    cachedDisplayPoints = new Map(
+      toDisplayPoints(toMapProfiles(riceProfiles)).map((point) => [
+        point.id,
+        { x: point.display_x, y: point.display_y },
+      ]),
+    );
+  }
+  return cachedDisplayPoints;
+}
 
 export function curatedKey(aId: string, bId: string): string {
   return [aId, bId].sort().join("|");
@@ -57,10 +72,12 @@ export function freeCompareDataset(): FreeCompareDataset {
     }
     return brand;
   });
-  const points = toMapProfiles(riceProfiles).map((profile) => {
-    const point = calculateMatrixDisplayPoint(profile);
-    return { id: point.id, x: point.display_x, y: point.display_y };
-  });
+  const points = toDisplayPoints(toMapProfiles(riceProfiles)).map((point) => ({
+    id: point.id,
+    x: point.display_x,
+    y: point.display_y,
+    color: regionColor(point.region),
+  }));
   const curated: Record<string, string> = {};
   for (const page of COMPARISON_PAGES) {
     curated[curatedKey(page.aId, page.bId)] = page.slug;
@@ -124,12 +141,14 @@ export function summarizeComparison(
     }
   }
 
-  const distance =
-    Math.abs(a.sweetness - b.sweetness) + Math.abs(a.hardness - b.hardness);
+  const byId = displayPointById();
+  const pa = byId.get(a.id);
+  const pb = byId.get(b.id);
+  const displayDistance = pa && pb ? Math.hypot(pa.x - pb.x, pa.y - pb.y) : 0;
   const position =
-    distance === 0
-      ? "地図の位置は一致します"
-      : distance <= 2
+    displayDistance <= 0.35
+      ? "地図の上でも、ほぼ同じ場所に重なります"
+      : displayDistance <= 1.3
         ? "地図の位置は少し離れます"
         : "地図の位置ははっきり離れます";
   const coordinateNote = `甘みは${a.sweetness}対${b.sweetness}、粒立ちは${a.hardness}対${b.hardness}。${position}。`;
