@@ -21,7 +21,7 @@ jobs:
       github.event.workflow_run.conclusion == 'failure'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Open or update ops issue
         uses: actions/github-script@v7
         with:
@@ -55,7 +55,7 @@ jobs:
       !contains(github.event.deployment.environment, 'preview')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Open or update ops issue
         uses: actions/github-script@v7
         with:
