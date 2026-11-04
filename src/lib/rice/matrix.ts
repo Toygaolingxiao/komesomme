@@ -34,10 +34,17 @@ function stableNoise(id: string, axis: "x" | "y") {
   return ((hash % 1000) / 1000 - 0.5) * 0.18;
 }
 
+/**
+ * Maximum distance (axis units) the spreading below may move a point from
+ * its true taste position. The axis spans 4 units, so 0.3 keeps every dot
+ * within ~7% of the span of where its data puts it — enough room to
+ * un-stack a crowded cell, never enough to change what the map says.
+ */
+const MAX_DRIFT = 0.3;
+
 /** Minimum axis-unit gap after jitter, so integer-scored brands do not pile up. */
 const SEPARATION = 0.15;
-const SEPARATION_ITERS = 12;
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+const SEPARATION_ITERS = 120;
 
 /**
  * Spreads brands that share the same hardness / sweetness pair.
@@ -81,39 +88,33 @@ export function calculateMatrixDisplayPoint(rice: MapProfile): MapDisplayPoint {
 }
 
 /**
- * Spreads brands that share a hardness / sweetness cell, then nudges leftover overlaps.
+ * Un-stacks brands whose taste positions pile up, moving each point only
+ * as far as its neighbours force it to move.
  *
- * A sunflower spiral (stable by id) is the initial layout so integer scores do not start
- * in a pile. A few damped repulsion steps then separate neighbouring cells. Ranking uses
- * these same coordinates, so No.1 stays the nearest visible dot.
+ * Starts from the true positions and runs pairwise repulsion toward the
+ * SEPARATION gap, with a gentle spring back toward each point's own taste
+ * position and a hard MAX_DRIFT cap. An earlier version scattered crowded
+ * cells on a sunflower spiral first, which relocated centre brands by up
+ * to a full axis unit from their data (つぶぞろい x 3.0 -> 2.2); position
+ * on the map is a claim about taste, so fidelity wins over tidy spacing.
+ * Ranking uses these same coordinates, so No.1 stays the nearest visible dot.
  */
 function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
   const xs = points.map((point) => point.display_x);
   const ys = points.map((point) => point.display_y);
-  const groups = new Map<string, number[]>();
+  const baseXs = [...xs];
+  const baseYs = [...ys];
 
-  points.forEach((point, index) => {
-    const key = `${Math.round(normalizeTasteValue(point.hardness))}:${Math.round(normalizeTasteValue(point.sweetness))}`;
-    const members = groups.get(key);
-    if (members) members.push(index);
-    else groups.set(key, [index]);
-  });
-
-  for (const [key, indexes] of groups) {
-    indexes.sort((a, b) => points[a].id.localeCompare(points[b].id));
-    if (indexes.length <= 1) continue;
-
-    const cx = indexes.reduce((sum, index) => sum + xs[index], 0) / indexes.length;
-    const cy = indexes.reduce((sum, index) => sum + ys[index], 0) / indexes.length;
-    const rot = (stableHash(key) % 360) * (Math.PI / 180);
-
-    indexes.forEach((index, i) => {
-      const radius = SEPARATION * Math.sqrt(i);
-      const angle = rot + i * GOLDEN_ANGLE;
-      xs[index] = clamp(cx + Math.cos(angle) * radius);
-      ys[index] = clamp(cy + Math.sin(angle) * radius);
-    });
-  }
+  /** Pull point i back onto its MAX_DRIFT circle when repulsion overshoots. */
+  const capDrift = (i: number) => {
+    const dx = xs[i] - baseXs[i];
+    const dy = ys[i] - baseYs[i];
+    const drift = Math.hypot(dx, dy);
+    if (drift > MAX_DRIFT) {
+      xs[i] = baseXs[i] + (dx / drift) * MAX_DRIFT;
+      ys[i] = baseYs[i] + (dy / drift) * MAX_DRIFT;
+    }
+  };
 
   const minSq = SEPARATION * SEPARATION;
 
@@ -125,7 +126,9 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
         let distSq = dx * dx + dy * dy;
 
         if (distSq < 1e-8) {
-          const angle = (stableHash(`${points[i].id}|${points[j].id}`) % 360) * (Math.PI / 180);
+          const angle =
+            (stableHash(`${points[i].id}|${points[j].id}`) % 360) *
+            (Math.PI / 180);
           dx = Math.cos(angle) * 0.002;
           dy = Math.sin(angle) * 0.002;
           distSq = dx * dx + dy * dy;
@@ -134,7 +137,7 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
         if (distSq >= minSq) continue;
 
         const dist = Math.sqrt(distSq);
-        const push = ((SEPARATION - dist) / 2) * 0.6;
+        const push = ((SEPARATION - dist) / 2) * 0.9;
         const ux = dx / dist;
         const uy = dy / dist;
         xs[i] -= ux * push;
@@ -145,6 +148,11 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
     }
 
     for (let i = 0; i < points.length; i += 1) {
+      // A gentle spring home: points only stay displaced as far as their
+      // neighbours actually force them to be.
+      xs[i] += (baseXs[i] - xs[i]) * 0.05;
+      ys[i] += (baseYs[i] - ys[i]) * 0.05;
+      capDrift(i);
       xs[i] = clamp(xs[i]);
       ys[i] = clamp(ys[i]);
     }
@@ -157,7 +165,9 @@ function separateDisplayPoints(points: MapDisplayPoint[]): MapDisplayPoint[] {
   }));
 }
 
-export function toDisplayPoints(riceList: readonly MapProfile[]): MapDisplayPoint[] {
+export function toDisplayPoints(
+  riceList: readonly MapProfile[],
+): MapDisplayPoint[] {
   return separateDisplayPoints(riceList.map(calculateMatrixDisplayPoint));
 }
 
@@ -196,9 +206,11 @@ export function coordinateFromDisplayPoint(point: {
 }
 
 function hasDisplayCoordinates(
-  rice: MapProfile & { display_x?: number; display_y?: number }
+  rice: MapProfile & { display_x?: number; display_y?: number },
 ): rice is MapDisplayPoint {
-  return typeof rice.display_x === "number" && typeof rice.display_y === "number";
+  return (
+    typeof rice.display_x === "number" && typeof rice.display_y === "number"
+  );
 }
 
 /**
@@ -209,7 +221,7 @@ function hasDisplayCoordinates(
  */
 export function calculateCoordinateDistance(
   target: TasteCoordinate,
-  rice: MapProfile & { display_x?: number; display_y?: number }
+  rice: MapProfile & { display_x?: number; display_y?: number },
 ) {
   const targetX = normalizeTasteValue(target.sweetness);
   const targetY = hardnessToDisplayY(target.hardness);
@@ -250,7 +262,7 @@ function withPeriod(text: string) {
  */
 export function generateCoordinateReason(
   _target: TasteCoordinate,
-  rice: MapProfile
+  rice: MapProfile,
 ) {
   const short = withPeriod(rice.short_ ?? "");
   if (short) return short;
@@ -305,7 +317,7 @@ export function generateCoordinateReason(
 export function calculateTopCoordinateMatches<T extends MapProfile>(
   riceList: readonly T[],
   target: TasteCoordinate,
-  limit = 4
+  limit = 4,
 ): Array<RiceMatchResult<T>> {
   return riceList
     .map((rice) => {
@@ -351,7 +363,7 @@ const MAX_NEIGHBOUR_DISTANCE = Math.sqrt(NEIGHBOUR_DIMENSIONS.length) * 4;
 export function calculateTasteNeighbours<T extends MapProfile>(
   riceList: readonly T[],
   reference: MapProfile,
-  limit = 3
+  limit = 3,
 ): Array<RiceMatchResult<T>> {
   return riceList
     .filter((rice) => rice.id !== reference.id)
