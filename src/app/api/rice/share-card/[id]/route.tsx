@@ -1,18 +1,15 @@
-import { riceProfiles } from "@/data/rice/catalog";
 import { renderShareCard } from "@/lib/brand/shareCardRoute";
 
 export const runtime = "nodejs";
-export const dynamic = "force-static";
 
 /**
- * Prerender every brand's card at build time. First generation used to run
- * per request (~20 s of font/image work, once per CDN edge node); now the
- * PNGs ship with the deployment and are served as static files.
+ * Cards are generated on first request and then held by the CDN
+ * (s-maxage in renderShareCard), so a brand costs one slow render per
+ * edge node and is instant afterwards. Prerendering all 212 cards at
+ * build time was tried in #87: at ~20 s per render it pushed the
+ * Vercel build past its 45-minute limit, so generation moved back
+ * to request time, now with the subset OG fonts from #87 kept.
  */
-export function generateStaticParams() {
-  return riceProfiles.map((rice) => ({ id: rice.id }));
-}
-
 type RouteProps = {
   params: Promise<{ id: string }>;
 };

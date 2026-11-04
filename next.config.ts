@@ -47,11 +47,6 @@ const optimizedImageCache = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Share cards (212 PNGs) are prerendered here. A single satori render is
-  // only a few seconds on a healthy runner, but the default 60 s per-page
-  // cap leaves no headroom when the build machine is loaded; a timed-out
-  // page fails the whole build. Give renders room to finish.
-  staticPageGenerationTimeout: 300,
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react"],
   },

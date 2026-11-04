@@ -1,14 +1,8 @@
-import { riceProfiles } from "@/data/rice/catalog";
 import { renderShareCard } from "@/lib/brand/shareCardRoute";
 
 export const runtime = "nodejs";
-export const dynamic = "force-static";
 
-/** QR variant of the share card, prerendered alongside the plain card. */
-export function generateStaticParams() {
-  return riceProfiles.map((rice) => ({ id: rice.id }));
-}
-
+/** QR variant of the share card; same on-demand + CDN-cache model. */
 type RouteProps = {
   params: Promise<{ id: string }>;
 };

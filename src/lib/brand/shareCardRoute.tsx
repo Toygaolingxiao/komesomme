@@ -89,9 +89,9 @@ export async function renderShareCard(
       fonts,
       headers: {
         "Content-Type": "image/png",
-        // Prerendered responses are served as static files; these headers
-        // still govern the on-demand fallback for ids not in the catalogue
-        // snapshot, where shared caches should hold the result the same way.
+        // Generated on demand (see the route files): the first render per
+        // edge node is slow, then shared caches hold the PNG and serve it
+        // instantly until the cache entry ages out.
         "Cache-Control":
           "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
         "Content-Disposition": `inline; filename="${rice.id}-komesomme${withQr ? "-qr" : ""}.png"`,
