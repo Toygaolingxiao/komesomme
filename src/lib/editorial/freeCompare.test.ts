@@ -42,7 +42,7 @@ describe("summarizeComparison", () => {
       expect.arrayContaining(["香り", "旨み", "油との相性"]),
     );
     expect(summary.bLeads).toEqual(["冷めてからの持ち"]);
-    expect(summary.coordinateNote).toContain("地図の位置は一致します");
+    expect(summary.coordinateNote).toContain("ほぼ同じ場所に重なります");
   });
 
   it("finds the single differing indicator for the milky sisters", () => {
@@ -57,16 +57,20 @@ describe("summarizeComparison", () => {
 });
 
 describe("free-compare map coordinates", () => {
-  it("keeps data neighbours as map neighbours (no crowd-spreading)", () => {
+  it("uses the home map's display points, with region colours", () => {
     const points = new Map(dataset.points.map((p) => [p.id, p]));
+    for (const point of dataset.points) {
+      expect(point.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    }
     const tsubu = points.get("tsubuzoroi")!;
     const obako = points.get("yumeobako")!;
-    // sweetness 3 vs 4, hardness both 3: adjacent on the map, never flung apart
-    expect(Math.abs(tsubu.x - obako.x)).toBeLessThan(1.4);
-    expect(Math.abs(tsubu.y - obako.y)).toBeLessThan(0.4);
+    // taste neighbours (sweetness 3 vs 4, hardness both 3) stay neighbours:
+    // distance ~1.1 on the shared map, never the old 2.5
+    const pairDistance = Math.hypot(tsubu.x - obako.x, tsubu.y - obako.y);
+    expect(pairDistance).toBeGreaterThan(0.7);
+    expect(pairDistance).toBeLessThan(1.5);
     const yume = points.get("yumepirika")!;
     const milky = points.get("milky-queen")!;
-    expect(Math.abs(yume.x - milky.x)).toBeLessThan(0.4);
-    expect(Math.abs(yume.y - milky.y)).toBeLessThan(0.4);
+    expect(Math.hypot(yume.x - milky.x, yume.y - milky.y)).toBeLessThan(0.35);
   });
 });

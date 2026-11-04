@@ -149,7 +149,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
       </section>
 
       <section aria-label="味わいの地図での位置" className="mt-12">
-        <SectionTitle note="座標の根拠もここに書く">
+        <SectionTitle note="ホームの味わい地図と同じ配置">
           味わいの地図での位置
         </SectionTitle>
         <div className="mt-4 grid items-stretch gap-4 md:grid-cols-[1.15fr_0.85fr]">
@@ -187,7 +187,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
       </section>
 
       <section aria-label="向かない組み合わせ" className="mt-12">
-        <SectionTitle note="negative な一次情報も、隠さず置く">
+        <SectionTitle note="合わない組み合わせも、正直に置きます">
           向かない組み合わせ
         </SectionTitle>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
