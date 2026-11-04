@@ -24,7 +24,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     avoid_pairings: ["あっさりした白身魚の刺身", "淡い出汁の吸い物"],
     sake_pairings: ["純米酒の熱燗", "旨口の純米"],
     whisky_pairings: ["シェリー樽のウイスキー", "甘みのあるハイボール"],
-    short_: "低アミロース由来の強い粘りとふくよかな甘み。北海道を代表する銘柄。",
+    short_:
+      "低アミロース由来の強い粘りとふくよかな甘み。北海道を代表する銘柄。",
     description:
       "北海道が育てた甘みの豊かなブランド。もっちりとした粘りと炊き上がりのつやが際立ち、冷めてもやわらかさが残ります。タレの絡んだ焼肉やハンバーグなど、味の濃いおかずにも負けずに食卓の中心を担います。",
     sommelier_note:
@@ -60,8 +61,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "甘みがしっかり乗り、硬さと粘りは中庸な北海道の代表格。冷めても粒の輪郭が保たれるため、お弁当や酢飯にすると持ち味が生きます。毎日の食卓の基準にしやすい一膳です。",
     sommelier_note:
       "迷ったときの基準にしたい一膳。ほかの銘柄の個性が、この米と比べるとよく分かります。",
-    pairing_reason:
-      "粒立ちが崩れにくく、酢や具材の味を邪魔せずまとめます。",
+    pairing_reason: "粒立ちが崩れにくく、酢や具材の味を邪魔せずまとめます。",
     rakuten_search_keyword: "ななつぼし 白米 5kg 北海道産",
   },
   {
@@ -91,8 +91,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "名前のとおりふっくらとした炊き上がりが持ち味。和食の現場から指名されることも多く、優しい口当たりと奥行きのある甘みを備えています。炊き込みご飯にすると出汁を含んで、ふんわりと仕上がります。",
     sommelier_note:
       "水を控えめにしても十分やわらかく炊けます。出汁の香りを立てたい日に。",
-    pairing_reason:
-      "吸水がよく、出汁や煮汁の風味を粒の内側まで運びます。",
+    pairing_reason: "吸水がよく、出汁や煮汁の風味を粒の内側まで運びます。",
     rakuten_search_keyword: "ふっくりんこ 白米 5kg 北海道産",
   },
   {
@@ -122,8 +121,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "北海道米の評価を押し上げた立役者。汁気を含んでも粒がへたらず、口の中でほどける食感が洋食や中華の土台として重宝されます。スープカレーや、粒を残したい炒飯で本領を発揮します。",
     sommelier_note:
       "ご飯を主役にしない料理のための米。ルーやスープの輪郭が驚くほど明瞭になります。",
-    pairing_reason:
-      "粘りが控えめで、スープやルーを含んでも粒感が保たれます。",
+    pairing_reason: "粘りが控えめで、スープやルーを含んでも粒感が保たれます。",
     rakuten_search_keyword: "きらら397 白米 5kg 北海道産",
   },
   {
@@ -182,10 +180,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "低アミロースの甘みと、やわらかな粘り。",
     description:
       "低アミロース系の北海道米。甘みがあり、口当たりはやわらかく粘りが残ります。冷めても硬くなりにくいので、白ごはんや握り向き。白身魚より、米そのものを味わう食べ方が似合います。",
-    sommelier_note:
-      "淡麗に見える白さですが、噛むと甘みと粘りが広がります。",
-    pairing_reason:
-      "やわらかな粘りが、塩と出汁の和食を受け止めます。",
+    sommelier_note: "淡麗に見える白さですが、噛むと甘みと粘りが広がります。",
+    pairing_reason: "やわらかな粘りが、塩と出汁の和食を受け止めます。",
     rakuten_search_keyword: "ゆきさやか 白米 5kg 北海道産",
   },
   {
@@ -215,8 +211,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "農薬を抑えた栽培に向く北海道の品種で、日々の食卓を支える性格。甘みと粘りが穏やかに調和し、和食のおかずと自然に釣り合います。飽きのこない味わいです。",
     sommelier_note:
       "毎日の常備米として置きやすい一膳。派手さではなく、続けやすさで選ぶ米です。",
-    pairing_reason:
-      "味わいの起伏が穏やかで、和食の献立を崩さずまとめます。",
+    pairing_reason: "味わいの起伏が穏やかで、和食の献立を崩さずまとめます。",
     rakuten_search_keyword: "きたくりん 白米 5kg 北海道産",
   },
   {
@@ -246,8 +241,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粒が大きく粘りが控えめな北海道の品種。汁気を含んでも形が残るため、カレーやリゾットのような煮込み系の料理と釣り合います。噛むと穀物らしい香りが立ちます。",
     sommelier_note:
       "水分の多い料理でご飯の輪郭を残したいときに。粒の存在感が最後まで続きます。",
-    pairing_reason:
-      "大粒で吸水に強く、ソースの多い料理でも粒が立ちます。",
+    pairing_reason: "大粒で吸水に強く、ソースの多い料理でも粒が立ちます。",
     rakuten_search_keyword: "大地の星 白米 5kg 北海道産",
   },
   {
@@ -277,8 +271,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "軽い口当たりとあっさりした後味を持つ北海道の品種。重たさが残らないため、朝の和食や煮魚の定食に向きます。控えめな甘みが、おかずの塩気を穏やかに受け止めます。",
     sommelier_note:
       "朝から重たく感じたくない日に。汁物と合わせると軽さが際立ちます。",
-    pairing_reason:
-      "後味が短く、和食の出汁の香りを引きずりません。",
+    pairing_reason: "後味が短く、和食の出汁の香りを引きずりません。",
     rakuten_search_keyword: "ほしのゆめ 白米 5kg 北海道産",
   },
   {
@@ -308,8 +301,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粒立ちのよさと控えめな甘さが持ち味の青森米。口の中でほろりと解ける食感で、重たさが残りません。海鮮丼やカレーなど汁気のある料理と相性がよく、食材の旨みを静かに引き立てます。",
     sommelier_note:
       "海のものと合わせたい日の第一候補。魚の甘みと米の甘みが競いません。",
-    pairing_reason:
-      "澄んだ味わいと粒感が、汁気のある料理でも輪郭を保ちます。",
+    pairing_reason: "澄んだ味わいと粒感が、汁気のある料理でも輪郭を保ちます。",
     rakuten_search_keyword: "青天の霹靂 白米 5kg 青森県産",
   },
   {
@@ -339,8 +331,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粘りが少なく、汁を含んでもべたつかない青森の品種。さっぱりした味わいと適度な硬さが、料理の汁気を受け止めます。カレーや牛丼、中華丼のようにタレを絡めて食べる献立で持ち味が出ます。",
     sommelier_note:
       "丼のタレにも負けない粒立ち。最後の一口まで粒が立っています。",
-    pairing_reason:
-      "吸水しても崩れず、ルーやタレの味を薄めません。",
+    pairing_reason: "吸水しても崩れず、ルーやタレの味を薄めません。",
     rakuten_search_keyword: "まっしぐら 白米 5kg 青森県産",
   },
   {
@@ -368,10 +359,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "ふっくらしつつ粒が立つ、青森の日常米。",
     description:
       "津軽平野で長く作られてきた青森の品種。コシヒカリの系統を引き、粘りと甘みの均衡がよく、主張しすぎません。焼き魚や汁物など、日常の和食に静かに寄り添います。",
-    sommelier_note:
-      "食べ飽きない甘みです。毎日の白ごはんに向きます。",
-    pairing_reason:
-      "穏やかな甘みと粘りが、和食の出汁や塩気を邪魔しません。",
+    sommelier_note: "食べ飽きない甘みです。毎日の白ごはんに向きます。",
+    pairing_reason: "穏やかな甘みと粘りが、和食の出汁や塩気を邪魔しません。",
     rakuten_search_keyword: "つがるロマン 白米 5kg 青森県産",
   },
   {
@@ -399,10 +388,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "白く軽やか。日常にも贈答にも使える岩手米。",
     description:
       "際立つ白さと透き通るようなつやを備えた岩手の品種。軽やかな食感と程よい粒感があり、噛むほどに爽やかな甘みが滲みます。朝食の焼き魚やおひたしに静かに寄り添います。",
-    sommelier_note:
-      "香りの強い焼き魚と合わせても、米の白さが献立を整えます。",
-    pairing_reason:
-      "澄んだ味わいで、魚の塩気と出汁の香りを覆いません。",
+    sommelier_note: "香りの強い焼き魚と合わせても、米の白さが献立を整えます。",
+    pairing_reason: "澄んだ味わいで、魚の塩気と出汁の香りを覆いません。",
     rakuten_search_keyword: "銀河のしずく 白米 5kg 岩手県産",
   },
   {
@@ -432,8 +419,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "岩手が力を入れて育てた品種。ふくよかな甘みとやわらかな粒感が同居し、噛むと旨みが長く残ります。上質な肉料理と並べても、米の側から食卓を支えます。",
     sommelier_note:
       "おかずを少なくして、米の甘みを主役にする食べ方が似合います。",
-    pairing_reason:
-      "甘みと旨みの厚みが、肉料理の脂と釣り合います。",
+    pairing_reason: "甘みと旨みの厚みが、肉料理の脂と釣り合います。",
     rakuten_search_keyword: "金色の風 白米 5kg 岩手県産",
   },
   {
@@ -463,8 +449,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "寒さに強い岩手の品種で、甘みと粘りのどちらも穏やかです。癖がないため、和食のおかずを選ばず合わせられます。冷めても食感が落ちにくく、お弁当にも向きます。",
     sommelier_note:
       "特徴を主張しない良さがあります。おかずの個性を立てたい日に。",
-    pairing_reason:
-      "味の起伏が小さく、どのおかずにも過不足なく合います。",
+    pairing_reason: "味の起伏が小さく、どのおかずにも過不足なく合います。",
     rakuten_search_keyword: "いわてっこ 白米 5kg 岩手県産",
   },
   {
@@ -484,7 +469,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     cold_rice_quality: 3,
     sauce_absorption: 3,
     oil_compatibility: 3,
-    best_match_dishes: ["お寿司", "繊細な和食", "手巻き寿司"],
+    best_match_dishes: ["お寿司", "繊細な和食", "卵かけご飯"],
     good_with: ["酢", "白身魚", "海苔"],
     avoid_pairings: ["甘辛いタレの丼もの"],
     sake_pairings: ["大吟醸", "冷やした吟醸"],
@@ -494,8 +479,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粘りが少なく口どけのよい、あっさり系の代表格。米自体の主張が控えめなため、寿司のシャリとして長く愛されてきました。酢との馴染みのよさと、口の中でほどける食感が繊細な和食を引き立てます。",
     sommelier_note:
       "刺身の脂を流しつつ、魚の甘みだけを残してくれます。寿司好きの定番。",
-    pairing_reason:
-      "粘りが少なく、酢と魚の味わいを均一に受け止めます。",
+    pairing_reason: "粘りが少なく、酢と魚の味わいを均一に受け止めます。",
     rakuten_search_keyword: "ササニシキ 白米 5kg 宮城県産",
   },
   {
@@ -525,8 +509,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "はっきりしたもっちり感と甘みを備えた宮城の新しい品種。ササニシキとは対になる性格で、粘りの強さが持ち味です。角煮や濃厚なシチューのような、どっしりした味付けを受け止めます。",
     sommelier_note:
       "煮汁をご飯にかけて食べたい料理に。粘りが汁を抱えてくれます。",
-    pairing_reason:
-      "粘りと甘みが強く、濃い煮汁でも味わいが負けません。",
+    pairing_reason: "粘りと甘みが強く、濃い煮汁でも味わいが負けません。",
     rakuten_search_keyword: "だて正夢 白米 5kg 宮城県産",
   },
   {
@@ -554,10 +537,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "やわらかめの口当たりと穏やかな甘み。献立を選ばない。",
     description:
       "コシヒカリの系統を引くふんわりとしたやわらかさと、程よい粘りが持ち味。多くの人が食べやすいと感じる均衡のよさがあります。焼肉からハンバーグまで、和洋を問わず料理を穏やかに包みます。",
-    sommelier_note:
-      "献立が決まっていない日に選んでおくと外しません。",
-    pairing_reason:
-      "甘みと粘りが中庸で、和洋いずれの味付けにも寄り添います。",
+    sommelier_note: "献立が決まっていない日に選んでおくと外しません。",
+    pairing_reason: "甘みと粘りが中庸で、和洋いずれの味付けにも寄り添います。",
     rakuten_search_keyword: "ひとめぼれ 白米 5kg 宮城県産",
   },
   {
@@ -587,8 +568,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "大粒で粘りが控えめな宮城の品種。冷めても食感が落ちにくく、お弁当や丼ものに向きます。汁気を含んでも粒が残るため、炒飯のように粒を立てたい料理でも扱いやすいお米です。",
     sommelier_note:
       "作り置きのご飯に向きます。翌日でも粒がしっかりしています。",
-    pairing_reason:
-      "冷めても硬くなりにくく、粒感が持ち味として残ります。",
+    pairing_reason: "冷めても硬くなりにくく、粒感が持ち味として残ります。",
     rakuten_search_keyword: "萌えみのり 白米 5kg 宮城県産",
   },
   {
@@ -618,8 +598,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "ササニシキの系統を受け継ぐ宮城の品種で、味わいは穏やか。粘りが強すぎず、和食の定食に自然に収まります。冷めても食感が落ちにくいため、おにぎりにも向きます。",
     sommelier_note:
       "味噌汁と焼き魚の朝食に。ご飯が主張しないので献立が整います。",
-    pairing_reason:
-      "穏やかな甘みが、味噌や醤油の塩気と静かに釣り合います。",
+    pairing_reason: "穏やかな甘みが、味噌や醤油の塩気と静かに釣り合います。",
     rakuten_search_keyword: "まなむすめ 白米 5kg 宮城県産",
   },
   {
@@ -649,8 +628,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "透明感のある光沢と香りの良さが際立つ銘柄。甘みと粘りがあり、口当たりはやわらかめ。納豆から刺身、きりたんぽ鍋の締めまで幅広く寄り添います。",
     sommelier_note:
       "炊きたての香りが立つ米です。まず蓋を開けた瞬間を楽しんでください。",
-    pairing_reason:
-      "香りと甘みの均衡がよく、和食の献立を選びません。",
+    pairing_reason: "香りと甘みの均衡がよく、和食の献立を選びません。",
     rakuten_search_keyword: "あきたこまち 白米 5kg 秋田県産",
   },
   {
@@ -680,8 +658,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "あきたこまちの系譜を継ぐ秋田のフラッグシップ。粒が立ち、噛むほどに甘みと香りが広がります。和食の出汁や焼き魚と合わせると持ち味が出ます。",
     sommelier_note:
       "炊きたての香りを先に。蓋を開けた瞬間がこの米の見せ場です。",
-    pairing_reason:
-      "香りと旨みの厚みが、出汁と魚の和食を深くします。",
+    pairing_reason: "香りと旨みの厚みが、出汁と魚の和食を深くします。",
     rakuten_search_keyword: "サキホコレ 白米 5kg 秋田県産",
   },
   {
@@ -709,10 +686,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "ふっくらして冷めても持ち味が残る秋田米。",
     description:
       "あきたこまちの系統を引く秋田の良食味品種。ふっくらとした炊き上がりと穏やかな甘みがあり、冷めても硬くなりにくい。弁当や握り、きりたんぽ鍋の締めにも向きます。",
-    sommelier_note:
-      "クセが少なく、おかずを選ばない一膳です。",
-    pairing_reason:
-      "ふっくらした口当たりが、和食の塩気と自然に釣り合います。",
+    sommelier_note: "クセが少なく、おかずを選ばない一膳です。",
+    pairing_reason: "ふっくらした口当たりが、和食の塩気と自然に釣り合います。",
     rakuten_search_keyword: "ゆめおばこ 白米 5kg 秋田県産",
   },
   {
@@ -742,8 +717,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粒が大きく揃った秋田の品種。しっかりした噛み応えがあり、噛むごとに旨みが出てきます。丼ものやお弁当のように、粒の存在感を活かしたい献立に向きます。",
     sommelier_note:
       "粒の大きさが見て分かる米です。器に盛ったときの印象が変わります。",
-    pairing_reason:
-      "大粒で噛み応えがあり、タレの絡んだ料理でも埋もれません。",
+    pairing_reason: "大粒で噛み応えがあり、タレの絡んだ料理でも埋もれません。",
     rakuten_search_keyword: "つぶぞろい 白米 5kg 秋田県産",
   },
   {
@@ -771,10 +745,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "あっさりした後味で、酢飯にも合わせやすい。",
     description:
       "あっさりした後味と控えめな粘りを持つ秋田の品種。酢との馴染みがよく、寿司飯やお弁当に向きます。カレーのようにルーを絡める料理でも、粒が崩れずに残ります。",
-    sommelier_note:
-      "家で寿司を握る日に。粘りが少ないので扱いやすい米です。",
-    pairing_reason:
-      "粘りが控えめで、酢やルーが粒の間に均一に入ります。",
+    sommelier_note: "家で寿司を握る日に。粘りが少ないので扱いやすい米です。",
+    pairing_reason: "粘りが控えめで、酢やルーが粒の間に均一に入ります。",
     rakuten_search_keyword: "めんこいな 白米 5kg 秋田県産",
   },
   {
@@ -804,8 +776,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "雪のような白さと、弾けるような粒感が持ち味。かためのご飯を好む方に向く、すっきり系の食味です。粒が崩れにくいため、強火の炒飯やシャリの輪郭が要る寿司、カレーとの相性がよく出ます。",
     sommelier_note:
       "水を少なめに炊くと粒感がさらに立ちます。丼ものにも使いやすい。",
-    pairing_reason:
-      "しっかりした粒立ちで、油や汁気を含んでも形が残ります。",
+    pairing_reason: "しっかりした粒立ちで、油や汁気を含んでも形が残ります。",
     rakuten_search_keyword: "雪若丸 白米 5kg 山形県産",
   },
   {
@@ -833,10 +804,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "白いつやと上品な甘み。粒揃いのよい山形を代表する銘柄。",
     description:
       "炊き上がりの輝きが目を引く山形の銘柄。旨み成分が豊富で、ひとくちで上品な甘みが広がります。粒の形が美しく、素材を大切にする和食や焼き魚の定食をひとつ上の御膳に押し上げます。",
-    sommelier_note:
-      "出汁の効いた献立と合わせると、旨みが重なって膨らみます。",
-    pairing_reason:
-      "旨みの厚みが出汁と重なり、和食の味わいを深くします。",
+    sommelier_note: "出汁の効いた献立と合わせると、旨みが重なって膨らみます。",
+    pairing_reason: "旨みの厚みが出汁と重なり、和食の味わいを深くします。",
     rakuten_search_keyword: "つや姫 白米 5kg 山形県産",
   },
   {
@@ -864,10 +833,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "粒が立ち、冷めても食感が落ちにくい業務・弁当向き。",
     description:
       "あきたこまちと庄内29号の交配から生まれた山形の主力。全国作付けでも上位に入る。粘りは控えめで粒が立ち、冷めても食味が落ちにくいため、弁当やおにぎり、外食のご飯に広く使われます。",
-    sommelier_note:
-      "おかずを立てたい日に。米が主張しすぎません。",
-    pairing_reason:
-      "粘りが少なく、冷めても粒の輪郭が保たれます。",
+    sommelier_note: "おかずを立てたい日に。米が主張しすぎません。",
+    pairing_reason: "粘りが少なく、冷めても粒の輪郭が保たれます。",
     rakuten_search_keyword: "はえぬき 白米 5kg 山形県産",
   },
   {
@@ -895,10 +862,8 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "粒が立ち、あっさりした後味の福島米。",
     description:
       "粒が揃って美しく、しっかりした噛み応えを持つ福島の品種。噛むたびに粒感を感じられ、油の多いおかずと合わせても口の中が重くなりません。とんかつや唐揚げの相棒に向きます。",
-    sommelier_note:
-      "揚げ物の日に迷ったらこの一膳。後味が軽く、箸が進みます。",
-    pairing_reason:
-      "粒立ちと軽い後味が、揚げ物の油を切り替えてくれます。",
+    sommelier_note: "揚げ物の日に迷ったらこの一膳。後味が軽く、箸が進みます。",
+    pairing_reason: "粒立ちと軽い後味が、揚げ物の油を切り替えてくれます。",
     rakuten_search_keyword: "天のつぶ 白米 5kg 福島県産",
   },
   {
@@ -928,8 +893,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "粒が大きく、煮汁やタレをよく含む福島の品種。旨みに厚みがあり、山の食材を使った炊き込みご飯や煮物と自然に釣り合います。噛むほどに穏やかな甘みが続きます。",
     sommelier_note:
       "きのこや根菜と炊き合わせると、旨みが層になって重なります。",
-    pairing_reason:
-      "吸水がよく、煮汁の旨みを粒の中まで運びます。",
+    pairing_reason: "吸水がよく、煮汁の旨みを粒の中まで運びます。",
     rakuten_search_keyword: "里山のつぶ 白米 5kg 福島県産",
   },
   {
@@ -957,8 +921,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     short_: "福島の新しいブランド米。甘みとやわらかさが目立つ。",
     description:
       "福島が力を入れて育てた品種。炊きたての香りが豊かに立ち、甘みと旨みの余韻が長く残ります。おかずを控えて米そのものを味わう食べ方が似合う一膳です。",
-    sommelier_note:
-      "塩だけの握りにして、香りと余韻を確かめてみてください。",
+    sommelier_note: "塩だけの握りにして、香りと余韻を確かめてみてください。",
     pairing_reason:
       "香りと余韻が豊かで、素材を活かした和食と静かに重なります。",
     rakuten_search_keyword: "福、笑い 白米 5kg 福島県産",
@@ -990,8 +953,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "農研機構東北が育成した多収品種。主食用の看板というより、掛米や加工、業務用ごはんに使われることが多い。粒が立ち粘りは控えめで、東北、とくに福島で作付けが残っています。",
     sommelier_note:
       "白ごはん単独より、タレや加工の土台として向きがはっきりします。",
-    pairing_reason:
-      "粘りが少なく、汁気や加工工程でも粒が残りやすいです。",
+    pairing_reason: "粘りが少なく、汁気や加工工程でも粒が残りやすいです。",
     rakuten_search_keyword: "ふくひびき 白米 5kg 福島県産",
   },
   {
@@ -1021,8 +983,7 @@ export const hokkaidoTohoku: RiceSource[] = [
       "宮城県が育成した巨大胚・高アミロースの品種で、玄米として流通することが多い。白米の粘り米とは逆で、粒が立ち香ばしさがある。リゾットや玄米ごはんのように、噛む食感を活かす食べ方に向きます。",
     sommelier_note:
       "白米のもっちりさは期待しないでください。香ばしさが持ち味です。",
-    pairing_reason:
-      "粒立ちと香りが、油や出汁の料理と噛み合います。",
+    pairing_reason: "粒立ちと香りが、油や出汁の料理と噛み合います。",
     rakuten_search_keyword: "金のいぶき 玄米 宮城県産",
   },
 ];

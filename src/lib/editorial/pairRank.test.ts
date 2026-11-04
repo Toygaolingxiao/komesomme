@@ -106,6 +106,34 @@ describe("rankPairingCandidates", () => {
     expect(nabe).toContain("milky-queen");
   });
 
+  it("splits tamagokake into two schools with different leaders", () => {
+    const rich = PAIRING_PAGES.find((page) => page.slug === "tamagokake")!;
+    const firm = PAIRING_PAGES.find(
+      (page) => page.slug === "tamagokake_sappari",
+    )!;
+    const rankWith = (page: typeof rich) =>
+      rankPairingCandidates(riceProfiles, {
+        aliases: page.dishAliases,
+        avoidAliases: page.avoidAliases,
+        bias: page.bias,
+        allowAxisOppositeAvoid: true,
+        avoidBias: page.avoidBias,
+        allowBiasFillTop: true,
+      });
+    const richRanked = rankWith(rich);
+    const firmRanked = rankWith(firm);
+    // The firm school's leader is the research-backed classic, ranked by
+    // the bias alone (no pin); the rich school ranks it last of the pool.
+    expect(firmRanked.top[0].id).toBe("sasanishiki");
+    expect(richRanked.top.map((rice) => rice.id)).toContain("sasanishiki");
+    expect(richRanked.top[0].id).not.toBe("sasanishiki");
+    // Each school's avoid list is the other school's taste direction.
+    expect(firmRanked.avoid.map((rice) => rice.id)).toContain("milky-queen");
+    expect(richRanked.avoid.map((rice) => rice.id)).not.toContain(
+      "milky-queen",
+    );
+  });
+
   it("fills Top from bias when catalogue matches are sparse", () => {
     const karaage = PAIRING_PAGES.find((page) => page.slug === "karaage")!;
     const ranked = rankPairingCandidates(riceProfiles, {
