@@ -66,6 +66,7 @@ describe("editorial collections", () => {
 
   it("indexes most recently updated first (updatedLabel wins over dateLabel)", () => {
     expect(collectionsForIndex(KNOWN).map((row) => row.slug)).toEqual([
+      "furusato-nozei",
       "shinmai",
       "nabe",
       "yakizakana",
