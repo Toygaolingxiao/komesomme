@@ -116,7 +116,7 @@ export function ProfileNode({
   const top = 100 - valueToPosition(rice.display_y, INSET);
   const fill = mapGrainFill(regionColor(rice.region_id ?? rice.region));
   const tags = pairTasteTags(rice);
-  const restOpacity = dimmed ? 0.68 : muted ? 0.78 : 0.88;
+  const restOpacity = dimmed ? 0.78 : muted ? 0.86 : 0.95;
   const settleBoost = reduceMotion ? 1 : featured ? 1.06 : isRunnerUp ? 1.03 : 1;
   const grainScale = (grow / FEATURED_GROW) * settleBoost;
   const enterDelay =

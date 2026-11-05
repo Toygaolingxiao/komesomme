@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <LegalShell title="サイトについて">
       <p>
-        KomeSomme 侍米師は、個人の開発者である高江Takaeが、米が好きで、AIの手を借りた開発も自分で試したくて作っている趣味のサイトです。
+        KomeSomme 侍米師は、高江Takaeが運営する、銘柄選びの案内サイトです。106銘柄の味わいと由来を記録し、料理との組み合わせや季節の特集を、継続して更新しています。
       </p>
 
       <section className="space-y-2">
