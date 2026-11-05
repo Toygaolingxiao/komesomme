@@ -109,7 +109,7 @@ export function TasteContour({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill="#5c4e40"
-                  fontSize="12"
+                  fontSize="13"
                   fontFamily="var(--font-serif), serif"
                 >
                   {axis.label}

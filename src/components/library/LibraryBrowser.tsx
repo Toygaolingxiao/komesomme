@@ -174,7 +174,7 @@ export function LibraryBrowser({
         )}
 
         <div className="mt-8 flex flex-col gap-3 border-b border-[var(--km-border)] pb-6 sm:flex-row sm:flex-wrap sm:items-end">
-          <label className="min-w-0 flex-1">
+          <label className="block min-w-0 flex-1 xl:max-w-2xl">
             <span className="text-[12px] text-[var(--km-muted)]">検索</span>
             <input
               value={query}
@@ -190,7 +190,7 @@ export function LibraryBrowser({
               onChange={(event) =>
                 setRegion(event.target.value as (typeof REGIONS)[number])
               }
-              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none km-select ${FOCUS}`}
             >
               {REGIONS.map((item) => (
                 <option key={item} value={item}>
@@ -204,7 +204,7 @@ export function LibraryBrowser({
             <select
               value={sort}
               onChange={(event) => setSort(event.target.value as SortKey)}
-              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none km-select ${FOCUS}`}
             >
               {SORT_OPTIONS.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -218,7 +218,7 @@ export function LibraryBrowser({
             <select
               value={sweetnessMin}
               onChange={(event) => setSweetnessMin(Number(event.target.value))}
-              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none km-select ${FOCUS}`}
             >
               <option value={0}>指定なし</option>
               <option value={3}>3以上</option>
@@ -232,7 +232,7 @@ export function LibraryBrowser({
             <select
               value={hardnessMin}
               onChange={(event) => setHardnessMin(Number(event.target.value))}
-              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none km-select ${FOCUS}`}
             >
               <option value={0}>指定なし</option>
               <option value={3}>3以上</option>
@@ -254,7 +254,7 @@ export function LibraryBrowser({
         ) : null}
 
         <div
-          className={`${ROW_GRID} mt-3 hidden border-b border-[var(--km-border)] pb-2 text-[11px] tracking-wide text-[var(--km-muted)] sm:grid`}
+          className={`${ROW_GRID} mt-3 hidden border-b border-[var(--km-border)] pb-2 text-[11px] tracking-wide text-[var(--km-muted)] sm:grid sticky top-0 z-10 bg-[var(--km-bg)] shadow-[0_1px_0_var(--km-border)]`}
           aria-hidden
         >
           <span>銘柄</span>

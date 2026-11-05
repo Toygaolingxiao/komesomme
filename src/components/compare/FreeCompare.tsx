@@ -201,7 +201,7 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
   };
 
   const selectClass =
-    "w-full min-w-0 rounded-lg border border-[var(--km-border)] bg-white px-3 py-2.5 font-serif text-[15px] font-semibold text-[var(--km-ink)]";
+    "w-full min-w-0 rounded-lg border border-[var(--km-border)] bg-white px-3 py-2.5 font-serif text-[15px] font-semibold text-[var(--km-ink)] km-select";
 
   const picker = (
     label: string,
