@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { PurchaseJump, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { RakutenDirectLink } from "@/components/matrix/RakutenDirectLink";
 import { TasteContour } from "@/components/matrix/TasteContour";
 import { TastePips } from "@/components/matrix/TastePips";
 import { ShareCardActions } from "@/components/brand/ShareCardActions";
@@ -128,7 +129,10 @@ export function LibraryRiceDossier({
         </p>
 
         <div className="mt-7">
-          <PurchaseJump label="お店で探す（ページ下部）" />
+          <RakutenDirectLink rice={rice} />
+          <div className="mt-3">
+            <PurchaseJump label="ほかのお店で探す（ページ下部）" />
+          </div>
         </div>
         <ShareCardActions rice={rice} />
       </header>
