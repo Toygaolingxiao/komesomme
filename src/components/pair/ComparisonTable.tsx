@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
+import { RowShopExpand } from "@/components/pair/RowShopExpand";
 import { FOCUS } from "@/components/matrix/shared";
 import {
   AFFILIATE_LINK_REL,
@@ -122,6 +123,7 @@ export function ComparisonTable({
                     >
                       お店で価格を見る
                     </a>
+                    <RowShopExpand rice={row.rice} />
                   </th>
                   <td className="px-2 py-4 align-top">
                     <div className="grid grid-cols-2 gap-2">
