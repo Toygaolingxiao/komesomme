@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { ComparisonTable, type ComparisonRow } from "@/components/pair/ComparisonTable";
+import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { FOCUS } from "@/components/matrix/shared";
 import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
@@ -128,6 +129,40 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
       <div className="mx-auto mt-12 w-full max-w-[72rem]">
         <ComparisonTable rows={rows} title={page.candidateTitle ?? "今夜の候補"} />
       </div>
+
+      {top.length > 0 ? (
+        <section className={`${READING_COLUMN} mt-12`} aria-labelledby="pair-shop-heading">
+          <h2
+            id="pair-shop-heading"
+            className="font-serif text-[1.2rem] font-semibold tracking-tight"
+          >
+            お店で探す
+          </h2>
+          <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
+            候補の上位3銘柄は、こちらからお店で探せます。
+          </p>
+          {top.slice(0, 3).map((rice, index) => (
+            <div key={rice.id} className={index === 0 ? "mt-5" : "mt-6"}>
+              <Link href={`/library/${rice.id}`} className={FOCUS}>
+                <span className="font-serif text-[1.02rem] font-semibold hover:text-[var(--km-brown)]">
+                  {rice.name}
+                </span>
+                <span className="ml-2 text-[12px] text-[var(--km-muted)]">
+                  {rice.prefecture}
+                </span>
+              </Link>
+              <ShopLinksStrip
+                rice={rice}
+                variant="compact"
+                expandMode="always"
+                title=""
+                disclosure="pr"
+                className="mt-2"
+              />
+            </div>
+          ))}
+        </section>
+      ) : null}
 
       <section className={`${READING_COLUMN} mt-12`} aria-labelledby="pair-avoid-heading">
               <h2
