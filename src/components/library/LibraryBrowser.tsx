@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { TastePips } from "@/components/matrix/TastePips";
 import { FOCUS } from "@/components/matrix/shared";
+import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
+import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
+import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import { brandI18nSearchBlob } from "@/data/rice/brandI18n";
 import { distinctReading } from "@/lib/editorial/art";
 import { isTokuA } from "@/data/rice/tokuA";
@@ -34,9 +38,17 @@ const SORT_OPTIONS: { id: SortKey; label: string }[] = [
   { id: "stickiness", label: "粘りが強い順" },
 ];
 
-/** Desktop: name | 甘み | 粒感 | 粘り — columns align like a tasting sheet. */
+/** Desktop: name | 甘み | 粒感 | 粘り | お店 — columns align like a tasting sheet. */
 const ROW_GRID =
-  "grid grid-cols-1 gap-2.5 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem] sm:items-center sm:gap-x-4";
+  "grid grid-cols-1 gap-2.5 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_3.6rem] sm:items-center sm:gap-x-4";
+
+const shopEnabled = isShopLinksEnabled();
+
+function rakutenHref(entry: RiceEncyclopediaManifestEntry): string {
+  return wrapRakutenAffiliateUrl(
+    rakutenSearchUrl(shopQuery({ prefecture: entry.prefecture, brand: entry.name }))
+  );
+}
 
 function MetricPips({
   label,
@@ -261,16 +273,21 @@ export function LibraryBrowser({
           <span className="text-center">甘み</span>
           <span className="text-center">粒感</span>
           <span className="text-center">粘り</span>
+          <span className="text-center">お店</span>
         </div>
 
         <ul className="divide-y divide-[var(--km-border)] border-b border-[var(--km-border)] sm:border-t-0">
           {visible.map((entry) => (
-            <li key={entry.id}>
+            <li
+              key={entry.id}
+              className={`group relative ${ROW_GRID} py-3.5 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/50 sm:py-3`}
+            >
               <Link
                 href={`/library/${entry.id}`}
-                className={`group ${ROW_GRID} py-3.5 transition-colors duration-150 ease-out hover:bg-[var(--km-surface-warm)]/50 sm:py-3 ${FOCUS}`}
-              >
-                <span className="min-w-0">
+                aria-label={`${entry.name}のページ`}
+                className={`absolute inset-0 ${FOCUS}`}
+              />
+              <span className="pointer-events-none relative min-w-0">
                   <span className="block text-[11px] text-[var(--km-muted)]">
                     {entry.prefecture}
                     <span className="mx-1 text-[var(--km-muted)]/45">·</span>
@@ -289,15 +306,29 @@ export function LibraryBrowser({
                   ) : null}
                 </span>
 
-                <div className="flex gap-4 sm:contents">
+                <div className="pointer-events-none relative flex gap-4 sm:contents">
                   <MetricPips label="甘み" value={entry.sweetness} />
                   <MetricPips label="粒感" value={entry.hardness} />
                   <MetricPips label="粘り" value={entry.stickiness} />
                 </div>
-              </Link>
+
+                {shopEnabled ? (
+                  <span className="relative text-left sm:text-center">
+                    <a
+                      href={rakutenHref(entry)}
+                      target="_blank"
+                      rel={AFFILIATE_LINK_REL}
+                      className={`text-[11px] tracking-wide text-[var(--km-muted)] underline-offset-2 hover:text-[var(--km-brown)] hover:underline ${FOCUS}`}
+                    >
+                      楽天市場
+                    </a>
+                  </span>
+                ) : null}
             </li>
           ))}
         </ul>
+
+        {shopEnabled ? <AffiliateDisclosure variant="pr" className="mt-3" /> : null}
 
         {hasMore ? (
           <div ref={sentinelRef} aria-hidden className="pt-6 text-center">
