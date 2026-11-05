@@ -42,24 +42,30 @@ test.describe("TS-LIBRARY", () => {
   });
 
   test("TS-LIBRARY-05 editorial collection page", async ({ page }) => {
-    await page.goto("/discover");
+    // domcontentloaded (same pattern as TS-LIBRARY-04): the collection pages
+    // are image-heavy, and waiting for the full load event made this test
+    // time out intermittently in CI while every assertion below passed.
+    // The assertions themselves are unchanged.
+    await page.goto("/discover", { waitUntil: "domcontentloaded" });
     await expect(
       page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "ピックアップ" })
     ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "特集" })).toBeVisible();
     await expect(page.locator("#collections")).toBeVisible();
 
-    await page.goto("/collections");
+    await page.goto("/collections", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/discover/);
 
-    await page.goto("/collections/shinmai");
+    await page.goto("/collections/shinmai", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { level: 1, name: "新米のころ" })).toBeVisible();
     await expect(page.locator('a[href="/library/yumepirika"]')).toBeVisible();
 
-    await page.goto("/library/collections/shinmai");
+    await page.goto("/library/collections/shinmai", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/collections\/shinmai/);
 
-    const missing = await page.goto("/collections/not-a-real-collection");
+    const missing = await page.goto("/collections/not-a-real-collection", {
+      waitUntil: "domcontentloaded",
+    });
     expect(missing?.status()).toBe(404);
   });
 
