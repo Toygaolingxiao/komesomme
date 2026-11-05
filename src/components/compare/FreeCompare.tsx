@@ -3,8 +3,12 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { IndicatorTable } from "@/components/compare/IndicatorTable";
 import { FOCUS } from "@/components/matrix/shared";
+import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
+import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
+import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import {
   curatedKey,
   summarizeComparison,
@@ -353,6 +357,34 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
               {b.name}のページ
             </Link>
           </p>
+
+          {isShopLinksEnabled() ? (
+            <>
+              <p className="mt-3 text-[13.5px]">
+                <span className="text-[var(--km-muted)]">お店で探す：</span>
+                {[a, b].map((brand, index) => (
+                  <span key={brand.id}>
+                    {index > 0 ? (
+                      <span className="mx-1.5 text-[var(--km-muted)]">・</span>
+                    ) : null}
+                    <a
+                      href={wrapRakutenAffiliateUrl(
+                        rakutenSearchUrl(
+                          shopQuery({ prefecture: brand.prefecture, brand: brand.name })
+                        )
+                      )}
+                      target="_blank"
+                      rel={AFFILIATE_LINK_REL}
+                      className={`text-[var(--km-brown)] underline-offset-4 hover:underline ${FOCUS}`}
+                    >
+                      {brand.name}（楽天市場）
+                    </a>
+                  </span>
+                ))}
+              </p>
+              <AffiliateDisclosure variant="pr" className="mt-1.5" />
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>
