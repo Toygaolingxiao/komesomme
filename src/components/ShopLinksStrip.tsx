@@ -266,7 +266,9 @@ const MALL_TONES = {
 
 /**
  * Mall CTAs + optional affiliate disclosure.
- * Retail is 楽天 → Yahoo → Amazon → メルカリ. Furusato stays 楽天 / Yahoo / さとふる.
+ * Retail is Amazon → 楽天 → Yahoo → メルカリ (2026-11-06: Amazon leads —
+ * food carries the top mall commission rate; same links, same weight).
+ * Furusato stays 楽天 / Yahoo / さとふる.
  * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
@@ -305,6 +307,13 @@ export function ShopLinksStrip({
       {shopMode === "retail" ? (
         <>
           <PlatformButton
+            href={links.amazon}
+            label={short ? "Amazon" : "Amazonで探す"}
+            event="amazon_click"
+            tone={MALL_TONES.amazon}
+            compact={compact}
+          />
+          <PlatformButton
             href={links.rakuten}
             label={short ? "楽天市場" : "楽天市場で探す"}
             event="rakuten_click"
@@ -316,13 +325,6 @@ export function ShopLinksStrip({
             label={short ? "Yahoo!" : "Yahoo!で探す"}
             event="yahoo_click"
             tone={MALL_TONES.yahoo}
-            compact={compact}
-          />
-          <PlatformButton
-            href={links.amazon}
-            label={short ? "Amazon" : "Amazonで探す"}
-            event="amazon_click"
-            tone={MALL_TONES.amazon}
             compact={compact}
           />
           <PlatformButton
