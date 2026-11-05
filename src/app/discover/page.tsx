@@ -5,6 +5,7 @@ import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreload
 import { SteamMark } from "@/components/brand/EditorialMarks";
 import { TodaysBowl } from "@/components/editorial/TodaysBowl";
 import { DiscoverPairTeaser } from "@/components/pair/DiscoverPairTeaser";
+import { DiscoverPrefectureTeaser } from "@/components/editorial/DiscoverPrefectureTeaser";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
@@ -95,6 +96,8 @@ export default function DiscoverPage() {
         </div>
 
         <DiscoverPairTeaser />
+
+        <DiscoverPrefectureTeaser />
 
         <div className="mt-14 border-t border-[var(--km-border)] pt-12">
           <CollectionsIndex collections={collections} embedded />

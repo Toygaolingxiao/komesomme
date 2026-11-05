@@ -24,6 +24,16 @@ describe("splitInlineLinks", () => {
     ]);
   });
 
+  it("splits a section link such as /prefectures", () => {
+    expect(
+      splitInlineLinks("県から探す：[産地から選ぶ](/prefectures)では。")
+    ).toEqual([
+      { type: "text", text: "県から探す：" },
+      { type: "link", label: "産地から選ぶ", href: "/prefectures" },
+      { type: "text", text: "では。" },
+    ]);
+  });
+
   it("does not treat javascript or other schemes as links", () => {
     const source = "[えみほころ](javascript:alert(1))のまま";
     expect(splitInlineLinks(source)).toEqual([{ type: "text", text: source }]);

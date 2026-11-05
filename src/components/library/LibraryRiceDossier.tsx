@@ -20,6 +20,7 @@ import {
   todayServeLine,
 } from "@/components/matrix/shared";
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
+import { prefecturePageByLabel } from "@/lib/editorial/prefectures";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
@@ -93,6 +94,7 @@ export function LibraryRiceDossier({
   const forYou = forYouLines(rice);
   const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
   const reading = distinctReading(rice.name, article.reading);
+  const prefPage = prefecturePageByLabel(rice.prefecture);
 
   return (
     <article className={`${SITE_COLUMN} pb-24 pt-2`}>
@@ -113,7 +115,18 @@ export function LibraryRiceDossier({
           className="mb-5 h-1 w-12 rounded-full"
           style={{ background: fill }}
         />
-        <p className="text-[12px] text-[var(--km-muted)]">{rice.prefecture}</p>
+        <p className="text-[12px] text-[var(--km-muted)]">
+          {prefPage ? (
+            <Link
+              href={`/prefectures/${prefPage.slug}`}
+              className={`underline-offset-2 transition hover:text-[var(--km-brown)] hover:underline ${FOCUS}`}
+            >
+              {rice.prefecture}
+            </Link>
+          ) : (
+            rice.prefecture
+          )}
+        </p>
         <h1 className="mt-2 font-serif text-[2.25rem] font-semibold leading-[1.15] tracking-tight text-[var(--km-ink)] sm:text-[2.6rem]">
           {rice.name}
         </h1>

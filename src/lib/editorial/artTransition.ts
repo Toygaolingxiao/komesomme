@@ -1,4 +1,4 @@
-export type ArtTransitionKind = "brand" | "collection" | "pair";
+export type ArtTransitionKind = "brand" | "collection" | "pair" | "prefecture";
 
 /** Shared `view-transition-name` for an editorial still that travels between routes. */
 export function artViewTransitionName(kind: ArtTransitionKind, id: string): string {

@@ -898,7 +898,7 @@ export const hokkaidoTohoku: RiceSource[] = [
   },
   {
     id: "fuku-warai",
-    name: "福、笑い",
+    name: "福笑い",
     prefecture: "福島県",
     region: "北海道・東北",
     sweetness: 5,
@@ -924,7 +924,7 @@ export const hokkaidoTohoku: RiceSource[] = [
     sommelier_note: "塩だけの握りにして、香りと余韻を確かめてみてください。",
     pairing_reason:
       "香りと余韻が豊かで、素材を活かした和食と静かに重なります。",
-    rakuten_search_keyword: "福、笑い 白米 5kg 福島県産",
+    rakuten_search_keyword: "福笑い 白米 5kg 福島県産",
   },
   {
     id: "fukuhibiki",

@@ -289,8 +289,14 @@ export function ShopLinksStrip({
 
   useEffect(() => {
     setOpen(expandMode === "always");
-    setShopMode("retail");
-  }, [rice.id, expandMode]);
+    // Furusato features link to brand pages with ?shop=furusato — a reader
+    // arriving from that context should land on the donation tab, not retail.
+    const wantsFurusato =
+      expandMode === "always" &&
+      variant === "full" &&
+      new URLSearchParams(window.location.search).get("shop") === "furusato";
+    setShopMode(wantsFurusato ? "furusato" : "retail");
+  }, [rice.id, expandMode, variant]);
 
   if (!enabled) return null;
 
