@@ -68,7 +68,7 @@ export function regionColor(region: RiceRegion | string): string {
 const MAP_GRAIN_BASE = "#F3DDB4";
 
 export function mapGrainFill(regionHex: string): string {
-  return `color-mix(in srgb, ${regionHex} 42%, ${MAP_GRAIN_BASE} 58%)`;
+  return `color-mix(in srgb, ${regionHex} 58%, ${MAP_GRAIN_BASE} 42%)`;
 }
 
 /** A rail entry. Coordinate and semantic paths produce different scores but render alike. */
