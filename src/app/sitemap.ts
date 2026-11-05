@@ -3,6 +3,7 @@ import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { COMPARISON_PAGES } from "@/data/editorial/comparisons";
+import { PREFECTURE_PAGES } from "@/lib/editorial/prefectures";
 import { getSiteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/discover",
     "/pair",
     "/compare",
+    "/prefectures",
     "/about",
     "/privacy",
     "/terms",
@@ -27,7 +29,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path === "/library" ||
       path === "/discover" ||
       path === "/pair" ||
-      path === "/compare"
+      path === "/compare" ||
+      path === "/prefectures"
         ? "weekly"
         : "yearly",
     priority:
@@ -36,9 +39,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
         : path === "/library" ||
             path === "/discover" ||
             path === "/pair" ||
-            path === "/compare"
+            path === "/compare" ||
+            path === "/prefectures"
           ? 0.8
           : 0.3,
+  }));
+
+  const prefectures: MetadataRoute.Sitemap = PREFECTURE_PAGES.map((page) => ({
+    url: `${origin}/prefectures/${encodeURIComponent(page.slug)}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.7,
   }));
 
   const collections: MetadataRoute.Sitemap = EDITORIAL_COLLECTIONS.map(
@@ -79,6 +90,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...collections,
     ...pairings,
     ...comparisons,
+    ...prefectures,
     ...libraryArticles,
   ];
 }
