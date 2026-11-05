@@ -64,11 +64,11 @@ export function regionColor(region: RiceRegion | string): string {
   return colorForRegion(region);
 }
 
-/** Map grain body: steamed-rice ivory with a light regional blush (not candy). */
+/** Map grain body: regional colour leads, steamed-rice ivory only softens it. */
 const MAP_GRAIN_BASE = "#F3DDB4";
 
 export function mapGrainFill(regionHex: string): string {
-  return `color-mix(in srgb, ${regionHex} 58%, ${MAP_GRAIN_BASE} 42%)`;
+  return `color-mix(in srgb, ${regionHex} 72%, ${MAP_GRAIN_BASE} 28%)`;
 }
 
 /** A rail entry. Coordinate and semantic paths produce different scores but render alike. */

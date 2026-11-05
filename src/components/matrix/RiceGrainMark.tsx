@@ -54,9 +54,12 @@ export function RiceGrainMark({
     >
       <defs>
         <radialGradient id={`km-g-body-${gid}`} cx="40%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#fffef8" />
-          <stop offset="42%" stopColor={fill} />
-          <stop offset="100%" stopColor={fill} stopOpacity="0.88" />
+          <stop
+            offset="0%"
+            stopColor={`color-mix(in srgb, ${fill} 48%, #fffef8 52%)`}
+          />
+          <stop offset="45%" stopColor={fill} />
+          <stop offset="100%" stopColor={fill} />
         </radialGradient>
       </defs>
 
@@ -65,8 +68,8 @@ export function RiceGrainMark({
       <path
         d="M4.8 11C4.8 6.6 11.2 3.6 20 3.6C28.8 3.6 35.2 6.6 35.2 11C35.2 15.4 28.8 18.4 20 18.4C11.2 18.4 4.8 15.4 4.8 11Z"
         fill={`url(#km-g-body-${gid})`}
-        stroke="rgba(112,69,34,0.14)"
-        strokeWidth="0.5"
+        stroke="rgba(112,69,34,0.3)"
+        strokeWidth="0.75"
       />
       <ellipse
         cx="16.5"
@@ -74,7 +77,7 @@ export function RiceGrainMark({
         rx="7.4"
         ry="3"
         fill="#fff6e4"
-        opacity={featured ? 0.62 : runner ? 0.48 : 0.34}
+        opacity={featured ? 0.62 : runner ? 0.48 : 0.22}
       />
     </svg>
   );
