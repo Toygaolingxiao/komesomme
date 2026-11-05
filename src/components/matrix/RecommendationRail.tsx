@@ -272,16 +272,16 @@ export function RecommendationRail({
             </AnimatePresence>
           </div>
         )}
+        {!loading && !pending && primary ? (
+          <ShopLinksStrip
+            rice={primary.rice}
+            variant="compact"
+            expandMode="disclosure"
+            disclosure="pr"
+            className="mt-2 shrink-0 border-t border-[var(--km-border)]/70 pt-2"
+          />
+        ) : null}
       </div>
-      {!loading && !pending && primary ? (
-        <ShopLinksStrip
-          rice={primary.rice}
-          variant="compact"
-          expandMode="disclosure"
-          disclosure="pr"
-          className="mt-2 shrink-0 border-t border-[var(--km-border)]/70 pt-2"
-        />
-      ) : null}
     </div>
   );
 }

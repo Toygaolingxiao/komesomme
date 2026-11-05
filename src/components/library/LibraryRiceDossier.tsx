@@ -277,12 +277,12 @@ export function LibraryRiceDossier({
         </div>
       </Section>
 
-      <aside className="mt-14 space-y-3 border-t border-[var(--km-border)] pt-8 text-[12px] leading-relaxed text-[var(--km-muted)]">
+      <aside className="mt-10 space-y-3 border-t border-[var(--km-border)] pt-8 text-[12px] leading-relaxed text-[var(--km-muted)]">
         <p>{article.caveats}</p>
         <p>{DISCLAIMER}</p>
       </aside>
 
-      <p className="mt-10">
+      <p className="mt-6">
         <Link
           href="/"
           className={`text-[13px] text-[var(--km-muted)] transition hover:text-[var(--km-gold)] ${FOCUS}`}

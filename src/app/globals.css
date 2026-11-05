@@ -54,6 +54,7 @@ body {
   color: var(--km-ink);
   background: var(--km-bg);
   font-family: var(--font-sans);
+  line-break: strict;
 }
 
 /* Ambient colour wash. Kept on a viewport-fixed layer so the gradient box
@@ -231,4 +232,18 @@ body::before {
   ::view-transition-new(*) {
     animation: none !important;
   }
+}
+
+/* Japanese prose: avoid orphaned last lines and unbalanced headings. */
+p, li, dd { text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* Native select arrow replaced with a brand chevron (use with existing select classes). */
+.km-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23704522' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  padding-right: 2rem;
 }

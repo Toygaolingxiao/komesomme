@@ -26,7 +26,7 @@ export function CollectionView({
         <header className={READING_COLUMN}>
           <SteamMark className="h-7 w-7" />
           <p className="mt-3 text-[12px] text-[var(--km-muted)]">
-            {collectionDateDisplay(collection.dateLabel)}
+            {`公開 ${collectionDateDisplay(collection.dateLabel)}`}
             {collection.updatedLabel ? (
               <span className="ml-3">{`更新 ${collectionDateDisplay(collection.updatedLabel)}`}</span>
             ) : null}

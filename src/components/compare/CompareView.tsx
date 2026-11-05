@@ -128,7 +128,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
       </p>
 
       {/* Verdict first (conclusion up top, per the page design). */}
-      <section aria-label="結論" className="mt-8 grid gap-3 sm:grid-cols-2">
+      <section aria-label="結論" className="mt-8 grid items-start gap-3 sm:grid-cols-2">
         {[
           { rice: a, verdict: page.verdictA },
           { rice: b, verdict: page.verdictB },
@@ -185,7 +185,7 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
         <SectionTitle note="ホームの味わい地図と同じ配置">
           味わいの地図での位置
         </SectionTitle>
-        <div className="mt-4 grid items-stretch gap-4 md:grid-cols-[1.15fr_0.85fr]">
+        <div className="mt-4 grid items-start gap-4 md:grid-cols-[1.15fr_0.85fr]">
           <CompareMiniMap a={a} b={b} />
           <p className="rounded-lg border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-[#FBF6EC] p-4 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
             {page.coordinateNote}
