@@ -75,11 +75,15 @@ export function LibraryBrowser({
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<(typeof REGIONS)[number]>("すべて");
   const [sort, setSort] = useState<SortKey>("default");
+  const [sweetnessMin, setSweetnessMin] = useState(0);
+  const [hardnessMin, setHardnessMin] = useState(0);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const matched = entries.filter((entry) => {
       if (region !== "すべて" && entry.region !== region) return false;
+      if (sweetnessMin > 0 && entry.sweetness < sweetnessMin) return false;
+      if (hardnessMin > 0 && entry.hardness < hardnessMin) return false;
       if (!q) return true;
       const hay =
         `${entry.name}${entry.reading}${entry.prefecture}${entry.headline}${brandI18nSearchBlob(entry.id)}`.toLowerCase();
@@ -95,18 +99,23 @@ export function LibraryBrowser({
       if (delta !== 0) return delta;
       return a.name.localeCompare(b.name, "ja");
     });
-  }, [entries, query, region, sort]);
+  }, [entries, query, region, sort, sweetnessMin, hardnessMin]);
 
   // Progressive rendering: the first PAGE_SIZE rows are in the server HTML so
   // the page is usable at once; the rest render in as the reader scrolls.
   // While searching/filtering/sorting, every match renders immediately.
-  const filtering = query.trim() !== "" || region !== "すべて" || sort !== "default";
+  const filtering =
+    query.trim() !== "" ||
+    region !== "すべて" ||
+    sort !== "default" ||
+    sweetnessMin > 0 ||
+    hardnessMin > 0;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [query, region, sort]);
+  }, [query, region, sort, sweetnessMin, hardnessMin]);
 
   const hasMore = !filtering && visibleCount < filtered.length;
 
@@ -127,6 +136,19 @@ export function LibraryBrowser({
   }, [hasMore, filtered.length]);
 
   const visible = filtering ? filtered : filtered.slice(0, visibleCount);
+
+  // Search also matches prefecture / headline / aliases, so a hit whose name
+  // and reading do not contain the query needs a one-line explanation.
+  const searchQ = query.trim().toLowerCase();
+  const hasIndirectMatch =
+    searchQ !== "" &&
+    filtered.some(
+      (entry) =>
+        !(
+          entry.name.toLowerCase().includes(searchQ) ||
+          entry.reading.toLowerCase().includes(searchQ)
+        )
+    );
 
   return (
     <div className={`${SITE_COLUMN} pb-16 pt-6`}>
@@ -151,7 +173,7 @@ export function LibraryBrowser({
           </header>
         )}
 
-        <div className="mt-8 flex flex-col gap-3 border-b border-[var(--km-border)] pb-6 sm:flex-row sm:items-end">
+        <div className="mt-8 flex flex-col gap-3 border-b border-[var(--km-border)] pb-6 sm:flex-row sm:flex-wrap sm:items-end">
           <label className="min-w-0 flex-1">
             <span className="text-[12px] text-[var(--km-muted)]">検索</span>
             <input
@@ -191,11 +213,45 @@ export function LibraryBrowser({
               ))}
             </select>
           </label>
+          <label className="sm:w-36">
+            <span className="text-[12px] text-[var(--km-muted)]">甘み</span>
+            <select
+              value={sweetnessMin}
+              onChange={(event) => setSweetnessMin(Number(event.target.value))}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+            >
+              <option value={0}>指定なし</option>
+              <option value={3}>3以上</option>
+              <option value={3.5}>3.5以上</option>
+              <option value={4}>4以上</option>
+              <option value={4.5}>4.5以上</option>
+            </select>
+          </label>
+          <label className="sm:w-36">
+            <span className="text-[12px] text-[var(--km-muted)]">粒感</span>
+            <select
+              value={hardnessMin}
+              onChange={(event) => setHardnessMin(Number(event.target.value))}
+              className={`mt-1.5 h-11 w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 px-3 text-sm text-[var(--km-ink)] focus:border-[var(--km-accent)] focus:outline-none ${FOCUS}`}
+            >
+              <option value={0}>指定なし</option>
+              <option value={3}>3以上</option>
+              <option value={3.5}>3.5以上</option>
+              <option value={4}>4以上</option>
+              <option value={4.5}>4.5以上</option>
+            </select>
+          </label>
         </div>
 
         <div className="mt-5 flex items-baseline justify-between gap-4">
           <p className="text-[12px] text-[var(--km-muted)]">{filtered.length} 件表示</p>
         </div>
+
+        {hasIndirectMatch ? (
+          <p className="mt-1 text-[12px] text-[var(--km-muted)]">
+            名前や読みにない銘柄は、産地・紹介文・別名などから一致しています。
+          </p>
+        ) : null}
 
         <div
           className={`${ROW_GRID} mt-3 hidden border-b border-[var(--km-border)] pb-2 text-[11px] tracking-wide text-[var(--km-muted)] sm:grid`}
