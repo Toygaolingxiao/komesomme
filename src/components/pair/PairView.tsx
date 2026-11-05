@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { ComparisonTable, type ComparisonRow } from "@/components/pair/ComparisonTable";
@@ -15,6 +16,10 @@ import {
 } from "@/lib/editorial/art";
 import type { ResolvedPairing } from "@/lib/editorial/pairings";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
+import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
+import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
+import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
+import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import type { RiceProfileV2 } from "@/types/rice";
 import "@/components/home/sommelier-motion.css";
 
@@ -77,6 +82,18 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
   const lead = top[0];
   const hero = heroSrc(page, lead);
 
+  // One quiet first-screen shop link for the lead candidate, beside its name
+  // in the header — the full shop sections stay where they are below.
+  const leadShopHref =
+    lead && isShopLinksEnabled()
+      ? wrapRakutenAffiliateUrl(
+          rakutenSearchUrl(
+            riceRakutenKeyword(lead) ||
+              shopQuery({ prefecture: lead.prefecture, brand: lead.name })
+          )
+        )
+      : null;
+
   return (
     <article className={`${SITE_COLUMN} pair-stage-enter pb-16 text-[var(--km-ink)]`}>
       <header className={`${READING_COLUMN} pt-2`}>
@@ -86,15 +103,33 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">{page.dek}</p>
         {lead ? (
-          <p className="mt-4 text-[12px] text-[var(--km-muted)]">
-            いちばん近い候補は
-            <Link
-              href={`/library/${lead.id}`}
-              className={`ml-1 text-[var(--km-brown)] hover:underline ${FOCUS}`}
-            >
-              {lead.name}
-            </Link>
-          </p>
+          <>
+            <p className="mt-4 text-[12px] text-[var(--km-muted)]">
+              いちばん近い候補は
+              <Link
+                href={`/library/${lead.id}`}
+                className={`ml-1 text-[var(--km-brown)] hover:underline ${FOCUS}`}
+              >
+                {lead.name}
+              </Link>
+              {leadShopHref ? (
+                <>
+                  <span aria-hidden className="mx-1.5 text-[var(--km-muted)]/60">
+                    ・
+                  </span>
+                  <a
+                    href={leadShopHref}
+                    target="_blank"
+                    rel={AFFILIATE_LINK_REL}
+                    className={`text-[var(--km-brown)] hover:underline ${FOCUS}`}
+                  >
+                    楽天市場で探す
+                  </a>
+                </>
+              ) : null}
+            </p>
+            {leadShopHref ? <AffiliateDisclosure variant="pr" className="mt-1.5" /> : null}
+          </>
         ) : null}
       </header>
 
