@@ -18,6 +18,12 @@ import type { PrefectureMapSummary } from "@/lib/editorial/prefectures";
  * prefecture page (or the brand pages) does the rest. Geometry is
  * svg-japan's "full" layout (MIT), with Okinawa in its inset position.
  */
+/** Okinawa's island chain is drawn true to position — a diagonal of
+ *  specks too small to read. The map adds the customary inset: a framed
+ *  magnified viewport onto the main island, at the lower left. */
+const OKINAWA_INSET = { x: 2, y: 398, width: 112, height: 114 };
+const OKINAWA_VIEWBOX = "66 444 42 44";
+
 export function PrefectureMap({
   summaries,
 }: {
@@ -118,6 +124,46 @@ export function PrefectureMap({
             </g>
           );
         })}
+        {(() => {
+          const okinawa = PREFECTURE_MAP_PATHS.find((path) => path.code === 47);
+          if (!okinawa || byName.has(okinawa.name)) return null;
+          return (
+            <g aria-hidden>
+              <rect
+                x={OKINAWA_INSET.x}
+                y={OKINAWA_INSET.y}
+                width={OKINAWA_INSET.width}
+                height={OKINAWA_INSET.height}
+                fill="var(--km-paper)"
+                stroke="var(--km-border)"
+                strokeWidth={1}
+              />
+              <svg
+                x={OKINAWA_INSET.x}
+                y={OKINAWA_INSET.y}
+                width={OKINAWA_INSET.width}
+                height={OKINAWA_INSET.height}
+                viewBox={OKINAWA_VIEWBOX}
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <path
+                  d={okinawa.d}
+                  fill="#E7DFCC"
+                  stroke="var(--km-paper)"
+                  strokeWidth={0.5}
+                />
+              </svg>
+              <text
+                x={OKINAWA_INSET.x + 6}
+                y={OKINAWA_INSET.y + 13}
+                fontSize={8.5}
+                fill="var(--km-muted)"
+              >
+                沖縄県
+              </text>
+            </g>
+          );
+        })()}
       </svg>
 
       <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[12px] text-[var(--km-muted)]">
