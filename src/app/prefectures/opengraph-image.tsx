@@ -17,7 +17,7 @@ export default async function PrefecturesOpenGraphImage() {
       <PrefectureOgCard
         eyebrow="KomeSomme · 産地"
         title="産地から選ぶ"
-        dek={`日本地図から都道府県を選んで、その土地の銘柄へ。銘柄のある${PREFECTURES_WITH_BRANDS}県には、産地ページがあります。`}
+        dek={`日本地図から都道府県を選んで、その土地の銘柄へ。銘柄のある${PREFECTURES_WITH_BRANDS}県は、地図からそのまま開けます。`}
         highlight={null}
       />
     ),

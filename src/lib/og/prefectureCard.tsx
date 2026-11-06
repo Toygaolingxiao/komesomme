@@ -32,8 +32,15 @@ for (const profile of riceProfiles) {
   }
 }
 
-/** How many prefectures the catalogue knows (the index card's count). */
-export const PREFECTURES_WITH_BRANDS = REGION_BY_PREFECTURE.size;
+/**
+ * How many prefectures the catalogue knows (the index card's count).
+ * National brands carry prefecture "全国" — not a prefecture; count only
+ * names the map actually draws.
+ */
+const MAP_NAMES = new Set(PREFECTURE_MAP_PATHS.map((path) => path.name));
+export const PREFECTURES_WITH_BRANDS = [...REGION_BY_PREFECTURE.keys()].filter(
+  (name) => MAP_NAMES.has(name)
+).length;
 
 function fillFor(name: string, highlight: string | null): string {
   if (highlight && name === highlight) return GOLD;
