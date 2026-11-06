@@ -56,7 +56,7 @@ export default function PrefecturesIndexPage() {
           }),
         ]}
       />
-      <SiteHeader active="library" />
+      <SiteHeader active="prefectures" />
       <div className={`${SITE_COLUMN} pt-5`}>
         <Breadcrumbs className={READING_COLUMN} crumbs={TRAIL} />
       </div>
