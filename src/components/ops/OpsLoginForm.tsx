@@ -33,35 +33,38 @@ export function OpsLoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto w-full max-w-md space-y-6">
-      <div>
-        <p className="text-[11px] tracking-[0.22em] text-[#d49a2a]">KOMESOMME</p>
-        <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-[#fff5e5]">
-          观测台
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-[#cbb9a4]">站点行为看板。输入密钥进入。</p>
-      </div>
+    <form
+      onSubmit={onSubmit}
+      className="w-full rounded-[1.5rem] border border-[#3d2f24] bg-[#1a1410]/80 p-6 sm:p-8"
+    >
+      <p className="text-[10px] tracking-[0.22em] text-[#d49a2a]">
+        KOMESOMME <span className="text-[#766658]">/ OPS</span>
+      </p>
+      <h1 className="mt-1.5 font-serif text-2xl font-semibold tracking-tight text-[#fff5e5] sm:text-3xl">
+        观测台
+      </h1>
+      <p className="mt-2 text-[13px] leading-relaxed text-[#9a8774]">站点行为看板。输入密钥进入。</p>
 
-      <label className="block">
+      <label className="mt-8 block">
         <span className="text-[11px] tracking-[0.16em] text-[#9a8774]">密钥</span>
         <input
           type="password"
           autoComplete="current-password"
           value={secret}
           onChange={(e) => setSecret(e.target.value)}
-          className="mt-2 h-12 w-full rounded-xl border border-[#5a4636] bg-[#1a1410] px-3 text-sm text-[#fff5e5] outline-none focus:border-[#d49a2a]"
+          className="mt-2 h-12 w-full rounded-xl border border-[#5a4636] bg-[#241c16] px-3 text-sm text-[#fff5e5] outline-none focus:border-[#d49a2a]"
           required
           minLength={16}
           maxLength={256}
         />
       </label>
 
-      {error ? <p className="text-sm text-[#e56b3f]">{error}</p> : null}
+      {error ? <p className="mt-4 text-sm text-[#e56b3f]">{error}</p> : null}
 
       <button
         type="submit"
         disabled={pending}
-        className="h-12 w-full rounded-full bg-[#e56b3f] text-sm font-semibold text-[#fffdf7] transition hover:bg-[#c85a28] disabled:opacity-60"
+        className="mt-6 h-12 w-full rounded-full bg-[#e56b3f] text-sm font-semibold text-[#fffdf7] transition hover:bg-[#c85a28] disabled:opacity-60"
       >
         {pending ? "验证中…" : "进入观测台"}
       </button>

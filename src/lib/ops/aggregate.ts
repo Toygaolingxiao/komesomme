@@ -35,6 +35,38 @@ export type OpsSummary = {
   furusatoChannels: Array<{ id: string; label: string; count: number }>;
   topPaths: Array<{ path: string; count: number }>;
   events: Array<{ event: string; count: number }>;
+  pageTypes: Array<{
+    id: string;
+    label: string;
+    views: number;
+    explore: number;
+    shopOpens: number;
+    purchaseClicks: number;
+    consults: number;
+    purchasePerView: number;
+  }>;
+  sources: Array<{ id: string; label: string; sessions: number; views: number }>;
+  topBrands: Array<{ id: string; views: number; purchaseClicks: number }>;
+  landingPages: Array<{ path: string; sessions: number }>;
+  leaders: {
+    pair: Array<{ slug: string; views: number; purchaseClicks: number }>;
+    prefecture: Array<{ slug: string; views: number; purchaseClicks: number }>;
+    compare: Array<{ slug: string; views: number; purchaseClicks: number }>;
+    collection: Array<{ slug: string; views: number; purchaseClicks: number }>;
+  };
+  shares: {
+    total: number;
+    byKind: Array<{ id: string; label: string; count: number }>;
+    topBrands: Array<{ id: string; count: number }>;
+  };
+  /** KPIs of the immediately preceding window of the same length. Filled by loadSummary. */
+  previous?: {
+    sessions: number;
+    pageViews: number;
+    purchaseClicks: number;
+    consultSubmits: number;
+    shopOpens: number;
+  };
 };
 
 const PURCHASE_EVENTS = new Set([
@@ -129,6 +161,114 @@ function metaLabel(meta: unknown): string {
   return typeof label === "string" ? label : "";
 }
 
+function metaString(meta: unknown, key: string): string {
+  if (!meta || typeof meta !== "object") return "";
+  const value = (meta as Record<string, unknown>)[key];
+  return typeof value === "string" ? value.trim() : "";
+}
+
+/** Ratio change of a KPI against the previous window; null when there is no baseline. */
+export function kpiDelta(current: number, previous: number): number | null {
+  if (previous === 0) return null;
+  return (current - previous) / previous;
+}
+
+const PAGE_TYPES: Array<{ id: string; label: string }> = [
+  { id: "home", label: "首页・味わい地図" },
+  { id: "discover", label: "ピックアップ" },
+  { id: "library", label: "銘柄ライブラリ" },
+  { id: "brand", label: "銘柄ページ" },
+  { id: "pair", label: "料理で選ぶ" },
+  { id: "compare", label: "銘柄くらべ" },
+  { id: "prefecture", label: "産地から選ぶ" },
+  { id: "collection", label: "特集" },
+  { id: "other", label: "その他" },
+];
+
+function pageTypeId(path: string | null): string {
+  const p = (path ?? "").trim();
+  if (!p) return "other";
+  if (p === "/") return "home";
+  if (p === "/discover") return "discover";
+  if (p === "/library") return "library";
+  if (/^\/library\/[^/]+$/.test(p)) return "brand";
+  if (p === "/pair" || p.startsWith("/pair/")) return "pair";
+  if (p === "/compare" || p.startsWith("/compare/")) return "compare";
+  if (p === "/prefectures" || p.startsWith("/prefectures/")) return "prefecture";
+  if (p === "/collections" || p.startsWith("/collections/")) return "collection";
+  return "other";
+}
+
+function brandIdFromPath(path: string | null): string | null {
+  const p = (path ?? "").trim();
+  const match = /^\/library\/([^/]+)$/.exec(p);
+  return match ? match[1] : null;
+}
+
+function isExploreEvent(event: string): boolean {
+  return (
+    event === "map_marker_click" ||
+    event === "recommendation_detail_click" ||
+    event === "similar_rice_click"
+  );
+}
+
+function isShopOpen(row: OpsEventRow): boolean {
+  return (
+    row.event === "shop_disclosure_toggle" &&
+    (row.meta as { open?: unknown } | null)?.open === true
+  );
+}
+
+function referrerHost(referrer: string): string {
+  try {
+    return new URL(referrer).host;
+  } catch {
+    return referrer.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").split("/")[0] ?? "";
+  }
+}
+
+/** First-touch source of a session, from its earliest page_view meta. */
+function sessionSource(meta: unknown): { id: string; label: string } {
+  const utm = metaString(meta, "utm_source");
+  if (utm) return { id: utm, label: utm };
+  const referrer = metaString(meta, "referrer");
+  if (referrer) {
+    const host = referrerHost(referrer);
+    if (host) return { id: host, label: host };
+  }
+  return { id: "direct", label: "直接访问" };
+}
+
+const LEADER_PREFIXES = [
+  { key: "pair", prefix: "/pair/" },
+  { key: "prefecture", prefix: "/prefectures/" },
+  { key: "compare", prefix: "/compare/" },
+  { key: "collection", prefix: "/collections/" },
+] as const;
+
+type LeaderKey = (typeof LEADER_PREFIXES)[number]["key"];
+
+function leaderSlug(path: string | null): { key: LeaderKey; slug: string } | null {
+  const p = (path ?? "").trim();
+  for (const { key, prefix } of LEADER_PREFIXES) {
+    if (!p.startsWith(prefix)) continue;
+    const slug = p.slice(prefix.length);
+    if (!slug || slug.includes("/")) return null;
+    return { key, slug };
+  }
+  return null;
+}
+
+const SHARE_KINDS = [
+  { id: "share_card_download", label: "下载" },
+  { id: "share_card_native", label: "系统分享" },
+  { id: "share_card_copy_link", label: "复制链接" },
+  { id: "share_fallback", label: "兜底" },
+] as const;
+
+const SHARE_EVENTS = new Set<string>(SHARE_KINDS.map((kind) => kind.id));
+
 function purchaseChannel(row: OpsEventRow): string | null {
   if (!PURCHASE_EVENTS.has(row.event)) return null;
   if (row.event === "satofull_click") return "satofull";
@@ -162,18 +302,9 @@ export function aggregateAccessEvents(
 
   const pageViews = countBy(rows, (r) => r.event === "page_view");
   const consultSubmits = countBy(rows, (r) => r.event === "language_search_submit");
-  const shopOpens = countBy(
-    rows,
-    (r) => r.event === "shop_disclosure_toggle" && (r.meta as { open?: unknown } | null)?.open === true
-  );
+  const shopOpens = countBy(rows, isShopOpen);
   const purchaseClicks = countBy(rows, (r) => PURCHASE_EVENTS.has(r.event));
-  const explore = countBy(
-    rows,
-    (r) =>
-      r.event === "map_marker_click" ||
-      r.event === "recommendation_detail_click" ||
-      r.event === "similar_rice_click"
-  );
+  const explore = countBy(rows, (r) => isExploreEvent(r.event));
 
   const funnel = [
     { id: "page_view", label: "浏览", count: pageViews },
@@ -243,6 +374,147 @@ export function aggregateAccessEvents(
     .map(([event, count]) => ({ event, count }))
     .sort((a, b) => b.count - a.count);
 
+  // Per page-type funnel: same predicates as the global funnel, split by path class.
+  const typeCounts = new Map<
+    string,
+    { views: number; explore: number; shopOpens: number; purchaseClicks: number; consults: number }
+  >();
+  for (const type of PAGE_TYPES) {
+    typeCounts.set(type.id, { views: 0, explore: 0, shopOpens: 0, purchaseClicks: 0, consults: 0 });
+  }
+  for (const row of rows) {
+    const bucket = typeCounts.get(pageTypeId(row.path));
+    if (!bucket) continue;
+    if (row.event === "page_view") bucket.views += 1;
+    if (isExploreEvent(row.event)) bucket.explore += 1;
+    if (isShopOpen(row)) bucket.shopOpens += 1;
+    if (PURCHASE_EVENTS.has(row.event)) bucket.purchaseClicks += 1;
+    if (row.event === "language_search_submit") bucket.consults += 1;
+  }
+  const pageTypes = PAGE_TYPES.map((type) => {
+    const c = typeCounts.get(type.id) ?? {
+      views: 0,
+      explore: 0,
+      shopOpens: 0,
+      purchaseClicks: 0,
+      consults: 0,
+    };
+    return { id: type.id, label: type.label, ...c, purchasePerView: ratio(c.purchaseClicks, c.views) };
+  })
+    .filter(
+      (t) =>
+        t.views > 0 || t.explore > 0 || t.shopOpens > 0 || t.purchaseClicks > 0 || t.consults > 0
+    )
+    .sort((a, b) => b.views - a.views);
+
+  // First-touch sources: rows arrive chronological, so the first page_view of a
+  // session carries that session's landing attribution.
+  const sessionSourceById = new Map<string, { id: string; label: string }>();
+  const sessionViews = new Map<string, number>();
+  for (const row of rows) {
+    if (row.event !== "page_view" || !row.session_id) continue;
+    sessionViews.set(row.session_id, (sessionViews.get(row.session_id) ?? 0) + 1);
+    if (!sessionSourceById.has(row.session_id)) {
+      sessionSourceById.set(row.session_id, sessionSource(row.meta));
+    }
+  }
+  const sourceCounts = new Map<string, { id: string; label: string; sessions: number; views: number }>();
+  for (const [sessionId, source] of sessionSourceById) {
+    const entry = sourceCounts.get(source.id) ?? { ...source, sessions: 0, views: 0 };
+    entry.sessions += 1;
+    entry.views += sessionViews.get(sessionId) ?? 0;
+    sourceCounts.set(source.id, entry);
+  }
+  const sources = [...sourceCounts.values()]
+    .sort((a, b) => b.sessions - a.sessions)
+    .slice(0, 8);
+
+  // Brand pages: views and purchase clicks on /library/<id>.
+  const brandCounts = new Map<string, { views: number; purchaseClicks: number }>();
+  for (const row of rows) {
+    const brandId = brandIdFromPath(row.path);
+    if (!brandId) continue;
+    if (row.event !== "page_view" && !PURCHASE_EVENTS.has(row.event)) continue;
+    const entry = brandCounts.get(brandId) ?? { views: 0, purchaseClicks: 0 };
+    if (row.event === "page_view") entry.views += 1;
+    if (PURCHASE_EVENTS.has(row.event)) entry.purchaseClicks += 1;
+    brandCounts.set(brandId, entry);
+  }
+  const topBrands = [...brandCounts.entries()]
+    .map(([id, c]) => ({ id, views: c.views, purchaseClicks: c.purchaseClicks }))
+    .sort((a, b) => b.purchaseClicks - a.purchaseClicks || b.views - a.views)
+    .slice(0, 10);
+
+  // Landing pages: the path of each session's earliest page_view.
+  const sessionLanding = new Map<string, string>();
+  for (const row of rows) {
+    if (row.event !== "page_view" || !row.session_id) continue;
+    if (!sessionLanding.has(row.session_id)) {
+      sessionLanding.set(row.session_id, row.path?.trim() || "/");
+    }
+  }
+  const landingCounts = new Map<string, number>();
+  for (const path of sessionLanding.values()) {
+    landingCounts.set(path, (landingCounts.get(path) ?? 0) + 1);
+  }
+  const landingPages = [...landingCounts.entries()]
+    .map(([path, sessions]) => ({ path, sessions }))
+    .sort((a, b) => b.sessions - a.sessions)
+    .slice(0, 10);
+
+  // Content leaders: per-slug views + purchase clicks for the four content types.
+  const leaderCounts: Record<LeaderKey, Map<string, { views: number; purchaseClicks: number }>> = {
+    pair: new Map(),
+    prefecture: new Map(),
+    compare: new Map(),
+    collection: new Map(),
+  };
+  for (const row of rows) {
+    if (row.event !== "page_view" && !PURCHASE_EVENTS.has(row.event)) continue;
+    const hit = leaderSlug(row.path);
+    if (!hit) continue;
+    const map = leaderCounts[hit.key];
+    const entry = map.get(hit.slug) ?? { views: 0, purchaseClicks: 0 };
+    if (row.event === "page_view") entry.views += 1;
+    if (PURCHASE_EVENTS.has(row.event)) entry.purchaseClicks += 1;
+    map.set(hit.slug, entry);
+  }
+  const leaderRows = (map: Map<string, { views: number; purchaseClicks: number }>) =>
+    [...map.entries()]
+      .map(([slug, c]) => ({ slug, views: c.views, purchaseClicks: c.purchaseClicks }))
+      .sort((a, b) => b.purchaseClicks - a.purchaseClicks || b.views - a.views)
+      .slice(0, 6);
+  const leaders = {
+    pair: leaderRows(leaderCounts.pair),
+    prefecture: leaderRows(leaderCounts.prefecture),
+    compare: leaderRows(leaderCounts.compare),
+    collection: leaderRows(leaderCounts.collection),
+  };
+
+  // Shares: share-card actions, split by kind, with the most-shared brands.
+  const shareKindCounts = new Map<string, number>();
+  const shareBrandCounts = new Map<string, number>();
+  let shareTotal = 0;
+  for (const row of rows) {
+    if (!SHARE_EVENTS.has(row.event)) continue;
+    shareTotal += 1;
+    shareKindCounts.set(row.event, (shareKindCounts.get(row.event) ?? 0) + 1);
+    const brandId = brandIdFromPath(row.path);
+    if (brandId) shareBrandCounts.set(brandId, (shareBrandCounts.get(brandId) ?? 0) + 1);
+  }
+  const shares = {
+    total: shareTotal,
+    byKind: SHARE_KINDS.map((kind) => ({
+      id: kind.id,
+      label: kind.label,
+      count: shareKindCounts.get(kind.id) ?? 0,
+    })),
+    topBrands: [...shareBrandCounts.entries()]
+      .map(([id, count]) => ({ id, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5),
+  };
+
   return {
     range,
     since: options.since.toISOString(),
@@ -270,5 +542,11 @@ export function aggregateAccessEvents(
     furusatoChannels,
     topPaths,
     events,
+    pageTypes,
+    sources,
+    topBrands,
+    landingPages,
+    leaders,
+    shares,
   };
 }
