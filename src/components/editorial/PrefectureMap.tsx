@@ -24,6 +24,14 @@ import type { PrefectureMapSummary } from "@/lib/editorial/prefectures";
 const OKINAWA_INSET = { x: 2, y: 398, width: 112, height: 114 };
 const OKINAWA_VIEWBOX = "66 444 42 44";
 
+/** SVG presentation attributes do not resolve CSS var() — an invalid
+ *  fill silently falls back to black. Use the design tokens as hex. */
+const PAPER = "#F6EBDD";
+const GOLD = "#D49A2A";
+const MUTED = "#766658";
+const FRAME = "#D9C8A9";
+const NO_DATA_FILL = "#E7DFCC";
+
 export function PrefectureMap({
   summaries,
 }: {
@@ -79,8 +87,8 @@ export function PrefectureMap({
               <path
                 key={path.code}
                 d={path.d}
-                fill="#E7DFCC"
-                stroke="var(--km-paper)"
+                fill={NO_DATA_FILL}
+                stroke={PAPER}
                 strokeWidth={0.8}
               />
             );
@@ -94,7 +102,7 @@ export function PrefectureMap({
                 fillOpacity={
                   summary.pageSlug ? (active ? 0.95 : 0.8) : active ? 0.55 : 0.36
                 }
-                stroke={active ? "var(--km-gold)" : "var(--km-paper)"}
+                stroke={active ? GOLD : PAPER}
                 strokeWidth={active ? 1.6 : 0.8}
                 pointerEvents="none"
                 className="transition-[fill-opacity] duration-150"
@@ -134,8 +142,8 @@ export function PrefectureMap({
                 y={OKINAWA_INSET.y}
                 width={OKINAWA_INSET.width}
                 height={OKINAWA_INSET.height}
-                fill="var(--km-paper)"
-                stroke="var(--km-border)"
+                fill={PAPER}
+                stroke={FRAME}
                 strokeWidth={1}
               />
               <svg
@@ -148,8 +156,8 @@ export function PrefectureMap({
               >
                 <path
                   d={okinawa.d}
-                  fill="#E7DFCC"
-                  stroke="var(--km-paper)"
+                  fill={NO_DATA_FILL}
+                  stroke={PAPER}
                   strokeWidth={0.5}
                 />
               </svg>
@@ -157,7 +165,7 @@ export function PrefectureMap({
                 x={OKINAWA_INSET.x + 6}
                 y={OKINAWA_INSET.y + 13}
                 fontSize={8.5}
-                fill="var(--km-muted)"
+                fill={MUTED}
               >
                 沖縄県
               </text>
