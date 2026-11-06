@@ -36,8 +36,10 @@ KomeSomme 侍米師（じべいし）は、日本のブランド米を味わい�
 | 魚沼コシヒカリの例 | [https://komesomme.jp/library/koshihikari-uonuma](https://komesomme.jp/library/koshihikari-uonuma) | 由来、炊き方、お店で探す |
 | ピックアップ | [https://komesomme.jp/discover](https://komesomme.jp/discover) | きょうの三銘柄と、旬の特集 |
 | 特集の例 | [https://komesomme.jp/collections/bento-cold](https://komesomme.jp/collections/bento-cold) | 「冷めても、弁当に」 |
+| 産地から選ぶ | [https://komesomme.jp/prefectures](https://komesomme.jp/prefectures) | 日本地図から都道府県を選び、その土地の銘柄へ。県ごとの産地ページもある |
+| 銘柄くらべ | [https://komesomme.jp/compare](https://komesomme.jp/compare) | 二つの銘柄を並べて、味わいの指標で比べる |
 
-銘柄ページの「お店で探す」は、通販（楽天 / Yahoo! / Amazon）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
+銘柄ページの「お店で探す」は、通販（Amazon / 楽天市場 / Yahoo! / メルカリ）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
 
 法務のページは [利用規約](https://komesomme.jp/terms)、[プライバシーポリシー](https://komesomme.jp/privacy)、[特定商取引法に基づく表記](https://komesomme.jp/tokushoho) です。
 
