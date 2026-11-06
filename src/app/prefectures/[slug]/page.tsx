@@ -74,7 +74,7 @@ export default async function PrefecturePage({ params }: PageProps) {
           }),
         ]}
       />
-      <SiteHeader active="library" />
+      <SiteHeader active="prefectures" />
       <div className={`${SITE_COLUMN} pt-5`}>
         <Breadcrumbs className={READING_COLUMN} crumbs={trail} />
       </div>
