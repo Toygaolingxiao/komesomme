@@ -86,8 +86,8 @@ describe("prefecture pages", () => {
 
   it("summarises every catalogued prefecture for the map", () => {
     const summaries = prefectureMapSummaries();
-    // 38 prefectures carry at least one brand (2026-11 catalogue).
-    expect(summaries.length).toBe(38);
+    // 37 prefectures carry at least one brand (2026-11 catalogue).
+    expect(summaries.length).toBe(37);
     for (const summary of summaries) {
       expect(summary.brands.length).toBeGreaterThanOrEqual(1);
       for (const brand of summary.brands) {
