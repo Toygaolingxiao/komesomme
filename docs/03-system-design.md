@@ -26,6 +26,8 @@ src/
 │   ├── layout.tsx
 │   ├── library/page.tsx              # 銘柄ライブラリ一覧
 │   ├── library/[id]/page.tsx         # 銘柄事典の正本（SSR）
+│   ├── prefectures/page.tsx          # 産地索引（日本地図＋県一覧）
+│   ├── prefectures/[slug]/page.tsx   # 産地ページ（カタログから自動生成）
 │   ├── [brand]/page.tsx              # 旧 URL → /library/[id] 永久リダイレクト
 │   ├── privacy / terms / tokushoho   # 法務草案
 │   ├── api/rice/semantic-recommend/  # 意味検索
@@ -41,11 +43,13 @@ src/
 │   ├── analytics/                    # GTM + page_view
 │   ├── ops/                          # OpsDashboard / OpsLoginForm
 │   ├── library/
+│   ├── editorial/                    # 特集・産地の誌面（CollectionView / PrefectureView / PrefectureMap）
 │   └── matrix/
 ├── data/rice/                        # sources / overlay / catalog / encyclopedia
 ├── lib/
 │   ├── rice/
 │   ├── analytics/
+│   ├── editorial/                    # 特集・産地の組み立て（collections / prefectures）
 │   ├── affiliate.ts                  # 検索 URL・披露文案の正本
 │   ├── embedding/
 │   └── supabase/
