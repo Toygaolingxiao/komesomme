@@ -83,7 +83,11 @@ export function CollectionView({
           return (
             <li key={entry.id}>
               <TransitionLink
-                href={`/library/${entry.id}`}
+                href={
+                  collection.slug === "furusato-nozei"
+                    ? `/library/${entry.id}?shop=furusato`
+                    : `/library/${entry.id}`
+                }
                 className={`group grid grid-cols-[5.75rem_minmax(0,1fr)] items-center gap-3.5 py-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-5 ${FOCUS}`}
               >
                 <BrandThumb

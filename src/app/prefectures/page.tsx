@@ -8,8 +8,10 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { FOCUS } from "@/components/matrix/shared";
 import { PAGE_TITLE, READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { prefectureArtPath } from "@/data/editorial/prefectureArt";
+import { PrefectureMap } from "@/components/editorial/PrefectureMap";
 import {
   PREFECTURE_PAGES,
+  prefectureMapSummaries,
   prefecturesByRegion,
 } from "@/lib/editorial/prefectures";
 import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
@@ -67,6 +69,10 @@ export default function PrefecturesIndexPage() {
             地域ごとに、その土地の銘柄と味わいの傾向を並べました。
           </p>
         </header>
+
+        <div className="mt-8">
+          <PrefectureMap summaries={prefectureMapSummaries()} />
+        </div>
       </div>
 
       <div className={`${SITE_COLUMN} pb-20`}>
@@ -103,7 +109,7 @@ export default function PrefecturesIndexPage() {
                           .slice(0, 3)
                           .map((brand) => brand.name)
                           .join("、")}
-                        など
+                        {page.brands.length > 3 ? "など" : ""}
                       </span>
                     </span>
                   </TransitionLink>

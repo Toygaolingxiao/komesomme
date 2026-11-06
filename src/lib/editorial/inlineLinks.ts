@@ -2,9 +2,10 @@ export type InlinePart =
   | { type: "text"; text: string }
   | { type: "link"; label: string; href: string };
 
-/** Internal library paths, or https sources. Anything else stays plain text. */
+/** Internal paths (one or two lowercase segments), or https sources.
+ *  Anything else stays plain text. */
 const INLINE_LINK =
-  /\[([^\]\n]+)\]\((\/library\/[a-z0-9-]+|https:\/\/[^\s)]+)\)/g;
+  /\[([^\]\n]+)\]\((\/[a-z0-9-]+(?:\/[a-z0-9-]+)?|https:\/\/[^\s)]+)\)/g;
 
 export function splitInlineLinks(source: string): InlinePart[] {
   const parts: InlinePart[] = [];

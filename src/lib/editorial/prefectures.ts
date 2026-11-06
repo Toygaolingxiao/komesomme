@@ -36,9 +36,18 @@ export type PrefecturePage = {
   brands: PrefectureBrand[];
   /** All 12 indicators, in COMPARISON_INDICATORS order. */
   traits: PrefectureTrait[];
-  /** The two highest averages — the prefecture's taste signature. */
+  /** The two highest taste averages — the prefecture's taste signature.
+   *  Scene indicators (sauce / oil / cold-rice) are excluded: they read
+   *  as usage notes, not as the land's flavour. */
   topTraits: PrefectureTrait[];
 };
+
+/** Usage-scene indicators — kept out of the lede's taste signature. */
+const SCENE_INDICATOR_KEYS = new Set([
+  "cold_rice_quality",
+  "oil_compatibility",
+  "sauce_absorption",
+]);
 
 const REGION_ORDER: RiceRegion[] = [
   "北海道・東北",
@@ -52,6 +61,26 @@ const REGION_ORDER: RiceRegion[] = [
 
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
+}
+
+function summarizeTraits(brands: typeof riceProfiles): {
+  traits: PrefectureTrait[];
+  topTraits: PrefectureTrait[];
+} {
+  const traits: PrefectureTrait[] = COMPARISON_INDICATORS.map(
+    ({ key, label }) => ({
+      key,
+      label,
+      value: round1(
+        brands.reduce((sum, rice) => sum + rice[key], 0) / brands.length,
+      ),
+    }),
+  );
+  const topTraits = traits
+    .filter((trait) => !SCENE_INDICATOR_KEYS.has(trait.key))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 2);
+  return { traits, topTraits };
 }
 
 function buildPrefecturePages(): PrefecturePage[] {
@@ -73,18 +102,7 @@ function buildPrefecturePages(): PrefecturePage[] {
     const slug = prefectureArtSlug(prefecture);
     if (!slug) continue;
 
-    const traits: PrefectureTrait[] = COMPARISON_INDICATORS.map(
-      ({ key, label }) => ({
-        key,
-        label,
-        value: round1(
-          brands.reduce((sum, rice) => sum + rice[key], 0) / brands.length,
-        ),
-      }),
-    );
-    const topTraits = [...traits]
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 2);
+    const { traits, topTraits } = summarizeTraits(brands);
 
     pages.push({
       slug,
@@ -114,6 +132,11 @@ export function prefectureBySlug(slug: string): PrefecturePage | null {
   return PREFECTURE_PAGES.find((page) => page.slug === slug) ?? null;
 }
 
+/** The page for a catalogue prefecture label （山形県 → yamagata), if one exists. */
+export function prefecturePageByLabel(prefecture: string): PrefecturePage | null {
+  return PREFECTURE_PAGES.find((page) => page.prefecture === prefecture) ?? null;
+}
+
 export function prefecturesByRegion(): {
   region: RiceRegion;
   pages: PrefecturePage[];
@@ -124,12 +147,74 @@ export function prefecturesByRegion(): {
   })).filter((group) => group.pages.length > 0);
 }
 
+/** 県内 / 道内 / 都内 / 府内 — the word for "inside this prefecture". */
+export function prefectureAreaWord(prefecture: string): string {
+  if (prefecture.endsWith("道")) return "道内";
+  if (prefecture.endsWith("都")) return "都内";
+  if (prefecture.endsWith("府")) return "府内";
+  return "県内";
+}
+
 /** Data-composed intro line — every claim in it comes from the catalogue. */
 export function prefectureLede(page: PrefecturePage): string {
   const flagships = page.brands
     .slice(0, 3)
     .map((brand) => brand.name)
     .join("、");
+  // 「など」 only when the list is actually partial.
+  const more = page.brands.length > 3 ? "など" : "";
   const [first, second] = page.topTraits;
-  return `${page.prefecture}の銘柄を${page.brands.length}つ記録しています。${flagships}など。味わいの平均像では「${first.label}」と「${second.label}」が前に出ます。`;
+  return `${page.prefecture}の銘柄を${page.brands.length}つ記録しています。${flagships}${more}。味わいの平均像で高めなのは「${first.label}」と「${second.label}」です。`;
+}
+
+export type PrefectureMapSummary = {
+  prefecture: string;
+  region: RiceRegion;
+  brands: PrefectureBrand[];
+  /** Taste-signature labels, same rule as the prefecture pages. */
+  topTraitLabels: string[];
+  /** The prefecture page's slug, when the prefecture has one (≥3 brands). */
+  pageSlug: string | null;
+};
+
+/**
+ * Every prefecture the catalogue knows (≥1 brand), for the clickable map
+ * on /prefectures. Prefectures below the page threshold still open the
+ * map popup — the visitor reaches their brands without a full page.
+ */
+export function prefectureMapSummaries(): PrefectureMapSummary[] {
+  const headlines = new Map(
+    encyclopediaManifest().map((entry) => [entry.id, entry.headline ?? null]),
+  );
+  const pageByLabel = new Map(
+    PREFECTURE_PAGES.map((page) => [page.prefecture, page]),
+  );
+
+  const byPrefecture = new Map<string, typeof riceProfiles>();
+  for (const rice of riceProfiles) {
+    if (!rice.prefecture || rice.prefecture === "全国") continue;
+    const list = byPrefecture.get(rice.prefecture) ?? [];
+    list.push(rice);
+    byPrefecture.set(rice.prefecture, list);
+  }
+
+  const summaries: PrefectureMapSummary[] = [];
+  for (const [prefecture, brands] of byPrefecture) {
+    const page = pageByLabel.get(prefecture);
+    const topTraits = page
+      ? page.topTraits
+      : summarizeTraits(brands).topTraits;
+    summaries.push({
+      prefecture,
+      region: brands[0].region,
+      brands: brands.map((rice) => ({
+        id: rice.id,
+        name: rice.name,
+        headline: headlines.get(rice.id) ?? null,
+      })),
+      topTraitLabels: topTraits.map((trait) => trait.label),
+      pageSlug: page?.slug ?? null,
+    });
+  }
+  return summaries;
 }

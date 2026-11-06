@@ -6,9 +6,11 @@ import { FOCUS } from "@/components/matrix/shared";
 import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
 import { prefectureArtPath } from "@/data/editorial/prefectureArt";
 import {
+  prefectureAreaWord,
   prefectureLede,
   type PrefecturePage,
 } from "@/lib/editorial/prefectures";
+import { artViewTransitionName } from "@/lib/editorial/artTransition";
 
 /**
  * One prefecture's page body: art, data-composed lede, the 12-indicator
@@ -45,6 +47,7 @@ export function PrefectureView({
           quality={90}
           priority
           objectPosition="50% 42%"
+          transitionName={artViewTransitionName("prefecture", page.slug)}
         />
       </div>
 
@@ -55,7 +58,7 @@ export function PrefectureView({
           </h2>
           <p className="mt-2 text-[13px] leading-relaxed text-[var(--km-muted)]">
             {page.prefecture}の{page.brands.length}
-            銘柄について、12指標の平均を取ったものです。銘柄ごとの差は各銘柄ページにあります。
+            銘柄について、12指標を平均したものです。銘柄ごとの差は各銘柄ページにあります。
           </p>
           <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
             {page.traits.map((trait) => (
@@ -133,7 +136,8 @@ export function PrefectureView({
           <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
             ふるさと納税では、寄附先の自治体の返礼品として、その土地の米が並びます。
             {page.prefecture}
-            の米を選ぶなら、県内の自治体への寄附が入口です。量や定期便の有無は自治体ごとに違うので、各銘柄ページの「お店で探す」にある、ふるさと納税のタブで見比べてください。選び方の流れは特集にまとめました。
+            の米を選ぶなら、{prefectureAreaWord(page.prefecture)}
+            の自治体への寄附が入口です。量や定期便の有無は自治体ごとに違うので、各銘柄ページの「お店で探す」にある「ふるさと納税」のタブで見比べられます。選び方の流れは特集にまとめました。
           </p>
           <p className="mt-3">
             <Link
