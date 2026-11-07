@@ -20,7 +20,7 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await waitForHomeReady(page);
     const explore = page.getByRole("navigation", { name: "主要ナビ" });
     await expect(explore.getByRole("link", { name: "料理で選ぶ" })).toBeVisible();
-    await expect(explore.getByRole("link", { name: "ピックアップ" })).toBeVisible();
+    await expect(explore.getByRole("button", { name: "ピックアップ" })).toBeVisible();
     await expect(explore.getByRole("link", { name: "ライブラリ" })).toBeVisible();
   });
 
