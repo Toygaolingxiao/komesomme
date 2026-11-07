@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-10T01:57:34.995Z",
-  "count": 106,
+  "generatedAt": "2026-11-07T08:02:03.720Z",
+  "count": 107,
   "entries": [
     {
       "id": "aichi-no-kaori",
@@ -433,6 +433,18 @@
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 4
+    },
+    {
+      "id": "natsuhime",
+      "name": "なつひめ",
+      "reading": "なつひめ",
+      "prefecture": "新潟県",
+      "region": "関東・甲信越",
+      "headline": "8月に穫れる、新潟の新しい極早生ブランド米です。大粒で弾力があり、噛むほど甘みが広がります。",
+      "confidence": "medium",
+      "sweetness": 4,
+      "hardness": 4,
+      "stickiness": 3
     },
     {
       "id": "natsuhonoka",
