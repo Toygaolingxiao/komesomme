@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BowlMark } from "@/components/brand/EditorialMarks";
+import { PageMasthead } from "@/components/editorial/PageMasthead";
 import { SiteHeader } from "@/components/SiteHeader";
-import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { FreeCompare } from "@/components/compare/FreeCompare";
 import { GrainMark } from "@/components/compare/GrainMark";
@@ -48,14 +49,15 @@ export default function CompareIndexPage() {
         ]}
       />
       <SiteHeader active="compare" />
-      <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={TRAIL} />
+      <PageMasthead
+        crumbs={TRAIL}
+        mark={<BowlMark className="h-8 w-8" />}
+        title="銘柄くらべ"
+        lede="「どっちがいいか」ではなく、「どう違うか」を並べるページです。迷いやすい2銘柄を、12指標の並排表と味わいの地図の位置で比べます。値段の並びは扱いません。"
+        art={null}
+      />
 
-      <div className={`${SITE_COLUMN} pb-20 pt-4`}>
-        <h1 className={`mt-3 ${PAGE_TITLE}`}>銘柄くらべ</h1>
-        <p className="mt-3 max-w-2xl text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-          「どっちがいいか」ではなく、「どう違うか」を並べるページです。迷いやすい2銘柄を、12指標の並排表と味わいの地図の位置で比べます。値段の並びは扱いません。
-        </p>
-
+      <div className={`${SITE_COLUMN} pb-20`}>
         <section
           aria-label="2つ選んで比べる"
           className="mt-10 rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] p-5 sm:p-6"

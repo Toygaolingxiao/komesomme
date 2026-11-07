@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
+import { BowlMark } from "@/components/brand/EditorialMarks";
 import { LibraryBrowser } from "@/components/library/LibraryBrowser";
 import { LibraryChrome } from "@/components/library/LibraryChrome";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
-import { LibraryMasthead } from "@/components/editorial/LibraryMasthead";
+import { PageMasthead } from "@/components/editorial/PageMasthead";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { mastheadArtSrc } from "@/lib/editorial/art";
-import { itemListLd } from "@/lib/seo/jsonLd";
+import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
+
+const TRAIL = [
+  { name: "トップ", path: "/" },
+  { name: "ライブラリ", path: "/library" },
+];
 
 export function generateMetadata(): Metadata {
   const count = encyclopediaManifest().length;
@@ -32,6 +38,7 @@ export default function LibraryPage() {
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
+      <JsonLd data={breadcrumbListLd(TRAIL)} />
       {entries.length > 0 ? (
         <JsonLd
           data={itemListLd({
@@ -59,7 +66,17 @@ export default function LibraryPage() {
         </div>
       ) : (
         <>
-          <LibraryMasthead brandCount={entries.length} />
+          <PageMasthead
+            crumbs={TRAIL}
+            mark={<BowlMark className="h-8 w-8" title="椀" />}
+            title="銘柄ライブラリ"
+            lede={`${entries.length}銘柄の味わいと由来を並べています。`}
+            art={
+              masthead
+                ? { src: masthead, alt: "炊きたての白飯を描いた手描き" }
+                : null
+            }
+          />
           <LibraryBrowser entries={entries} showPageTitle={false} />
         </>
       )}

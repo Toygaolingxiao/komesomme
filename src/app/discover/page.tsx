@@ -2,19 +2,24 @@ import type { Metadata } from "next";
 import { DiscoverChrome } from "@/components/editorial/DiscoverChrome";
 import { CollectionsIndex } from "@/components/editorial/CollectionsIndex";
 import { EditorialArtPreloads } from "@/components/editorial/EditorialArtPreloads";
-import { SteamMark } from "@/components/brand/EditorialMarks";
+import { PageMasthead } from "@/components/editorial/PageMasthead";
+import { CalendarMark } from "@/components/brand/EditorialMarks";
 import { TodaysBowl } from "@/components/editorial/TodaysBowl";
 import { DiscoverPairTeaser } from "@/components/pair/DiscoverPairTeaser";
 import { DiscoverPrefectureTeaser } from "@/components/editorial/DiscoverPrefectureTeaser";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { collectionArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
-import { itemListLd } from "@/lib/seo/jsonLd";
+import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
+
+const TRAIL = [
+  { name: "トップ", path: "/" },
+  { name: "ピックアップ", path: "/discover" },
+];
 
 /** Tokyo calendar bowl + featured months. Refresh often enough to cross midnight. */
 export const revalidate = 600;
@@ -55,6 +60,7 @@ export default function DiscoverPage() {
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
+      <JsonLd data={breadcrumbListLd(TRAIL)} />
       {collections.length > 0 ? (
         <JsonLd
           data={itemListLd({
@@ -79,18 +85,15 @@ export default function DiscoverPage() {
       ) : null}
       <EditorialArtPreloads hrefs={preloadHrefs} />
       <DiscoverChrome />
+      <PageMasthead
+        crumbs={TRAIL}
+        mark={<CalendarMark className="h-8 w-8" />}
+        title="ピックアップ"
+        lede="日付と旬で入れ替わる、きょうの銘柄と特集です。"
+        art={null}
+      />
 
-      <div className="pb-16 pt-5 sm:pb-20">
-        <div className={SITE_COLUMN}>
-          <header className="max-w-xl">
-            <SteamMark className="h-8 w-8" />
-            <h1 className={`mt-3 ${PAGE_TITLE}`}>ピックアップ</h1>
-            <p className="mt-3 text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-              日付と旬で入れ替わる、きょうの銘柄と特集です。
-            </p>
-          </header>
-        </div>
-
+      <div className="pb-16 sm:pb-20">
         <div className="mt-10">
           <TodaysBowl items={bowl} />
         </div>

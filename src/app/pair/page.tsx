@@ -3,11 +3,11 @@ import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BowlMark, SteamMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
+import { PageMasthead } from "@/components/editorial/PageMasthead";
 import { SiteHeader } from "@/components/SiteHeader";
-import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { PAGE_TITLE, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
@@ -61,15 +61,15 @@ export default function PairIndexPage() {
         ]}
       />
       <SiteHeader active="pair" />
-      <Breadcrumbs className={`${SITE_COLUMN} pt-5`} crumbs={TRAIL} />
+      <PageMasthead
+        crumbs={TRAIL}
+        mark={<SteamMark className="h-8 w-8" />}
+        title="料理で選ぶ"
+        lede="今夜の献立から、甘みと粒感の近い銘柄を並べています。値段の並びではなく、味の位置で選ぶページです。"
+        art={null}
+      />
 
-      <div className={`${SITE_COLUMN} pb-20 pt-4`}>
-        <SteamMark className="h-8 w-8" />
-        <h1 className={`mt-3 ${PAGE_TITLE}`}>料理で選ぶ</h1>
-        <p className="mt-3 max-w-2xl text-[14px] leading-[1.85] text-[var(--km-ink-soft)]">
-          今夜の献立から、甘みと粒感の近い銘柄を並べています。値段の並びではなく、味の位置で選ぶページです。
-        </p>
-
+      <div className={`${SITE_COLUMN} pb-20`}>
         {first ? (
           <TransitionLink
             href={`/pair/${first.page.slug}`}
