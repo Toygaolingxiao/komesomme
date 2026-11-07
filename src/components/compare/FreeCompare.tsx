@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
@@ -11,6 +11,7 @@ import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
 import {
   curatedKey,
+  resolveCompareBrandId,
   summarizeComparison,
   type FreeBrand,
   type FreeCompareDataset,
@@ -189,10 +190,23 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
     [brands],
   );
 
-  const aId = searchParams.get("a") ?? DEFAULT_A;
-  const bId = searchParams.get("b") ?? DEFAULT_B;
+  // Deep links may carry ids or plain brand spellings (Japanese name,
+  // romaji, registered aliases) — resolve both to ids before picking.
+  const rawA = searchParams.get("a");
+  const rawB = searchParams.get("b");
+  const aId = resolveCompareBrandId(rawA, brands) ?? DEFAULT_A;
+  const bId = resolveCompareBrandId(rawB, brands) ?? DEFAULT_B;
   const a = byId.get(aId) ?? byId.get(DEFAULT_A)!;
   const b = byId.get(bId) ?? byId.get(DEFAULT_B)!;
+
+  // A name-based link opens prefilled; settle the address bar on the
+  // canonical id form so shares and analytics all speak ids.
+  useEffect(() => {
+    if (rawA === null && rawB === null) return;
+    if (rawA !== a.id || rawB !== b.id) {
+      router.replace(`/compare?a=${a.id}&b=${b.id}`, { scroll: false });
+    }
+  }, [rawA, rawB, a.id, b.id, router]);
 
   const summary = useMemo(
     () => (a.id !== b.id ? summarizeComparison(a, b) : null),
