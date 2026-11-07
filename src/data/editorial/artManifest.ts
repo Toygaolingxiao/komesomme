@@ -32,6 +32,8 @@ export const BRAND_ART_IDS = new Set<string>([
   "hoshizoramai",
   "yume-shizuku",
   "mineasahi",
+  "shinnosuke",
+  "mori-no-kumasan",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
