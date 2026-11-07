@@ -38,27 +38,6 @@ jobs:
             non_data:
               - '**'
               - '!src/data/**'
-            assets:
-              - 'public/brand-art/**'
-            light:
-              - 'docs/**'
-              - '**/*.md'
-              - 'CHANGELOG'
-              - 'src/data/**'
-              - 'public/brand-art/**'
-              - 'VERSION'
-              - 'package.json'
-              - 'package-lock.json'
-            non_light:
-              - '**'
-              - '!docs/**'
-              - '!**/*.md'
-              - '!CHANGELOG'
-              - '!src/data/**'
-              - '!public/brand-art/**'
-              - '!VERSION'
-              - '!package.json'
-              - '!package-lock.json'
             ci_full:
               - '.github/workflows/**'
               - 'playwright.config.ts'
@@ -79,13 +58,9 @@ jobs:
         id: mode
         env:
           IS_MAIN_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          DOCS: ${{ steps.filter.outputs.docs }}
-          NON_DOCS: ${{ steps.filter.outputs.non_docs }}
-          DATA: ${{ steps.filter.outputs.data }}
-          NON_DATA: ${{ steps.filter.outputs.non_data }}
-          LIGHT: ${{ steps.filter.outputs.light }}
-          NON_LIGHT: ${{ steps.filter.outputs.non_light }}
           CI_FULL: ${{ steps.filter.outputs.ci_full }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if [ "$IS_MAIN_PUSH" = "true" ]; then
             echo "mode=full" >> "$GITHUB_OUTPUT"
@@ -93,9 +68,33 @@ jobs:
           fi
           if [ "$CI_FULL" = "true" ]; then
             echo "mode=full" >> "$GITHUB_OUTPUT"
-          elif [ "$DOCS" = "true" ] && [ "$NON_DOCS" != "true" ]; then
+            exit 0
+          fi
+          # Classify from the PR's actual file list. Complement filters
+          # ('**' plus '!...' negations) do not work with paths-filter:
+          # every file passes at least one negated pattern, so the old
+          # non_docs / non_data checks were always true and docs_only /
+          # data_only were unreachable. Walk the filenames instead.
+          FILES="$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename')"
+          if [ -z "$FILES" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          docs_only=true
+          light=true
+          while IFS= read -r f; do
+            case "$f" in
+              docs/*|*.md|CHANGELOG) ;;
+              *) docs_only=false ;;
+            esac
+            case "$f" in
+              docs/*|*.md|CHANGELOG|src/data/*|public/brand-art/*|VERSION|package.json|package-lock.json) ;;
+              *) light=false ;;
+            esac
+          done <<< "$FILES"
+          if [ "$docs_only" = "true" ]; then
             echo "mode=docs_only" >> "$GITHUB_OUTPUT"
-          elif [ "$LIGHT" = "true" ] && [ "$NON_LIGHT" != "true" ]; then
+          elif [ "$light" = "true" ]; then
             # Docs/data/art/version-only diff: the build, bundle check and
             # library smoke still run (a broken dependency fails the build),
             # but the full E2E suite is skipped.
