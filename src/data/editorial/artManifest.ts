@@ -5,10 +5,13 @@ export const MASTHEAD_ART = "/brand-art/masthead.webp";
 export const BRAND_ART_IDS = new Set<string>([
   "akitakomachi",
   "haenuki",
+  "hinohikari-nagasaki",
   "hitomebore",
   "koshihikari-uonuma",
   "milky-queen",
   "nanatsuboshi",
+  "natsuhonoka",
+  "nikomaru",
   "sagabiyori",
   "sasanishiki",
   "tentakaku",
