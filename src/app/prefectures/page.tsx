@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { BowlMark } from "@/components/brand/EditorialMarks";
+import { PageMasthead } from "@/components/editorial/PageMasthead";
 import { TransitionLink } from "@/components/editorial/TransitionLink";
-import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { FOCUS } from "@/components/matrix/shared";
-import { PAGE_TITLE, READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { prefectureArtPath } from "@/data/editorial/prefectureArt";
 import { PrefectureMap } from "@/components/editorial/PrefectureMap";
 import {
@@ -57,19 +58,15 @@ export default function PrefecturesIndexPage() {
         ]}
       />
       <SiteHeader active="prefectures" />
-      <div className={`${SITE_COLUMN} pt-5`}>
-        <Breadcrumbs className={READING_COLUMN} crumbs={TRAIL} />
-      </div>
+      <PageMasthead
+        crumbs={TRAIL}
+        mark={<BowlMark className="h-8 w-8" />}
+        title="産地から選ぶ"
+        lede={`${DESCRIPTION}地域ごとに、その土地の銘柄と味わいの傾向を並べました。`}
+        art={null}
+      />
 
-      <div className={`${SITE_COLUMN} pt-4`}>
-        <header className={READING_COLUMN}>
-          <h1 className={PAGE_TITLE}>産地から選ぶ</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
-            {DESCRIPTION}
-            地域ごとに、その土地の銘柄と味わいの傾向を並べました。
-          </p>
-        </header>
-
+      <div className={SITE_COLUMN}>
         <div className="mt-8">
           <PrefectureMap summaries={prefectureMapSummaries()} />
         </div>
