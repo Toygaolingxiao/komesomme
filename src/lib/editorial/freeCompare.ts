@@ -1,4 +1,5 @@
 import { riceProfiles } from "@/data/rice/catalog";
+import { BRAND_I18N } from "@/data/rice/brandI18n";
 import { COMPARISON_PAGES } from "@/data/editorial/comparisons";
 import {
   COMPARISON_INDICATORS,
@@ -20,8 +21,10 @@ export type FreeBrand = Pick<
   | "good_with"
   | "avoid_pairings"
   | "short_"
-> &
-  Record<ComparisonIndicatorKey, number>;
+> & {
+  /** Extra spellings a deep link may carry: id, name, EN/ZH names, aliases. */
+  searchTerms: string[];
+} & Record<ComparisonIndicatorKey, number>;
 
 export type FreeCompareDataset = {
   brands: FreeBrand[];
@@ -55,8 +58,63 @@ export function curatedKey(aId: string, bId: string): string {
   return [aId, bId].sort().join("|");
 }
 
+/**
+ * Normalizes a brand spelling from a deep link: width, case, kana and
+ * punctuation differences must not matter ("Tsuyahime", "つや姫",
+ * "ツヤヒメ" style inputs all land on the same key where the data allows).
+ */
+export function normalizeBrandQuery(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[ァ-ヶ]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x60),
+    )
+    .replace(/[\s\-_/・,，、.。()（）【】[\]「」『』]/g, "");
+}
+
+/**
+ * Resolves a /compare?a=… / ?b=… value to a brand id. Accepts the id itself,
+ * the canonical Japanese name, and every registered search term (EN/ZH
+ * names and aliases). Priority is id → name → search terms; an ambiguous
+ * spelling that matches several brands resolves to null rather than a guess
+ * (generic コシヒカリ is unambiguous only because the plain alias is
+ * registered on the BL profile alone).
+ */
+export function resolveCompareBrandId(
+  value: string | null | undefined,
+  brands: readonly Pick<FreeBrand, "id" | "name" | "searchTerms">[],
+): string | null {
+  if (!value) return null;
+  const byId = new Map(brands.map((brand) => [brand.id, brand]));
+  if (byId.has(value)) return value;
+
+  const normalized = normalizeBrandQuery(value);
+  if (!normalized) return null;
+  const attempts = [normalized];
+  if (normalized.endsWith("米") && normalized.length > 1) {
+    attempts.push(normalized.slice(0, -1));
+  }
+
+  for (const attempt of attempts) {
+    const tiers: Array<(brand: (typeof brands)[number]) => boolean> = [
+      (brand) => normalizeBrandQuery(brand.id) === attempt,
+      (brand) => normalizeBrandQuery(brand.name) === attempt,
+      (brand) =>
+        brand.searchTerms.some((term) => normalizeBrandQuery(term) === attempt),
+    ];
+    for (const inTier of tiers) {
+      const hits = brands.filter(inTier);
+      if (hits.length === 1) return hits[0].id;
+      if (hits.length > 1) return null;
+    }
+  }
+  return null;
+}
+
 export function freeCompareDataset(): FreeCompareDataset {
   const brands = riceProfiles.map((rice) => {
+    const i18n = BRAND_I18N[rice.id];
     const brand = {
       id: rice.id,
       name: rice.name,
@@ -66,6 +124,11 @@ export function freeCompareDataset(): FreeCompareDataset {
       good_with: rice.good_with,
       avoid_pairings: rice.avoid_pairings,
       short_: rice.short_,
+      searchTerms: [
+        rice.id,
+        rice.name,
+        ...(i18n ? [i18n.en, i18n.zh, ...(i18n.aliases ?? [])] : []),
+      ],
     } as FreeBrand;
     for (const key of INDICATOR_KEYS) {
       brand[key] = rice[key] as number;

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   curatedKey,
   freeCompareDataset,
+  resolveCompareBrandId,
   summarizeComparison,
   type FreeBrand,
 } from "@/lib/editorial/freeCompare";
@@ -28,6 +29,37 @@ describe("freeCompareDataset", () => {
     expect(dataset.curated[curatedKey("milky-queen", "yumepirika")]).toBe(
       "yumepirika-vs-milky-queen",
     );
+  });
+});
+
+describe("resolveCompareBrandId", () => {
+  const resolve = (value: string | null) =>
+    resolveCompareBrandId(value, dataset.brands);
+
+  it("passes ids through and resolves plain spellings", () => {
+    expect(resolve("tsuyahime")).toBe("tsuyahime");
+    expect(resolve("つや姫")).toBe("tsuyahime");
+    expect(resolve("Tsuyahime")).toBe("tsuyahime");
+    expect(resolve("TSUYAHIME")).toBe("tsuyahime");
+  });
+
+  it("resolves registered aliases and qualified names", () => {
+    expect(resolve("魚沼コシヒカリ")).toBe("koshihikari-uonuma");
+    expect(resolve("Uonuma Koshihikari")).toBe("koshihikari-uonuma");
+    expect(resolve("コシヒカリ (魚沼産)")).toBe("koshihikari-uonuma");
+    expect(resolve("ミルキークイーン")).toBe("milky-queen");
+  });
+
+  it("resolves the generic name to the plain profile, tolerating a 米 suffix", () => {
+    expect(resolve("コシヒカリ")).toBe("koshihikari-bl");
+    expect(resolve("こしひかり")).toBe("koshihikari-bl");
+    expect(resolve("つや姫米")).toBe("tsuyahime");
+  });
+
+  it("returns null for unknown or empty input", () => {
+    expect(resolve(null)).toBeNull();
+    expect(resolve("")).toBeNull();
+    expect(resolve("そんな米はない")).toBeNull();
   });
 });
 
