@@ -31,7 +31,7 @@ test.describe("TS-LIBRARY", () => {
     await page.goto("/library", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "きょうの三銘柄" })).toHaveCount(0);
     await expect(
-      page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "ピックアップ" })
+      page.getByRole("navigation", { name: "主要ナビ" }).getByRole("button", { name: "ピックアップ" })
     ).toBeVisible();
 
     await page.goto("/discover", { waitUntil: "domcontentloaded" });
@@ -48,10 +48,24 @@ test.describe("TS-LIBRARY", () => {
     // The assertions themselves are unchanged.
     await page.goto("/discover", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("navigation", { name: "主要ナビ" }).getByRole("link", { name: "ピックアップ" })
+      page.getByRole("navigation", { name: "主要ナビ" }).getByRole("button", { name: "ピックアップ" })
     ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "特集" })).toBeVisible();
     await expect(page.locator("#collections")).toBeVisible();
+
+    // The header ピックアップ menu lists the collections and reaches one.
+    await page
+      .getByRole("navigation", { name: "主要ナビ" })
+      .getByRole("button", { name: "ピックアップ" })
+      .click();
+    await page
+      .getByRole("navigation", { name: "主要ナビ" })
+      .getByRole("link", { name: "令和7年産 特Aの銘柄" })
+      .click();
+    await expect(page).toHaveURL(/\/collections\/toku-a/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: "令和7年産 特Aの銘柄" })
+    ).toBeVisible();
 
     await page.goto("/collections", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/discover/);

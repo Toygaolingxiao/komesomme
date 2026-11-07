@@ -1,8 +1,23 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/brand/BrandMark";
+import { DiscoverMenu } from "@/components/nav/DiscoverMenu";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
+import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
+import {
+  collectionLatestLabel,
+  collectionPublishedIso,
+} from "@/lib/editorial/collections";
+
+/** Collections for the ピックアップ dropdown, freshest first. */
+const COLLECTION_MENU_ITEMS = [...EDITORIAL_COLLECTIONS]
+  .sort((a, b) =>
+    (collectionPublishedIso(collectionLatestLabel(b)) ?? "").localeCompare(
+      collectionPublishedIso(collectionLatestLabel(a)) ?? ""
+    )
+  )
+  .map((row) => ({ slug: row.slug, title: row.title }));
 
 /** Primary nav. Collection magazine pages highlight ピックアップ. */
 export type SiteNavActive = "map" | "pair" | "prefectures" | "compare" | "library" | "discover";
@@ -37,6 +52,15 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
           >
             {NAV.map((item) => {
               const isActive = active != null && item.id === active;
+              if (item.id === "discover") {
+                return (
+                  <DiscoverMenu
+                    key={item.id}
+                    active={isActive}
+                    items={COLLECTION_MENU_ITEMS}
+                  />
+                );
+              }
               return (
                 <Link
                   key={item.id}
