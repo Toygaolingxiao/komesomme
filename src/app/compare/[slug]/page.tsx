@@ -5,7 +5,7 @@ import { CompareView } from "@/components/compare/CompareView";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { COMPARISON_PAGES } from "@/data/editorial/comparisons";
 import { resolveComparisonBySlug } from "@/lib/editorial/comparisons";
 import {
@@ -83,7 +83,7 @@ export default async function ComparePage({ params }: PageProps) {
       />
       <SiteHeader active="compare" />
       <div className={`${SITE_COLUMN} pt-5`}>
-        <Breadcrumbs className={READING_COLUMN} crumbs={trail} />
+        <Breadcrumbs crumbs={trail} />
       </div>
       <CompareView resolved={resolved} />
       <SiteFooter />

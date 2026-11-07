@@ -28,14 +28,14 @@ export function PrefectureView({
   return (
     <article className="pb-20">
       <div className={`${SITE_COLUMN} pt-4`}>
-        <header className={READING_COLUMN}>
+        <header>
           <p className="text-[12px] tracking-[0.08em] text-[var(--km-muted)]">
             産地｜{page.region}
           </p>
           <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
             {page.prefecture}の米
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
             {prefectureLede(page)}
           </p>
         </header>
