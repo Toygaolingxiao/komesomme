@@ -38,10 +38,29 @@ jobs:
             non_data:
               - '**'
               - '!src/data/**'
-            ci_full:
-              - '.github/workflows/**'
+            assets:
+              - 'public/brand-art/**'
+            light:
+              - 'docs/**'
+              - '**/*.md'
+              - 'CHANGELOG'
+              - 'src/data/**'
+              - 'public/brand-art/**'
+              - 'VERSION'
               - 'package.json'
               - 'package-lock.json'
+            non_light:
+              - '**'
+              - '!docs/**'
+              - '!**/*.md'
+              - '!CHANGELOG'
+              - '!src/data/**'
+              - '!public/brand-art/**'
+              - '!VERSION'
+              - '!package.json'
+              - '!package-lock.json'
+            ci_full:
+              - '.github/workflows/**'
               - 'playwright.config.ts'
             matrix:
               - 'src/components/matrix/**'
@@ -64,6 +83,8 @@ jobs:
           NON_DOCS: ${{ steps.filter.outputs.non_docs }}
           DATA: ${{ steps.filter.outputs.data }}
           NON_DATA: ${{ steps.filter.outputs.non_data }}
+          LIGHT: ${{ steps.filter.outputs.light }}
+          NON_LIGHT: ${{ steps.filter.outputs.non_light }}
           CI_FULL: ${{ steps.filter.outputs.ci_full }}
         run: |
           if [ "$IS_MAIN_PUSH" = "true" ]; then
@@ -74,7 +95,10 @@ jobs:
             echo "mode=full" >> "$GITHUB_OUTPUT"
           elif [ "$DOCS" = "true" ] && [ "$NON_DOCS" != "true" ]; then
             echo "mode=docs_only" >> "$GITHUB_OUTPUT"
-          elif [ "$DATA" = "true" ] && [ "$NON_DATA" != "true" ]; then
+          elif [ "$LIGHT" = "true" ] && [ "$NON_LIGHT" != "true" ]; then
+            # Docs/data/art/version-only diff: the build, bundle check and
+            # library smoke still run (a broken dependency fails the build),
+            # but the full E2E suite is skipped.
             echo "mode=data_only" >> "$GITHUB_OUTPUT"
           else
             echo "mode=full" >> "$GITHUB_OUTPUT"
