@@ -52,6 +52,7 @@ export const COLLECTION_ART_FILES = new Set<string>([
   "shio-musubi.webp",
   "jugatsu-wase.webp",
   "yakizakana.webp",
+  "furusato-nozei.webp",
 ]);
 
 /** Basenames under public/brand-art/pairings/. */
