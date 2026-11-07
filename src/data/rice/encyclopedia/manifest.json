@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T08:02:03.720Z",
+  "generatedAt": "2026-11-07T10:52:46.335Z",
   "count": 107,
   "entries": [
     {
@@ -450,9 +450,9 @@
       "id": "natsuhonoka",
       "name": "なつほのか",
       "reading": "なつほのか",
-      "prefecture": "鹿児島県",
+      "prefecture": "長崎県",
       "region": "九州・沖縄",
-      "headline": "南九州の暑さに対応して鹿児島県で開発された品種です。澄んだ味わいとしっかりした粒立ちがあり、冷めても食べやすいお米です。",
+      "headline": "鹿児島で生まれ、長崎が迎えた暑さに強い品種です。「ながさき なつほのか」として長崎を代表する米のひとつになりました。澄んだ味わいとしっかりした粒立ちがあり、冷めても食べやすいお米です。",
       "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
@@ -579,13 +579,13 @@
       "stickiness": 4
     },
     {
-      "id": "hinohikari",
+      "id": "hinohikari-nagasaki",
       "name": "ヒノヒカリ",
       "reading": "ひのひかり",
-      "prefecture": "全国",
-      "region": "全国銘柄",
-      "headline": "西日本の定番米です。主張しすぎず、おかずの味を引き立てます。",
-      "confidence": "high",
+      "prefecture": "長崎県",
+      "region": "九州・沖縄",
+      "headline": "長崎県でいちばん広く作られている日常の米です。コシヒカリを父に持つ食味の良さで、棚田から平野まで県内全域の食卓を支えています。",
+      "confidence": "medium",
       "sweetness": 3,
       "hardness": 3,
       "stickiness": 3

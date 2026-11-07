@@ -147,6 +147,56 @@ export function prefecturesByRegion(): {
   })).filter((group) => group.pages.length > 0);
 }
 
+export type PrefectureMiniBrand = {
+  id: string;
+  name: string;
+};
+
+export type PrefectureMini = {
+  prefecture: string;
+  region: RiceRegion;
+  brands: PrefectureMiniBrand[];
+};
+
+/**
+ * Prefectures whose catalogue holds brands but fewer than
+ * PREFECTURE_MIN_BRANDS — no full page, but they still belong on the
+ * index so every producing prefecture in the catalogue shows up.
+ * Grouped by region, same order as prefecturesByRegion.
+ */
+export function prefecturesWithFewBrands(): {
+  region: RiceRegion;
+  prefectures: PrefectureMini[];
+}[] {
+  const byPrefecture = new Map<string, PrefectureMini>();
+  for (const rice of riceProfiles) {
+    if (rice.prefecture === "全国") continue;
+    if (
+      PREFECTURE_PAGES.some((page) => page.prefecture === rice.prefecture)
+    ) {
+      continue;
+    }
+    const entry = byPrefecture.get(rice.prefecture) ?? {
+      prefecture: rice.prefecture,
+      region: rice.region,
+      brands: [],
+    };
+    entry.brands.push({ id: rice.id, name: rice.name });
+    byPrefecture.set(rice.prefecture, entry);
+  }
+
+  return REGION_ORDER.map((region) => ({
+    region,
+    prefectures: [...byPrefecture.values()]
+      .filter((mini) => mini.region === region)
+      .sort((a, b) => {
+        const countDelta = b.brands.length - a.brands.length;
+        if (countDelta !== 0) return countDelta;
+        return a.prefecture.localeCompare(b.prefecture, "ja");
+      }),
+  })).filter((group) => group.prefectures.length > 0);
+}
+
 /** 県内 / 道内 / 都内 / 府内 — the word for "inside this prefecture". */
 export function prefectureAreaWord(prefecture: string): string {
   if (prefecture.endsWith("道")) return "道内";
