@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import {
   PREFECTURE_PAGES,
   prefectureBySlug,
@@ -76,7 +76,7 @@ export default async function PrefecturePage({ params }: PageProps) {
       />
       <SiteHeader active="prefectures" />
       <div className={`${SITE_COLUMN} pt-5`}>
-        <Breadcrumbs className={READING_COLUMN} crumbs={trail} />
+        <Breadcrumbs crumbs={trail} />
       </div>
       <PrefectureView page={page} siblings={siblings} />
       <SiteFooter />

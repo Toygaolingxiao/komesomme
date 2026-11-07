@@ -5,7 +5,7 @@ import { PairView } from "@/components/pair/PairView";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
-import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { resolvePairingBySlug } from "@/lib/editorial/pairings";
 import {
@@ -89,7 +89,7 @@ export default async function PairDishPage({ params }: PageProps) {
       />
       <SiteHeader active="pair" />
       <div className={`${SITE_COLUMN} pt-5`}>
-        <Breadcrumbs className={READING_COLUMN} crumbs={trail} />
+        <Breadcrumbs crumbs={trail} />
       </div>
       <PairView resolved={resolved} />
       <SiteFooter />

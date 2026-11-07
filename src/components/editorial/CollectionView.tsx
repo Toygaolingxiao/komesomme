@@ -23,7 +23,7 @@ export function CollectionView({
   return (
     <article className="pb-20">
       <div className={`${SITE_COLUMN} pt-4`}>
-        <header className={READING_COLUMN}>
+        <header>
           <SteamMark className="h-7 w-7" />
           <p className="mt-3 text-[12px] text-[var(--km-muted)]">
             {`公開 ${collectionDateDisplay(collection.dateLabel)}`}
@@ -34,7 +34,7 @@ export function CollectionView({
           <h1 className="mt-1.5 font-serif text-[1.85rem] font-semibold tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
             {collection.title}
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
             {collection.dek}
           </p>
         </header>
