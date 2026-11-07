@@ -14,10 +14,11 @@ import {
   PREFECTURE_PAGES,
   prefectureMapSummaries,
   prefecturesByRegion,
+  prefecturesWithFewBrands,
 } from "@/lib/editorial/prefectures";
 import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
 
-const DESCRIPTION = `銘柄が3つ以上ある${PREFECTURE_PAGES.length}の産地について、銘柄の一覧と味わいの平均像をまとめました。産地は、ふるさと納税の寄附先でもあります。`;
+const DESCRIPTION = `銘柄が3つ以上ある${PREFECTURE_PAGES.length}の産地について、銘柄の一覧と味わいの平均像をまとめました。銘柄の少ない産地も含め、記録のある産地はすべて並べています。産地は、ふるさと納税の寄附先でもあります。`;
 
 export const metadata: Metadata = {
   title: "産地から選ぶ｜都道府県別の米と銘柄",
@@ -42,6 +43,7 @@ const TRAIL = [
 
 export default function PrefecturesIndexPage() {
   const groups = prefecturesByRegion();
+  const fewGroups = prefecturesWithFewBrands();
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
@@ -115,6 +117,50 @@ export default function PrefecturesIndexPage() {
             </ol>
           </section>
         ))}
+
+        <section className="mt-16">
+          <h2 className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
+            銘柄の少ない産地
+          </h2>
+          <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-[var(--km-muted)]">
+            まだ銘柄が1〜2つの産地です。専用ページはありませんが、記録のある銘柄から辿れます。
+          </p>
+          {fewGroups.map((group) => (
+            <div key={group.region} className="mt-8">
+              <h3 className="text-[13px] font-semibold tracking-wide text-[var(--km-brown)]">
+                {group.region}
+              </h3>
+              <ul className="mt-3 divide-y divide-[var(--km-border)] border-y border-[var(--km-border)]">
+                {group.prefectures.map((mini) => (
+                  <li
+                    key={mini.prefecture}
+                    className="flex flex-wrap items-baseline gap-x-3 gap-y-1 py-2.5"
+                  >
+                    <span className="font-serif text-[15px] font-semibold text-[var(--km-ink)]">
+                      {mini.prefecture}
+                      <span className="ml-2 text-[12px] font-normal text-[var(--km-muted)]">
+                        {mini.brands.length}銘柄
+                      </span>
+                    </span>
+                    <span className="text-[13px] leading-relaxed text-[var(--km-ink-soft)]">
+                      {mini.brands.map((brand, index) => (
+                        <span key={brand.id}>
+                          {index > 0 ? "、" : ""}
+                          <TransitionLink
+                            href={`/library/${brand.id}`}
+                            className={`underline decoration-[var(--km-border)] underline-offset-4 transition hover:text-[var(--km-brown)] ${FOCUS}`}
+                          >
+                            {brand.name}
+                          </TransitionLink>
+                        </span>
+                      ))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
       </div>
 
       <SiteFooter />

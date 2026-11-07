@@ -53,6 +53,9 @@ export function identityOf(rice: Pick<RiceProfileV2, "id" | "name">): CultivarId
   if (/魚沼|南魚沼|塩沢/.test(blob) && /コシヒカリ|koshihikari|koshikari/.test(blob)) {
     return { cultivar: "コシヒカリ", branch: "uonuma" };
   }
+  if (/長崎/.test(blob) && /ヒノヒカリ|hinohikari/.test(blob)) {
+    return { cultivar: "ヒノヒカリ", branch: "nagasaki" };
+  }
   if (/佐渡/.test(blob) && /コシヒカリ|koshihikari/.test(blob)) {
     return { cultivar: "コシヒカリ", branch: "sado" };
   }
@@ -126,6 +129,14 @@ const CANONICAL: Record<
     region: "関東・甲信越",
     notes:
       "コシヒカリの産地銘柄。魚沼（南魚沼・塩沢を含む）の水質と昼夜の寒暖差による一膳。特選・ゴールド等のSKUはここに統合。",
+  },
+  "ヒノヒカリ::nagasaki": {
+    id: "hinohikari-nagasaki",
+    name: "ヒノヒカリ（長崎産）",
+    prefecture: "長崎県",
+    region: "九州・沖縄",
+    notes:
+      "ヒノヒカリの産地銘柄。長崎県では作付面積が県内一位の主力で、県内全域で作られる日常米として、全国銘柄の一般行とは別ID。",
   },
   "コシヒカリ::sado": {
     id: "koshihikari-sado",

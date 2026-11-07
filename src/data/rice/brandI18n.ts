@@ -64,6 +64,11 @@ export const BRAND_I18N: Record<string, BrandI18n> = {
   "hikari-shinseiki": { zh: "光新世纪", en: "Hikari Shinseiki" },
   hitomebore: { zh: "一目倾心", en: "Hitomebore", aliases: ["一目惚れ"] },
   hinohikari: { zh: "日之光", en: "Hinohikari" },
+  "hinohikari-nagasaki": {
+    zh: "长崎产日之光",
+    en: "Hinohikari (Nagasaki)",
+    aliases: ["長崎産ヒノヒカリ", "长崎日之光"],
+  },
   himenorin: { zh: "姬之凛", en: "Himenorin" },
   hyakumangoku: { zh: "百万石", en: "Hyakumangoku" },
   fukuhibiki: { zh: "福响", en: "Fukuhibiki" },

@@ -1,6 +1,6 @@
 {
   "brand_id": "natsuhonoka",
-  "updated_at": "2026-09-11T00:31:41.162Z",
+  "updated_at": "2026-11-07T10:52:00.000Z",
   "source_ids": [
     "maff-kome",
     "naro-top"
@@ -9,14 +9,14 @@
     {
       "id": "natsuhonoka:prefecture",
       "field_path": "origin.prefecture",
-      "claim_text": "主産地（カタログ）は鹿児島県",
+      "claim_text": "主産地（カタログ）は長崎県",
       "status": "verified",
       "source_ids": [
         "maff-kome",
         "naro-top"
       ],
-      "verified_at": "2026-09-11T00:31:41.162Z",
-      "notes": "catalog.prefecture と origin の対応。県固有ポータル未登録のため MAFF/NARO を入口とする。"
+      "verified_at": "2026-11-07T10:52:00.000Z",
+      "notes": "2026-11-07 に帰属を変更。品種の育成地は鹿児島県（にこまるを父に持つ）だが、長崎県が2016年度に奨励品種へ採用し、2018年産から「ながさき なつほのか」として県を代表する米に位置づけているため、カタログの産地は長崎県に統一する。育成地の事実は origin に明記。"
     },
     {
       "id": "natsuhonoka:editorial-scores",
