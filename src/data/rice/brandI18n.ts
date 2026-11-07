@@ -51,6 +51,7 @@ export const BRAND_I18N: Record<string, BrandI18n> = {
   tentakaku: { zh: "天高", en: "Tentakaku" },
   "tochigi-no-hoshi": { zh: "栃木之星", en: "Tochigi no Hoshi" },
   nasuhikari: { zh: "那须光", en: "Nasuhikari" },
+  natsuhime: { zh: "夏姬", en: "Natsuhime", aliases: ["新潟135号"] },
   natsuhonoka: { zh: "夏穗香", en: "Natsuhonoka" },
   nanatsuboshi: { zh: "七星", en: "Nanatsuboshi", aliases: ["ななつぼし"] },
   nikomaru: { zh: "笑满", en: "Nikomaru" },
