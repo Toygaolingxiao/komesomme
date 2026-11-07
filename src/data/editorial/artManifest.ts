@@ -17,6 +17,14 @@ export const BRAND_ART_IDS = new Set<string>([
   "tentakaku",
   "tsuyahime",
   "yumepirika",
+  "seiten-no-hekireki",
+  "ginga-no-shizuku",
+  "sakihokore",
+  "yukiwakamaru",
+  "ichihomare",
+  "kinumusume",
+  "genki-tsukushi",
+  "akihonami",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
