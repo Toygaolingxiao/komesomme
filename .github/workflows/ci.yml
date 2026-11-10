@@ -243,7 +243,7 @@ jobs:
 
       - name: E2E tests (full, matrix untouched — home suite skipped)
         if: needs.changes.outputs.mode == 'full' && needs.changes.outputs.matrix != 'true'
-        run: npx playwright test e2e/brand.spec.ts e2e/consult.spec.ts e2e/legal.spec.ts e2e/library.spec.ts e2e/mobile.spec.ts e2e/ops.spec.ts e2e/pair.spec.ts e2e/seo-security.spec.ts
+        run: npx playwright test e2e/brand.spec.ts e2e/consult.spec.ts e2e/legal.spec.ts e2e/library.spec.ts e2e/mobile.spec.ts e2e/ops.spec.ts e2e/pair.spec.ts e2e/seo-security.spec.ts e2e/shindan.spec.ts
         env:
           CI: "true"
           SEMANTIC_RECOMMEND_ENABLED: "false"
@@ -254,7 +254,7 @@ jobs:
 
       - name: E2E smoke (data-only)
         if: needs.changes.outputs.mode == 'data_only'
-        run: npx playwright test e2e/library.spec.ts
+        run: npx playwright test e2e/library.spec.ts e2e/shindan.spec.ts
         env:
           CI: "true"
           SEMANTIC_RECOMMEND_ENABLED: "false"
@@ -264,7 +264,7 @@ jobs:
 
       - name: E2E smoke (data-only, matrix data touched — home suite too)
         if: needs.changes.outputs.mode == 'data_only' && needs.changes.outputs.matrix == 'true'
-        run: npx playwright test e2e/home.spec.ts
+        run: npx playwright test e2e/home.spec.ts e2e/shindan.spec.ts
         env:
           CI: "true"
           SEMANTIC_RECOMMEND_ENABLED: "false"
