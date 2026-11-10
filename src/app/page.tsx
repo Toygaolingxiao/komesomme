@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FlavorMatrix } from "@/components/FlavorMatrix";
+import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HomeReadingStrip } from "@/components/home/HomeReadingStrip";
 import { FOCUS } from "@/components/matrix/shared";
@@ -37,22 +38,38 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* One quiet text entry to the diagnosis, below the map. Not in the
-          top navigation (the six-item cap stands). */}
+      {/* Diagnosis entry below the map (v1.33.0): a card in the same
+          language as the collection teasers — hero thumbnail, serif
+          title, one-line note — instead of the former lone text link. */}
       {isDiagnosisEnabled() ? (
         <section aria-label={DIAGNOSIS_COPY.entryLead} className={`${SITE_COLUMN} py-12`}>
-          <div className="mx-auto max-w-[40rem] border-t border-[var(--km-border)] pt-8 text-center">
-            <p className="font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)]">
-              {DIAGNOSIS_COPY.entryLead}
-            </p>
-            <p className="mt-2 text-[13.5px] leading-[1.85] text-[var(--km-muted)]">
-              {DIAGNOSIS_COPY.entryNote}
-            </p>
+          <div className="border-t border-[var(--km-border)] pt-8">
             <Link
               href="/shindan"
-              className={`mt-3 inline-block text-[14px] font-medium text-[var(--km-brown)] underline-offset-4 hover:underline ${FOCUS}`}
+              className={`group block overflow-hidden rounded-lg border border-[var(--km-border)] bg-[var(--km-surface)] ${FOCUS}`}
             >
-              {DIAGNOSIS_COPY.startButton} →
+              <span className="flex flex-col sm:flex-row">
+                <span className="relative block aspect-[16/9] w-full flex-none sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%]">
+                  <EditorialArt
+                    src="/brand-art/shindan-hero.webp"
+                    alt=""
+                    className="absolute inset-0 h-full w-full"
+                    sizes="(min-width: 640px) 34rem, 100vw"
+                    objectPosition="50% 82%"
+                  />
+                </span>
+                <span className="flex flex-1 flex-col justify-center p-5 sm:p-6">
+                  <span className="font-serif text-[1.25rem] font-semibold tracking-tight text-[var(--km-ink)]">
+                    {DIAGNOSIS_COPY.entryLead}
+                  </span>
+                  <span className="mt-1.5 text-[13.5px] leading-[1.85] text-[var(--km-muted)]">
+                    {DIAGNOSIS_COPY.entryNote}
+                  </span>
+                  <span className="mt-3 text-[14px] font-medium text-[var(--km-brown)] underline-offset-4 group-hover:underline">
+                    {DIAGNOSIS_COPY.startButton} →
+                  </span>
+                </span>
+              </span>
             </Link>
           </div>
         </section>

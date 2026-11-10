@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { READING_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { DiagnosisResult } from "@/components/diagnosis/DiagnosisResult";
 import { riceProfiles } from "@/data/rice/catalog";
 import { decodeDiagnosisCode } from "@/lib/diagnosis/code";
@@ -50,7 +50,9 @@ export default async function DiagnosisResultPage({
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
       <SiteHeader active="shindan" />
-      <div className={`${READING_COLUMN} px-5 pb-24 pt-10 sm:pt-14`}>
+      {/* The result is the shareable artefact of the diagnosis, so it takes
+          the full site column (v1.33.0) — not the prose measure. */}
+      <div className={`${SITE_COLUMN} pb-24 pt-10 sm:pt-14`}>
         <DiagnosisResult code={code} outcome={outcome} />
       </div>
       <SiteFooter />

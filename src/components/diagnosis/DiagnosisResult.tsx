@@ -8,7 +8,7 @@ import { AXIS_POLES, FOCUS } from "@/components/matrix/shared";
 import { TastePips } from "@/components/matrix/TastePips";
 import { BrandThumb } from "@/components/editorial/BrandThumb";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
-import { BuyingTips } from "@/components/diagnosis/BuyingTips";
+import { BuyingTipsPanel } from "@/components/diagnosis/BuyingTips";
 import { COMPARISON_INDICATORS } from "@/lib/editorial/comparisons";
 import type { RiceProfileV2 } from "@/types/rice";
 import type { DiagnosisOutcome, DiagnosisPick } from "@/lib/diagnosis/engine";
@@ -97,10 +97,52 @@ function DeltaList({
 }
 
 /**
+ * Mini taste map colours. SVG presentation attributes do not resolve CSS
+ * var() and silently fall back to black, so the values stay literal hex —
+ * collected here once, named after what they mirror. MAP_SURFACE /
+ * MAP_MUTED / MAP_GOLD / MAP_BROWN / MAP_ACCENT / MAP_INK are the site
+ * tokens (--km-surface / --km-muted / --km-gold / --km-brown / --km-accent
+ * / --km-ink) at the same values. The three MAP_PLOT_* / MAP_GRID tints
+ * have no exact token: they are intermediate shades of the same paper
+ * family, between --km-surface and --km-bg-soft.
+ */
+const MAP_SURFACE = "#FFFDF7";
+const MAP_MUTED = "#766658";
+const MAP_GOLD = "#D49A2A";
+const MAP_BROWN = "#704522";
+const MAP_ACCENT = "#E56B3F";
+const MAP_INK = "#302820";
+const MAP_PLOT_BG = "#FFF9EE";
+const MAP_PLOT_FRAME = "#DCCBA6";
+const MAP_GRID = "#E7D9BE";
+
+/**
+ * Deterministic de-overlap for the mini map. Scores are integers 1–5, so
+ * two seats can land on the exact same point (the live check found the
+ * 穴 dot hidden under the 本命）. Points are placed in a fixed priority
+ * order — the three picks keep their true position first, the base
+ * yields — and each point takes the first offset from a fixed list that
+ * keeps it clear of the ones already placed. No randomness: the same
+ * result URL renders the same map on every visit.
+ */
+const MAP_MIN_SEPARATION = 15;
+const MAP_NUDGES: ReadonlyArray<readonly [number, number]> = [
+  [0, 0],
+  [11, -11],
+  [-13, -7],
+  [13, 9],
+  [-11, 13],
+  [0, -17],
+  [17, 0],
+  [-17, 0],
+  [0, 17],
+  [20, -14],
+  [-20, 14],
+];
+
+/**
  * Mini taste map — same axes as the home map (X: 甘み, right is sweeter;
  * Y: 粒立ち inverted the site's way, firm at the bottom, soft at the top).
- * SVG attributes carry literal hex only: presentation attributes do not
- * resolve CSS var() and silently fall back to black.
  */
 function MiniTasteMap({
   base,
@@ -126,8 +168,8 @@ function MiniTasteMap({
       label: DIAGNOSIS_COPY.baseBarPrefix,
       rice: base,
       r: 5,
-      fill: "#FFFDF7",
-      stroke: "#766658",
+      fill: MAP_SURFACE,
+      stroke: MAP_MUTED,
       dy: 16,
     },
     {
@@ -135,8 +177,8 @@ function MiniTasteMap({
       label: SLOT_DEFS.honmei.title,
       rice: picks[0].rice,
       r: 7.5,
-      fill: "#D49A2A",
-      stroke: "#FFFDF7",
+      fill: MAP_GOLD,
+      stroke: MAP_SURFACE,
       dy: -9,
     },
     {
@@ -144,8 +186,8 @@ function MiniTasteMap({
       label: SLOT_DEFS.taikou.title,
       rice: picks[1].rice,
       r: 6,
-      fill: "#704522",
-      stroke: "#FFFDF7",
+      fill: MAP_BROWN,
+      stroke: MAP_SURFACE,
       dy: 16,
     },
     {
@@ -153,11 +195,41 @@ function MiniTasteMap({
       label: SLOT_DEFS.ana.title,
       rice: picks[2].rice,
       r: 6,
-      fill: "#E56B3F",
-      stroke: "#FFFDF7",
+      fill: MAP_ACCENT,
+      stroke: MAP_SURFACE,
       dy: -9,
     },
   ];
+
+  const clampToPlot = (value: number, lo: number, hi: number) =>
+    Math.min(hi, Math.max(lo, value));
+  const placed: Array<{ cx: number; cy: number }> = [];
+  const centres = new Map<string, { cx: number; cy: number }>();
+  for (const key of ["honmei", "taikou", "ana", "base"]) {
+    const point = points.find((row) => row.key === key);
+    if (!point) continue;
+    const rawX = px(point.rice.sweetness);
+    const rawY = py(point.rice.hardness);
+    let centre: { cx: number; cy: number } | null = null;
+    for (const [dx, dy] of MAP_NUDGES) {
+      const cx = clampToPlot(rawX + dx, padL + point.r, padL + plotW - point.r);
+      const cy = clampToPlot(rawY + dy, padT + point.r, padT + plotH - point.r);
+      if (
+        placed.every(
+          (other) => Math.hypot(other.cx - cx, other.cy - cy) >= MAP_MIN_SEPARATION,
+        )
+      ) {
+        centre = { cx, cy };
+        break;
+      }
+    }
+    centre ??= {
+      cx: clampToPlot(rawX, padL + point.r, padL + plotW - point.r),
+      cy: clampToPlot(rawY, padT + point.r, padT + plotH - point.r),
+    };
+    placed.push(centre);
+    centres.set(key, centre);
+  }
 
   return (
     <figure className="mt-7">
@@ -175,8 +247,8 @@ function MiniTasteMap({
           y={padT}
           width={plotW}
           height={plotH}
-          fill="#FFF9EE"
-          stroke="#DCCBA6"
+          fill={MAP_PLOT_BG}
+          stroke={MAP_PLOT_FRAME}
           strokeWidth="1"
         />
         <line
@@ -184,7 +256,7 @@ function MiniTasteMap({
           y1={padT}
           x2={px(3)}
           y2={padT + plotH}
-          stroke="#E7D9BE"
+          stroke={MAP_GRID}
           strokeWidth="1"
           strokeDasharray="3 4"
         />
@@ -193,31 +265,32 @@ function MiniTasteMap({
           y1={py(3)}
           x2={padL + plotW}
           y2={py(3)}
-          stroke="#E7D9BE"
+          stroke={MAP_GRID}
           strokeWidth="1"
           strokeDasharray="3 4"
         />
-        <text x={padL + 6} y={padT + 13} fontSize="10" fill="#766658">
+        <text x={padL + 6} y={padT + 13} fontSize="10" fill={MAP_MUTED}>
           {AXIS_POLES.softShort}
         </text>
-        <text x={padL + 6} y={padT + plotH - 7} fontSize="10" fill="#766658">
+        <text x={padL + 6} y={padT + plotH - 7} fontSize="10" fill={MAP_MUTED}>
           {AXIS_POLES.firmShort}
         </text>
-        <text x={padL} y={H - 8} fontSize="10" fill="#766658">
+        <text x={padL} y={H - 8} fontSize="10" fill={MAP_MUTED}>
           {AXIS_POLES.sweetLowShort}
         </text>
         <text
           x={padL + plotW}
           y={H - 8}
           fontSize="10"
-          fill="#766658"
+          fill={MAP_MUTED}
           textAnchor="end"
         >
           {AXIS_POLES.sweetHighShort}
         </text>
         {points.map((point) => {
-          const cx = px(point.rice.sweetness);
-          const cy = py(point.rice.hardness);
+          const centre = centres.get(point.key);
+          if (!centre) return null;
+          const { cx, cy } = centre;
           const toLeft = cx > W * 0.6;
           return (
             <g key={point.key}>
@@ -234,10 +307,10 @@ function MiniTasteMap({
                 y={cy + point.dy}
                 fontSize="11"
                 fontWeight="700"
-                fill="#302820"
+                fill={MAP_INK}
                 textAnchor={toLeft ? "end" : "start"}
                 paintOrder="stroke"
-                stroke="#FFFDF7"
+                stroke={MAP_SURFACE}
                 strokeWidth="3"
                 className="font-serif"
               >
@@ -320,45 +393,75 @@ export function DiagnosisResult({
 
   const shareButtonClass = `inline-flex min-h-[48px] items-center justify-center rounded-full border border-[var(--km-border)] bg-[var(--km-surface)] px-5 text-[14px] font-medium text-[var(--km-ink)] transition hover:border-[var(--km-brown)]/40 hover:bg-[var(--km-surface-warm)] ${FOCUS}`;
 
+  const shareButtons = (
+    <>
+      <button
+        type="button"
+        onClick={copyLink}
+        className={`${shareButtonClass} ${
+          copied
+            ? "border-[var(--km-gold)] bg-[var(--km-surface-warm)] text-[var(--km-brown)]"
+            : ""
+        }`}
+      >
+        {copied ? DIAGNOSIS_COPY.shareCopied : DIAGNOSIS_COPY.shareCopy}
+      </button>
+      <button
+        type="button"
+        onClick={() => openShare("x")}
+        className={shareButtonClass}
+      >
+        {DIAGNOSIS_COPY.shareX}
+      </button>
+      <button
+        type="button"
+        onClick={() => openShare("line")}
+        className={shareButtonClass}
+      >
+        {DIAGNOSIS_COPY.shareLine}
+      </button>
+    </>
+  );
+
   return (
     <div>
-      <p className="text-[12px] tracking-[0.14em] text-[var(--km-brown)]">
-        {DIAGNOSIS_COPY.resultEyebrow}
-      </p>
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="font-serif text-[2rem] font-semibold leading-[1.25] tracking-tight text-[var(--km-ink)]">
-          {DIAGNOSIS_COPY.resultTitle}
-        </h1>
-        <span
-          aria-label={`${DIAGNOSIS_COPY.tagAriaPrefix}：${preferenceTag}`}
-          className="inline-flex rotate-[-2deg] items-center rounded-md border-2 border-[var(--km-accent)] px-2.5 py-1 font-serif text-[13px] font-semibold text-[var(--km-accent)]"
-        >
-          {preferenceTag}
-        </span>
-      </div>
-      <p className="mt-3 text-[14.5px] leading-[1.9] text-[var(--km-ink-soft)]">
-        {subtitle}
-      </p>
-
-      {warning ? (
-        <section
-          aria-label={DIAGNOSIS_COPY.warningTitle}
-          className="mt-7 rounded-xl border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-[var(--km-surface-warm)] px-5 py-4"
-        >
-          <h2 className="font-serif text-[15px] font-semibold text-[var(--km-brown)]">
-            {DIAGNOSIS_COPY.warningTitle}
-          </h2>
-          <p className="mt-2 text-[14px] leading-[1.95] text-[var(--km-ink-soft)]">
-            {warning.warning}
+      {/* Title row: the result name on the left, share actions on the
+          right at desktop width. On phones the share block sits below
+          the picks instead (see the lg:hidden section further down). */}
+      <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
+        <div className="min-w-0">
+          <p className="text-[12px] tracking-[0.14em] text-[var(--km-brown)]">
+            {DIAGNOSIS_COPY.resultEyebrow}
           </p>
-        </section>
-      ) : null}
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <h1 className="font-serif text-[2rem] font-semibold leading-[1.25] tracking-tight text-[var(--km-ink)]">
+              {DIAGNOSIS_COPY.resultTitle}
+            </h1>
+            <span
+              aria-label={`${DIAGNOSIS_COPY.tagAriaPrefix}：${preferenceTag}`}
+              className="inline-flex rotate-[-2deg] items-center rounded-md border-2 border-[var(--km-accent)] px-2.5 py-1 font-serif text-[13px] font-semibold text-[var(--km-accent)]"
+            >
+              {preferenceTag}
+            </span>
+          </div>
+          <p className="mt-3 max-w-[40rem] text-[14.5px] leading-[1.9] text-[var(--km-ink-soft)]">
+            {subtitle}
+          </p>
+        </div>
+        <div
+          role="group"
+          aria-label={DIAGNOSIS_COPY.shareTitle}
+          className="mt-6 hidden flex-none flex-wrap gap-2.5 lg:mt-2 lg:flex"
+        >
+          {shareButtons}
+        </div>
+      </div>
 
       <section aria-label="ものさし" className="mt-9">
         <h2 className="text-[13px] font-medium tracking-[0.06em] text-[var(--km-muted)]">
           {DIAGNOSIS_COPY.baseBarPrefix}：{base.name}（{base.prefecture}）
         </h2>
-        <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 md:grid-cols-4">
+        <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
           {COMPARISON_INDICATORS.map(({ key, label }) => (
             <div key={key} className="flex items-center justify-between gap-2">
               <dt className="text-[11.5px] text-[var(--km-muted)]">{label}</dt>
@@ -380,55 +483,70 @@ export function DiagnosisResult({
           aria-label={`${honmeiDef.title} ${honmei.rice.name}`}
           className="overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_2px_10px_rgba(48,40,32,0.07)]"
         >
-          <BrandThumb
-            id={honmei.rice.id}
-            name={honmei.rice.name}
-            region={honmei.rice.region}
-            prefecture={honmei.rice.prefecture}
-            className="h-44 w-full sm:h-52"
-            sizes="(min-width: 768px) 40rem, 100vw"
-            priority
-          />
-          <div className="p-5 sm:p-6">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h2 className="inline-flex rotate-[-2deg] items-center rounded-md bg-[var(--km-gold)] px-3 py-1 font-serif text-[15px] font-bold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(112,69,34,0.35)]">
-                {honmeiDef.title}
-              </h2>
-              <p className="text-[12.5px] text-[var(--km-muted)]">
-                {honmeiDef.note}
+          <div className="lg:grid lg:grid-cols-[46%_1fr]">
+            <BrandThumb
+              id={honmei.rice.id}
+              name={honmei.rice.name}
+              region={honmei.rice.region}
+              prefecture={honmei.rice.prefecture}
+              className="h-44 w-full sm:h-52 lg:h-full lg:min-h-[24rem]"
+              sizes="(min-width: 1024px) 42rem, 100vw"
+              priority
+            />
+            <div className="p-5 sm:p-6 lg:p-8">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <h2 className="inline-flex rotate-[-2deg] items-center rounded-md bg-[var(--km-gold)] px-3 py-1 font-serif text-[15px] font-bold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(112,69,34,0.35)]">
+                  {honmeiDef.title}
+                </h2>
+                <p className="text-[12.5px] text-[var(--km-muted)]">
+                  {honmeiDef.note}
+                </p>
+              </div>
+              <p className="mt-4 font-serif text-[1.55rem] font-semibold leading-[1.35] text-[var(--km-ink)]">
+                {honmei.rice.name}
               </p>
-            </div>
-            <p className="mt-4 font-serif text-[1.55rem] font-semibold leading-[1.35] text-[var(--km-ink)]">
-              {honmei.rice.name}
-            </p>
-            <p className="mt-1 text-[13px] text-[var(--km-muted)]">
-              {honmei.rice.prefecture}
-            </p>
-            <PickDetailLink pick={honmei} />
-            {honmeiDeltas.length > 0 ? (
-              <>
-                <DeltaList
-                  pick={honmei}
-                  base={base}
-                  baseIsDefault={answers.baseIsDefault}
-                />
+              <p className="mt-1 text-[13px] text-[var(--km-muted)]">
+                {honmei.rice.prefecture}
+              </p>
+              <PickDetailLink pick={honmei} />
+              {honmeiDeltas.length > 0 ? (
+                <>
+                  <DeltaList
+                    pick={honmei}
+                    base={base}
+                    baseIsDefault={answers.baseIsDefault}
+                  />
+                  <p className="mt-4 text-[14.5px] leading-[1.95] text-[var(--km-ink-soft)]">
+                    {honmei.sceneLine}
+                  </p>
+                </>
+              ) : (
                 <p className="mt-4 text-[14.5px] leading-[1.95] text-[var(--km-ink-soft)]">
+                  {honmei.reason}
                   {honmei.sceneLine}
                 </p>
-              </>
-            ) : (
-              <p className="mt-4 text-[14.5px] leading-[1.95] text-[var(--km-ink-soft)]">
-                {honmei.reason}
-                {honmei.sceneLine}
-              </p>
-            )}
-            <MiniTasteMap base={base} picks={picks} />
-            <div className="mt-6">
-              <ShopLinksStrip rice={honmei.rice} variant="compact" disclosure="pr" />
+              )}
+              <MiniTasteMap base={base} picks={picks} />
+              <div className="mt-6">
+                <ShopLinksStrip rice={honmei.rice} variant="compact" disclosure="pr" />
+              </div>
             </div>
-            <BuyingTips riceId={honmei.rice.id} />
           </div>
         </article>
+
+        {warning ? (
+          <section
+            aria-label={DIAGNOSIS_COPY.warningTitle}
+            className="mt-6 rounded-xl border border-[var(--km-border)] border-l-4 border-l-[var(--km-gold)] bg-[var(--km-surface-warm)] px-5 py-4"
+          >
+            <h2 className="font-serif text-[15px] font-semibold text-[var(--km-brown)]">
+              {DIAGNOSIS_COPY.warningTitle}
+            </h2>
+            <p className="mt-2 text-[14px] leading-[1.95] text-[var(--km-ink-soft)]">
+              {warning.warning}
+            </p>
+          </section>
+        ) : null}
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           {picks.slice(1).map((pick) => {
@@ -464,63 +582,52 @@ export function DiagnosisResult({
                     <PickDetailLink pick={pick} />
                   </div>
                 </div>
+                {/* The dish scene sentence belongs to the whole result,
+                    not to each seat: the engine hands the same line to all
+                    three picks, so it is printed once, on the honmei card.
+                    Side seats keep their own delta reason only. */}
                 <p className="mt-3.5 text-[13.5px] leading-[1.9] text-[var(--km-ink-soft)]">
                   {pick.reason}
-                  {pick.sceneLine}
                 </p>
                 <div className="mt-4">
                   <ShopLinksStrip rice={pick.rice} variant="compact" disclosure="pr" />
                 </div>
-                <BuyingTips riceId={pick.rice.id} />
               </article>
             );
           })}
         </div>
+
+        <div className="mt-6 max-w-[40rem]">
+          <BuyingTipsPanel />
+        </div>
       </div>
 
-      <section aria-label={DIAGNOSIS_COPY.shareTitle} className="mt-12">
+      <section
+        aria-label={DIAGNOSIS_COPY.shareTitle}
+        className="mt-12 lg:hidden"
+      >
         <h2 className="font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)]">
           {DIAGNOSIS_COPY.shareTitle}
         </h2>
-        <div className="mt-4 flex flex-wrap gap-2.5">
-          <button
-            type="button"
-            onClick={copyLink}
-            className={`${shareButtonClass} ${
-              copied
-                ? "border-[var(--km-gold)] bg-[var(--km-surface-warm)] text-[var(--km-brown)]"
-                : ""
-            }`}
-          >
-            {copied ? DIAGNOSIS_COPY.shareCopied : DIAGNOSIS_COPY.shareCopy}
-          </button>
-          <button
-            type="button"
-            onClick={() => openShare("x")}
-            className={shareButtonClass}
-          >
-            {DIAGNOSIS_COPY.shareX}
-          </button>
-          <button
-            type="button"
-            onClick={() => openShare("line")}
-            className={shareButtonClass}
-          >
-            {DIAGNOSIS_COPY.shareLine}
-          </button>
-        </div>
+        <div className="mt-4 flex flex-wrap gap-2.5">{shareButtons}</div>
       </section>
 
-      <p className="mt-10">
+      <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-[var(--km-border)] pt-6">
         <Link
           href="/shindan"
           className={`text-[14px] font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
         >
           {DIAGNOSIS_COPY.retryLink}
         </Link>
-      </p>
+        <Link
+          href="/library"
+          className={`text-[14px] font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
+        >
+          ライブラリ
+        </Link>
+      </div>
 
-      <p className="mt-10 border-t border-[var(--km-border)] pt-4 text-[12px] leading-[1.8] text-[var(--km-muted)]">
+      <p className="mt-6 text-[12px] leading-[1.8] text-[var(--km-muted)]">
         {TASTE_DISCLAIMER_DETAIL}
       </p>
     </div>
