@@ -36,6 +36,33 @@ function getInkArtDataUrl(riceId: string): Promise<string | null> {
   return promise;
 }
 
+/**
+ * Pre-generated cards live on R2 (assets.komesomme.jp, generated locally
+ * by scripts/warm-share-cards.mjs + scripts/upload-share-cards.mjs).
+ * When a static card exists, redirect to it instead of rendering: the
+ * on-demand render is the site's one real CPU cost. A brand added after
+ * the last static batch simply falls through to the live render.
+ * Set SHARE_CARD_STATIC=off to bypass (e.g. while refreshing the set).
+ */
+const STATIC_CARD_BASE = "https://assets.komesomme.jp/share-cards/v1";
+
+async function staticShareCardUrl(
+  id: string,
+  withQr: boolean
+): Promise<string | null> {
+  if (process.env.SHARE_CARD_STATIC === "off") return null;
+  const url = `${STATIC_CARD_BASE}/${id}${withQr ? "-qr" : ""}.png`;
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      signal: AbortSignal.timeout(1500),
+    });
+    return res.ok ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 function publicPageUrl(id: string): { hostLine: string; absoluteUrl: string } {
   const raw = getSiteUrl().replace(/^https?:\/\//, "").replace(/\/+$/, "");
   const host =
@@ -65,6 +92,11 @@ export async function renderShareCard(
   const rice = findRiceProfile(id);
   if (!rice) {
     return new Response("Not found", { status: 404 });
+  }
+
+  const staticUrl = await staticShareCardUrl(rice.id, withQr);
+  if (staticUrl) {
+    return Response.redirect(staticUrl, 307);
   }
 
   const { hostLine, absoluteUrl } = publicPageUrl(rice.id);
