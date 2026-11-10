@@ -430,6 +430,10 @@ export const HEADLINE_KEYS: IndicatorKey[] = [
 
 export const DIAGNOSIS_COPY = {
   wizardTitle: "侍米師の米診断",
+  wizardEyebrow: "ふだんの米から、次の一杯へ",
+  wizardSteps: ["三つ答える", "いつもの米と比べる", "相棒米が三つ"],
+  mapLabel: "味わいの地図",
+  mapCaption: "右ほど甘みが強く、下ほど粒が立ちます。",
   // v1 asks three questions in the UI; the cooker field still exists in the
   // engine and the result code (always the default), so a fourth question
   // can be added later without changing the code format.

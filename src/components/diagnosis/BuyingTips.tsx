@@ -13,7 +13,7 @@ import {
  */
 export function BuyingTips({ riceId }: { riceId: string }) {
   return (
-    <div className="mt-4 rounded-lg border border-[var(--km-border)] bg-[var(--km-surface-warm)] px-4 py-3">
+    <div className="mt-4 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3.5 shadow-[0_1px_2px_rgba(48,40,32,0.04)]">
       <p className="text-[12px] font-medium tracking-[0.06em] text-[var(--km-brown)]">
         {BUYING_TIPS_TITLE}
       </p>
