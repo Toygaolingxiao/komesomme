@@ -1,8 +1,21 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
-import { PurchaseJump, PurchaseLinks } from "@/components/matrix/PurchaseLinks";
-import { RakutenDirectLink } from "@/components/matrix/RakutenDirectLink";
+import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
+import {
+  AFFILIATE_LINK_REL,
+  amazonSearchUrl,
+  mercariSearchUrl,
+  shopQuery,
+  wrapYahooSearchUrl,
+} from "@/lib/affiliate";
+import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
+import {
+  rakutenSearchUrl,
+  wrapRakutenAffiliateUrl,
+} from "@/lib/rakuten/affiliate";
+import { riceRakutenKeyword } from "@/lib/rakuten/keyword";
 import { TasteContour } from "@/components/matrix/TasteContour";
 import { TastePips } from "@/components/matrix/TastePips";
 import { ShareCardActions } from "@/components/brand/ShareCardActions";
@@ -95,6 +108,29 @@ export function LibraryRiceDossier({
   const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
   const reading = distinctReading(rice.name, article.reading);
   const prefPage = prefecturePageByLabel(rice.prefecture);
+  // Title-block storefront: one quiet text line to the four malls, so a
+  // search landing can reach a shop from the first screen. Same entrance
+  // as the full strip at 購入の目安 below — storefront here; the tabs /
+  // ふるさと side stays there (one mall strip per page). SSR anchors from
+  // catalog data, as RakutenDirectLink was; click tracking stays with
+  // the bottom strip.
+  const shopKeyword = shopQuery({
+    prefecture: rice.prefecture,
+    brand: rice.name,
+  });
+  const headerShops = isShopLinksEnabled()
+    ? [
+        { label: "Amazon", href: amazonSearchUrl(shopKeyword) },
+        {
+          label: "楽天市場",
+          href: wrapRakutenAffiliateUrl(
+            rakutenSearchUrl(riceRakutenKeyword(rice) || shopKeyword),
+          ),
+        },
+        { label: "Yahoo!", href: wrapYahooSearchUrl(shopKeyword) },
+        { label: "メルカリ", href: mercariSearchUrl(shopKeyword) },
+      ]
+    : [];
 
   return (
     <article className={`${SITE_COLUMN} pb-24 pt-2`}>
@@ -141,12 +177,29 @@ export function LibraryRiceDossier({
           {appetite}
         </p>
 
-        <div className="mt-7">
-          <RakutenDirectLink rice={rice} />
-          <div className="mt-3">
-            <PurchaseJump label="ほかのお店で探す（ページ下部）" />
+        {headerShops.length > 0 ? (
+          <div className="mt-7">
+            <p className="text-[13px] leading-relaxed">
+              <span className="text-[var(--km-muted)]">お店で探す：</span>
+              {headerShops.map((mall, index) => (
+                <span key={mall.label}>
+                  {index > 0 ? (
+                    <span className="mx-1.5 text-[var(--km-muted)]">・</span>
+                  ) : null}
+                  <a
+                    href={mall.href}
+                    target="_blank"
+                    rel={AFFILIATE_LINK_REL}
+                    className={`text-[var(--km-brown)] underline-offset-4 hover:underline ${FOCUS}`}
+                  >
+                    {mall.label}
+                  </a>
+                </span>
+              ))}
+            </p>
+            <AffiliateDisclosure variant="pr" className="mt-1.5" />
           </div>
-        </div>
+        ) : null}
         <ShareCardActions rice={rice} />
       </header>
 
@@ -280,7 +333,7 @@ export function LibraryRiceDossier({
         </Section>
       ) : null}
 
-      {/* 7. 購入 — single mall strip (top is jump only) */}
+      {/* 7. 購入 — the one mall strip (title block carries its text-line storefront) */}
       <Section title="購入の目安">
         <p className="text-[14px] leading-[1.9] text-[var(--km-ink-soft)]">
           {article.purchaseNotes}
