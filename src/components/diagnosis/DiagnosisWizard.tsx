@@ -209,7 +209,10 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
   const choose = (pickKey: string, answer: () => void) => {
     if (picked) return;
     setPicked(pickKey);
-    timerRef.current = window.setTimeout(answer, PICK_HOLD_MS);
+    timerRef.current = window.setTimeout(() => {
+      setPicked(null);
+      answer();
+    }, PICK_HOLD_MS);
   };
 
   const goBack = (to: Step) => {
