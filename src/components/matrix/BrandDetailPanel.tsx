@@ -385,7 +385,7 @@ export function BrandDetailPanel({
               ) : null}
 
               <div className="mt-8 flex flex-col gap-5 border-t border-[var(--km-border)] pt-6">
-                <PurchaseJump label="お店で探すへ戻る" />
+                <PurchaseJump href={`/library/${rice.id}#km-purchase`} label="お店で探すへ戻る" />
                 <Link
                   href={`/library/${rice.id}`}
                   className={`inline-flex w-fit items-center gap-1 text-[13px] text-[var(--km-ink-soft)] transition hover:text-[var(--km-gold)] ${FOCUS}`}
