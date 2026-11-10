@@ -3,9 +3,12 @@ import { findRiceProfile } from "@/data/rice/catalog";
 import {
   amazonSearchUrl,
   furusatoQuery,
+  isValueCommerceReferralHref,
   mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
+  valueCommerceImpressionPixelUrl,
+  valueCommerceWrapEnabled,
   wrapSatofullSearchUrl,
   wrapYahooSearchUrl,
   yahooFurusatoSearchUrl,
@@ -39,6 +42,8 @@ export type ShopLinks = {
   satofull: string;
   rakutenFurusato: string;
   yahooFurusato: string;
+  /** VC impression pixel, present only when the Yahoo href is VC-wrapped. */
+  yahooImpression?: string;
 };
 
 /**
@@ -68,18 +73,32 @@ export async function GET(request: Request) {
   const satofullSid = process.env.SATOFULL_VC_SID?.trim();
   const satofullPid = process.env.SATOFULL_VC_PID?.trim();
 
-  const yahooPromo = await lookupYahooPromoUrl(rice.id);
+  // VC Yahoo が使える間は、手貼り公式短鎖より VC の商品/検索リンクを優先する
+  // （短鎖は VC 未承認時代の暫定措置。docs/14 §4）。短鎖テーブルは残し、
+  // VC を止めたら自動で従来動作に戻る。
+  const vcYahooReady =
+    valueCommerceWrapEnabled() && Boolean(yahooSid && yahooPid);
+  const yahooPromo = vcYahooReady
+    ? undefined
+    : await lookupYahooPromoUrl(rice.id);
   const yahooSearch = wrapYahooSearchUrl(shop, yahooSid, yahooPid);
   const yahooFurusatoSearch = yahooFurusatoSearchUrl(furusato);
 
+  const impressionFor = (yahooHref: string): string | undefined =>
+    vcYahooReady && yahooSid && yahooPid && isValueCommerceReferralHref(yahooHref)
+      ? valueCommerceImpressionPixelUrl(yahooSid, yahooPid)
+      : undefined;
+
+  const fallbackYahoo = resolveYahooShopHref(yahooPromo, yahooSearch);
   const fallback: ShopLinks = {
     amazon: amazonSearchUrl(shop),
     rakuten: wrapRakutenAffiliateUrl(rakutenSearchUrl(shop)),
-    yahoo: resolveYahooShopHref(yahooPromo, yahooSearch),
+    yahoo: fallbackYahoo,
     mercari: mercariSearchUrl(shop),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     yahooFurusato: yahooFurusatoSearch,
+    yahooImpression: impressionFor(fallbackYahoo),
   };
 
   const ip = clientIpFromRequest(request);
@@ -93,14 +112,16 @@ export async function GET(request: Request) {
     yahooPromo ? Promise.resolve(yahooPromo) : yahooShoppingItemUrl(shop),
   ]);
 
+  const finalYahoo = resolveYahooShopHref(yahooPromo, yahooItem);
   const links: ShopLinks = {
     amazon: fallback.amazon,
     rakuten: rakuten.url,
-    yahoo: resolveYahooShopHref(yahooPromo, yahooItem),
+    yahoo: finalYahoo,
     mercari: fallback.mercari,
     satofull: fallback.satofull,
     rakutenFurusato: fallback.rakutenFurusato,
     yahooFurusato: fallback.yahooFurusato,
+    yahooImpression: impressionFor(finalYahoo),
   };
 
   return json(links);

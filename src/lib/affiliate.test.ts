@@ -8,11 +8,16 @@ import {
   amazonSearchUrl,
   furusatoQuery,
   mercariSearchUrl,
+  isValueCommerceReferralHref,
   rakutenFurusatoSearchUrl,
   shopQuery,
+  valueCommerceImpressionPixelUrl,
+  wrapValueCommerceIfReady,
+  wrapYahooSearchUrl,
   yahooFurusatoSearchUrl,
   yahooFurusatoSheetKeyword,
   yahooShoppingSearchUrl,
+  yahooValueCommerceAffiliateId,
 } from "./affiliate";
 
 describe("disclosure copy layering", () => {
@@ -22,7 +27,9 @@ describe("disclosure copy layering", () => {
     expect(AFFILIATE_LINK_REL).toBe("noopener noreferrer nofollow sponsored");
     expect(AFFILIATE_PR_NOTICE).toContain("アフィリエイト広告");
     expect(AFFILIATE_PR_NOTICE).not.toContain("バリューコマース");
-    expect(AFFILIATE_PR_NOTICE_DETAIL).not.toContain("バリューコマース");
+    // VC was re-adopted on 2026-11-10, so the terms-level ASP list names it
+    // again; the near-CTA chrome notice still stays generic.
+    expect(AFFILIATE_PR_NOTICE_DETAIL).toContain("バリューコマース");
     expect(AFFILIATE_PR_NOTICE_DETAIL).toContain("Amazonアソシエイト");
   });
 });
@@ -83,5 +90,73 @@ describe("TS-UNIT-04 shop / amazon URL builders", () => {
     expect(url).toContain("https://jp.mercari.com/search?");
     expect(url).toContain("keyword=");
     expect(url).toContain("afid=7137822833");
+  });
+});
+
+describe("ValueCommerce wrap (re-adopted 2026-11-10)", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("wraps a target URL with sid/pid and vc_url", () => {
+    const wrapped = wrapValueCommerceIfReady(
+      "https://shopping.yahoo.co.jp/search?p=rice",
+      "123",
+      "456",
+    );
+    const url = new URL(wrapped);
+    expect(url.origin + url.pathname).toBe(
+      "https://ck.jp.ap.valuecommerce.com/servlet/referral",
+    );
+    expect(url.searchParams.get("sid")).toBe("123");
+    expect(url.searchParams.get("pid")).toBe("456");
+    expect(url.searchParams.get("vc_url")).toBe(
+      "https://shopping.yahoo.co.jp/search?p=rice",
+    );
+    expect(isValueCommerceReferralHref(wrapped)).toBe(true);
+  });
+
+  it("returns the plain URL when the pair is missing", () => {
+    const target = "https://shopping.yahoo.co.jp/search?p=rice";
+    expect(wrapValueCommerceIfReady(target)).toBe(target);
+    expect(wrapValueCommerceIfReady(target, "123")).toBe(target);
+    expect(wrapValueCommerceIfReady(target, "", "456")).toBe(target);
+  });
+
+  it("never double-wraps a referral URL", () => {
+    const once = wrapValueCommerceIfReady(
+      "https://shopping.yahoo.co.jp/search?p=rice",
+      "123",
+      "456",
+    );
+    expect(wrapValueCommerceIfReady(once, "123", "456")).toBe(once);
+  });
+
+  it("kill switch VALUE_COMMERCE_WRAP=off returns plain URLs", () => {
+    vi.stubEnv("VALUE_COMMERCE_WRAP", "off");
+    const target = "https://shopping.yahoo.co.jp/search?p=rice";
+    expect(wrapValueCommerceIfReady(target, "123", "456")).toBe(target);
+    expect(wrapYahooSearchUrl("rice", "123", "456")).toBe(
+      yahooShoppingSearchUrl("rice"),
+    );
+  });
+
+  it("wrapYahooSearchUrl wraps the search URL when the pair is passed", () => {
+    const wrapped = wrapYahooSearchUrl("rice", "123", "456");
+    expect(isValueCommerceReferralHref(wrapped)).toBe(true);
+    const url = new URL(wrapped);
+    expect(url.searchParams.get("vc_url")).toBe(yahooShoppingSearchUrl("rice"));
+  });
+
+  it("builds the Yahoo API affiliate_id exactly as the VC guide specifies", () => {
+    expect(yahooValueCommerceAffiliateId("123", "456")).toBe(
+      "http://ck.jp.ap.valuecommerce.com/servlet/referral?sid=123&pid=456&vc_url=",
+    );
+  });
+
+  it("builds the impression pixel URL for the same pair", () => {
+    expect(valueCommerceImpressionPixelUrl("123", "456")).toBe(
+      "https://ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=123&pid=456",
+    );
   });
 });

@@ -21,7 +21,7 @@ export const AFFILIATE_PR_NOTICE =
 
 /** `/terms` only — names the ASPs. Do not paste into CTA chrome. */
 export const AFFILIATE_PR_NOTICE_DETAIL =
-  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト等）。";
+  "当サイトの外部リンクにはアフィリエイト広告が含まれる場合があります（Amazonアソシエイト、楽天アフィリエイト、Yahoo!ショッピング公式アフィリエイト、バリューコマース等）。";
 
 /** Footer one-liner. */
 export const TASTE_DISCLAIMER =
@@ -32,13 +32,14 @@ export const TASTE_DISCLAIMER_DETAIL =
   "味わい評価はKomeSomme独自基準による目安です。公的な認定・等級を示すものではありません。";
 
 /**
- * @deprecated ValueCommerce は採用しない（2026-09）。転鎖ヘルパは互換のため残すが常に無効。
- * 本番の Yahoo は公式短鎖（通販・ふるさと別表）またはプレーン検索。
+ * ValueCommerce referral endpoint. VC は 2026-09 に廃止したが、2026-11-10 の
+ * 媒体審査通過と Yahoo!ショッピング提携（即時提携）を機に再採用した。
+ * 広告主ごとに提携承認と SID/PID が別なので、包むかどうかは案件単位で決まる。
  */
 export const VALUE_COMMERCE_REFERRAL_HTTPS =
   "https://ck.jp.ap.valuecommerce.com/servlet/referral";
 
-/** @deprecated See VALUE_COMMERCE_REFERRAL_HTTPS. */
+/** Yahoo API の `affiliate_id` は http 版で組み立てる（VC 公式手順）。 */
 export const VALUE_COMMERCE_REFERRAL_HTTP =
   "http://ck.jp.ap.valuecommerce.com/servlet/referral";
 
@@ -173,18 +174,44 @@ export function satofullValueCommerceEnv(): { sid: string; pid: string } {
   };
 }
 
-/** ValueCommerce 廃止。常に false（環境変数では再有効化しない）。 */
+/**
+ * VC 転鎖の全体スイッチ。既定は有効で、`VALUE_COMMERCE_WRAP=off` が緊急停止用
+ * （提携終了時は env の SID/PID を空にするのが正手順。docs/14 §3）。
+ * 実際に包むかは案件ごとの SID/PID が揃っているかで決まる。
+ */
 export function valueCommerceWrapEnabled(): boolean {
-  return false;
+  return process.env.VALUE_COMMERCE_WRAP?.trim().toLowerCase() !== "off";
 }
 
-/** VC 廃止後は常に素の URL を返す。 */
+/** True when the href already goes through the VC referral servlet. */
+export function isValueCommerceReferralHref(value: string): boolean {
+  return value.includes("valuecommerce.com/servlet/referral");
+}
+
+/**
+ * Wrap a target URL in a VC referral link when the advertiser's SID/PID pair
+ * is configured. Missing pair, the kill switch, a non-HTTP target, or an
+ * already-wrapped URL all return the target untouched.
+ */
 export function wrapValueCommerceIfReady(
   targetUrl: string,
-  _sid?: string,
-  _pid?: string
+  sid?: string,
+  pid?: string
 ): string {
-  return targetUrl;
+  const s = sid?.trim();
+  const p = pid?.trim();
+  if (!s || !p || !valueCommerceWrapEnabled()) return targetUrl;
+  if (!/^https?:\/\//i.test(targetUrl)) return targetUrl;
+  if (isValueCommerceReferralHref(targetUrl)) return targetUrl;
+  return valueCommerceReferralUrl(targetUrl, s, p);
+}
+
+/**
+ * 1×1 impression pixel the VC MyLink guidelines require next to API-built
+ * MyLink hrefs, so impressions are counted. Same SID/PID as the link.
+ */
+export function valueCommerceImpressionPixelUrl(sid: string, pid: string): string {
+  return `https://ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=${encodeURIComponent(sid)}&pid=${encodeURIComponent(pid)}`;
 }
 
 export function wrapYahooSearchUrl(query: string, sid?: string, pid?: string): string {
