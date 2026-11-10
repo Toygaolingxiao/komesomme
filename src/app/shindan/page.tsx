@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { READING_COLUMN } from "@/components/siteChrome";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { DiagnosisWizard } from "@/components/diagnosis/DiagnosisWizard";
 import { freeCompareDataset } from "@/lib/editorial/freeCompare";
 import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
@@ -27,11 +27,11 @@ export default async function ShindanPage({
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
       <SiteHeader active="shindan" />
-      <div className={`${READING_COLUMN} px-5 pb-24 pt-10 sm:pt-14`}>
+      <div className={`${SITE_COLUMN} pb-24 pt-10 sm:pt-14`}>
         {notice === "invalid" ? (
           <p
             role="alert"
-            className="mb-8 rounded-xl border border-[var(--km-accent)]/40 bg-[#FBF1E8] px-4 py-3 text-[13.5px] leading-[1.8] text-[#6B4423]"
+            className="mb-8 max-w-[40rem] rounded-xl border border-[var(--km-accent)]/40 bg-[var(--km-surface-warm)] px-4 py-3 text-[13px] leading-[1.8] text-[var(--km-brown)]"
           >
             {DIAGNOSIS_COPY.invalidNotice}
           </p>
