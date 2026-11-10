@@ -5,6 +5,8 @@ import { IndicatorTable } from "@/components/compare/IndicatorTable";
 import { TokuABadge } from "@/components/rice/TokuABadge";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
 import { FOCUS } from "@/components/matrix/shared";
+import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
+import { DIAGNOSIS_COPY } from "@/lib/diagnosis/questions";
 import type { ResolvedComparison } from "@/lib/editorial/comparisons";
 import { regionColor } from "@/lib/rice/regions";
 import type { RiceProfileV2 } from "@/types/rice";
@@ -318,6 +320,18 @@ export function CompareView({ resolved }: { resolved: ResolvedComparison }) {
             ))}
           </ul>
         </section>
+      ) : null}
+
+      {isDiagnosisEnabled() ? (
+        <p className="mt-12 text-center text-[13.5px] text-[var(--km-muted)]">
+          {DIAGNOSIS_COPY.entryNote}。{" "}
+          <Link
+            href="/shindan"
+            className={`font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
+          >
+            {DIAGNOSIS_COPY.entryCompare}
+          </Link>
+        </p>
       ) : null}
 
       <p className="mt-12 border-t border-[var(--km-border)] pt-4 text-[12px] leading-[1.8] text-[var(--km-muted)]">

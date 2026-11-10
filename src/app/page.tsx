@@ -1,11 +1,16 @@
+import Link from "next/link";
 import { FlavorMatrix } from "@/components/FlavorMatrix";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HomeReadingStrip } from "@/components/home/HomeReadingStrip";
+import { FOCUS } from "@/components/matrix/shared";
+import { SITE_COLUMN } from "@/components/siteChrome";
 import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { riceProfiles } from "@/data/rice/catalog";
 import { encyclopediaManifest } from "@/data/rice/encyclopedia/load";
 import { collectionsForIndex } from "@/lib/editorial/collections";
 import { pickTodaysBowl } from "@/lib/editorial/todaysBowl";
+import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
+import { DIAGNOSIS_COPY } from "@/lib/diagnosis/questions";
 import { toMapProfiles } from "@/lib/rice/mapProfile";
 import { RICE_REGIONS } from "@/lib/rice/regions";
 
@@ -31,6 +36,27 @@ export default function HomePage() {
           />
         </div>
       </div>
+
+      {/* One quiet text entry to the diagnosis, below the map. Not in the
+          top navigation (the six-item cap stands). */}
+      {isDiagnosisEnabled() ? (
+        <section aria-label={DIAGNOSIS_COPY.entryLead} className={`${SITE_COLUMN} py-12`}>
+          <div className="mx-auto max-w-[40rem] border-t border-[var(--km-border)] pt-8 text-center">
+            <p className="font-serif text-[1.15rem] font-semibold tracking-tight text-[var(--km-ink)]">
+              {DIAGNOSIS_COPY.entryLead}
+            </p>
+            <p className="mt-2 text-[13.5px] leading-[1.85] text-[var(--km-muted)]">
+              {DIAGNOSIS_COPY.entryNote}
+            </p>
+            <Link
+              href="/shindan"
+              className={`mt-3 inline-block text-[14px] font-medium text-[var(--km-brown)] underline-offset-4 hover:underline ${FOCUS}`}
+            >
+              {DIAGNOSIS_COPY.startButton} →
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       {/* Crawler HTML only. Not in the visual scroll on any viewport. */}
       <HomeReadingStrip

@@ -32,7 +32,13 @@ export type AnalyticsEvent =
   | "editorial_bowl_click"
   | "editorial_collection_open"
   | "editorial_discover_open"
-  | "editorial_discover_dismiss";
+  | "editorial_discover_dismiss"
+  | "diagnosis_start"
+  | "diagnosis_answer"
+  | "diagnosis_complete"
+  | "diagnosis_pick_click"
+  | "diagnosis_share_copy"
+  | "diagnosis_share_native";
 
 type AnalyticsPayload = Record<string, string | number | boolean | null | undefined>;
 

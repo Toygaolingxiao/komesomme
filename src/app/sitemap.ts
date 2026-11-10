@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/discover",
     "/pair",
     "/compare",
+    "/shindan",
     "/prefectures",
     "/about",
     "/privacy",
@@ -30,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       path === "/discover" ||
       path === "/pair" ||
       path === "/compare" ||
+      path === "/shindan" ||
       path === "/prefectures"
         ? "weekly"
         : "yearly",
@@ -40,6 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             path === "/discover" ||
             path === "/pair" ||
             path === "/compare" ||
+            path === "/shindan" ||
             path === "/prefectures"
           ? 0.8
           : 0.3,
