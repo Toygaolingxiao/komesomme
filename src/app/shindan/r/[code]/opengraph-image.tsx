@@ -6,7 +6,7 @@ import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
 import { loadOgFonts } from "@/lib/og/fonts";
 import { OG_COPY, SLOT_DEFS } from "@/lib/diagnosis/questions";
 
-export const alt = "KomeSomme 番頭の米診断 今日の相棒米";
+export const alt = "KomeSomme 侍米師の米診断 今日の相棒米";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

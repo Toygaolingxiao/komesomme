@@ -26,11 +26,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { code } = await params;
   const answers = decodeDiagnosisCode(code, brandIds);
-  if (!answers) return { title: "番頭の米診断｜KomeSomme" };
+  if (!answers) return { title: "侍米師の米診断｜KomeSomme" };
   const outcome = runDiagnosis(answers, riceProfiles);
   const honmei = outcome.picks[0].rice;
   return {
-    title: `今日の相棒米は${honmei.name}｜番頭の米診断`,
+    title: `今日の相棒米は${honmei.name}｜侍米師の米診断`,
     description: `${outcome.base.name}をものさしに、108銘柄から選んだ三席。本命は${honmei.name}（${honmei.prefecture}）でした。`,
     alternates: { canonical: `/shindan/r/${code}` },
   };

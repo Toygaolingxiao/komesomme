@@ -1,17 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { track } from "@/lib/analytics";
 import { FOCUS } from "@/components/matrix/shared";
-import {
-  normalizeBrandQuery,
-  resolveCompareBrandId,
-  type FreeBrand,
-} from "@/lib/editorial/freeCompare";
+import type { FreeBrand } from "@/lib/editorial/freeCompare";
 import { encodeDiagnosisCode } from "@/lib/diagnosis/code";
 import { findConflicts } from "@/lib/diagnosis/engine";
 import {
+  BASE_OPTIONS,
   DIAGNOSIS_COPY,
   DISH_OPTIONS,
   TEXTURE_OPTIONS,
@@ -25,17 +22,18 @@ import {
  * Three-question wizard (v1). The cooker question exists in the engine and
  * in the result code, but the v1 UI always submits the default — adding the
  * question later only touches this component.
+ *
+ * Q2 is tap-to-pick (v1.30.1): a grid of the base brands households most
+ * commonly keep, plus the "no fixed brand" fallback. Free-text input was
+ * retired — the engine still keys on the catalogue id, so older result
+ * codes keep decoding exactly as before.
  */
 const COOKER_V1: CookerKey = "ih";
-const RAW_BASE_STORAGE_KEY = "km-shindan-base-raw";
 const DEFAULT_BASE_ID = "koshihikari-bl";
 
 type Step = "intro" | "q1" | "q2" | "q3";
 
-type BaseChoice =
-  | { kind: "resolved"; id: string }
-  | { kind: "avg" }
-  | { kind: "skipped" };
+type BaseChoice = { kind: "resolved"; id: string } | { kind: "avg" };
 
 const OPTION_BUTTON =
   "block w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)] px-4 py-3 text-left transition hover:border-[var(--km-brown)]/40 hover:bg-[var(--km-surface-warm)]";
@@ -66,24 +64,6 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
   const [step, setStep] = useState<Step>("intro");
   const [dish, setDish] = useState<DishKey | null>(null);
   const [baseChoice, setBaseChoice] = useState<BaseChoice | null>(null);
-  const [input, setInput] = useState("");
-  const [pickedId, setPickedId] = useState<string | null>(null);
-  const [failedRaw, setFailedRaw] = useState<string | null>(null);
-
-  const suggestions = useMemo(() => {
-    const query = normalizeBrandQuery(input);
-    if (!query) return [];
-    return brands
-      .filter(
-        (brand) =>
-          normalizeBrandQuery(brand.name).includes(query) ||
-          normalizeBrandQuery(brand.id).includes(query) ||
-          brand.searchTerms.some((term) =>
-            normalizeBrandQuery(term).includes(query),
-          ),
-      )
-      .slice(0, 6);
-  }, [brands, input]);
 
   const start = () => {
     track("diagnosis_start");
@@ -96,31 +76,10 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
     setStep("q2");
   };
 
-  const submitQ2 = (choice: BaseChoice, rawForNote: string | null) => {
+  const answerQ2 = (choice: BaseChoice) => {
     setBaseChoice(choice);
-    setFailedRaw(rawForNote);
     track("diagnosis_answer", { q: "q2", key: choice.kind });
     setStep("q3");
-  };
-
-  const submitQ2FromForm = () => {
-    if (pickedId) {
-      submitQ2({ kind: "resolved", id: pickedId }, null);
-      return;
-    }
-    const raw = input.trim();
-    if (!raw) {
-      submitQ2({ kind: "skipped" }, null);
-      return;
-    }
-    const resolved = resolveCompareBrandId(raw, brands);
-    if (resolved) {
-      submitQ2({ kind: "resolved", id: resolved }, null);
-    } else {
-      // The raw wording never enters analytics; it is kept (truncated) in
-      // session storage only so the result page can show the fallback note.
-      submitQ2({ kind: "avg" }, raw.slice(0, 24));
-    }
   };
 
   const answerQ3 = (tex: TextureKey) => {
@@ -152,18 +111,7 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
       conflicts: conflicts.map((row) => row.id).join(","),
     });
 
-    const code = encodeDiagnosisCode(answers);
-    if (failedRaw) {
-      try {
-        window.sessionStorage.setItem(
-          RAW_BASE_STORAGE_KEY,
-          JSON.stringify({ code, raw: failedRaw }),
-        );
-      } catch {
-        /* session storage may be unavailable; the note is a nicety */
-      }
-    }
-    router.push(`/shindan/r/${code}`);
+    router.push(`/shindan/r/${encodeDiagnosisCode(answers)}`);
   };
 
   if (step === "intro") {
@@ -224,57 +172,27 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
       <section aria-label="質問2">
         <Progress remaining={2} />
         <QuestionTitle title={DIAGNOSIS_COPY.q2Title} sub={DIAGNOSIS_COPY.q2Sub} />
-        <div className="mt-6">
-          <label htmlFor="km-shindan-base" className="sr-only">
-            {DIAGNOSIS_COPY.q2Title}
-          </label>
-          <input
-            id="km-shindan-base"
-            type="text"
-            value={input}
-            onChange={(event) => {
-              setInput(event.target.value);
-              setPickedId(null);
-            }}
-            placeholder={DIAGNOSIS_COPY.q2Placeholder}
-            autoComplete="off"
-            className={`min-h-[56px] w-full rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)] px-4 text-[16px] text-[var(--km-ink)] placeholder:text-[var(--km-muted)] ${FOCUS}`}
-          />
-          {suggestions.length > 0 ? (
-            <ul className="mt-2 divide-y divide-[var(--km-border)] rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)]">
-              {suggestions.map((brand) => (
-                <li key={brand.id}>
-                  <button
-                    type="button"
-                    onClick={() => submitQ2({ kind: "resolved", id: brand.id }, null)}
-                    className={`flex min-h-[48px] w-full items-center justify-between gap-3 px-4 py-2 text-left transition hover:bg-[var(--km-surface-warm)] ${FOCUS}`}
-                  >
-                    <span className="font-serif text-[15px] font-medium text-[var(--km-ink)]">
-                      {brand.name}
-                    </span>
-                    <span className="text-[12px] text-[var(--km-muted)]">
-                      {brand.prefecture}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <button
-            type="button"
-            onClick={submitQ2FromForm}
-            className={`mt-4 inline-flex min-h-[56px] w-full items-center justify-center rounded-xl bg-[var(--km-brown)] px-8 text-[15px] font-medium text-white transition hover:opacity-90 ${FOCUS}`}
-          >
-            {DIAGNOSIS_COPY.q2Next}
-          </button>
-          <button
-            type="button"
-            onClick={() => submitQ2({ kind: "avg" }, null)}
-            className={`mt-3 block min-h-[44px] w-full text-center text-[13.5px] text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
-          >
-            {DIAGNOSIS_COPY.q2Unknown}
-          </button>
+        <div className="mt-6 grid grid-cols-2 gap-2.5">
+          {BASE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => answerQ2({ kind: "resolved", id: option.id })}
+              className={`flex min-h-[56px] items-center justify-center rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)] px-3 py-3 text-center transition hover:border-[var(--km-brown)]/40 hover:bg-[var(--km-surface-warm)] ${FOCUS}`}
+            >
+              <span className="font-serif text-[15.5px] font-semibold text-[var(--km-ink)]">
+                {option.label}
+              </span>
+            </button>
+          ))}
         </div>
+        <button
+          type="button"
+          onClick={() => answerQ2({ kind: "avg" })}
+          className={`mt-3 block min-h-[44px] w-full text-center text-[13.5px] text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
+        >
+          {DIAGNOSIS_COPY.q2Unknown}
+        </button>
         <button
           type="button"
           onClick={() => setStep("q1")}

@@ -7,7 +7,7 @@ import {
 } from "@/lib/diagnosis/questions";
 
 /**
- * 「お得な買い方（番頭メモ）」 — buying *methods*, never prices (v2 plan
+ * 「お得な買い方（侍米師メモ）」 — buying *methods*, never prices (v2 plan
  * ruling, 2026-11-10). Fixed copy lives in questions.ts so the OG font
  * coverage test sees every character this block can render.
  */
