@@ -52,3 +52,6 @@ yarn-error.log*
 
 # Sentry source-map upload
 .env.sentry-build-plugin
+
+# locally generated share cards (uploaded to R2, never committed)
+share-cards-out/
