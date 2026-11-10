@@ -126,17 +126,15 @@ API を使うアプリは、[公式 3 パターン](https://webservice.rakuten.c
 
 ---
 
-## 3. バリューコマース（ASP）— **廃止**
+## 3. バリューコマース（ASP）— **再採用（2026-11-10）**
 
-**2026-09: ValueCommerce は採用しない。** 転鎖ヘルパは常に無効。記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。Yahoo は下記 §4 の公式短鎖、さとふるはプレーン検索。
-
-以下は歴史メモ（再有効化しない）。
+**2026-11-10: 媒体審査通過（運営者本人の名義）を受けて再採用。** 同日に Yahoo!ショッピングと即時提携済み。転鎖は案件ごとの SID/PID が env に揃った場合だけ働く。さとふるは提携承認待ちのためプレーン検索のまま。2026-09 の廃止からここまでの記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。
 
 | 項目 | 内容 |
 | --- | --- |
 | 正文 | [アフィリエイトサイト運営者利用規約](https://www.valuecommerce.ne.jp/st_affiliate/terms.html) |
 | 契約相手 | バリューコマース株式会社 |
-| 実装 | `valueCommerceWrapEnabled()` は **常に false** |
+| 実装 | `valueCommerceWrapEnabled()` は既定有効（`VALUE_COMMERCE_WRAP=off` が緊急停止）。実際に包むかは `wrapValueCommerceIfReady()` が案件ごとの SID/PID の有無で決める |
 
 本文は転載しない。改定通知（第32条）が来たらリンクと本表を更新する。
 
@@ -231,9 +229,9 @@ Yahoo ItemSearch の `affiliate_id` は `http://ck.jp.ap.valuecommerce.com/servl
 
 クライアント直出しリンクにも付けたい場合のみ `NEXT_PUBLIC_YAHOO_VC_*`。Preview には置かない。
 
-### 公式ショッピングアフィリエイト短鎖（VC 不使用）
+### 公式ショッピングアフィリエイト短鎖（VC 有効時はフォールバック）
 
-ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検索結果**短鎖（`https://yahoo.jp/xxxx`）を銘柄ごとに手貼りする。商品 SKU 短鎖は使わない。
+ValueCommerce 未承認の間は、LINE Yahoo ショッピング公式の**検索結果**短鎖（`https://yahoo.jp/xxxx`）を銘柄ごとに手貼りする。商品 SKU 短鎖は使わない。2026-11-10 の VC 再採用後は、`YAHOO_VC_SID` / `YAHOO_VC_PID` が揃っている間は VC の商品/検索リンクが短鎖より優先される。短鎖テーブルは残置し、VC を止めれば従来動作に戻る。
 
 | 項目 | 内容 |
 | --- | --- |

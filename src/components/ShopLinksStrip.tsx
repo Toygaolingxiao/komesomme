@@ -11,6 +11,7 @@ import {
   AFFILIATE_PR_NOTICE,
   amazonSearchUrl,
   furusatoQuery,
+  isValueCommerceReferralHref,
   mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
@@ -33,6 +34,8 @@ export type ShopLinks = {
   satofull: string;
   rakutenFurusato: string;
   yahooFurusato: string;
+  /** VC impression pixel, present only when the Yahoo href is VC-wrapped. */
+  yahooImpression?: string;
 };
 
 type ShopMode = "retail" | "furusato";
@@ -79,8 +82,12 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
   useEffect(() => {
     const hit = linkCache.get(rice.id);
     // Search fallbacks stay stale if we cache them forever. Refetch until a
-    // yahoo.jp short link is in hand so newly filled promo URLs win.
-    if (hit && isYahooPromoShortHref(hit.yahoo)) {
+    // settled Yahoo href is in hand: a yahoo.jp promo short link, or a VC
+    // referral link now that ValueCommerce carries the Yahoo program.
+    if (
+      hit &&
+      (isYahooPromoShortHref(hit.yahoo) || isValueCommerceReferralHref(hit.yahoo))
+    ) {
       setLinks(hit);
       return;
     }
@@ -109,6 +116,10 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
           // Yahoo ふるさと寄附は公式アフィの成果対象外。短鎖があっても検索のまま。
           yahooFurusato: next.yahooFurusato,
+          yahooImpression:
+            typeof data.yahooImpression === "string"
+              ? data.yahooImpression
+              : undefined,
         };
         linkCache.set(rice.id, resolved);
         setLinks(resolved);
@@ -309,6 +320,7 @@ export function ShopLinksStrip({
   const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
 
   const mallGrid = (
+    <>
     <div className={shopMode === "retail" ? retailGrid : furusatoGrid}>
       {shopMode === "retail" ? (
         <>
@@ -367,6 +379,19 @@ export function ShopLinksStrip({
         </>
       )}
     </div>
+    {shopMode === "retail" && links.yahooImpression ? (
+      // VC MyLink guideline: the 1×1 impression pixel must accompany the link.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={links.yahooImpression}
+        width={1}
+        height={1}
+        alt=""
+        aria-hidden="true"
+        className="h-px w-px opacity-0"
+      />
+    ) : null}
+    </>
   );
 
   const tabs = (
