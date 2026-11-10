@@ -35,11 +35,26 @@ import "@/components/diagnosis/diagnosis-motion.css";
  * v1.31.0 is a design pass only: hero art on the intro, card-style options
  * with a gold picked state (held for a beat so the tap registers before
  * the screen changes), grain-mark progress, and CSS-only step transitions.
+ *
+ * v1.33.0 is the layout pass: the page takes the full site column, the
+ * intro puts its start action beside the title at desktop width, and each
+ * question splits into a sticky question column (progress + title + sub)
+ * on the left and the option grid on the right. Phones keep the single
+ * column they have always had.
  */
 const COOKER_V1: CookerKey = "ih";
 const DEFAULT_BASE_ID = "koshihikari-bl";
 /** How long the picked card's gold state shows before advancing. */
 const PICK_HOLD_MS = 170;
+
+/**
+ * Grain progress fills. SVG fills cannot take var(), so the literals stay
+ * hex, named once here: the filled grain is the --km-gold token value;
+ * the empty grain is a pale paper tint of the same family with no exact
+ * token (between --km-bg-soft and the frame shades).
+ */
+const GRAIN_FILLED_HEX = "#D49A2A";
+const GRAIN_EMPTY_HEX = "#E9DCC2";
 
 type Step = "intro" | "q1" | "q2" | "q3";
 
@@ -64,7 +79,7 @@ function Progress({ remaining, current }: { remaining: number; current: number }
             width={24}
             height={14}
             tilt={[-9, 0, 9][index]}
-            fill={index < current ? "#D49A2A" : "#E9DCC2"}
+            fill={index < current ? GRAIN_FILLED_HEX : GRAIN_EMPTY_HEX}
           />
         ))}
       </div>
@@ -78,10 +93,10 @@ function Progress({ remaining, current }: { remaining: number; current: number }
 function QuestionTitle({ title, sub }: { title: string; sub: string }) {
   return (
     <>
-      <h2 className="mt-3 font-serif text-[1.35rem] font-semibold leading-[1.5] tracking-tight text-[var(--km-ink)]">
+      <h2 className="mt-3 font-serif text-[1.25rem] font-semibold leading-[1.5] tracking-tight text-[var(--km-ink)]">
         {title}
       </h2>
-      <p className="mt-2 text-[13.5px] leading-[1.8] text-[var(--km-muted)]">
+      <p className="mt-2 text-[13px] leading-[1.8] text-[var(--km-muted)]">
         {sub}
       </p>
     </>
@@ -90,19 +105,23 @@ function QuestionTitle({ title, sub }: { title: string; sub: string }) {
 
 /** Mini taste bars for a Q1 option: the same bias vector the engine scores. */
 function TasteBars({ bias }: { bias: TasteTarget }) {
+  // Bar colours are the site tokens themselves — these are inline styles,
+  // which resolve var() (unlike SVG presentation attributes).
   const rows = [
-    { label: "甘み", value: bias.sweetness, color: "#D49A2A" },
-    { label: "粒立ち", value: bias.hardness, color: "#704522" },
-    { label: "粘り", value: bias.stickiness, color: "#E56B3F" },
+    { label: "甘み", value: bias.sweetness, color: "var(--km-gold)" },
+    { label: "粒立ち", value: bias.hardness, color: "var(--km-brown)" },
+    { label: "粘り", value: bias.stickiness, color: "var(--km-accent)" },
   ].filter((row) => row.value != null);
   if (rows.length === 0) return null;
   return (
     <span className="mt-3 block space-y-1.5" aria-hidden>
       {rows.map((row) => (
         <span key={row.label} className="flex items-center gap-2">
-          <span className="w-9 flex-none text-[10.5px] tracking-[0.04em] text-[var(--km-muted)]">
+          <span className="w-9 flex-none text-[11px] tracking-[0.04em] text-[var(--km-muted)]">
             {row.label}
           </span>
+          {/* Track tint: a paper shade between --km-surface-warm and
+              --km-bg-soft; no exact token exists for it. */}
           <span className="block h-[5px] flex-1 overflow-hidden rounded-full bg-[#EFE5CF]">
             <span
               className="block h-full rounded-full"
@@ -212,19 +231,32 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
           src="/brand-art/shindan-hero.webp"
           alt="米屋のカウンターと、湯気の立つ炊きたてのご飯"
           className="km-figure-wide rounded-2xl"
-          sizes="(min-width: 768px) 40rem, 100vw"
+          sizes="(min-width: 1024px) 90rem, 100vw"
           priority
           objectPosition="50% 82%"
         />
-        <p className="mt-9 text-[12.5px] font-semibold tracking-[0.22em] text-[var(--km-gold)]">
-          {DIAGNOSIS_COPY.wizardEyebrow}
-        </p>
-        <h1 className="mt-3 font-serif text-[1.9rem] font-semibold leading-[1.3] tracking-tight text-[var(--km-ink)]">
-          {DIAGNOSIS_COPY.wizardTitle}
-        </h1>
-        <p className="mt-4 text-[15px] leading-[2] text-[var(--km-ink-soft)]">
-          {DIAGNOSIS_COPY.wizardLead}
-        </p>
+        {/* Title block: copy on the left, the start action beside it at
+            desktop width; the step chips run in a row underneath. */}
+        <div className="mt-9 lg:flex lg:items-end lg:justify-between lg:gap-10">
+          <div className="max-w-[42rem]">
+            <p className="text-[12px] font-semibold tracking-[0.22em] text-[var(--km-gold)]">
+              {DIAGNOSIS_COPY.wizardEyebrow}
+            </p>
+            <h1 className="mt-3 font-serif text-[1.85rem] font-semibold leading-[1.12] tracking-tight text-[var(--km-ink)] sm:text-[2.1rem]">
+              {DIAGNOSIS_COPY.wizardTitle}
+            </h1>
+            <p className="mt-4 text-[15px] leading-relaxed text-[var(--km-ink-soft)]">
+              {DIAGNOSIS_COPY.wizardLead}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={start}
+            className={`mt-7 inline-flex min-h-[56px] flex-none items-center justify-center rounded-xl bg-[var(--km-brown)] px-8 text-[15px] font-medium text-white transition hover:opacity-90 lg:mt-0 ${FOCUS}`}
+          >
+            {DIAGNOSIS_COPY.startButton}
+          </button>
+        </div>
         <div className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-2">
           {DIAGNOSIS_COPY.wizardSteps.map((label, index) => (
             <Fragment key={label}>
@@ -250,13 +282,6 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
             </Fragment>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={start}
-          className={`mt-7 inline-flex min-h-[56px] items-center justify-center rounded-xl bg-[var(--km-brown)] px-8 text-[15px] font-medium text-white transition hover:opacity-90 ${FOCUS}`}
-        >
-          {DIAGNOSIS_COPY.startButton}
-        </button>
       </div>
     );
   }
@@ -264,9 +289,15 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
   if (step === "q1") {
     return (
       <section aria-label="質問1" className="shindan-step-enter">
-        <Progress remaining={3} current={1} />
-        <QuestionTitle title={DIAGNOSIS_COPY.q1Title} sub={DIAGNOSIS_COPY.q1Sub} />
-        <div className="mt-6 space-y-2.5">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-5">
+            <div className="lg:sticky lg:top-10">
+              <Progress remaining={3} current={1} />
+              <QuestionTitle title={DIAGNOSIS_COPY.q1Title} sub={DIAGNOSIS_COPY.q1Sub} />
+            </div>
+          </div>
+          <div className="mt-6 lg:col-span-7 lg:mt-0">
+            <div className="grid gap-2.5 lg:grid-cols-2">
           {DISH_OPTIONS.map((option) => (
             <button
               key={option.key}
@@ -274,23 +305,25 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
               onClick={() => choose(`q1:${option.key}`, () => answerQ1(option.key))}
               className={`${cardClass(picked === `q1:${option.key}`)} min-h-[56px]`}
             >
-              <span className="font-serif text-[16px] font-semibold text-[var(--km-ink)]">
+              <span className="font-serif text-[18px] font-semibold text-[var(--km-ink)]">
                 {option.label}
               </span>
-              <span className="mt-0.5 block text-[12.5px] text-[var(--km-muted)]">
+              <span className="mt-0.5 block text-[13px] text-[var(--km-muted)]">
                 {option.note}
               </span>
               <TasteBars bias={option.bias} />
             </button>
           ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => goBack("intro")}
+              className={`mt-6 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
+            >
+              {DIAGNOSIS_COPY.back}
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => goBack("intro")}
-          className={`mt-6 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
-        >
-          {DIAGNOSIS_COPY.back}
-        </button>
       </section>
     );
   }
@@ -298,9 +331,15 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
   if (step === "q2") {
     return (
       <section aria-label="質問2" className="shindan-step-enter">
-        <Progress remaining={2} current={2} />
-        <QuestionTitle title={DIAGNOSIS_COPY.q2Title} sub={DIAGNOSIS_COPY.q2Sub} />
-        <div className="mt-6 grid grid-cols-2 gap-2.5">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-5">
+            <div className="lg:sticky lg:top-10">
+              <Progress remaining={2} current={2} />
+              <QuestionTitle title={DIAGNOSIS_COPY.q2Title} sub={DIAGNOSIS_COPY.q2Sub} />
+            </div>
+          </div>
+          <div className="mt-6 lg:col-span-7 lg:mt-0">
+            <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-3">
           {BASE_OPTIONS.map((option) => (
             <button
               key={option.id}
@@ -312,38 +351,46 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
               }
               className={`${cardClass(picked === `q2:${option.id}`)} flex min-h-[64px] flex-col justify-center px-4 py-3`}
             >
-              <span className="font-serif text-[15.5px] font-semibold leading-[1.4] text-[var(--km-ink)]">
+              <span className="font-serif text-[18px] font-semibold leading-[1.4] text-[var(--km-ink)]">
                 {option.label}
               </span>
-              <span className="mt-0.5 text-[11.5px] text-[var(--km-muted)]">
+              <span className="mt-0.5 text-[11px] text-[var(--km-muted)]">
                 {prefectureById.get(option.id) ?? ""}
               </span>
             </button>
           ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => choose("q2:avg", () => answerQ2({ kind: "avg" }))}
+              className={`mt-3 block min-h-[44px] w-full text-center text-[13px] text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
+            >
+              {DIAGNOSIS_COPY.q2Unknown}
+            </button>
+            <button
+              type="button"
+              onClick={() => goBack("q1")}
+              className={`mt-4 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
+            >
+              {DIAGNOSIS_COPY.back}
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => choose("q2:avg", () => answerQ2({ kind: "avg" }))}
-          className={`mt-3 block min-h-[44px] w-full text-center text-[13.5px] text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
-        >
-          {DIAGNOSIS_COPY.q2Unknown}
-        </button>
-        <button
-          type="button"
-          onClick={() => goBack("q1")}
-          className={`mt-4 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
-        >
-          {DIAGNOSIS_COPY.back}
-        </button>
       </section>
     );
   }
 
   return (
     <section aria-label="質問3" className="shindan-step-enter">
-      <Progress remaining={1} current={3} />
-      <QuestionTitle title={DIAGNOSIS_COPY.q3Title} sub={DIAGNOSIS_COPY.q3Sub} />
-      <div className="mt-6 space-y-2.5">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-5">
+          <div className="lg:sticky lg:top-10">
+            <Progress remaining={1} current={3} />
+            <QuestionTitle title={DIAGNOSIS_COPY.q3Title} sub={DIAGNOSIS_COPY.q3Sub} />
+          </div>
+        </div>
+        <div className="mt-6 lg:col-span-7 lg:mt-0">
+          <div className="space-y-2.5">
         {TEXTURE_OPTIONS.map((option) => (
           <button
             key={option.key}
@@ -351,7 +398,7 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
             onClick={() => choose(`q3:${option.key}`, () => answerQ3(option.key))}
             className={`${cardClass(picked === `q3:${option.key}`)} min-h-[56px]`}
           >
-            <span className="font-serif text-[17.5px] font-semibold text-[var(--km-ink)]">
+            <span className="font-serif text-[18px] font-semibold text-[var(--km-ink)]">
               {option.label}
             </span>
             <span className="mt-0.5 block text-[13px] text-[var(--km-muted)]">
@@ -359,14 +406,16 @@ export function DiagnosisWizard({ brands }: { brands: FreeBrand[] }) {
             </span>
           </button>
         ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => goBack("q2")}
+            className={`mt-6 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
+          >
+            {DIAGNOSIS_COPY.back}
+          </button>
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={() => goBack("q2")}
-        className={`mt-6 text-[13px] text-[var(--km-muted)] underline-offset-2 hover:underline ${FOCUS}`}
-      >
-        {DIAGNOSIS_COPY.back}
-      </button>
     </section>
   );
 }
