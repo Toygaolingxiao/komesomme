@@ -33,7 +33,9 @@ test.describe("TS-SHINDAN diagnosis wizard", () => {
     await page.getByRole("button", { name: /カレー/ }).click();
 
     // Q2 is a button grid: one tap picks the base brand and advances.
-    await page.getByRole("button", { name: "ゆめぴりか", exact: true }).click();
+    // (v1.31.0: the card also shows the prefecture under the brand name,
+    // so the accessible name is no longer the brand name alone.)
+    await page.getByRole("button", { name: /ゆめぴりか/ }).click();
 
     await page.getByRole("button", { name: /粒立ち・さっぱり/ }).click();
 
