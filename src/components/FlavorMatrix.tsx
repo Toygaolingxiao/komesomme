@@ -630,6 +630,9 @@ export function FlavorMatrix({
             <h1 className="font-serif text-[1.35rem] font-semibold tracking-tight text-[var(--km-ink)]">
               ブランド米の味わいの地図
             </h1>
+            <p className="mt-1 text-[13px] leading-relaxed text-[var(--km-muted)]">
+              日本全国の銘柄米の味わいを記録するサイト
+            </p>
             <MapFirstHint visible={showMapHint} onDismiss={dismissMapHint} />
           </div>
 

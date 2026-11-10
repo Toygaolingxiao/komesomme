@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BowlMark } from "@/components/brand/EditorialMarks";
+import { WARM_BLUR_DATA_URL } from "@/components/editorial/EditorialArt";
 import { PageMasthead } from "@/components/editorial/PageMasthead";
 import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -87,12 +88,14 @@ export default function PrefecturesIndexPage() {
                     href={`/prefectures/${page.slug}`}
                     className={`group flex items-center gap-4 rounded-xl border border-[var(--km-border)] bg-[var(--km-surface)] p-3 transition hover:bg-[var(--km-surface-warm)] ${FOCUS}`}
                   >
-                    <span className="relative block aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-lg">
+                    <span className="relative block aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-lg bg-[var(--km-surface-warm)]">
                       <Image
                         src={prefectureArtPath(page.slug)}
                         alt={`${page.prefecture}の産地`}
                         fill
                         sizes="4rem"
+                        placeholder="blur"
+                        blurDataURL={WARM_BLUR_DATA_URL}
                         className="object-cover"
                       />
                     </span>

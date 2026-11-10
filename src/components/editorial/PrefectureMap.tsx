@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { WARM_BLUR_DATA_URL } from "@/components/editorial/EditorialArt";
 import { FOCUS, regionColor } from "@/components/matrix/shared";
 import { prefectureArtPath } from "@/data/editorial/prefectureArt";
 import {
@@ -47,6 +48,7 @@ export function PrefectureMap({
   );
   const [selected, setSelected] = useState<PrefectureMapSummary | null>(null);
   const [activeName, setActiveName] = useState<string | null>(null);
+  const [hintName, setHintName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!selected) return;
@@ -70,7 +72,9 @@ export function PrefectureMap({
       >
         {activeName
           ? `${activeName}を選んでいます`
-          : "地図の県を押すと、その土地の銘柄が出ます。"}
+          : hintName
+            ? `${hintName}の銘柄はまだ記録がありません`
+            : "地図の県を押すと、その土地の銘柄が出ます。"}
       </p>
 
       <svg
@@ -84,13 +88,30 @@ export function PrefectureMap({
           const active = activeName === path.name;
           if (!summary) {
             return (
-              <path
-                key={path.code}
-                d={path.d}
-                fill={NO_DATA_FILL}
-                stroke={PAPER}
-                strokeWidth={0.8}
-              />
+              <g key={path.code}>
+                <path
+                  d={path.d}
+                  fill={NO_DATA_FILL}
+                  stroke={PAPER}
+                  strokeWidth={0.8}
+                  pointerEvents="none"
+                />
+                <path
+                  d={path.d}
+                  fill="transparent"
+                  stroke="transparent"
+                  strokeWidth={3.5}
+                  pointerEvents="all"
+                  tabIndex={0}
+                  role="img"
+                  aria-label={`${path.name}（銘柄はまだ記録がありません）`}
+                  className="focus:outline-none"
+                  onMouseEnter={() => setHintName(path.name)}
+                  onMouseLeave={() => setHintName(null)}
+                  onFocus={() => setHintName(path.name)}
+                  onBlur={() => setHintName(null)}
+                />
+              </g>
             );
           }
           const fill = regionColor(summary.region);
@@ -209,12 +230,14 @@ export function PrefectureMap({
           />
           <div className="relative max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-[var(--km-surface)] shadow-xl sm:rounded-2xl">
             {selected.pageSlug ? (
-              <div className="relative aspect-[16/8] w-full overflow-hidden">
+              <div className="relative aspect-[16/8] w-full overflow-hidden bg-[var(--km-surface-warm)]">
                 <Image
                   src={prefectureArtPath(selected.pageSlug)}
                   alt={`${selected.prefecture}の産地`}
                   fill
                   sizes="(min-width: 640px) 28rem, 100vw"
+                  placeholder="blur"
+                  blurDataURL={WARM_BLUR_DATA_URL}
                   className="object-cover"
                   style={{ objectPosition: "50% 42%" }}
                 />
