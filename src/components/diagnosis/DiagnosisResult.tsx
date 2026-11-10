@@ -231,6 +231,71 @@ function MiniTasteMap({
     centres.set(key, centre);
   }
 
+  /**
+   * Label placement, same deterministic spirit as the dot de-overlap:
+   * separated dots can still collide label-to-label (the live check found
+   * 穴's label pressed against 本命's), so each label — in the same
+   * priority order — takes the first of four fixed placements whose
+   * estimated box (serif bold at fontSize 11, one em per character)
+   * clears every label already placed and stays inside the viewBox.
+   */
+  type LabelBox = { x0: number; y0: number; x1: number; y1: number };
+  const labelBoxes: LabelBox[] = [];
+  const labelSpots = new Map<
+    string,
+    { x: number; y: number; anchor: "start" | "middle" | "end" }
+  >();
+  const boxFor = (
+    anchor: "start" | "middle" | "end",
+    x: number,
+    baseline: number,
+    width: number,
+  ): LabelBox => ({
+    x0: anchor === "start" ? x : anchor === "end" ? x - width : x - width / 2,
+    y0: baseline - 9,
+    x1: anchor === "start" ? x + width : anchor === "end" ? x : x + width / 2,
+    y1: baseline + 2,
+  });
+  for (const key of ["honmei", "taikou", "ana", "base"]) {
+    const point = points.find((row) => row.key === key);
+    const centre = centres.get(key);
+    if (!point || !centre) continue;
+    const { cx, cy } = centre;
+    const width = [...point.label].length * 11;
+    const toLeft = cx > W * 0.6;
+    const side = (left: boolean) => ({
+      anchor: (left ? "end" : "start") as "start" | "end",
+      x: cx + (left ? -(point.r + 4) : point.r + 4),
+      y: cy + point.dy,
+    });
+    const candidates = [
+      side(toLeft),
+      side(!toLeft),
+      { anchor: "middle" as const, x: cx, y: cy - point.r - 3 },
+      { anchor: "middle" as const, x: cx, y: cy + point.r + 12 },
+    ];
+    let chosen = candidates[0];
+    let chosenBox = boxFor(chosen.anchor, chosen.x, chosen.y, width);
+    for (const cand of candidates) {
+      const box = boxFor(cand.anchor, cand.x, cand.y, width);
+      const inside = box.x0 >= 1 && box.x1 <= W - 1 && box.y0 >= 1 && box.y1 <= H - 1;
+      const clear = labelBoxes.every(
+        (other) =>
+          box.x1 + 2 <= other.x0 || other.x1 + 2 <= box.x0 ||
+          box.y1 + 2 <= other.y0 || other.y1 + 2 <= box.y0,
+      );
+      if (inside && clear) {
+        chosen = cand;
+        chosenBox = box;
+        break;
+      }
+    }
+    // Even the fallback (first candidate) is recorded, so later labels
+    // still route around it.
+    labelBoxes.push(chosenBox);
+    labelSpots.set(key, chosen);
+  }
+
   return (
     <figure className="mt-7">
       <p className="text-[12px] font-medium tracking-[0.08em] text-[var(--km-brown)]">
@@ -289,9 +354,9 @@ function MiniTasteMap({
         </text>
         {points.map((point) => {
           const centre = centres.get(point.key);
-          if (!centre) return null;
+          const spot = labelSpots.get(point.key);
+          if (!centre || !spot) return null;
           const { cx, cy } = centre;
-          const toLeft = cx > W * 0.6;
           return (
             <g key={point.key}>
               <circle
@@ -303,12 +368,12 @@ function MiniTasteMap({
                 strokeWidth="2"
               />
               <text
-                x={cx + (toLeft ? -(point.r + 4) : point.r + 4)}
-                y={cy + point.dy}
+                x={spot.x}
+                y={spot.y}
                 fontSize="11"
                 fontWeight="700"
                 fill={MAP_INK}
-                textAnchor={toLeft ? "end" : "start"}
+                textAnchor={spot.anchor}
                 paintOrder="stroke"
                 stroke={MAP_SURFACE}
                 strokeWidth="3"
@@ -597,7 +662,7 @@ export function DiagnosisResult({
           })}
         </div>
 
-        <div className="mt-6 max-w-[40rem]">
+        <div className="mt-6">
           <BuyingTipsPanel />
         </div>
       </div>
