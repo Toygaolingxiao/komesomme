@@ -59,6 +59,16 @@ export type OpsSummary = {
     byKind: Array<{ id: string; label: string; count: number }>;
     topBrands: Array<{ id: string; count: number }>;
   };
+  /** 米診断 funnel (distinct sessions per step) + purchases made from result pages. */
+  diagnosis: {
+    starts: number;
+    completes: number;
+    shares: number;
+    purchaseClicks: number;
+    completionRate: number;
+    shareRate: number;
+    note: string;
+  };
   /** KPIs of the immediately preceding window of the same length. Filled by loadSummary. */
   previous?: {
     sessions: number;
@@ -186,6 +196,7 @@ const PAGE_TYPES: Array<{ id: string; label: string }> = [
   { id: "compare", label: "銘柄くらべ" },
   { id: "prefecture", label: "産地から選ぶ" },
   { id: "collection", label: "特集" },
+  { id: "diagnosis", label: "米診断" },
   { id: "other", label: "その他" },
 ];
 
@@ -200,6 +211,7 @@ function pageTypeId(path: string | null): string {
   if (p === "/compare" || p.startsWith("/compare/")) return "compare";
   if (p === "/prefectures" || p.startsWith("/prefectures/")) return "prefecture";
   if (p === "/collections" || p.startsWith("/collections/")) return "collection";
+  if (p === "/shindan" || p.startsWith("/shindan/")) return "diagnosis";
   return "other";
 }
 
@@ -523,6 +535,41 @@ export function aggregateAccessEvents(
       .slice(0, 5),
   };
 
+  // Diagnosis funnel: distinct sessions per step, plus purchase clicks that
+  // happened on result pages (the strip's own mall events carry the path).
+  const diagnosisSessions = (
+    predicate: (row: OpsEventRow) => boolean,
+  ): number => {
+    const seen = new Set<string>();
+    for (const row of rows) {
+      if (row.session_id && predicate(row)) seen.add(row.session_id);
+    }
+    return seen.size;
+  };
+  const diagnosisStarts = diagnosisSessions((r) => r.event === "diagnosis_start");
+  const diagnosisCompletes = diagnosisSessions(
+    (r) => r.event === "diagnosis_complete",
+  );
+  const diagnosisShares = diagnosisSessions(
+    (r) =>
+      r.event === "diagnosis_share_copy" || r.event === "diagnosis_share_native",
+  );
+  const diagnosisPurchaseClicks = countBy(
+    rows,
+    (r) =>
+      PURCHASE_EVENTS.has(r.event) &&
+      (r.path ?? "").trim().startsWith("/shindan/r/"),
+  );
+  const diagnosis = {
+    starts: diagnosisStarts,
+    completes: diagnosisCompletes,
+    shares: diagnosisShares,
+    purchaseClicks: diagnosisPurchaseClicks,
+    completionRate: ratio(diagnosisCompletes, diagnosisStarts),
+    shareRate: ratio(diagnosisShares, diagnosisCompletes),
+    note: "完了率＝完了セッション÷開始セッション、共有率＝共有セッション÷完了セッション。購入率は参考値であり、診断の成否は完了率と共有率で見る。",
+  };
+
   return {
     range,
     since: options.since.toISOString(),
@@ -556,5 +603,6 @@ export function aggregateAccessEvents(
     landingPages,
     leaders,
     shares,
+    diagnosis,
   };
 }

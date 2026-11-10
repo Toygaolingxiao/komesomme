@@ -11,6 +11,17 @@ import {
 } from "@/data/rice/encyclopedia/load";
 import { GUIDE_ROLE } from "@/lib/brand/guideRole";
 import {
+  BUYING_TIPS_LINES,
+  BUYING_TIPS_LINK_LABEL,
+  BUYING_TIPS_TITLE,
+  DIAGNOSIS_CONFLICTS,
+  DIAGNOSIS_COPY,
+  DISH_OPTIONS,
+  OG_COPY,
+  SLOT_DEFS,
+  TEXTURE_OPTIONS,
+} from "@/lib/diagnosis/questions";
+import {
   SHARE_CARD_SLOGAN,
   shareCaption,
   shareCardBlurb,
@@ -111,6 +122,19 @@ function collectRenderedStrings(): string[] {
   for (const page of PAIRING_PAGES) {
     strings.push(JSON.stringify(page));
   }
+  // The diagnosis result OG image renders this fixed copy plus catalogue
+  // names (already collected above), so guard the copy here too.
+  strings.push(
+    JSON.stringify(DIAGNOSIS_COPY),
+    JSON.stringify(OG_COPY),
+    JSON.stringify(SLOT_DEFS),
+    JSON.stringify(DIAGNOSIS_CONFLICTS),
+    JSON.stringify(DISH_OPTIONS.map((option) => [option.label, option.note, option.sceneLine])),
+    JSON.stringify(TEXTURE_OPTIONS.map((option) => [option.label, option.note, option.tag])),
+    BUYING_TIPS_TITLE,
+    BUYING_TIPS_LINK_LABEL,
+    ...BUYING_TIPS_LINES,
+  );
   return strings;
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { TransitionLink } from "@/components/editorial/TransitionLink";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BowlMark, SteamMark } from "@/components/brand/EditorialMarks";
@@ -14,6 +15,8 @@ import { PAIRING_PAGES } from "@/data/editorial/pairings";
 import { collectionArtSrc, mastheadArtSrc, pairingArtSrc, resolveBrandArt } from "@/lib/editorial/art";
 import { allResolvedPairings, type ResolvedPairing } from "@/lib/editorial/pairings";
 import { breadcrumbListLd, itemListLd } from "@/lib/seo/jsonLd";
+import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
+import { DIAGNOSIS_COPY } from "@/lib/diagnosis/questions";
 
 export const metadata: Metadata = {
   title: "料理で選ぶ米｜甘み・粒感の比較表",
@@ -68,6 +71,18 @@ export default function PairIndexPage() {
         lede="今夜の献立から、甘みと粒感の近い銘柄を並べています。値段の並びではなく、味の位置で選ぶページです。"
         art={null}
       />
+
+      {isDiagnosisEnabled() ? (
+        <p className={`${SITE_COLUMN} pt-6 text-[13.5px] text-[var(--km-muted)]`}>
+          {DIAGNOSIS_COPY.entryLead} — {DIAGNOSIS_COPY.entryNote}。{" "}
+          <Link
+            href="/shindan"
+            className={`font-medium text-[var(--km-brown)] underline-offset-2 hover:underline ${FOCUS}`}
+          >
+            {DIAGNOSIS_COPY.startButton}
+          </Link>
+        </p>
+      ) : null}
 
       <div className={`${SITE_COLUMN} pb-20`}>
         {first ? (
