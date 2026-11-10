@@ -13,8 +13,6 @@ import { COMPARISON_INDICATORS } from "@/lib/editorial/comparisons";
 import type { DiagnosisOutcome } from "@/lib/diagnosis/engine";
 import { DIAGNOSIS_COPY, SLOT_DEFS } from "@/lib/diagnosis/questions";
 
-const RAW_BASE_STORAGE_KEY = "km-shindan-base-raw";
-
 function fill(template: string, values: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) =>
     key in values ? values[key] : match,
@@ -33,22 +31,10 @@ export function DiagnosisResult({
     `https://komesomme.jp/shindan/r/${code}`,
   );
   const [copied, setCopied] = useState(false);
-  const [failedRaw, setFailedRaw] = useState<string | null>(null);
 
   useEffect(() => {
     setPageUrl(window.location.href);
-    try {
-      const stored = window.sessionStorage.getItem(RAW_BASE_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as { code?: string; raw?: string };
-        if (parsed.code === code && typeof parsed.raw === "string") {
-          setFailedRaw(parsed.raw.slice(0, 24));
-        }
-      }
-    } catch {
-      /* the fallback note is optional */
-    }
-  }, [code]);
+  }, []);
 
   const honmei = picks[0];
   const shareText = fill(DIAGNOSIS_COPY.shareText, {
@@ -128,9 +114,9 @@ export function DiagnosisResult({
             </div>
           ))}
         </dl>
-        {failedRaw ? (
+        {answers.baseIsDefault ? (
           <p className="mt-3 text-[12.5px] leading-[1.8] text-[var(--km-muted)]">
-            {fill(DIAGNOSIS_COPY.fallbackNote, { raw: failedRaw })}
+            {DIAGNOSIS_COPY.fallbackNote}
           </p>
         ) : null}
       </section>

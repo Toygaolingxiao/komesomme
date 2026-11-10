@@ -9,6 +9,7 @@ import {
   runDiagnosis,
 } from "@/lib/diagnosis/engine";
 import {
+  BASE_OPTIONS,
   DISH_KEYS,
   TEXTURE_KEYS,
   dishOption,
@@ -367,5 +368,14 @@ describe("spec §2.7 worked example (property form, §7.9)", () => {
     );
     // Reasons are anchored to yumepirika by name.
     expect(out.picks[0].reason).toContain("ゆめぴりか");
+  });
+});
+
+describe("Q2 base options (v1.30.1 tap-to-pick grid)", () => {
+  it("every offered base id exists in the catalogue", () => {
+    expect(BASE_OPTIONS.length).toBe(10);
+    for (const option of BASE_OPTIONS) {
+      expect(findRiceProfile(option.id), option.id).toBeTruthy();
+    }
   });
 });

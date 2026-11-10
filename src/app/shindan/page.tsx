@@ -9,7 +9,7 @@ import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
 import { DIAGNOSIS_COPY } from "@/lib/diagnosis/questions";
 
 export const metadata: Metadata = {
-  title: "番頭の米診断｜三つの質問で『今日の相棒米』",
+  title: "侍米師の米診断｜三つの質問で『今日の相棒米』",
   description:
     "ふだんの食卓と、いつもの米を聞くだけで、108銘柄から『今日の相棒米』を三つ、理由つきで出します。値段の話はしません。味の相性だけ見ます。",
   alternates: { canonical: "/shindan" },

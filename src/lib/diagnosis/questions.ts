@@ -284,6 +284,26 @@ export function cookerOption(key: CookerKey): CookerOption {
   return option;
 }
 
+export type BaseOption = { id: string; label: string };
+
+/**
+ * Q2 base-rice choices (tap-to-pick since v1.30.1 — free-text input was
+ * retired). Ids are catalogue ids; the engine and the result code format
+ * are unchanged, so result links issued before v1.30.1 keep working.
+ */
+export const BASE_OPTIONS: BaseOption[] = [
+  { id: "koshihikari-bl", label: "コシヒカリ" },
+  { id: "koshihikari-uonuma", label: "魚沼産コシヒカリ" },
+  { id: "yumepirika", label: "ゆめぴりか" },
+  { id: "akitakomachi", label: "あきたこまち" },
+  { id: "nanatsuboshi", label: "ななつぼし" },
+  { id: "tsuyahime", label: "つや姫" },
+  { id: "hitomebore", label: "ひとめぼれ" },
+  { id: "haenuki", label: "はえぬき" },
+  { id: "sasanishiki", label: "ササニシキ" },
+  { id: "milky-queen", label: "ミルキークイーン" },
+];
+
 /** Conflict warnings in priority order (matching logic lives in engine.ts). */
 export const DIAGNOSIS_CONFLICTS: Array<{ id: ConflictId; warning: string }> = [
   {
@@ -337,7 +357,7 @@ export const SLOT_DEFS: Record<
   },
   ana: {
     title: "穴",
-    note: "いつもの米からいちばん遠い、けれど外さない一席。番頭の遊び心ではなく、計算の上での冒険です。",
+    note: "いつもの米からいちばん遠い、けれど外さない一席。侍米師の遊び心ではなく、計算の上での冒険です。",
   },
 };
 
@@ -409,7 +429,7 @@ export const HEADLINE_KEYS: IndicatorKey[] = [
 ];
 
 export const DIAGNOSIS_COPY = {
-  wizardTitle: "番頭の米診断",
+  wizardTitle: "侍米師の米診断",
   // v1 asks three questions in the UI; the cooker field still exists in the
   // engine and the result code (always the default), so a fourth question
   // can be added later without changing the code format.
@@ -422,21 +442,19 @@ export const DIAGNOSIS_COPY = {
   q1Sub: "いちばん近いものを一つ。",
   q2Title: "ふだん、家で炊いている米は何ですか。",
   q2Sub:
-    "銘柄名で答えてください。『コシヒカリ』『ゆめぴりか』のような書き方で大丈夫です。",
+    "ふだん炊いている銘柄を一つ選んでください。ない・分からない方は、下のボタンで大丈夫です。",
   q2Unknown: "決まった銘柄はない・分からない",
-  q2Next: "次へ",
-  q2Placeholder: "銘柄名を入力",
   q3Title: "ご飯の好み、どちらに寄っていますか。",
-  q3Sub: "直感でどうぞ。あとで番頭が献立とすり合わせます。",
+  q3Sub: "直感でどうぞ。あとで侍米師が献立とすり合わせます。",
   back: "戻る",
-  resultEyebrow: "番頭の米診断",
+  resultEyebrow: "侍米師の米診断",
   resultTitle: "今日の相棒米",
   subtitleNamed: "{base}をものさしに、108銘柄から三つ選びました。",
   subtitleAvg: "ものさしのコシヒカリと比べながら、108銘柄から三つ選びました。",
-  warningTitle: "番頭から一言",
+  warningTitle: "侍米師から一言",
   baseBarPrefix: "ものさし",
   fallbackNote:
-    "『{raw}』はうちの帳簿で一意に決められなかったので、ものさしのコシヒカリで比べています。",
+    "ふだんの銘柄が決まっていないので、ものさしのコシヒカリで比べています。",
   noDeltaNamed:
     "いつもの{base}と味の位置はほぼ同じです。産地と香りの違いを楽しむ一席としてどうぞ。",
   noDeltaAvg:
@@ -450,23 +468,23 @@ export const DIAGNOSIS_COPY = {
   shareX: "Xで送る",
   shareLine: "LINEで送る",
   shareText:
-    "番頭に選んでもらった『今日の相棒米』は{name}でした。あなたの三席は？ {url}",
+    "侍米師に選んでもらった『今日の相棒米』は{name}でした。あなたの三席は？ {url}",
   retryLink: "答えを変えて、もう一度",
   tagAriaPrefix: "好みの目印",
-  entryLead: "迷ったら、番頭の診断",
+  entryLead: "迷ったら、侍米師の診断",
   entryNote: "三つの質問で『今日の相棒米』を出します",
   entryCompare: "決めきれない時は診断へ",
 } as const;
 
 export const OG_COPY = {
-  eyebrow: "KomeSomme 番頭の米診断",
+  eyebrow: "KomeSomme 侍米師の米診断",
   title: "今日の相棒米",
   footerNamed: "{base}をものさしに選んだ三席",
   footerAvg: "ものさしのコシヒカリと比べた三席",
   host: "komesomme.jp",
 } as const;
 
-export const BUYING_TIPS_TITLE = "お得な買い方（番頭メモ）";
+export const BUYING_TIPS_TITLE = "お得な買い方（侍米師メモ）";
 
 export const BUYING_TIPS_LINES: string[] = [
   "ふるさと納税なら、実質負担2,000円でこの銘柄が届く自治体があります。銘柄ページの『ふるさと納税』タブに寄附先を並べてあります。",

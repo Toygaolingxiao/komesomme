@@ -3,8 +3,8 @@ import { riceProfiles } from "../src/data/rice/catalog";
 import { runDiagnosis } from "../src/lib/diagnosis/engine";
 
 /**
- * Diagnosis smoke test (spec §7): curry → ゆめぴりか (via the suggestion
- * list) → 粒立ち・さっぱり. The v1 wizard has no cooker question, so the
+ * Diagnosis smoke test (spec §7): curry → ゆめぴりか (via the Q2 base
+ * button grid, tap-to-pick since v1.30.1) → 粒立ち・さっぱり. The v1 wizard has no cooker question, so the
  * code always ends in ".ih". The expected honmei is computed by running
  * the same pure engine here — never hard-coded, so catalogue revisions
  * do not break this test.
@@ -26,15 +26,14 @@ test.describe("TS-SHINDAN diagnosis wizard", () => {
 
     await page.goto("/shindan");
     await expect(
-      page.getByRole("heading", { name: "番頭の米診断" }),
+      page.getByRole("heading", { name: "侍米師の米診断" }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "診断をはじめる" }).click();
     await page.getByRole("button", { name: /カレー/ }).click();
 
-    await page.getByLabel(/ふだん、家で炊いている米は何ですか/).fill("ゆめぴりか");
-    // Picking the suggestion is the definitive parse.
-    await page.getByRole("button", { name: /ゆめぴりか/ }).click();
+    // Q2 is a button grid: one tap picks the base brand and advances.
+    await page.getByRole("button", { name: "ゆめぴりか", exact: true }).click();
 
     await page.getByRole("button", { name: /粒立ち・さっぱり/ }).click();
 
