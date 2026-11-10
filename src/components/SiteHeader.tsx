@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { BrandLockup } from "@/components/brand/BrandMark";
 import { DiscoverMenu } from "@/components/nav/DiscoverMenu";
 import { SITE_COLUMN } from "@/components/siteChrome";
 import { FOCUS } from "@/components/matrix/shared";
+import { isDiagnosisEnabled } from "@/lib/diagnosis/enabled";
 import { GUIDE_ROLE_ANNOTATED } from "@/lib/brand/guideRole";
 import { EDITORIAL_COLLECTIONS } from "@/data/editorial/collections";
 import {
@@ -19,8 +21,12 @@ const COLLECTION_MENU_ITEMS = [...EDITORIAL_COLLECTIONS]
   )
   .map((row) => ({ slug: row.slug, title: row.title }));
 
-/** Primary nav. Collection magazine pages highlight ピックアップ. */
-export type SiteNavActive = "map" | "pair" | "prefectures" | "compare" | "library" | "discover";
+/**
+ * Primary nav. Collection magazine pages highlight ピックアップ.
+ * "shindan" is not one of the six NAV items: it only marks the diagnosis
+ * pages so the extra mobile 米診断 pill (and nothing else) lights up there.
+ */
+export type SiteNavActive = "map" | "pair" | "prefectures" | "compare" | "library" | "discover" | "shindan";
 
 const NAV = [
   { id: "map" as const, href: "/", label: "味わいの地図" },
@@ -37,6 +43,14 @@ const NAV = [
  * Omit `active` on legal / utility pages so no nav item is current.
  */
 export function SiteHeader({ active }: { active?: SiteNavActive }) {
+  const diagnosisEnabled = isDiagnosisEnabled();
+  const shindanActive = active === "shindan";
+  const pillClass = (isActive: boolean) =>
+    `flex-none rounded-full px-3 py-1.5 font-serif text-[13px] tracking-wide transition-transform duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
+      isActive
+        ? "bg-[var(--km-surface-warm)] font-semibold text-[var(--km-ink)] ring-1 ring-[var(--km-gold)]"
+        : "text-[var(--km-muted)] ring-1 ring-[var(--km-border)]"
+    }`;
   return (
     <>
       <header
@@ -58,6 +72,7 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
                     key={item.id}
                     active={isActive}
                     items={COLLECTION_MENU_ITEMS}
+                    showDiagnosis={diagnosisEnabled}
                   />
                 );
               }
@@ -88,20 +103,33 @@ export function SiteHeader({ active }: { active?: SiteNavActive }) {
         >
           {NAV.map((item) => {
             const isActive = active != null && item.id === active;
-            return (
+            const pill = (
               <Link
-                key={item.id}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex-none rounded-full px-3 py-1.5 font-serif text-[13px] tracking-wide transition-transform duration-150 ease-out active:scale-[0.97] ${FOCUS} ${
-                  isActive
-                    ? "bg-[var(--km-surface-warm)] font-semibold text-[var(--km-ink)] ring-1 ring-[var(--km-gold)]"
-                    : "text-[var(--km-muted)] ring-1 ring-[var(--km-border)]"
-                }`}
+                className={pillClass(isActive)}
               >
                 {item.label}
               </Link>
             );
+            // The diagnosis is not a seventh nav item: on mobile it rides
+            // as one extra pill right after 味わいの地図, gated by the same
+            // kill switch as every other diagnosis entry.
+            if (item.id === "map" && diagnosisEnabled) {
+              return (
+                <Fragment key={item.id}>
+                  {pill}
+                  <Link
+                    href="/shindan"
+                    aria-current={shindanActive ? "page" : undefined}
+                    className={pillClass(shindanActive)}
+                  >
+                    米診断
+                  </Link>
+                </Fragment>
+              );
+            }
+            return <Fragment key={item.id}>{pill}</Fragment>;
           })}
         </nav>
       </div>
