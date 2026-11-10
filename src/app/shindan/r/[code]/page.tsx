@@ -49,7 +49,7 @@ export default async function DiagnosisResultPage({
 
   return (
     <main className="min-h-[100dvh] w-full min-w-0 text-[var(--km-ink)]">
-      <SiteHeader />
+      <SiteHeader active="shindan" />
       <div className={`${READING_COLUMN} px-5 pb-24 pt-10 sm:pt-14`}>
         <DiagnosisResult code={code} outcome={outcome} />
       </div>
