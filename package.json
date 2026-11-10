@@ -32,7 +32,7 @@
     "@google/genai": "^2.19.0",
     "@phosphor-icons/react": "^2.1.10",
     "@sentry/nextjs": "^10.73.0",
-    "@supabase/supabase-js": "^2.49.8",
+    "@supabase/supabase-js": "^2.119.0",
     "cross-env": "^10.1.0",
     "dotenv": "^16.5.0",
     "motion": "^13.1.1",
