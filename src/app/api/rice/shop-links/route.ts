@@ -9,9 +9,10 @@ import {
   shopQuery,
   valueCommerceImpressionPixelUrl,
   valueCommerceWrapEnabled,
+  wrapFurusatoHonpoSearchUrl,
+  wrapFurusatoLaboSearchUrl,
   wrapSatofullSearchUrl,
   wrapYahooSearchUrl,
-  yahooFurusatoSearchUrl,
 } from "@/lib/affiliate";
 import { yahooShoppingItemUrl } from "@/lib/affiliate/yahoo";
 import { resolveYahooShopHref } from "@/lib/affiliate/yahooShortLinks";
@@ -41,7 +42,8 @@ export type ShopLinks = {
   mercari: string;
   satofull: string;
   rakutenFurusato: string;
-  yahooFurusato: string;
+  furusatoHonpo: string;
+  furusatoLabo: string;
   /** VC impression pixel, present only when the Yahoo href is VC-wrapped. */
   yahooImpression?: string;
 };
@@ -72,6 +74,10 @@ export async function GET(request: Request) {
   const yahooPid = process.env.YAHOO_VC_PID?.trim();
   const satofullSid = process.env.SATOFULL_VC_SID?.trim();
   const satofullPid = process.env.SATOFULL_VC_PID?.trim();
+  const honpoSid = process.env.HONPO_VC_SID?.trim();
+  const honpoPid = process.env.HONPO_VC_PID?.trim();
+  const laboSid = process.env.LABO_VC_SID?.trim();
+  const laboPid = process.env.LABO_VC_PID?.trim();
 
   // VC Yahoo が使える間は、手貼り公式短鎖より VC の商品/検索リンクを優先する
   // （短鎖は VC 未承認時代の暫定措置。docs/14 §4）。短鎖テーブルは残し、
@@ -82,7 +88,6 @@ export async function GET(request: Request) {
     ? undefined
     : await lookupYahooPromoUrl(rice.id);
   const yahooSearch = wrapYahooSearchUrl(shop, yahooSid, yahooPid);
-  const yahooFurusatoSearch = yahooFurusatoSearchUrl(furusato);
 
   const impressionFor = (yahooHref: string): string | undefined =>
     vcYahooReady && yahooSid && yahooPid && isValueCommerceReferralHref(yahooHref)
@@ -97,7 +102,8 @@ export async function GET(request: Request) {
     mercari: mercariSearchUrl(shop),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
-    yahooFurusato: yahooFurusatoSearch,
+    furusatoHonpo: wrapFurusatoHonpoSearchUrl(furusato, honpoSid, honpoPid),
+    furusatoLabo: wrapFurusatoLaboSearchUrl(furusato, laboSid, laboPid),
     yahooImpression: impressionFor(fallbackYahoo),
   };
 
@@ -120,7 +126,8 @@ export async function GET(request: Request) {
     mercari: fallback.mercari,
     satofull: fallback.satofull,
     rakutenFurusato: fallback.rakutenFurusato,
-    yahooFurusato: fallback.yahooFurusato,
+    furusatoHonpo: fallback.furusatoHonpo,
+    furusatoLabo: fallback.furusatoLabo,
     yahooImpression: impressionFor(finalYahoo),
   };
 
