@@ -13,6 +13,10 @@ import {
   shopQuery,
   valueCommerceImpressionPixelUrl,
   wrapValueCommerceIfReady,
+  furusatoHonpoSearchUrl,
+  furusatoLaboSearchUrl,
+  wrapFurusatoHonpoSearchUrl,
+  wrapFurusatoLaboSearchUrl,
   wrapYahooSearchUrl,
   yahooFurusatoSearchUrl,
   yahooFurusatoSheetKeyword,
@@ -158,5 +162,25 @@ describe("ValueCommerce wrap (re-adopted 2026-11-10)", () => {
     expect(valueCommerceImpressionPixelUrl("123", "456")).toBe(
       "https://ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=123&pid=456",
     );
+  });
+
+  it("builds furusato portal search URLs on the verified formats", () => {
+    expect(furusatoHonpoSearchUrl("北海道 ゆめぴりか")).toBe(
+      `https://furusatohonpo.jp/donate/s/?keyword=${encodeURIComponent("北海道 ゆめぴりか ふるさと納税")}`,
+    );
+    expect(furusatoLaboSearchUrl("北海道 ゆめぴりか")).toBe(
+      `https://furusato.asahi.co.jp/goods/?word=${encodeURIComponent("北海道 ゆめぴりか ふるさと納税")}`,
+    );
+  });
+
+  it("wraps furusato portal searches only when that portal's pair is passed", () => {
+    expect(wrapFurusatoHonpoSearchUrl("rice")).toBe(furusatoHonpoSearchUrl("rice"));
+    const honpo = wrapFurusatoHonpoSearchUrl("rice", "111", "222");
+    expect(isValueCommerceReferralHref(honpo)).toBe(true);
+    expect(new URL(honpo).searchParams.get("vc_url")).toBe(furusatoHonpoSearchUrl("rice"));
+    expect(wrapFurusatoLaboSearchUrl("rice")).toBe(furusatoLaboSearchUrl("rice"));
+    const labo = wrapFurusatoLaboSearchUrl("rice", "111", "333");
+    expect(new URL(labo).searchParams.get("pid")).toBe("333");
+    expect(new URL(labo).searchParams.get("vc_url")).toBe(furusatoLaboSearchUrl("rice"));
   });
 });

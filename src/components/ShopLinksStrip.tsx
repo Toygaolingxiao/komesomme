@@ -10,12 +10,13 @@ import {
   AFFILIATE_PR_LABEL,
   AFFILIATE_PR_NOTICE,
   amazonSearchUrl,
+  furusatoHonpoSearchUrl,
+  furusatoLaboSearchUrl,
   furusatoQuery,
   isValueCommerceReferralHref,
   mercariSearchUrl,
   rakutenFurusatoSearchUrl,
   shopQuery,
-  yahooFurusatoSearchUrl,
   yahooShoppingSearchUrl,
 } from "@/lib/affiliate";
 import { wrapRakutenAffiliateUrl, rakutenSearchUrl } from "@/lib/rakuten/affiliate";
@@ -33,7 +34,8 @@ export type ShopLinks = {
   mercari: string;
   satofull: string;
   rakutenFurusato: string;
-  yahooFurusato: string;
+  furusatoHonpo: string;
+  furusatoLabo: string;
   /** VC impression pixel, present only when the Yahoo href is VC-wrapped. */
   yahooImpression?: string;
 };
@@ -66,7 +68,8 @@ function fallbackLinks(rice: RiceProfileV2): ShopLinks {
     mercari: mercariSearchUrl(shop),
     satofull: `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(furusato)}`,
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
-    yahooFurusato: yahooFurusatoSearchUrl(furusato),
+    furusatoHonpo: furusatoHonpoSearchUrl(furusato),
+    furusatoLabo: furusatoLaboSearchUrl(furusato),
   };
 }
 
@@ -114,8 +117,8 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           mercari: httpsUrl(data.mercari, next.mercari),
           satofull: httpsUrl(data.satofull, next.satofull),
           rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
-          // Yahoo ふるさと寄附は公式アフィの成果対象外。短鎖があっても検索のまま。
-          yahooFurusato: next.yahooFurusato,
+          furusatoHonpo: httpsUrl(data.furusatoHonpo, next.furusatoHonpo),
+          furusatoLabo: httpsUrl(data.furusatoLabo, next.furusatoLabo),
           yahooImpression:
             typeof data.yahooImpression === "string"
               ? data.yahooImpression
@@ -273,13 +276,17 @@ const MALL_TONES = {
   /** Mercari red family — thin bar on cream buttons. */
   mercari: { bar: "#e04552" },
   satofull: { bar: "#3a6b56" },
+  honpo: { bar: "#a2482f" },
+  labo: { bar: "#2f6db3" },
 } as const satisfies Record<string, MallTone>;
 
 /**
  * Mall CTAs + optional affiliate disclosure.
  * Retail is Amazon → 楽天 → Yahoo → メルカリ (2026-11-06: Amazon leads —
  * food carries the top mall commission rate; same links, same weight).
- * Furusato stays 楽天 / Yahoo / さとふる.
+ * Furusato is 楽天 / さとふる / ふるさと本舗 / ふるラボ (2026-11-10: Yahoo!ふるさと
+ * removed — donations are outside Yahoo's affiliate scope, so the slot went to
+ * ValueCommerce portals that pay).
  * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
@@ -363,17 +370,24 @@ export function ShopLinksStrip({
             compact={compact}
           />
           <PlatformButton
-            href={links.yahooFurusato}
-            label={short ? "Yahoo!ふるさと" : "Yahoo!でふるさと納税"}
-            event="yahoo_furusato_click"
-            tone={MALL_TONES.yahoo}
-            compact={compact}
-          />
-          <PlatformButton
             href={links.satofull}
             label={short ? "さとふる" : "さとふるで探す"}
             event="satofull_click"
             tone={MALL_TONES.satofull}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.furusatoHonpo}
+            label={short ? "ふるさと本舗" : "ふるさと本舗で探す"}
+            event="furusato_honpo_click"
+            tone={MALL_TONES.honpo}
+            compact={compact}
+          />
+          <PlatformButton
+            href={links.furusatoLabo}
+            label={short ? "ふるラボ" : "ふるラボで探す"}
+            event="furusato_labo_click"
+            tone={MALL_TONES.labo}
             compact={compact}
           />
         </>

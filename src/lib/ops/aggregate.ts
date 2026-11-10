@@ -79,6 +79,8 @@ const PURCHASE_EVENTS = new Set([
   "rakuten_furusato_click",
   "yahoo_furusato_click",
   "satofull_click",
+  "furusato_honpo_click",
+  "furusato_labo_click",
 ]);
 
 const RETAIL_CHANNEL_IDS = [
@@ -87,7 +89,7 @@ const RETAIL_CHANNEL_IDS = [
   "amazon_click",
   "mercari_click",
 ] as const;
-const FURUSATO_CHANNEL_IDS = ["rakuten_furusato", "yahoo_furusato", "satofull"] as const;
+const FURUSATO_CHANNEL_IDS = ["rakuten_furusato", "yahoo_furusato", "satofull", "furusato_honpo", "furusato_labo"] as const;
 
 const CHANNEL_LABELS: Record<string, string> = {
   rakuten_click: "楽天市場",
@@ -97,6 +99,8 @@ const CHANNEL_LABELS: Record<string, string> = {
   satofull: "さとふる",
   rakuten_furusato: "楽天ふるさと",
   yahoo_furusato: "Yahoo!ふるさと",
+  furusato_honpo: "ふるさと本舗",
+  furusato_labo: "ふるラボ",
   furusato_other: "ふるさと（旧数据）",
   purchase_cta_click: "その他CTA",
 };
@@ -274,8 +278,12 @@ function purchaseChannel(row: OpsEventRow): string | null {
   if (row.event === "satofull_click") return "satofull";
   if (row.event === "rakuten_furusato_click") return "rakuten_furusato";
   if (row.event === "yahoo_furusato_click") return "yahoo_furusato";
+  if (row.event === "furusato_honpo_click") return "furusato_honpo";
+  if (row.event === "furusato_labo_click") return "furusato_labo";
   if (row.event !== "furusato_click") return row.event;
   const label = metaLabel(row.meta);
+  if (label.includes("ふるさと本舗")) return "furusato_honpo";
+  if (label.includes("ふるラボ")) return "furusato_labo";
   if (label.includes("さとふる")) return "satofull";
   if (label.includes("楽天")) return "rakuten_furusato";
   if (/yahoo/i.test(label)) return "yahoo_furusato";

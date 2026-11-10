@@ -17,6 +17,8 @@ export type AnalyticsEvent =
   | "rakuten_furusato_click"
   | "yahoo_furusato_click"
   | "satofull_click"
+  | "furusato_honpo_click"
+  | "furusato_labo_click"
   | "shop_disclosure_toggle"
   | "shop_mode_toggle"
   | "language_search_submit"

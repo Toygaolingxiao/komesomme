@@ -129,6 +129,16 @@ export function satofullSearchBase(): string {
   return process.env.SATOFULL_SEARCH_BASE_URL?.trim() || SATOFULL_DEFAULT_BASE;
 }
 
+export function furusatoHonpoSearchUrl(query: string): string {
+  // Verified live 2026-11-10: the portal's keyword search is /donate/s/?keyword=.
+  return `https://furusatohonpo.jp/donate/s/?keyword=${encodeURIComponent(qualifyFurusatoQuery(query))}`;
+}
+
+export function furusatoLaboSearchUrl(query: string): string {
+  // Verified live 2026-11-10: the portal's search form is GET /goods/ with ?word=.
+  return `https://furusato.asahi.co.jp/goods/?word=${encodeURIComponent(qualifyFurusatoQuery(query))}`;
+}
+
 export function satofullSearchUrl(query: string, base = satofullSearchBase()): string {
   const prefix = base.trim() || SATOFULL_DEFAULT_BASE;
   if (/[?&]q=$/.test(prefix) || prefix.endsWith("q=")) {
@@ -214,6 +224,32 @@ export function valueCommerceImpressionPixelUrl(sid: string, pid: string): strin
   return `https://ad.jp.ap.valuecommerce.com/servlet/gifbanner?sid=${encodeURIComponent(sid)}&pid=${encodeURIComponent(pid)}`;
 }
 
+export function honpoValueCommerceEnv(): { sid: string; pid: string } {
+  return {
+    sid:
+      process.env.HONPO_VC_SID?.trim() ||
+      process.env.NEXT_PUBLIC_HONPO_VC_SID?.trim() ||
+      "",
+    pid:
+      process.env.HONPO_VC_PID?.trim() ||
+      process.env.NEXT_PUBLIC_HONPO_VC_PID?.trim() ||
+      "",
+  };
+}
+
+export function laboValueCommerceEnv(): { sid: string; pid: string } {
+  return {
+    sid:
+      process.env.LABO_VC_SID?.trim() ||
+      process.env.NEXT_PUBLIC_LABO_VC_SID?.trim() ||
+      "",
+    pid:
+      process.env.LABO_VC_PID?.trim() ||
+      process.env.NEXT_PUBLIC_LABO_VC_PID?.trim() ||
+      "",
+  };
+}
+
 export function wrapYahooSearchUrl(query: string, sid?: string, pid?: string): string {
   const { sid: envSid, pid: envPid } = yahooValueCommerceEnv();
   return wrapValueCommerceIfReady(yahooShoppingSearchUrl(query), sid ?? envSid, pid ?? envPid);
@@ -229,12 +265,23 @@ export function wrapSatofullSearchUrl(query: string, sid?: string, pid?: string)
   return wrapValueCommerceIfReady(satofullSearchUrl(query), sid ?? envSid, pid ?? envPid);
 }
 
+export function wrapFurusatoHonpoSearchUrl(query: string, sid?: string, pid?: string): string {
+  const { sid: envSid, pid: envPid } = honpoValueCommerceEnv();
+  return wrapValueCommerceIfReady(furusatoHonpoSearchUrl(query), sid ?? envSid, pid ?? envPid);
+}
+
+export function wrapFurusatoLaboSearchUrl(query: string, sid?: string, pid?: string): string {
+  const { sid: envSid, pid: envPid } = laboValueCommerceEnv();
+  return wrapValueCommerceIfReady(furusatoLaboSearchUrl(query), sid ?? envSid, pid ?? envPid);
+}
+
 export function clientAffiliateHrefs(input: AffiliateBrandInput): {
   amazon: string;
   yahoo: string;
   mercari: string;
   satofull: string;
-  yahooFurusato: string;
+  furusatoHonpo: string;
+  furusatoLabo: string;
   rakutenFurusato: string;
 } {
   const shop = shopQuery(input);
@@ -244,7 +291,8 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
     yahoo: yahooShoppingSearchUrl(shop),
     mercari: mercariSearchUrl(shop),
     satofull: satofullSearchUrl(furusato),
-    yahooFurusato: yahooFurusatoSearchUrl(furusato),
+    furusatoHonpo: furusatoHonpoSearchUrl(furusato),
+    furusatoLabo: furusatoLaboSearchUrl(furusato),
     rakutenFurusato: rakutenFurusatoSearchUrl(furusato),
   };
 }

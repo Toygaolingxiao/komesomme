@@ -22,7 +22,9 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /楽天ふるさと|楽天でふるさと納税/ })).toBeVisible();
-    await expect(purchase.getByRole("link", { name: /Yahoo!ふるさと|Yahoo!でふるさと納税/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /ふるさと本舗/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /ふるラボ/ })).toBeVisible();
+    await expect(purchase.getByRole("link", { name: /Yahoo!ふるさと|Yahoo!でふるさと納税/ })).toHaveCount(0);
     await expect(page.locator("#km-purchase")).toHaveCount(1);
     await expect(page.getByText("Amazonのアソシエイトとして").first()).toBeVisible();
     await expect(page.getByText("アフィリエイト広告").first()).toBeVisible();
@@ -55,9 +57,13 @@ test.describe("TS-BRAND / TS-BUY", () => {
       "href",
       /search\.rakuten\.co\.jp\/search\/mall|hb\.afl\.rakuten/
     );
-    await expect(purchase.getByRole("link", { name: /Yahoo/ })).toHaveAttribute(
+    await expect(purchase.getByRole("link", { name: /ふるさと本舗/ })).toHaveAttribute(
       "href",
-      /shopping\.yahoo\.co\.jp\/search|yahoo\.jp\//
+      /furusatohonpo\.jp|valuecommerce\.com/
+    );
+    await expect(purchase.getByRole("link", { name: /ふるラボ/ })).toHaveAttribute(
+      "href",
+      /furusato\.asahi\.co\.jp|valuecommerce\.com/
     );
     const satofullRel = (await satofull.getAttribute("rel")) ?? "";
     expect(satofullRel).toMatch(/noopener/);
