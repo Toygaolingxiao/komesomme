@@ -16,9 +16,7 @@ KomeSomme（コメソム）は、日本のブランド米を味わいの地図�
 
 番号は [`VERSION`](../VERSION)。旗艦ホストは **`https://komesomme.jp`**。
 
-約 106 銘柄の味わい地図と座標推薦、「侍米師に相談」の意味検索 Top 4、`/library/[id]` 銘柄事典、`/pair` 料理十面、購入導線（通販 / ふるさと納税）、編集発見（ピックアップ / 特集）、`/about`、共有カード。防護（レート制限・RLS・法務頁・CI）とスモーク記録済み。匿名利用は `access_events`、任意で GA4 / Sentry。
-
-**まだない:** `/compare`（銘柄どうしの比較ページ）。次に作るものは [20-growth-plan.md](./20-growth-plan.md) §4.0。
+109 銘柄の味わい地図と座標推薦、「侍米師に相談」の意味検索 Top 4、「侍米師の米診断」（`/shindan`。三つの質問に答えると今日の相棒米を本命・対抗・穴で出し、結果は `/shindan/r/…` の共有リンクと OG 画像で送れる。計算は決まった規則で動き、値段と予算の話はしない）、`/library/[id]` 銘柄事典、`/pair` 料理で選ぶ、`/compare` 銘柄くらべ、`/prefectures` 産地から選ぶ、購入導線（銘柄ページの見出し直下の一行は Amazon / 楽天市場 / Yahoo! / メルカリ、下部の帯は通販 / ふるさと納税の切替で、ふるさと納税は楽天ふるさと納税 / さとふる / ふるさと本舗 / ふるラボ）、編集発見（ピックアップ / 特集）、`/about`、共有カード（事前生成して Cloudflare R2 から配信）。防護（レート制限・RLS・法務頁・CI）とスモーク記録済み。匿名利用は `access_events`、任意で GA4 / Sentry。
 
 画面の動きは [08-ui-design.md](./08-ui-design.md)。旧 URL とドメインは [vercel-production.md](./vercel-production.md)。
 

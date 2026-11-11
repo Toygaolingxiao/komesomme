@@ -2,7 +2,7 @@
 
 KomeSomme 侍米師（じべいし）は、日本のブランド米を味わいの地図から探すサイトです。
 
-食べたい料理、今日の気分、合わせたいお酒を言葉にすると、地図上の位置と銘柄の解説から、今日の一膳が見えてきます。インストールは要りません。下の表から、動いているサイトと読み物へ進めます。番号は [`VERSION`](./VERSION)。
+食べたい料理、今日の気分、合わせたいお酒を言葉にすると、地図上の位置と銘柄の解説から、今日の一膳が見えてきます。言葉にするのが面倒なときは、三つの質問に答えるだけの「侍米師の米診断」でも選べます。インストールは要りません。下の表から、動いているサイトと読み物へ進めます。番号は [`VERSION`](./VERSION)。
 
 | 見たいもの | どこを開く |
 | --- | --- |
@@ -34,12 +34,13 @@ KomeSomme 侍米師（じべいし）は、日本のブランド米を味わい�
 | 唐揚げの例 | [https://komesomme.jp/pair/karaage](https://komesomme.jp/pair/karaage) | 一品のページ |
 | ライブラリ | [https://komesomme.jp/library](https://komesomme.jp/library) | 銘柄の一覧 |
 | 魚沼コシヒカリの例 | [https://komesomme.jp/library/koshihikari-uonuma](https://komesomme.jp/library/koshihikari-uonuma) | 由来、炊き方、お店で探す |
+| 米診断 | [https://komesomme.jp/shindan](https://komesomme.jp/shindan) | 三つの質問（食卓、いつもの米、ご飯の好み）に答えると、今日の相棒米を本命・対抗・穴で出す。結果は専用リンクで共有できる |
 | ピックアップ | [https://komesomme.jp/discover](https://komesomme.jp/discover) | きょうの三銘柄と、旬の特集 |
 | 特集の例 | [https://komesomme.jp/collections/bento-cold](https://komesomme.jp/collections/bento-cold) | 「冷めても、弁当に」 |
 | 産地から選ぶ | [https://komesomme.jp/prefectures](https://komesomme.jp/prefectures) | 日本地図から都道府県を選び、その土地の銘柄へ。県ごとの産地ページもある |
 | 銘柄くらべ | [https://komesomme.jp/compare](https://komesomme.jp/compare) | 二つの銘柄を並べて、味わいの指標で比べる |
 
-銘柄ページの「お店で探す」は、通販（Amazon / 楽天市場 / Yahoo! / メルカリ）とふるさと納税（楽天 / Yahoo! / さとふる）の切替です。当サイトでは米そのものは売りません。
+銘柄ページの「お店で探す」は二段です。見出しの直下に四つのお店への一行（Amazon / 楽天市場 / Yahoo! / メルカリ、※PR）があり、ページ下部の「購入の目安」では通販とふるさと納税（楽天ふるさと納税 / さとふる / ふるさと本舗 / ふるラボ）の切替になっています。当サイトでは米そのものは売りません。
 
 法務のページは [利用規約](https://komesomme.jp/terms)、[プライバシーポリシー](https://komesomme.jp/privacy)、[特定商取引法に基づく表記](https://komesomme.jp/tokushoho) です。
 
@@ -85,9 +86,11 @@ npm run dev
 
 `npm run validate:rice` は 80 件以上、ID / 名称の重複なし、魚沼・佐渡・仁多・龍の瞳の独立行を見ます。禁止語は warning です。
 
-`npm run seed:rice` は約 106 銘柄に embedding を付け、`rice_regions` / `rice_brands` / `rice_profile_details` へ upsert します。読み取りは VIEW `rice_catalog`。embedding モデルを変えたら再シードが必要です。地域色の正本は `src/lib/rice/regions.ts`。既存プロジェクトは `0011_rice_region_appetite_colors.sql` か `npm run seed:rice` で `rice_regions.color` を揃えます。
+`npm run seed:rice` は 109 銘柄に embedding を付け、`rice_regions` / `rice_brands` / `rice_profile_details` へ upsert します。読み取りは VIEW `rice_catalog`。embedding モデルを変えたら再シードが必要です。地域色の正本は `src/lib/rice/regions.ts`。既存プロジェクトは `0011_rice_region_appetite_colors.sql` か `npm run seed:rice` で `rice_regions.color` を揃えます。
 
-相談の短い返事は Gemini `gemini-3.6-flash`（失敗時は OpenAI、それも失敗なら Flavor Bridge の reason）です。照合そのものは返事生成が落ちても Top 4 を返します。
+相談の短い返事は Gemini のモデルチェーン（`src/lib/gemini/modelChain.ts`。失敗時は OpenAI、それも失敗なら Flavor Bridge の reason）です。照合そのものは返事生成が落ちても Top 4 を返します。
+
+銘柄の共有カードは事前生成して Cloudflare R2（`assets.komesomme.jp/share-cards/v1/`）に置き、カードの URL は静的ファイルがあればそちらへ 307 で転送し、無ければその場で描きます（`SHARE_CARD_STATIC=off` で転送だけ止められます）。生成は `scripts/warm-share-cards.mjs`、送信は `scripts/upload-share-cards.mjs` です。
 
 ### 手元での確認
 
@@ -98,6 +101,7 @@ http://localhost:3000 で:
 - 探針やスライダーを動かすと、No.1 が常に最近傍
 - 「ハイボールと唐揚げに合う米」で Top 4 が返る
 - 銘柄事典 `/library/[id]` から通販 / ふるさと納税の各モールが開く（旧 `/{id}` はリダイレクト）
+- 米診断 `/shindan` で三つの質問に答えると結果ページ `/shindan/r/…` が開き、各カードに「お店で探す」と「お得な買い方」が付く
 
 本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
