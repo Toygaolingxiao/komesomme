@@ -2,6 +2,7 @@ import { riceProfiles } from "../src/data/rice/catalog";
 import { buildRiceSearchText } from "../src/lib/rice/buildRiceSearchText";
 import type { RiceProfileV2 } from "../src/types/rice";
 import { collectPairingErrors } from "./validate-pairings";
+import { collectContentIssues } from "./validate-content";
 
 /**
  * Guards the catalogue before it reaches the embedding step.
@@ -229,3 +230,19 @@ if (pairingErrors.length > 0) {
   process.exit(1);
 }
 console.log(`Pairing pages ok.\n`);
+
+const content = collectContentIssues();
+if (content.warnings.length > 0) {
+  console.log(`Content validation: ${content.warnings.length} warning(s):`);
+  for (const warning of content.warnings) {
+    console.log(`  - ${warning}`);
+  }
+}
+if (content.errors.length > 0) {
+  console.error(`\nContent validation: ${content.errors.length} error(s):`);
+  for (const error of content.errors) {
+    console.error(`  - ${error}`);
+  }
+  process.exit(1);
+}
+console.log(`Content checks ok.\n`);
