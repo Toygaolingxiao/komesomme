@@ -69,6 +69,19 @@ export type OpsSummary = {
     shareRate: number;
     note: string;
   };
+  /**
+   * Qualified Purchase Intent Sessions: distinct sessions carrying all three
+   * legs — a recommendation surface, a brand page view, and a purchase
+   * section view. Leg counts are the distinct sessions per single leg.
+   */
+  qpis: {
+    sessions: number;
+    recommendSessions: number;
+    brandViewSessions: number;
+    purchaseViewSessions: number;
+    shareOfSessions: number;
+    note: string;
+  };
   /** KPIs of the immediately preceding window of the same length. Filled by loadSummary. */
   previous?: {
     sessions: number;
@@ -227,6 +240,22 @@ function isExploreEvent(event: string): boolean {
     event === "recommendation_detail_click" ||
     event === "similar_rice_click"
   );
+}
+
+/**
+ * QPIS leg (a): the visitor met a recommendation surface — finished the
+ * diagnosis, opened a dish (pair) page, tapped the taste map, or followed a
+ * recommendation into a brand.
+ */
+function isRecommendSurface(row: OpsEventRow): boolean {
+  if (
+    row.event === "diagnosis_complete" ||
+    row.event === "map_marker_click" ||
+    row.event === "recommendation_detail_click"
+  ) {
+    return true;
+  }
+  return row.event === "page_view" && pageTypeId(row.path) === "pair";
 }
 
 function isShopOpen(row: OpsEventRow): boolean {
@@ -570,6 +599,37 @@ export function aggregateAccessEvents(
     note: "完了率＝完了セッション÷開始セッション、共有率＝共有セッション÷完了セッション。購入率は参考値であり、診断の成否は完了率と共有率で見る。",
   };
 
+  // QPIS: per session, mark the three legs, then count sessions with all of
+  // them. Leg (b) is any /library/<id> page view; leg (c) is the purchase
+  // block having entered the viewport on a brand page (purchase_section_view).
+  const qpisLegs = new Map<string, { recommend: boolean; brand: boolean; purchase: boolean }>();
+  for (const row of rows) {
+    if (!row.session_id) continue;
+    const legs = qpisLegs.get(row.session_id) ?? { recommend: false, brand: false, purchase: false };
+    if (isRecommendSurface(row)) legs.recommend = true;
+    if (row.event === "page_view" && brandIdFromPath(row.path)) legs.brand = true;
+    if (row.event === "purchase_section_view") legs.purchase = true;
+    qpisLegs.set(row.session_id, legs);
+  }
+  let qpisSessions = 0;
+  let qpisRecommendSessions = 0;
+  let qpisBrandViewSessions = 0;
+  let qpisPurchaseViewSessions = 0;
+  for (const legs of qpisLegs.values()) {
+    if (legs.recommend) qpisRecommendSessions += 1;
+    if (legs.brand) qpisBrandViewSessions += 1;
+    if (legs.purchase) qpisPurchaseViewSessions += 1;
+    if (legs.recommend && legs.brand && legs.purchase) qpisSessions += 1;
+  }
+  const qpis = {
+    sessions: qpisSessions,
+    recommendSessions: qpisRecommendSessions,
+    brandViewSessions: qpisBrandViewSessions,
+    purchaseViewSessions: qpisPurchaseViewSessions,
+    shareOfSessions: ratio(qpisSessions, sessions.size),
+    note: "同一会话内三步齐备才计：推荐面（诊断完成 / 料理页 / 地图点选 / 推荐点选）＋銘柄页浏览＋购买区进入视口。缺任一步不计；同一会话看多个銘柄仍只计 1。",
+  };
+
   return {
     range,
     since: options.since.toISOString(),
@@ -604,5 +664,6 @@ export function aggregateAccessEvents(
     leaders,
     shares,
     diagnosis,
+    qpis,
   };
 }

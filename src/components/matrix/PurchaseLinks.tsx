@@ -1,9 +1,50 @@
 "use client";
 
+import { useEffect, useRef, type ReactNode } from "react";
 import { ShopLinksStrip } from "@/components/ShopLinksStrip";
+import { track } from "@/lib/analytics";
 import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
 import { FOCUS } from "@/components/matrix/shared";
 import type { RiceProfileV2 } from "@/types/rice";
+
+/**
+ * Fires `purchase_section_view` once when the purchase block enters the
+ * viewport. IntersectionObserver delivers an initial callback right after
+ * observe(), so a block already on screen at first paint (SSR) still counts.
+ * The observer disconnects after the first hit and on unmount.
+ */
+function usePurchaseSectionView(riceId: string) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    let reported = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (reported || !entry.isIntersecting) continue;
+          reported = true;
+          track("purchase_section_view", { id: riceId });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [riceId]);
+  return ref;
+}
+
+/** The #km-purchase host: children plus the once-per-page view beacon. */
+function PurchaseSection({ rice, children }: { rice: RiceProfileV2; children: ReactNode }) {
+  const ref = usePurchaseSectionView(rice.id);
+  return (
+    <div id="km-purchase" ref={ref}>
+      {children}
+    </div>
+  );
+}
 
 /** Immediate buy strip (single primary CTA on a page). */
 export function PurchaseLead({
@@ -16,7 +57,7 @@ export function PurchaseLead({
 }) {
   if (!isShopLinksEnabled()) return null;
   return (
-    <div id="km-purchase">
+    <PurchaseSection rice={rice}>
       <ShopLinksStrip
         rice={rice}
         variant="compact"
@@ -28,7 +69,7 @@ export function PurchaseLead({
             : "rounded-xl border border-[var(--km-border)] bg-[var(--km-surface-warm)]/60 p-3"
         }
       />
-    </div>
+    </PurchaseSection>
   );
 }
 
@@ -46,14 +87,14 @@ export function PurchaseLinks({
 }) {
   if (!isShopLinksEnabled()) return null;
   return (
-    <div id="km-purchase">
+    <PurchaseSection rice={rice}>
       <ShopLinksStrip
         rice={rice}
         variant="full"
         title={bare ? "" : "お店で探す"}
         disclosure="pr"
       />
-    </div>
+    </PurchaseSection>
   );
 }
 
