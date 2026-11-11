@@ -9,6 +9,7 @@ export type AnalyticsEvent =
   | "slider_change"
   | "recommendation_detail_click"
   | "purchase_cta_click"
+  | "purchase_section_view"
   | "rakuten_click"
   | "amazon_click"
   | "yahoo_click"

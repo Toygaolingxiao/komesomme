@@ -332,6 +332,36 @@ export function OpsDashboard({
         />
       </section>
 
+      <section className="mt-4">
+        <Panel title="合格购买意向（QPIS）" caption={summary.qpis.note}>
+          <div className="mt-4 flex flex-wrap items-end gap-x-10 gap-y-4">
+            <div>
+              <p className="font-serif text-4xl font-semibold tabular-nums text-[#fff5e5]">
+                {num(summary.qpis.sessions)}
+                <span className="ml-2 align-middle text-sm font-normal text-[#9a8774]">会话</span>
+              </p>
+              <p className="mt-1 text-[11px] text-[#766658]">
+                占全部会话 {pct(summary.qpis.shareOfSessions)}
+              </p>
+            </div>
+            <div className="flex gap-8 pb-1 text-sm">
+              <div>
+                <p className="text-[11px] tracking-[0.12em] text-[#9a8774]">推荐面</p>
+                <p className="mt-1 tabular-nums text-[#fff5e5]">{num(summary.qpis.recommendSessions)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] tracking-[0.12em] text-[#9a8774]">銘柄页</p>
+                <p className="mt-1 tabular-nums text-[#fff5e5]">{num(summary.qpis.brandViewSessions)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] tracking-[0.12em] text-[#9a8774]">购买区看到</p>
+                <p className="mt-1 tabular-nums text-[#fff5e5]">{num(summary.qpis.purchaseViewSessions)}</p>
+              </div>
+            </div>
+          </div>
+        </Panel>
+      </section>
+
       <SectionHeading>人从哪来</SectionHeading>
       <section className="grid gap-4 lg:grid-cols-2">
         <Panel title="来源" caption="按会话第一次着地时的 UTM / 参照元判定，只认第一次。">

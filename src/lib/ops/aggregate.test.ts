@@ -277,6 +277,52 @@ describe("aggregateAccessEvents", () => {
       { id: "koshihikari", count: 1 },
     ]);
   });
+
+  it("counts a QPIS only when a session carries all three legs", () => {
+    const rows: OpsEventRow[] = [
+      // s1: pair page (recommend) + brand page + purchase section view → QPIS.
+      row("page_view", "/pair/curry", "s1", {}, 0),
+      row("page_view", "/library/yumepirika", "s1", {}, 1),
+      row("purchase_section_view", "/library/yumepirika", "s1", { id: "yumepirika" }, 2),
+      // s2: missing the purchase-section leg.
+      row("page_view", "/pair/curry", "s2", {}, 3),
+      row("page_view", "/library/yumepirika", "s2", {}, 4),
+      // s3: missing the brand-page leg.
+      row("map_marker_click", "/", "s3", {}, 5),
+      row("purchase_section_view", "/library/yumepirika", "s3", { id: "yumepirika" }, 6),
+      // s4: missing the recommendation leg.
+      row("page_view", "/library/yumepirika", "s4", {}, 7),
+      row("purchase_section_view", "/library/yumepirika", "s4", { id: "yumepirika" }, 8),
+      // Rows without a session never count toward any leg.
+      row("page_view", "/pair/curry", null, {}, 9),
+      row("page_view", "/library/yumepirika", null, {}, 10),
+      row("purchase_section_view", "/library/yumepirika", null, { id: "yumepirika" }, 11),
+    ];
+
+    const summary = aggregateAccessEvents(rows, "7d", OPTS);
+    expect(summary.qpis.sessions).toBe(1);
+    expect(summary.qpis.recommendSessions).toBe(3);
+    expect(summary.qpis.brandViewSessions).toBe(3);
+    expect(summary.qpis.purchaseViewSessions).toBe(3);
+    expect(summary.qpis.shareOfSessions).toBeCloseTo(1 / summary.kpis.sessions);
+  });
+
+  it("counts a multi-brand QPIS session once and accepts diagnosis_complete as the recommend leg", () => {
+    const rows: OpsEventRow[] = [
+      row("diagnosis_complete", "/shindan/r/v1.curry.yumepirika.mochi.ih", "s1", {}, 0),
+      row("page_view", "/library/yumepirika", "s1", {}, 1),
+      row("purchase_section_view", "/library/yumepirika", "s1", { id: "yumepirika" }, 2),
+      row("page_view", "/library/tsuyahime", "s1", {}, 3),
+      row("purchase_section_view", "/library/tsuyahime", "s1", { id: "tsuyahime" }, 4),
+    ];
+
+    const summary = aggregateAccessEvents(rows, "7d", OPTS);
+    expect(summary.qpis.sessions).toBe(1);
+    expect(summary.qpis.recommendSessions).toBe(1);
+    expect(summary.qpis.brandViewSessions).toBe(1);
+    expect(summary.qpis.purchaseViewSessions).toBe(1);
+    expect(summary.qpis.shareOfSessions).toBe(1);
+  });
 });
 
 describe("kpiDelta", () => {
