@@ -32,6 +32,7 @@
 | [22-career-positioning.md](./22-career-positioning.md) | 职业定位（中文・対外页不写） |
 | [23-ai-search-geo.md](./23-ai-search-geo.md) | AI 検索（GEO）（中文） |
 | [25-dev-playbook.md](./25-dev-playbook.md) | 复盘与执行纪律（中文・対 GAO） |
+| [26-external-review-copilot-2026-11.md](./26-external-review-copilot-2026-11.md) | 第三方評価の存档（Copilot 審・2026-11-11）。原文のまま保存、外部事実は未核実 |
 
 ## 正本（実装）
 
