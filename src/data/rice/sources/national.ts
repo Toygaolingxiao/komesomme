@@ -44,7 +44,7 @@ export const national: RiceSource[] = [
     aroma: 3,
     umami: 4,
     aftertaste: 4,
-    grain_size: 4,
+    grain_size: 3,
     clarity: 2,
     richness: 5,
     cold_rice_quality: 5,

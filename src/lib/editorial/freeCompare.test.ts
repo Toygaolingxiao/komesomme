@@ -77,14 +77,18 @@ describe("summarizeComparison", () => {
     expect(summary.coordinateNote).toContain("ほぼ同じ場所に重なります");
   });
 
-  it("finds the single differing indicator for the milky sisters", () => {
+  it("finds no differing indicator for the milky sisters", () => {
+    // The sisters share the same low-amylose mutation and, per the variety
+    // registry, the same grain class (中粒) — all twelve indicators match.
+    // Their real difference is on the growing side, not the eating side.
     const summary = summarizeComparison(
       brand("milky-queen"),
       brand("milky-princess"),
     );
-    expect(summary.diffs).toHaveLength(1);
-    expect(summary.diffs[0].label).toBe("粒の大きさ");
-    expect(summary.bLeads).toEqual(["粒の大きさ"]);
+    expect(summary.diffs).toHaveLength(0);
+    expect(summary.equalCount).toBe(12);
+    expect(summary.aLeads).toEqual([]);
+    expect(summary.bLeads).toEqual([]);
   });
 });
 
