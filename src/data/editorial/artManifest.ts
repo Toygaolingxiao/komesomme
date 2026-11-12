@@ -102,6 +102,15 @@ export const BRAND_ART_IDS = new Set<string>([
   "tochigi-no-hoshi",
   "tsubuzoroi",
   "tsugaru-roman",
+  "tsukiakari",
+  "yosakoi-bijin",
+  "yudai21",
+  "yukihotaka",
+  "yukinko-mai",
+  "yukisayaka",
+  "yume-tsukushi",
+  "yumegokochi",
+  "yumeobako",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
