@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { IndicatorTable } from "@/components/compare/IndicatorTable";
 import { FOCUS } from "@/components/matrix/shared";
 import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
@@ -396,7 +395,6 @@ export function FreeCompare({ dataset }: { dataset: FreeCompareDataset }) {
                   </span>
                 ))}
               </p>
-              <AffiliateDisclosure variant="pr" className="mt-1.5" />
             </>
           ) : null}
         </div>

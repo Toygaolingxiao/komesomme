@@ -1,4 +1,3 @@
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { FOCUS } from "@/components/matrix/shared";
 import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
 import { isShopLinksEnabled } from "@/lib/affiliate/shopLinksEnabled";
@@ -37,7 +36,6 @@ export function RakutenDirectLink({ rice }: { rice: RiceProfileV2 }) {
           楽天市場で探す
         </span>
       </a>
-      <AffiliateDisclosure variant="pr" className="mt-1.5" />
     </div>
   );
 }

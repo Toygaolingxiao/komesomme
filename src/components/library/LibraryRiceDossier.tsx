@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
   amazonSearchUrl,
@@ -197,7 +196,6 @@ export function LibraryRiceDossier({
                 </span>
               ))}
             </p>
-            <AffiliateDisclosure variant="pr" className="mt-1.5" />
           </div>
         ) : null}
         <ShareCardActions rice={rice} />

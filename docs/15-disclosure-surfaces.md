@@ -10,7 +10,7 @@
 
 | 层 | 显示什么 | 为什么 |
 | --- | --- | --- |
-| CTA 旁 | `AFFILIATE_PR_LABEL`（`※PR`）+ `AFFILIATE_PR_NOTICE`（「アフィリエイト広告」短句） | 景表法：链接附近能认出是宣传，且手机上不用悬停就能读到短句。不堆 Amazon 定型、不列 ASP 名 |
+| CTA 旁 | **なし**（2026-11-12 オーナー決定で全廃） | 購買リンクであることは見れば分かる、という判断。開示は `SiteFooter` の `full` と `/terms` に一本化し、画面ごとに繰り返さない |
 | `SiteFooter`（全站唯一 `full`） | Amazon 第 5 条 + `AFFILIATE_PR_NOTICE`（含「アフィリエイト広告」）+ 乐天官方クレジット + `TASTE_DISCLAIMER` | Amazon 目立つ位置；乐天クレジットガイド；产品诚实 |
 | `/terms` | `AFFILIATE_PR_NOTICE_DETAIL`（列 ASP）+ Amazon 定型 + 不赞助声明 | 名单只放法务页 |
 | `/privacy` `/tokushoho` | privacy=计量与 Cookie；tokushoho=特商法表。味わい长说明互链 `/terms` §3，勿三页复读 | 不是 chrome 定型，勿与 CTA 文案混用 |
@@ -26,17 +26,17 @@
 | 常量 | 用途 |
 | --- | --- |
 | `AMAZON_ASSOCIATE_DISCLOSURE` | Amazon 运营规约第 5 条。只进 `AffiliateDisclosure` `full` 与 `/terms` |
-| `AFFILIATE_PR_LABEL` | CTA 旁 `※PR` |
-| `AFFILIATE_PR_NOTICE` | 页脚短句。必须含「アフィリエイト広告」 |
+| `AFFILIATE_PR_LABEL` | 現在は未使用（2026-11-12 全廃。定数は残置） |
+| `AFFILIATE_PR_NOTICE` | 页脚 `full` 内の短句。必须含「アフィリエイト広告」 |
 | `AFFILIATE_PR_NOTICE_DETAIL` | `/terms` 专用，列 ASP |
 | `TASTE_DISCLAIMER` | 页脚 |
-| `TASTE_DISCLAIMER_DETAIL` | 品鉴 overlay / ライブラリ事典（`shared.ts` 再导出为 `DISCLAIMER`） |
+| `TASTE_DISCLAIMER_DETAIL` | 現在は画面未使用（定数は残置）。overlay / 事典の `DISCLAIMER` は短い `TASTE_DISCLAIMER`（v1.42.2〜） |
 
 乐天官方 HTML（**不得改标签**）：[`src/lib/rakuten/credit.ts`](../src/lib/rakuten/credit.ts) → `RAKUTEN_WEB_SERVICE_CREDIT_HTML`。
 
 组件：[`src/components/AffiliateDisclosure.tsx`](../src/components/AffiliateDisclosure.tsx)
 
-- `variant="pr"` → `※PR` 与短句并排，12px，不用 `title` 悬停代替正文
+- `variant="pr"` → `※PR` 与短句并排，12px（2026-11-12 以降、画面では未使用）
 - `variant="full"` → Amazon + 短 PR + 乐天クレジット
 
 页脚：[`src/components/SiteFooter.tsx`](../src/components/SiteFooter.tsx)（唯一默认 `full`）。
@@ -47,10 +47,10 @@
 
 | 表面 | 文件 | 披露 |
 | --- | --- | --- |
-| 首页 Desktop 右栏「お店で探す」 | `FlavorMatrix.tsx` + `RecommendationRail.tsx` → `ShopLinksStrip` `expandMode="disclosure"` `disclosure="pr"` | `※PR` + 短句，按钮上直接可见。**无** Amazon 定型、**无** 乐天クレジット（`e2e/home.spec.ts` 锁定） |
+| 首页 Desktop 右栏「お店で探す」 | `FlavorMatrix.tsx` + `RecommendationRail.tsx` → `ShopLinksStrip` `expandMode="disclosure"` | 開示なし（2026-11-12〜）。首页には `SiteFooter` が無く、開示は頂栏リンク先 `/terms` に置く |
 | 首页 Mobile 地图下商店条 | `FlavorMatrix.tsx` 同上 | 同上 |
-| 品鉴 overlay 顶部条 | `PurchaseLead` → `ShopLinksStrip` `disclosure="pr"` | `※PR` + 短句 |
-| 品鉴 overlay / ライブラリ `#km-purchase` | `PurchaseLinks` → `RiceProductCard` → `ShopLinksStrip` `disclosure="pr"` | `※PR` + 短句。Amazon 定型仍只在同页 `SiteFooter`（overlay 无页脚，靠 `/terms` 与ライブラリ页脚） |
+| 品鉴 overlay 顶部条 | `PurchaseLead` → `ShopLinksStrip` | 開示なし（2026-11-12〜） |
+| 品鉴 overlay / ライブラリ `#km-purchase` | `PurchaseLinks` → `RiceProductCard` → `ShopLinksStrip` | 開示なし（2026-11-12〜）。Amazon 定型は同页 `SiteFooter`（overlay 无页脚，靠 `/terms` 与ライブラリ页脚） |
 | ライブラリ一覧・記事 | `src/app/library/page.tsx`、`library/[id]/page.tsx` | `SiteFooter` = `full` |
 | 法务三页 | `LegalPage.tsx` | 同上 |
 | 首页整体 | `src/app/page.tsx` | **没有** `SiteFooter`（Desktop `100dvh`）。顶栏 `SiteLegalNav` 链到规约。Amazon 第 5 条不出现在首页（有意） |
@@ -77,7 +77,7 @@
 
 | 位置 | 约定 |
 | --- | --- |
-| `e2e/home.spec.ts` | 商店条可见 `※PR`；展开后 Amazon 定型 **0 条** |
+| `e2e/home.spec.ts` | 商店条に PR 表記なし（2026-11-12〜）；展开后 Amazon 定型 **0 条** |
 | `e2e/brand.spec.ts` | `#km-purchase`：通販 tab 4 CTA → ふるさと tab 3 CTA；**页面上**（页脚即可）有 Amazon 定型、「アフィリエイト広告」、`Supported by Rakuten Developers` |
 | `docs/test-specification.md` TS-BRAND-02 | 完整披露在页脚，不要求印在购买卡内 |
 
@@ -88,5 +88,5 @@
 1. 只改 `affiliate.ts`（和必要时的 `credit.ts`）。
 2. `/terms` 应继续从同一常量引入，避免再手写第 5 条。
 3. 首页不要加回 Amazon 墙（布局 + e2e）。
-4. 新 CTA 面：`ShopLinksStrip` `disclosure="pr"`（或 `none` 且同页已有页脚 `full`）。
+4. 新 CTA 面：PR 表記は付けない（2026-11-12 オーナー決定）。開示は页脚 `full` と `/terms` のみ。
 5. 更新本节表格，而不是让下一次再全仓搜索。

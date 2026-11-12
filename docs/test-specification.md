@@ -194,7 +194,7 @@
 #### TS-SEO-05 銘柄 OG 画像が 1200×630 の PNG（Discover の大画像カード条件）
 #### TS-SEO-06 銘柄ページにパンくず（表示と JSON-LD が同じ経路）
 
-#### TS-PAIR-01 `/pair/curry` に比較表・※PR・向かない・FAQ
+#### TS-PAIR-01 `/pair/curry` に比較表・向かない・FAQ
 #### TS-PAIR-02 `/sitemap.xml` に `/pair` と代表 slug
 
 #### TS-SEC-01 応答ヘッダ
