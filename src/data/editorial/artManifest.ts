@@ -72,6 +72,16 @@ export const BRAND_ART_IDS = new Set<string>([
   "hoshinoyume",
   "hyakumangoku",
   "ichibanboshi",
+  "inochi-no-ichi",
+  "iwatekko",
+  "kazesayaka",
+  "kinnoibuki",
+  "kinuhikari",
+  "kitakurin",
+  "koi-no-yokan",
+  "konjiki-no-kaze",
+  "kumasan-no-chikara",
+  "kumasan-no-kagayaki",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
