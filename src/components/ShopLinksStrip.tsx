@@ -324,7 +324,9 @@ export function ShopLinksStrip({
   const retailGrid = compact
     ? "mt-1 grid grid-cols-2 gap-1.5"
     : "mt-2 flex flex-col gap-2";
-  const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
+  const furusatoGrid = compact
+    ? "mt-1 grid grid-cols-2 gap-1.5"
+    : "mt-2 flex flex-col gap-2";
 
   const mallGrid = (
     <>

@@ -285,7 +285,7 @@ export function drinkStyleLabels(items: string[]): string[] {
   );
 }
 
-export { TASTE_DISCLAIMER_DETAIL as DISCLAIMER } from "@/lib/affiliate";
+export { TASTE_DISCLAIMER as DISCLAIMER } from "@/lib/affiliate";
 
 export function coreTasteMetrics(rice: RiceProfileV2): Array<[string, number]> {
   return [
