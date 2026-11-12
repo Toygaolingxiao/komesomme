@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { track } from "@/lib/analytics";
-import { TASTE_DISCLAIMER_DETAIL } from "@/lib/affiliate";
 import { AXIS_POLES, FOCUS } from "@/components/matrix/shared";
 import { TastePips } from "@/components/matrix/TastePips";
 import { BrandThumb } from "@/components/editorial/BrandThumb";
@@ -695,10 +694,6 @@ export function DiagnosisResult({
           ライブラリ
         </Link>
       </div>
-
-      <p className="mt-6 text-[12px] leading-[1.8] text-[var(--km-muted)]">
-        {TASTE_DISCLAIMER_DETAIL}
-      </p>
     </div>
   );
 }
