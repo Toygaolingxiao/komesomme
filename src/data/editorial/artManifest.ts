@@ -92,6 +92,16 @@ export const BRAND_ART_IDS = new Set<string>([
   "musubi-no-kami",
   "nasuhikari",
   "natsuhime",
+  "norin48",
+  "oborozuki",
+  "oidemai",
+  "pikamaru",
+  "sai-no-kagayaki",
+  "sai-no-kizuna",
+  "satoyama-no-tsubu",
+  "tochigi-no-hoshi",
+  "tsubuzoroi",
+  "tsugaru-roman",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
