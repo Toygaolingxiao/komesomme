@@ -16,13 +16,13 @@ describe("brandArtSrc", () => {
   });
 
   it("falls back to region art when brand and prefecture art are missing", () => {
-    expect(brandArtSrc("musubi-no-kami", "東海・北陸", "架空県")).toBe(
+    expect(brandArtSrc("test-fixture-brand", "東海・北陸", "架空県")).toBe(
       "/brand-art/regions/tokai-hokuriku.webp"
     );
   });
 
   it("prefers prefecture art over region art when listed", () => {
-    expect(brandArtSrc("kumasan-no-kagayaki", "九州・沖縄", "熊本県")).toBe(
+    expect(brandArtSrc("test-fixture-brand", "九州・沖縄", "熊本県")).toBe(
       "/brand-art/prefectures/kumamoto.webp"
     );
   });
@@ -71,7 +71,7 @@ describe("mastheadArtSrc", () => {
 
 describe("resolveBrandArt", () => {
   it("marks region fallbacks", () => {
-    expect(resolveBrandArt("musubi-no-kami", "東海・北陸")).toEqual({
+    expect(resolveBrandArt("test-fixture-brand", "東海・北陸")).toEqual({
       kind: "region",
       src: "/brand-art/regions/tokai-hokuriku.webp",
       regionId: "tokai-hokuriku",
