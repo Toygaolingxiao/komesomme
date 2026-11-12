@@ -6,6 +6,7 @@ import { FOCUS } from "@/components/matrix/shared";
 
 const LINKS = [
   { href: "/about", label: "サイトについて" },
+  { href: "/ratings", label: "味わい評価の考え方" },
   { href: "/privacy", label: "プライバシー" },
   { href: "/terms", label: "利用規約" },
   { href: "/tokushoho", label: "特定商取引法" },
