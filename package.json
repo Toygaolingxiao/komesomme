@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "1.47.0",
+  "version": "1.48.0",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",

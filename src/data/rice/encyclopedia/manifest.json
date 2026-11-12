@@ -36,7 +36,8 @@
       "confidence": "high",
       "sweetness": 3,
       "hardness": 3,
-      "stickiness": 3
+      "stickiness": 3,
+      "contentHash": "1fd1c0ca05b01aa4"
     },
     {
       "id": "akihonami",
