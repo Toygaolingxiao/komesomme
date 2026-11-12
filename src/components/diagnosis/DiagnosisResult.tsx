@@ -548,8 +548,8 @@ export function DiagnosisResult({
           aria-label={`${honmeiDef.title} ${honmei.rice.name}`}
           className="overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_2px_10px_rgba(48,40,32,0.07)]"
         >
-          <div className="lg:grid lg:grid-cols-[46%_1fr]">
-            <div className="bg-[var(--km-surface-warm)] lg:h-full">
+          <div className="lg:grid lg:grid-cols-[46%_1fr] lg:[grid-template-areas:'art_main'_'map_shop']">
+            <div className="lg:[grid-area:art]">
               <BrandThumb
                 id={honmei.rice.id}
                 name={honmei.rice.name}
@@ -560,7 +560,7 @@ export function DiagnosisResult({
                 priority
               />
             </div>
-            <div className="p-5 sm:p-6 lg:p-8">
+            <div className="px-5 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 lg:[grid-area:main]">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <h2 className="inline-flex rotate-[-2deg] items-center rounded-md bg-[var(--km-gold)] px-3 py-1 font-serif text-[15px] font-bold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(112,69,34,0.35)]">
                   {honmeiDef.title}
@@ -593,10 +593,12 @@ export function DiagnosisResult({
                   {honmei.sceneLine}
                 </p>
               )}
+            </div>
+            <div className="bg-[var(--km-surface-warm)] px-5 pb-5 sm:px-6 sm:pb-6 lg:px-6 lg:pb-6 lg:[grid-area:map]">
               <MiniTasteMap base={base} picks={picks} />
-              <div className="mt-6">
-                <ShopLinksStrip rice={honmei.rice} variant="compact" disclosure="pr" />
-              </div>
+            </div>
+            <div className="px-5 pb-5 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8 lg:[grid-area:shop]">
+              <ShopLinksStrip rice={honmei.rice} variant="compact" disclosure="pr" />
             </div>
           </div>
         </article>
