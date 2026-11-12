@@ -83,6 +83,7 @@ export default async function LibraryArticlePage({ params }: PageProps) {
             path: `/library/${rice.id}`,
             imagePath: `/library/${rice.id}/opengraph-image`,
             datePublished: article.generatedAt,
+            dateModified: article.revisedAt,
           }),
           breadcrumbListLd(trail),
         ]}

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ForYou, SimilarRiceCards } from "@/components/matrix/CompareSection";
 import { PurchaseLinks } from "@/components/matrix/PurchaseLinks";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
   amazonSearchUrl,
@@ -33,6 +34,7 @@ import {
 } from "@/components/matrix/shared";
 import { distinctReading, dossierExtraTags, resolveBrandArt } from "@/lib/editorial/art";
 import { prefecturePageByLabel } from "@/lib/editorial/prefectures";
+import { jstDateKey } from "@/lib/editorial/jst";
 import { artViewTransitionName } from "@/lib/editorial/artTransition";
 import { BrandNameMeta } from "@/components/rice/BrandNameMeta";
 import { READING_COLUMN, SITE_COLUMN } from "@/components/siteChrome";
@@ -104,6 +106,16 @@ export function LibraryRiceDossier({
     .slice(0, 2);
   const extra = extraTasteMetrics(rice);
   const forYou = forYouLines(rice);
+  // Real per-article revision date (JST calendar day), shown so a search
+  // landing can see the page is maintained. Never a generated "today".
+  const revisedDate = article.revisedAt ? new Date(article.revisedAt) : null;
+  const updatedLabel =
+    revisedDate && !Number.isNaN(revisedDate.getTime())
+      ? (() => {
+          const [y, m, d] = jstDateKey(revisedDate).split("-");
+          return `${y}年${Number(m)}月${Number(d)}日`;
+        })()
+      : null;
   const heroArt = resolveBrandArt(rice.id, rice.region, rice.prefecture);
   const reading = distinctReading(rice.name, article.reading);
   const prefPage = prefecturePageByLabel(rice.prefecture);
@@ -171,6 +183,11 @@ export function LibraryRiceDossier({
             {tags.join("、")}
           </p>
         ) : null}
+        {updatedLabel ? (
+          <p className="mt-2 text-[12px] text-[var(--km-muted)]">
+            最終更新: {updatedLabel}
+          </p>
+        ) : null}
 
         <p className="mt-7 max-w-[36ch] font-serif text-[1.2rem] leading-[1.85] text-[var(--km-ink)]">
           {appetite}
@@ -196,6 +213,7 @@ export function LibraryRiceDossier({
                 </span>
               ))}
             </p>
+            <AffiliateDisclosure variant="pr" className="mt-1.5" />
           </div>
         ) : null}
         <ShareCardActions rice={rice} />
