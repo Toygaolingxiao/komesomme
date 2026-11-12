@@ -6,8 +6,6 @@ import type { AnalyticsEvent } from "@/lib/analytics";
 import { track } from "@/lib/analytics";
 import {
   AFFILIATE_LINK_REL,
-  AFFILIATE_PR_LABEL,
-  AFFILIATE_PR_NOTICE,
   amazonSearchUrl,
   furusatoHonpoSearchUrl,
   furusatoLaboSearchUrl,
@@ -440,11 +438,6 @@ export function ShopLinksStrip({
                 お店で探す
               </span>
             </span>
-            {mode === "pr" ? (
-              <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
-                {AFFILIATE_PR_LABEL} {AFFILIATE_PR_NOTICE}
-              </span>
-            ) : null}
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
               {open ? "とじる" : `${rice.name}を探す`}
             </span>
