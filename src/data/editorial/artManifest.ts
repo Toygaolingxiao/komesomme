@@ -62,6 +62,16 @@ export const BRAND_ART_IDS = new Set<string>([
   "daichi-no-hoshi",
   "fukuhibiki",
   "fusakogane",
+  "fuku-warai",
+  "goropikari",
+  "harumi",
+  "hatsushimo",
+  "hikari-shinseiki",
+  "himenorin",
+  "hoshijirushi",
+  "hoshinoyume",
+  "hyakumangoku",
+  "ichibanboshi",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
