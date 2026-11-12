@@ -57,11 +57,10 @@ test.describe("TS-HOME Desktop map & rail", () => {
     await expect(visibleRailCaption(page)).toBeVisible();
   });
 
-  test("TS-HOME-08/10 shop disclosure expands after discovery", async ({ page }) => {
+  test("TS-HOME-08/10 shop strip expands after discovery", async ({ page }) => {
     await waitForHomeReady(page);
     const shop = page.locator("[data-shop-strip=disclosure]").locator("visible=true");
     await expect(shop.getByRole("button", { name: /お店で探す/ })).toBeVisible();
-    await expect(shop.getByText("※PR")).toBeVisible();
     await expect(shop.getByRole("link", { name: /^Amazon$/ })).toHaveCount(0);
 
     const neighbours = page

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { RowShopExpand } from "@/components/pair/RowShopExpand";
 import { FOCUS } from "@/components/matrix/shared";
 import {
@@ -50,7 +49,6 @@ export function ComparisonTable({
             甘みと粒感を先に見て、右の欄で向きと控えたい組み合わせを確かめてください。
           </p>
         </div>
-        <AffiliateDisclosure variant="pr" />
       </div>
 
       <div className="mt-5 w-full">

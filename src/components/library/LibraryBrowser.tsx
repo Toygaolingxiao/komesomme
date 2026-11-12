@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { RiceEncyclopediaManifestEntry } from "@/types/riceEncyclopedia";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { TastePips } from "@/components/matrix/TastePips";
 import { FOCUS } from "@/components/matrix/shared";
 import { AFFILIATE_LINK_REL, shopQuery } from "@/lib/affiliate";
@@ -327,8 +326,6 @@ export function LibraryBrowser({
             </li>
           ))}
         </ul>
-
-        {shopEnabled ? <AffiliateDisclosure variant="pr" className="mt-3" /> : null}
 
         {hasMore ? (
           <div ref={sentinelRef} aria-hidden className="pt-6 text-center">

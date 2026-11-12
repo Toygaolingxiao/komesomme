@@ -1,12 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("TS-PAIR cuisine landings", () => {
-  test("TS-PAIR-01 curry page shows table, PR, and avoid block", async ({ page }) => {
+  test("TS-PAIR-01 curry page shows table and avoid block", async ({ page }) => {
     await page.goto("/pair/curry");
     await expect(page.getByRole("heading", { name: "カレーに合う米" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "今夜の候補" })).toBeVisible();
     await expect(page.getByRole("columnheader", { name: "向いている料理・場面" })).toBeVisible();
-    await expect(page.getByText("※PR").first()).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "この料理には向かない米" })
     ).toBeVisible();

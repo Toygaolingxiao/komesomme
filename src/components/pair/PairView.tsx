@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import { BowlMark } from "@/components/brand/EditorialMarks";
 import { EditorialArt } from "@/components/editorial/EditorialArt";
 import { ComparisonTable, type ComparisonRow } from "@/components/pair/ComparisonTable";
@@ -128,7 +127,6 @@ export function PairView({ resolved }: { resolved: ResolvedPairing }) {
                 </>
               ) : null}
             </p>
-            {leadShopHref ? <AffiliateDisclosure variant="pr" className="mt-1.5" /> : null}
           </>
         ) : null}
       </header>

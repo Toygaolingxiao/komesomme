@@ -4,7 +4,6 @@ import { useEffect, useId, useState, type ReactNode } from "react";
 import { CaretDown } from "@phosphor-icons/react";
 import type { AnalyticsEvent } from "@/lib/analytics";
 import { track } from "@/lib/analytics";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
   AFFILIATE_PR_LABEL,
@@ -255,7 +254,7 @@ type ShopLinksStripProps = {
   /** Heading above the buttons (always-open surfaces). */
   title?: string;
   /**
-   * `pr` — ※PR chip next to CTAs (default). Full Amazon / Rakuten copy is SiteFooter.
+   * `pr` — legacy value; since 2026-11-12 no inline PR label renders anywhere (owner decision). Disclosure lives in SiteFooter + /terms only.
    * `full` — do not use on cards; reserved if a surface has no footer.
    * `none` — disclosure lives elsewhere on the same view.
    */
@@ -483,9 +482,6 @@ export function ShopLinksStrip({
               {title}
             </p>
           ) : null}
-          {mode === "pr" ? (
-            <AffiliateDisclosure variant="pr" className={title ? "mt-1" : ""} />
-          ) : null}
         </div>
       ) : null}
 
@@ -495,8 +491,6 @@ export function ShopLinksStrip({
         mallGrid={mallGrid}
         className={title || mode === "pr" ? (compact ? "mt-2" : "mt-3") : ""}
       />
-
-      {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}
     </div>
   );
 }
