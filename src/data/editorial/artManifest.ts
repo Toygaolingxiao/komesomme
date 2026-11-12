@@ -52,6 +52,16 @@ export const BRAND_ART_IDS = new Set<string>([
   "date-masayume",
   "ten-no-tsubu",
   "aichi-no-kaori",
+  "fufufu",
+  "gin-no-mikazuki",
+  "akebono",
+  "akiroman",
+  "ai-hitotsubu",
+  "akisakari",
+  "asahi-no-yume",
+  "daichi-no-hoshi",
+  "fukuhibiki",
+  "fusakogane",
 ]);
 
 export const REGION_ART_IDS = new Set<string>([
