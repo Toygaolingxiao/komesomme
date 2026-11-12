@@ -297,7 +297,7 @@ function MiniTasteMap({
   }
 
   return (
-    <figure className="mt-7">
+    <figure className="mt-7 max-w-[26rem]">
       <p className="text-[12px] font-medium tracking-[0.08em] text-[var(--km-brown)]">
         {DIAGNOSIS_COPY.mapLabel}
       </p>
@@ -549,15 +549,17 @@ export function DiagnosisResult({
           className="overflow-hidden rounded-2xl border border-[var(--km-border)] bg-[var(--km-surface)] shadow-[0_2px_10px_rgba(48,40,32,0.07)]"
         >
           <div className="lg:grid lg:grid-cols-[46%_1fr]">
-            <BrandThumb
-              id={honmei.rice.id}
-              name={honmei.rice.name}
-              region={honmei.rice.region}
-              prefecture={honmei.rice.prefecture}
-              className="h-44 w-full sm:h-52 lg:h-full lg:min-h-[24rem]"
-              sizes="(min-width: 1024px) 42rem, 100vw"
-              priority
-            />
+            <div className="bg-[var(--km-surface-warm)] lg:h-full">
+              <BrandThumb
+                id={honmei.rice.id}
+                name={honmei.rice.name}
+                region={honmei.rice.region}
+                prefecture={honmei.rice.prefecture}
+                className="h-44 w-full sm:h-52 lg:aspect-[16/10] lg:h-auto"
+                sizes="(min-width: 1024px) 42rem, 100vw"
+                priority
+              />
+            </div>
             <div className="p-5 sm:p-6 lg:p-8">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <h2 className="inline-flex rotate-[-2deg] items-center rounded-md bg-[var(--km-gold)] px-3 py-1 font-serif text-[15px] font-bold tracking-[0.14em] text-white shadow-[0_1px_3px_rgba(112,69,34,0.35)]">
