@@ -4,8 +4,11 @@ import { useEffect, useId, useState, type ReactNode } from "react";
 import { CaretDown } from "@phosphor-icons/react";
 import type { AnalyticsEvent } from "@/lib/analytics";
 import { track } from "@/lib/analytics";
+import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
+  AFFILIATE_PR_LABEL,
+  AFFILIATE_PR_NOTICE,
   amazonSearchUrl,
   furusatoHonpoSearchUrl,
   furusatoLaboSearchUrl,
@@ -252,7 +255,7 @@ type ShopLinksStripProps = {
   /** Heading above the buttons (always-open surfaces). */
   title?: string;
   /**
-   * `pr` — legacy value; since 2026-11-12 no inline PR label renders anywhere (owner decision). Disclosure lives in SiteFooter + /terms only.
+   * `pr` — ※PR chip next to CTAs (default). Full Amazon / Rakuten copy is SiteFooter.
    * `full` — do not use on cards; reserved if a surface has no footer.
    * `none` — disclosure lives elsewhere on the same view.
    */
@@ -281,9 +284,12 @@ const MALL_TONES = {
  * Mall CTAs + optional affiliate disclosure.
  * Retail is Amazon → 楽天 → Yahoo → メルカリ (2026-11-06: Amazon leads —
  * food carries the top mall commission rate; same links, same weight).
- * Furusato is 楽天 / さとふる / ふるさと本舗 / ふるラボ (2026-11-10: Yahoo!ふるさと
+ * Furusato is 楽天 / ふるさと本舗 / ふるラボ (2026-11-10: Yahoo!ふるさと
  * removed — donations are outside Yahoo's affiliate scope, so the slot went to
- * ValueCommerce portals that pay).
+ * ValueCommerce portals that pay. 2026-11-13: さとふる removed — its
+ * ValueCommerce partnership was declined, so the entry earned nothing; the
+ * shelf only carries channels that pay. The satofull link plumbing stays in
+ * lib/affiliate.ts in case a re-application is approved).
  * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
@@ -321,9 +327,7 @@ export function ShopLinksStrip({
   const retailGrid = compact
     ? "mt-1 grid grid-cols-2 gap-1.5"
     : "mt-2 flex flex-col gap-2";
-  const furusatoGrid = compact
-    ? "mt-1 grid grid-cols-2 gap-1.5"
-    : "mt-2 flex flex-col gap-2";
+  const furusatoGrid = `flex flex-col gap-2 ${compact ? "mt-1" : "mt-2"}`;
 
   const mallGrid = (
     <>
@@ -366,13 +370,6 @@ export function ShopLinksStrip({
             label={short ? "楽天ふるさと" : "楽天でふるさと納税"}
             event="rakuten_furusato_click"
             tone={MALL_TONES.rakuten}
-            compact={compact}
-          />
-          <PlatformButton
-            href={links.satofull}
-            label={short ? "さとふる" : "さとふるで探す"}
-            event="satofull_click"
-            tone={MALL_TONES.satofull}
             compact={compact}
           />
           <PlatformButton
@@ -438,6 +435,11 @@ export function ShopLinksStrip({
                 お店で探す
               </span>
             </span>
+            {mode === "pr" ? (
+              <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
+                {AFFILIATE_PR_LABEL} {AFFILIATE_PR_NOTICE}
+              </span>
+            ) : null}
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
               {open ? "とじる" : `${rice.name}を探す`}
             </span>
@@ -475,6 +477,9 @@ export function ShopLinksStrip({
               {title}
             </p>
           ) : null}
+          {mode === "pr" ? (
+            <AffiliateDisclosure variant="pr" className={title ? "mt-1" : ""} />
+          ) : null}
         </div>
       ) : null}
 
@@ -484,6 +489,8 @@ export function ShopLinksStrip({
         mallGrid={mallGrid}
         className={title || mode === "pr" ? (compact ? "mt-2" : "mt-3") : ""}
       />
+
+      {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}
     </div>
   );
 }
