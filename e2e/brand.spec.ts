@@ -51,8 +51,9 @@ test.describe("TS-BRAND / TS-BUY", () => {
     }
 
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
-    const satofull = purchase.getByRole("link", { name: /さとふる/ });
-    await expect(satofull).toHaveAttribute("href", /satofull\.jp/);
+    // さとふる is not offered: its affiliate partnership was declined
+    // (2026-11-13), so the shelf only carries channels that pay.
+    await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
     await expect(purchase.getByRole("link", { name: /楽天/ })).toHaveAttribute(
       "href",
       /search\.rakuten\.co\.jp\/search\/mall|hb\.afl\.rakuten/
@@ -65,9 +66,6 @@ test.describe("TS-BRAND / TS-BUY", () => {
       "href",
       /furusato\.asahi\.co\.jp|valuecommerce\.com/
     );
-    const satofullRel = (await satofull.getAttribute("rel")) ?? "";
-    expect(satofullRel).toMatch(/noopener/);
-    expect(satofullRel).toMatch(/nofollow/);
   });
 
   test("TS-BRAND-04 mobile no horizontal overflow", async ({ page, isMobile }) => {
