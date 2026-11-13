@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { findRiceProfile } from "@/data/rice/catalog";
 import {
+  amazonFurusatoCategoryUrl,
   amazonSearchUrl,
   furusatoQuery,
   isValueCommerceReferralHref,
@@ -41,6 +42,7 @@ export type ShopLinks = {
   yahoo: string;
   mercari: string;
   satofull: string;
+  amazonFurusato: string;
   rakutenFurusato: string;
   furusatoHonpo: string;
   furusatoLabo: string;
@@ -101,6 +103,7 @@ export async function GET(request: Request) {
     yahoo: fallbackYahoo,
     mercari: mercariSearchUrl(shop),
     satofull: wrapSatofullSearchUrl(furusato, satofullSid, satofullPid),
+    amazonFurusato: amazonFurusatoCategoryUrl(),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     furusatoHonpo: wrapFurusatoHonpoSearchUrl(furusato, honpoSid, honpoPid),
     furusatoLabo: wrapFurusatoLaboSearchUrl(furusato, laboSid, laboPid),
@@ -125,6 +128,7 @@ export async function GET(request: Request) {
     yahoo: finalYahoo,
     mercari: fallback.mercari,
     satofull: fallback.satofull,
+    amazonFurusato: fallback.amazonFurusato,
     rakutenFurusato: fallback.rakutenFurusato,
     furusatoHonpo: fallback.furusatoHonpo,
     furusatoLabo: fallback.furusatoLabo,

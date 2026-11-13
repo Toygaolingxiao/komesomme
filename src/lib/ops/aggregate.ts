@@ -102,6 +102,7 @@ const PURCHASE_EVENTS = new Set([
   "rakuten_furusato_click",
   "yahoo_furusato_click",
   "satofull_click",
+  "amazon_furusato_click",
   "furusato_honpo_click",
   "furusato_labo_click",
 ]);
@@ -112,7 +113,7 @@ const RETAIL_CHANNEL_IDS = [
   "amazon_click",
   "mercari_click",
 ] as const;
-const FURUSATO_CHANNEL_IDS = ["rakuten_furusato", "yahoo_furusato", "satofull", "furusato_honpo", "furusato_labo"] as const;
+const FURUSATO_CHANNEL_IDS = ["amazon_furusato", "rakuten_furusato", "yahoo_furusato", "satofull", "furusato_honpo", "furusato_labo"] as const;
 
 const CHANNEL_LABELS: Record<string, string> = {
   rakuten_click: "楽天市場",
@@ -120,6 +121,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   yahoo_click: "Yahoo!ショッピング",
   mercari_click: "メルカリ",
   satofull: "さとふる",
+  amazon_furusato: "Amazonふるさと",
   rakuten_furusato: "楽天ふるさと",
   yahoo_furusato: "Yahoo!ふるさと",
   furusato_honpo: "ふるさと本舗",
@@ -317,6 +319,7 @@ const SHARE_EVENTS = new Set<string>(SHARE_KINDS.map((kind) => kind.id));
 function purchaseChannel(row: OpsEventRow): string | null {
   if (!PURCHASE_EVENTS.has(row.event)) return null;
   if (row.event === "satofull_click") return "satofull";
+  if (row.event === "amazon_furusato_click") return "amazon_furusato";
   if (row.event === "rakuten_furusato_click") return "rakuten_furusato";
   if (row.event === "yahoo_furusato_click") return "yahoo_furusato";
   if (row.event === "furusato_honpo_click") return "furusato_honpo";
