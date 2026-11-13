@@ -92,6 +92,19 @@ export function amazonSearchUrl(query: string): string {
   return `https://www.amazon.co.jp/s?${params.toString()}`;
 }
 
+/**
+ * Amazonふるさと納税のお米カテゴリ（店面内ページ）。
+ * 返礼品は店面内検索でしか出ず、その結果 URL の形式は未確認のため、
+ * 確認済みのカテゴリページへリンクする（2026-11-13 A案）。
+ * ふるさと納税の寄附は Associates 標準紹介料の対象（料率表別紙 2.00%）。
+ */
+export function amazonFurusatoCategoryUrl(): string {
+  const params = new URLSearchParams({ almBrandId: "oOXbMNXnBg" });
+  const tag = amazonAssociateTag();
+  if (tag) params.set("tag", tag);
+  return `https://www.amazon.co.jp/fmc/furusato/categories/${encodeURIComponent("お米_パン")}?${params.toString()}`;
+}
+
 /** メルカリアンバサダー ID（公開クエリ `afid`）。env 優先、未設定時は登録済み ID。 */
 export function mercariAffiliateId(): string {
   return (
@@ -280,6 +293,7 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
   yahoo: string;
   mercari: string;
   satofull: string;
+  amazonFurusato: string;
   furusatoHonpo: string;
   furusatoLabo: string;
   rakutenFurusato: string;
@@ -291,6 +305,7 @@ export function clientAffiliateHrefs(input: AffiliateBrandInput): {
     yahoo: yahooShoppingSearchUrl(shop),
     mercari: mercariSearchUrl(shop),
     satofull: satofullSearchUrl(furusato),
+    amazonFurusato: amazonFurusatoCategoryUrl(),
     furusatoHonpo: furusatoHonpoSearchUrl(furusato),
     furusatoLabo: furusatoLaboSearchUrl(furusato),
     rakutenFurusato: rakutenFurusatoSearchUrl(furusato),
