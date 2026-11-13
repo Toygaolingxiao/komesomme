@@ -21,6 +21,7 @@ test.describe("TS-BRAND / TS-BUY", () => {
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
     await purchase.getByRole("tab", { name: "ふるさと納税" }).click();
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
+    await expect(purchase.getByRole("link", { name: /Amazonでふるさと納税/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /楽天ふるさと|楽天でふるさと納税/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /ふるさと本舗/ })).toBeVisible();
     await expect(purchase.getByRole("link", { name: /ふるラボ/ })).toBeVisible();
@@ -54,6 +55,10 @@ test.describe("TS-BRAND / TS-BUY", () => {
     // さとふる is not offered: its affiliate partnership was declined
     // (2026-11-13), so the shelf only carries channels that pay.
     await expect(purchase.getByRole("link", { name: /さとふる/ })).toHaveCount(0);
+    await expect(purchase.getByRole("link", { name: /Amazonでふるさと納税/ })).toHaveAttribute(
+      "href",
+      /amazon\.co\.jp\/fmc\/furusato\/categories\//
+    );
     await expect(purchase.getByRole("link", { name: /楽天/ })).toHaveAttribute(
       "href",
       /search\.rakuten\.co\.jp\/search\/mall|hb\.afl\.rakuten/

@@ -69,19 +69,6 @@ export type OpsSummary = {
     shareRate: number;
     note: string;
   };
-  /**
-   * Qualified Purchase Intent Sessions: distinct sessions carrying all three
-   * legs — a recommendation surface, a brand page view, and a purchase
-   * section view. Leg counts are the distinct sessions per single leg.
-   */
-  qpis: {
-    sessions: number;
-    recommendSessions: number;
-    brandViewSessions: number;
-    purchaseViewSessions: number;
-    shareOfSessions: number;
-    note: string;
-  };
   /** KPIs of the immediately preceding window of the same length. Filled by loadSummary. */
   previous?: {
     sessions: number;
@@ -102,6 +89,7 @@ const PURCHASE_EVENTS = new Set([
   "rakuten_furusato_click",
   "yahoo_furusato_click",
   "satofull_click",
+  "amazon_furusato_click",
   "furusato_honpo_click",
   "furusato_labo_click",
 ]);
@@ -112,7 +100,7 @@ const RETAIL_CHANNEL_IDS = [
   "amazon_click",
   "mercari_click",
 ] as const;
-const FURUSATO_CHANNEL_IDS = ["rakuten_furusato", "yahoo_furusato", "satofull", "furusato_honpo", "furusato_labo"] as const;
+const FURUSATO_CHANNEL_IDS = ["amazon_furusato", "rakuten_furusato", "yahoo_furusato", "satofull", "furusato_honpo", "furusato_labo"] as const;
 
 const CHANNEL_LABELS: Record<string, string> = {
   rakuten_click: "楽天市場",
@@ -120,6 +108,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   yahoo_click: "Yahoo!ショッピング",
   mercari_click: "メルカリ",
   satofull: "さとふる",
+  amazon_furusato: "Amazonふるさと",
   rakuten_furusato: "楽天ふるさと",
   yahoo_furusato: "Yahoo!ふるさと",
   furusato_honpo: "ふるさと本舗",
@@ -242,22 +231,6 @@ function isExploreEvent(event: string): boolean {
   );
 }
 
-/**
- * QPIS leg (a): the visitor met a recommendation surface — finished the
- * diagnosis, opened a dish (pair) page, tapped the taste map, or followed a
- * recommendation into a brand.
- */
-function isRecommendSurface(row: OpsEventRow): boolean {
-  if (
-    row.event === "diagnosis_complete" ||
-    row.event === "map_marker_click" ||
-    row.event === "recommendation_detail_click"
-  ) {
-    return true;
-  }
-  return row.event === "page_view" && pageTypeId(row.path) === "pair";
-}
-
 function isShopOpen(row: OpsEventRow): boolean {
   return (
     row.event === "shop_disclosure_toggle" &&
@@ -317,6 +290,7 @@ const SHARE_EVENTS = new Set<string>(SHARE_KINDS.map((kind) => kind.id));
 function purchaseChannel(row: OpsEventRow): string | null {
   if (!PURCHASE_EVENTS.has(row.event)) return null;
   if (row.event === "satofull_click") return "satofull";
+  if (row.event === "amazon_furusato_click") return "amazon_furusato";
   if (row.event === "rakuten_furusato_click") return "rakuten_furusato";
   if (row.event === "yahoo_furusato_click") return "yahoo_furusato";
   if (row.event === "furusato_honpo_click") return "furusato_honpo";
@@ -599,37 +573,6 @@ export function aggregateAccessEvents(
     note: "完了率＝完了セッション÷開始セッション、共有率＝共有セッション÷完了セッション。購入率は参考値であり、診断の成否は完了率と共有率で見る。",
   };
 
-  // QPIS: per session, mark the three legs, then count sessions with all of
-  // them. Leg (b) is any /library/<id> page view; leg (c) is the purchase
-  // block having entered the viewport on a brand page (purchase_section_view).
-  const qpisLegs = new Map<string, { recommend: boolean; brand: boolean; purchase: boolean }>();
-  for (const row of rows) {
-    if (!row.session_id) continue;
-    const legs = qpisLegs.get(row.session_id) ?? { recommend: false, brand: false, purchase: false };
-    if (isRecommendSurface(row)) legs.recommend = true;
-    if (row.event === "page_view" && brandIdFromPath(row.path)) legs.brand = true;
-    if (row.event === "purchase_section_view") legs.purchase = true;
-    qpisLegs.set(row.session_id, legs);
-  }
-  let qpisSessions = 0;
-  let qpisRecommendSessions = 0;
-  let qpisBrandViewSessions = 0;
-  let qpisPurchaseViewSessions = 0;
-  for (const legs of qpisLegs.values()) {
-    if (legs.recommend) qpisRecommendSessions += 1;
-    if (legs.brand) qpisBrandViewSessions += 1;
-    if (legs.purchase) qpisPurchaseViewSessions += 1;
-    if (legs.recommend && legs.brand && legs.purchase) qpisSessions += 1;
-  }
-  const qpis = {
-    sessions: qpisSessions,
-    recommendSessions: qpisRecommendSessions,
-    brandViewSessions: qpisBrandViewSessions,
-    purchaseViewSessions: qpisPurchaseViewSessions,
-    shareOfSessions: ratio(qpisSessions, sessions.size),
-    note: "同一会话内三步齐备才计：推荐面（诊断完成 / 料理页 / 地图点选 / 推荐点选）＋銘柄页浏览＋购买区进入视口。缺任一步不计；同一会话看多个銘柄仍只计 1。",
-  };
-
   return {
     range,
     since: options.since.toISOString(),
@@ -664,6 +607,5 @@ export function aggregateAccessEvents(
     leaders,
     shares,
     diagnosis,
-    qpis,
   };
 }

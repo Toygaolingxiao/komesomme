@@ -9,6 +9,7 @@ import {
   AFFILIATE_LINK_REL,
   AFFILIATE_PR_LABEL,
   AFFILIATE_PR_NOTICE,
+  amazonFurusatoCategoryUrl,
   amazonSearchUrl,
   furusatoHonpoSearchUrl,
   furusatoLaboSearchUrl,
@@ -33,6 +34,7 @@ export type ShopLinks = {
   yahoo: string;
   mercari: string;
   satofull: string;
+  amazonFurusato: string;
   rakutenFurusato: string;
   furusatoHonpo: string;
   furusatoLabo: string;
@@ -67,6 +69,7 @@ function fallbackLinks(rice: RiceProfileV2): ShopLinks {
     yahoo: yahooShoppingSearchUrl(shop),
     mercari: mercariSearchUrl(shop),
     satofull: `https://www.satofull.jp/products/list.php?q=${encodeURIComponent(furusato)}`,
+    amazonFurusato: amazonFurusatoCategoryUrl(),
     rakutenFurusato: wrapRakutenAffiliateUrl(rakutenFurusatoSearchUrl(furusato)),
     furusatoHonpo: furusatoHonpoSearchUrl(furusato),
     furusatoLabo: furusatoLaboSearchUrl(furusato),
@@ -116,6 +119,7 @@ export function useShopLinks(rice: RiceProfileV2): ShopLinks {
           yahoo: httpsUrl(data.yahoo, next.yahoo),
           mercari: httpsUrl(data.mercari, next.mercari),
           satofull: httpsUrl(data.satofull, next.satofull),
+          amazonFurusato: httpsUrl(data.amazonFurusato, next.amazonFurusato),
           rakutenFurusato: httpsUrl(data.rakutenFurusato, next.rakutenFurusato),
           furusatoHonpo: httpsUrl(data.furusatoHonpo, next.furusatoHonpo),
           furusatoLabo: httpsUrl(data.furusatoLabo, next.furusatoLabo),
@@ -284,12 +288,15 @@ const MALL_TONES = {
  * Mall CTAs + optional affiliate disclosure.
  * Retail is Amazon → 楽天 → Yahoo → メルカリ (2026-11-06: Amazon leads —
  * food carries the top mall commission rate; same links, same weight).
- * Furusato is 楽天 / ふるさと本舗 / ふるラボ (2026-11-10: Yahoo!ふるさと
+ * Furusato is Amazon / 楽天 / ふるさと本舗 / ふるラボ (2026-11-10: Yahoo!ふるさと
  * removed — donations are outside Yahoo's affiliate scope, so the slot went to
  * ValueCommerce portals that pay. 2026-11-13: さとふる removed — its
  * ValueCommerce partnership was declined, so the entry earned nothing; the
  * shelf only carries channels that pay. The satofull link plumbing stays in
- * lib/affiliate.ts in case a re-application is approved).
+ * lib/affiliate.ts in case a re-application is approved. Same day: Amazon
+ * added — ふるさと納税 donations earn the Associates standard rate, and the
+ * entry links to the storefront's rice category page because the in-store
+ * keyword-search URL format is unverified).
  * Compact retail is 2×2 so the home rail does not clip the fourth mall.
  */
 export function ShopLinksStrip({
@@ -365,6 +372,13 @@ export function ShopLinksStrip({
         </>
       ) : (
         <>
+          <PlatformButton
+            href={links.amazonFurusato}
+            label={short ? "Amazon" : "Amazonでふるさと納税"}
+            event="amazon_furusato_click"
+            tone={MALL_TONES.amazon}
+            compact={compact}
+          />
           <PlatformButton
             href={links.rakutenFurusato}
             label={short ? "楽天ふるさと" : "楽天でふるさと納税"}
