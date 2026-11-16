@@ -2,7 +2,7 @@
 
 本文是工程设计，**不是法律意见**。条文以乐天现行「ウェブサービス利用規約」「楽天アフィリエイトパートナー規約」为准。Amazon / Yahoo / さとふる / ValueCommerce 的要点与正文链接见 [14-affiliate-programs.md](./14-affiliate-programs.md)。
 
-**已落地：** 通販 4（楽天 / Yahoo / Amazon / メルカリ）+ ふるさと 3。混排卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。乐天官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit) 与 Amazon 第 5 条在 **页脚**（HTML 不改）。CTA 旁只标 ※PR。Yahoo は公式短鎖。表面清单 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
+**已落地：** 通販 4（楽天 / Yahoo / Amazon / メルカリ）+ ふるさと 4（Amazonふるさと / 楽天ふるさと / ふるさと本舗 / ふるラボ）。混排卡只接收各平台 href。乐天 Item Search 的商品名・价格不进该卡（第 8 条 4 项隔离）。乐天官方 [クレジット](https://webservice.rakuten.co.jp/guide/credit) 与 Amazon 第 5 条在 **页脚**（HTML 不改）。CTA 旁には開示を置かない（開示は页脚と /terms のみ、2026-11-12 オーナー方針）。Yahoo は公式短鎖。表面清单 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。规约链接与条号表见 [14-affiliate-programs.md](./14-affiliate-programs.md) §2。
 
 正文：[楽天ウェブサービス規約](https://webservice.rakuten.co.jp/guide/rule)（日本語原文が正文）。
 
@@ -71,9 +71,9 @@ API 拿到的商品信息只用于当场导流，不进公开 catalog、不写�
 ## 3. 今天的状态（混排卡 + href 隔离）
 
 ```
-[ お店で探す ※PR ]
+[ お店で探す ]
   通販: 楽天 | Yahoo | Amazon | メルカリ
-  ふるさと: 楽天ふるさと | Yahoo!ふるさと | さとふる
+  ふるさと: Amazonふるさと | 楽天ふるさと | ふるさと本舗 | ふるラボ
 ```
 
 页脚（ライブラリ / 法务。首页因 100dvh 没有页脚）:
@@ -86,7 +86,7 @@ Amazon 第5条 / アフィリエイト広告を含みます / Supported by Rakut
 
 - 乐天 href：`/api/rice/shop-links` → Item Search 成功则商品 URL（アフィ包装），失败则搜索アフィ
 - **不展示** API 的商品名、价格、店铺、缩略图（第 8 条 4 项：API 字段未进入与他店并排的 DOM）
-- クレジット用官方文本 snippet、不改 HTML，只放 `SiteFooter` 的 `AffiliateDisclosure variant="full"`。CTA 旁只有 `variant="pr"`（※PR）
+- クレジット用官方文本 snippet、不改 HTML，只放 `SiteFooter` 的 `AffiliateDisclosure`（単一形）。CTA 旁には開示を置かない（`variant="pr"` は v1.59.1 で廃止）
 - 若以后要在卡上画出乐天商品名・价格，必须先拆成 §4 的独立 `.km-rakuten` 区块
 
 ---
@@ -106,7 +106,7 @@ Amazon 第5条 / アフィリエイト広告を含みます / Supported by Rakut
   section.km-other-shops      ← 禁止出现 API 的任何字段
     見出し: 他の店で銘柄名を探す
     CTA: Amazon / Yahoo!ショッピング / メルカリ（仅 rice.name 或自有 keyword）
-    ふるさと: Yahoo!ふるさと / さとふる（仅 prefecture + name）
+    ふるさと: Amazonふるさと / ふるさと本舗 / ふるラボ（仅 prefecture + name）
 ```
 
 DOM 硬规则：
@@ -119,12 +119,12 @@ DOM 硬规则：
 ### 4.1 楽天ふるさと放哪
 
 楽天ふるさと属于楽天グループ，可放在 `.km-rakuten`。  
-Yahoo!ふるさと与さとふる放在 `.km-other-shops`。
+楽天グループ外のふるさと渠道（Amazonふるさと / ふるさと本舗 / ふるラボ）放在 `.km-other-shops`。
 
 ### 4.2 上部 CTA（PurchaseLead）
 
 保持「購入候補を見る」页内锚点。  
-「ふるさと納税で探す」若仍链さとふる，不要和乐天 API 卡片画在同一块里。
+「ふるさと納税で探す」若链楽天グループ外のふるさと渠道，不要和乐天 API 卡片画在同一块里。
 
 ---
 
@@ -134,7 +134,7 @@ Yahoo!ふるさと与さとふる放在 `.km-other-shops`。
 
 - 输入：catalog `id` → 服务端查 `rakuten_search_keyword`（禁止客户端把任意 keyword 当代理）。
 - 调用：Ichiba Item Search（2026-07-01），带 `applicationId`、`accessKey`、`affiliateId`，以及 Node 原生 HTTPS 的 `Referer` / `Origin`（`fetch` 会丢掉 Referer）。
-- アプリ设定：許可されたWebサイト 登记生产域（如 `https://komesomme.vercel.app`）。
+- アプリ设定：許可されたWebサイト 登记生产域（`https://komesomme.jp`）。
 - 输出给 UI 的 DTO 仅用于 `.km-rakuten`：
 
 ```ts
@@ -164,7 +164,7 @@ yahooShoppingUrl(keyword)  // 明天加 ValueCommerce SID
 
 - 购买区用语保持「探す」，不做レジ、最安、比较表。
 - 乐天 API クレジット：公式スニペットを改変しない（`src/lib/rakuten/credit.ts` → `AffiliateDisclosure`）。
-- 页脚（ライブラリ / 法务；首页无页脚）：Amazon 第 5 条定型文 + 「アフィリエイト広告」。CTA 旁只标 `※PR`。清单见 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。
+- 页脚（ライブラリ / 法务；首页无页脚）：Amazon 第 5 条定型文 + 「アフィリエイト広告」。CTA 旁には開示を置かない。清单见 [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。
 - 不要写「最安」「公式最安」「楽天グループ公式」。
 
 ---

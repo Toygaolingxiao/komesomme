@@ -1,35 +1,23 @@
 "use client";
 
 import {
-  AFFILIATE_PR_LABEL,
   AFFILIATE_PR_NOTICE,
   AMAZON_ASSOCIATE_DISCLOSURE,
 } from "@/lib/affiliate";
 import { RAKUTEN_WEB_SERVICE_CREDIT_HTML } from "@/lib/rakuten/credit";
 
-type DisclosureVariant = "full" | "pr";
-
 /**
- * `full` — Amazon Art.5 + short PR + Rakuten Developers credit. SiteFooter only.
- * `pr` — ※PR plus the short affiliate sentence, visible without hover. Copy lives in `src/lib/affiliate.ts`.
- * Surfaces: `docs/15-disclosure-surfaces.md`.
+ * The site's single in-page affiliate disclosure block: Amazon Art.5 +
+ * short PR notice + Rakuten Developers credit. Rendered by SiteFooter
+ * (and, for footer-less surfaces that opt in, under a shop strip).
+ * No per-CTA ※PR labels anywhere (owner ruling 2026-11-12; docs/15).
+ * Copy lives in `src/lib/affiliate.ts`.
  */
 export function AffiliateDisclosure({
-  variant = "full",
   className = "",
 }: {
-  variant?: DisclosureVariant;
   className?: string;
 }) {
-  if (variant === "pr") {
-    return (
-      <p className={`text-[12px] leading-snug text-[var(--km-muted)] ${className}`}>
-        <span className="tracking-wide">{AFFILIATE_PR_LABEL}</span>
-        <span className="ml-1.5">{AFFILIATE_PR_NOTICE}</span>
-      </p>
-    );
-  }
-
   return (
     <div className={`space-y-1.5 text-[11px] leading-relaxed text-[var(--km-muted)] ${className}`}>
       <p>{AMAZON_ASSOCIATE_DISCLOSURE}</p>

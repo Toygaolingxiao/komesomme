@@ -36,8 +36,7 @@
 
 组件：[`src/components/AffiliateDisclosure.tsx`](../src/components/AffiliateDisclosure.tsx)
 
-- `variant="pr"` → `※PR` 与短句并排，12px（2026-11-12 以降、画面では未使用）
-- `variant="full"` → Amazon + 短 PR + 乐天クレジット
+- 単一形のみ（Amazon + 短 PR + 乐天クレジット）。`variant="pr"` は 2026-11-12 に画面から全廃され、v1.59.1 でコンポーネント自体からも削除済み
 
 页脚：[`src/components/SiteFooter.tsx`](../src/components/SiteFooter.tsx)（唯一默认 `full`）。
 
@@ -55,7 +54,7 @@
 | 法务三页 | `LegalPage.tsx` | 同上 |
 | 首页整体 | `src/app/page.tsx` | **没有** `SiteFooter`（Desktop `100dvh`）。顶栏 `SiteLegalNav` 链到规约。Amazon 第 5 条不出现在首页（有意） |
 
-`ShopLinksStrip` 默认已是 `pr`。不要再给购买卡传 `disclosure="full"`。
+`ShopLinksStrip` の `disclosure` 既定値は `pr` だが、v1.59.1 以降は何も描画しない（開示は页脚と `/terms` のみ）。不要再给购买卡传 `disclosure="full"`。
 
 ---
 
@@ -78,7 +77,7 @@
 | 位置 | 约定 |
 | --- | --- |
 | `e2e/home.spec.ts` | 商店条に PR 表記なし（2026-11-12〜）；展开后 Amazon 定型 **0 条** |
-| `e2e/brand.spec.ts` | `#km-purchase`：通販 tab 4 CTA → ふるさと tab 3 CTA；**页面上**（页脚即可）有 Amazon 定型、「アフィリエイト広告」、`Supported by Rakuten Developers` |
+| `e2e/brand.spec.ts` | `#km-purchase`：通販 tab 4 CTA → ふるさと tab 4 CTA；**页面上**（页脚即可）有 Amazon 定型、「アフィリエイト広告」、`Supported by Rakuten Developers` |
 | `docs/test-specification.md` TS-BRAND-02 | 完整披露在页脚，不要求印在购买卡内 |
 
 ---
