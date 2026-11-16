@@ -7,8 +7,6 @@ import { track } from "@/lib/analytics";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import {
   AFFILIATE_LINK_REL,
-  AFFILIATE_PR_LABEL,
-  AFFILIATE_PR_NOTICE,
   amazonFurusatoCategoryUrl,
   amazonSearchUrl,
   furusatoHonpoSearchUrl,
@@ -259,7 +257,8 @@ type ShopLinksStripProps = {
   /** Heading above the buttons (always-open surfaces). */
   title?: string;
   /**
-   * `pr` — ※PR chip next to CTAs (default). Full Amazon / Rakuten copy is SiteFooter.
+   * `pr` — legacy value; renders nothing. Disclosure lives only in
+   * SiteFooter and /terms (owner ruling 2026-11-12; see docs/15).
    * `full` — do not use on cards; reserved if a surface has no footer.
    * `none` — disclosure lives elsewhere on the same view.
    */
@@ -449,11 +448,6 @@ export function ShopLinksStrip({
                 お店で探す
               </span>
             </span>
-            {mode === "pr" ? (
-              <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
-                {AFFILIATE_PR_LABEL} {AFFILIATE_PR_NOTICE}
-              </span>
-            ) : null}
             <span className="mt-0.5 block text-[12px] leading-snug text-[var(--km-muted)]">
               {open ? "とじる" : `${rice.name}を探す`}
             </span>
@@ -478,22 +472,17 @@ export function ShopLinksStrip({
 
   return (
     <div className={className} data-shop-strip="brand" data-shop-mode={shopMode}>
-      {title || mode === "pr" ? (
+      {title ? (
         <div>
-          {title ? (
-            <p
-              className={
-                compact
-                  ? "text-[12px] tracking-[0.06em] text-[var(--km-muted)]"
-                  : "font-serif text-[13px] font-semibold text-[var(--km-ink)]"
-              }
-            >
-              {title}
-            </p>
-          ) : null}
-          {mode === "pr" ? (
-            <AffiliateDisclosure variant="pr" className={title ? "mt-1" : ""} />
-          ) : null}
+          <p
+            className={
+              compact
+                ? "text-[12px] tracking-[0.06em] text-[var(--km-muted)]"
+                : "font-serif text-[13px] font-semibold text-[var(--km-ink)]"
+            }
+          >
+            {title}
+          </p>
         </div>
       ) : null}
 
@@ -501,10 +490,10 @@ export function ShopLinksStrip({
         mode={shopMode}
         tabs={tabs}
         mallGrid={mallGrid}
-        className={title || mode === "pr" ? (compact ? "mt-2" : "mt-3") : ""}
+        className={title ? (compact ? "mt-2" : "mt-3") : ""}
       />
 
-      {mode === "full" ? <AffiliateDisclosure variant="full" className="mt-4" /> : null}
+      {mode === "full" ? <AffiliateDisclosure className="mt-4" /> : null}
     </div>
   );
 }

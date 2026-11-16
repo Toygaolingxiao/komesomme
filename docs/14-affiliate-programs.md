@@ -7,7 +7,7 @@
 
 ---
 
-**現行の表示順（2026-11-06）**：`ShopLinksStrip` の通販タブは Amazon → 楽天市場 → Yahoo! → メルカリ（v1.12.3〜。食品ジャンルの料率がモール中最上位の Amazon を先頭に）。ふるさと納税タブは楽天ふるさと納税 → さとふる → ふるさと本舗 → ふるラボ（2026-11-10 v1.27.0 で Yahoo!ふるさと納税を撤去——寄附は Yahoo 公式アフィの成果対象外で永遠に 0 のため、枠を VC の即時提携ポータル2件に譲った。本舗・ラボとも料率 1.1%、リンクは各案件の SID/PID が揃った場合のみ VC 包裹）。pair 首屏・自由比較・ライブラリ一覧の静かなテキストリンクは楽天のまま（オーナー指示：収益性は上げるが、売り込みの強さは上げない）。
+**現行の表示順（2026-11-16）**：`ShopLinksStrip` の通販タブは Amazon → 楽天市場 → Yahoo! → メルカリ（v1.12.3〜。食品ジャンルの料率がモール中最上位の Amazon を先頭に）。ふるさと納税タブは Amazonふるさと納税 → 楽天ふるさと納税 → ふるさと本舗 → ふるラボ（2026-11-10 v1.27.0 で Yahoo!ふるさと納税を撤去——寄附は Yahoo 公式アフィの成果対象外のため。2026-11-13 に さとふるの提携が見送りとなり v1.58.0 で撤去、同日 v1.59.0 で Amazonふるさと納税を先頭に追加——アソシエイト通常料率 2%。本舗は料率 1.1%、ラボは選択プランで一般 2.2%、リンクは各案件の SID/PID が揃った場合のみ VC 包裹）。pair 首屏・自由比較・ライブラリ一覧の静かなテキストリンクは楽天のまま（オーナー指示：収益性は上げるが、売り込みの強さは上げない）。
 
 ## 1. Amazon アソシエイト
 
@@ -130,7 +130,7 @@ API を使うアプリは、[公式 3 パターン](https://webservice.rakuten.c
 
 ## 3. バリューコマース（ASP）— **再採用（2026-11-10）**
 
-**2026-11-10: 媒体審査通過（運営者本人の名義）を受けて再採用。** 同日に Yahoo!ショッピングと即時提携済み。転鎖は案件ごとの SID/PID が env に揃った場合だけ働く。さとふるは提携承認待ちのためプレーン検索のまま。2026-09 の廃止からここまでの記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。
+**2026-11-10: 媒体審査通過（運営者本人の名義）を受けて再採用。** 同日に Yahoo!ショッピングと即時提携済み。転鎖は案件ごとの SID/PID が env に揃った場合だけ働く。さとふるは提携承認待ちのためプレーン検索のまま（その後 2026-11-13 に提携見送りとなり、v1.58.0 で表示を撤去。再申請は 2026-11-29 以降可）。2026-09 の廃止からここまでの記録は [17-valuecommerce-reapply.md](./17-valuecommerce-reapply.md)。
 
 | 項目 | 内容 |
 | --- | --- |
@@ -151,7 +151,7 @@ API を使うアプリは、[公式 3 パターン](https://webservice.rakuten.c
 | 8 | **広告主ごとの提携承認が別途必要**。Yahoo とさとふるは別 PID。承認前はプレーン検索のまま |
 | 8・16・17 | 提携終了後は HTML / リンク / 周辺説明を遅滞なく外す → env の SID/PID を空にして Redeploy |
 | 9 | 成果の正は VC トラッキング。広告主未承認の注文は報酬なし。報酬請求は広告主へ直接しない。月次 1,000 円未満は繰越 |
-| 11④ | **原則「広告」であることの表示**（CTA の `※PR` + フッターの `AFFILIATE_PR_NOTICE`） |
+| 11④ | **原則「広告」であることの表示**（フッターの `AFFILIATE_PR_NOTICE` + `/terms` の詳細。CTA 旁の `※PR` は置かない——2026-11-12 オーナー方針、表面の正本は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)） |
 | 11② | 不正クリック・虚偽注文が起きないよう管理。自己クリックしない |
 | 12 | 継続的に広告を最低 1 つ掲載するよう努める（購入 CTA が該当） |
 | 14 改変 | 公式の referral クエリ（`sid` / `pid` / `vc_url`）以外に広告コードを改変しない。バナー HTML を独自改変しない |
@@ -280,7 +280,7 @@ Yahoo 公式アフィの成果は**購入・発送**。ふるさと納税は寄�
 
 ## 7. 景表法（ステマ規制）との関係
 
-Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `full`）。購入 CTA 横は `※PR` のみ。ASP 名の列挙は `/terms`。詳細は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。外链は `rel="noopener noreferrer nofollow"`。「最安」「公式最安」、Amazon / 広告主の後援を示す文言は置かない。
+Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure`）。購入 CTA 横には開示を置かない（2026-11-12 オーナー方針）。ASP 名の列挙は `/terms`。詳細は [15-disclosure-surfaces.md](./15-disclosure-surfaces.md)。外链は `rel="noopener noreferrer nofollow"`。「最安」「公式最安」、Amazon / 広告主の後援を示す文言は置かない。
 
 ---
 
@@ -292,9 +292,9 @@ Amazon 第 5 条定型文は **フッター一箇所**（`AffiliateDisclosure` `
 | `src/lib/affiliate.ts` | Amazon tag、メルカリ afid、VC 転鎖とゲート、開示文定数 |
 | `src/lib/affiliate/yahoo.ts` | ItemSearch。ゲート off なら `affiliate_type=vc` なし |
 | `src/lib/affiliate/yahooPromo.ts` | 通販 CTA の `promo_url`。ふるさと表は観測台用で、購入ボタンは使わない |
-| `src/app/api/rice/shop-links/route.ts` | 通販 4 + ふるさと 3 をサーバーで解決 |
-| `src/components/AffiliateDisclosure.tsx` | `pr` = ※PR。`full` = フッター用（Amazon + 短 PR + 楽天クレジット） |
-| `src/components/ShopLinksStrip.tsx` | 通販 4 / ふるさと 3 カプセル。塗りは内側 span |
-| `src/components/RiceProductCard.tsx` | 通販 / ふるさと CTA。開示は `pr`（定型はフッター） |
+| `src/app/api/rice/shop-links/route.ts` | 通販 4 + ふるさと 4 をサーバーで解決 |
+| `src/components/AffiliateDisclosure.tsx` | 単一形：フッター用フル開示（Amazon + 短 PR + 楽天クレジット）。`pr` バリアントは v1.59.1 で廃止 |
+| `src/components/ShopLinksStrip.tsx` | 通販 4 / ふるさと 4 カプセル。塗りは内側 span |
+| `src/components/RiceProductCard.tsx` | 通販 / ふるさと CTA。開示なし（定型はフッター） |
 | `src/components/SiteFooter.tsx` | サイト全体の `full` 開示 |
 | [15-disclosure-surfaces.md](./15-disclosure-surfaces.md) | 表面一覧の正本 |
