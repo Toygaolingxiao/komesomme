@@ -1,0 +1,45 @@
+{
+ "brand_id": "hinohikari-nagasaki",
+ "updated_at": "2026-11-21T03:12:00.000Z",
+ "source_ids": [
+  "maff-kome",
+  "naro-top"
+ ],
+ "claims": [
+  {
+   "id": "hinohikari-nagasaki:prefecture",
+   "field_path": "origin.prefecture",
+   "claim_text": "主産地（カタログ）は長崎県",
+   "status": "verified",
+   "source_ids": [
+    "maff-kome",
+    "naro-top"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "ヒノヒカリの長崎県産エントリー。catalog.prefecture と origin の対応。"
+  },
+  {
+   "id": "hinohikari-nagasaki:breeding",
+   "field_path": "origin.breeding",
+   "claim_text": "育成・系統に関する記述",
+   "status": "partial",
+   "source_ids": [
+    "maff-kome",
+    "naro-top"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "黄金晴×コシヒカリ、南海102号を経て水稲農林299号（1989年命名登録）。詳細親子は品種ページで追記予定。"
+  },
+  {
+   "id": "hinohikari-nagasaki:editorial-scores",
+   "field_path": "caveats.editorial",
+   "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+   "status": "verified",
+   "source_ids": [
+    "maff-kome"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "製品ポリシー。"
+  }
+ ]
+}

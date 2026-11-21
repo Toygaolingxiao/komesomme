@@ -1,0 +1,45 @@
+{
+ "brand_id": "natsuhime",
+ "updated_at": "2026-11-21T03:12:00.000Z",
+ "source_ids": [
+  "maff-kome",
+  "pref-niigata-shinmai"
+ ],
+ "claims": [
+  {
+   "id": "natsuhime:prefecture",
+   "field_path": "origin.prefecture",
+   "claim_text": "主産地（カタログ）は新潟県",
+   "status": "verified",
+   "source_ids": [
+    "maff-kome",
+    "pref-niigata-shinmai"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "catalog.prefecture と origin の対応。"
+  },
+  {
+   "id": "natsuhime:breeding",
+   "field_path": "origin.breeding",
+   "claim_text": "育成・系統に関する記述",
+   "status": "partial",
+   "source_ids": [
+    "maff-kome",
+    "pref-niigata-shinmai"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "新潟県農業総合研究所育成の新潟135号（越南221号×東北192号）。名称は2026年3月に「なつひめ」と決定。一般栽培は令和8年産から。"
+  },
+  {
+   "id": "natsuhime:editorial-scores",
+   "field_path": "caveats.editorial",
+   "claim_text": "味わいスコアは編集評価であり公的測定ではない",
+   "status": "verified",
+   "source_ids": [
+    "maff-kome"
+   ],
+   "verified_at": "2026-11-21T03:12:00.000Z",
+   "notes": "製品ポリシー。"
+  }
+ ]
+}
