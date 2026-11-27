@@ -78,6 +78,10 @@ GTM 容器は今は不要。後から GTM に移すなら測定 ID を外し、�
 
 `main` への直接 push は変えない。Vercel の Git 設定に「GitHub check を待ってから Production」があれば付ける（プランによる）。`next build` 自体が typecheck 相当を含むので、今回の `SITE_COLUMN` 欠落のような壊れた TS は本番に乗らない。
 
+### 1.5 IndexNow
+
+キーは環境変数ではない。`public/<key>.txt` が `/<key>.txt` になる。Production にそのファイルが出てから、手元で `npm run indexnow` を一度実行する（ビルドには入っていない）。手順は [23-ai-search-geo.md](./23-ai-search-geo.md)。
+
 ## 2. 分離の目安
 
 - **Production**: 本番 Supabase + 本番 AI 鍵  

@@ -105,4 +105,16 @@ http://localhost:3000 で:
 
 本番 URL での確認手順と記録欄は [docs/smoke-test.md](./docs/smoke-test.md)。
 
+### IndexNow（Bing などへの URL 通知）
+
+所有確認のキーは `public/<key>.txt` にコミットしてあり、本番では `https://komesomme.jp/<key>.txt` としてそのまま配信されます。秘密ではないので、Vercel の環境変数は要りません。`next build` では送りません。本番にキーファイルが出たあと、手元で次を実行します。
+
+```bash
+npm run indexnow -- --dry-run
+npm run indexnow
+npm run indexnow -- https://komesomme.jp/library/yumepirika
+```
+
+引数なしは本番の sitemap.xml に載っている URL を送ります。渡した URL は `https://komesomme.jp/` のものだけ受け付けます。詳細は [docs/23-ai-search-geo.md](./docs/23-ai-search-geo.md)。
+
 画面の約束は [docs/08-ui-design.md](./docs/08-ui-design.md)、DB は [docs/04-database.md](./docs/04-database.md)、技術振り返りは [docs/02-tech-retrospective.md](./docs/02-tech-retrospective.md)、構想からの経緯は [docs/12-product-journey.md](./docs/12-product-journey.md)（中文）、1.x 成長は [docs/20-growth-plan.md](./docs/20-growth-plan.md)（次の一手は §4.0）、進め方は [docs/25-dev-playbook.md](./docs/25-dev-playbook.md)、職業定位（運営者向け・中文）は [docs/22-career-positioning.md](./docs/22-career-positioning.md)、並行作業は [docs/24-collaboration.md](./docs/24-collaboration.md)（中文）、文書一覧は [docs/README.md](./docs/README.md)。バージョンは [`VERSION`](./VERSION)。
