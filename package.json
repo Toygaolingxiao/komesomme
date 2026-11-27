@@ -1,6 +1,6 @@
 {
   "name": "komesomme",
-  "version": "1.59.2",
+  "version": "1.59.3",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--use-system-ca next dev --turbopack",
@@ -26,6 +26,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:report": "node --import tsx scripts/write-test-report.ts",
+    "indexnow": "node --use-system-ca --import tsx scripts/indexnow.ts",
     "test": "npm run test:unit && npm run test:e2e && npm run test:report"
   },
   "dependencies": {

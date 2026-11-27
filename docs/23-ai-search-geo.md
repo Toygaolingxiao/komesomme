@@ -55,7 +55,16 @@ AI のクローラは一括りにできない。混同すると判断を誤る�
 - 月に一度、ChatGPT / Perplexity / Gemini に「粘りの少ない米は」「カレーに合う銘柄は」等の問いを投げ、KomeSomme が引用されるか・記述が正しいかを手で記録する。引用ゼロを焦って施策を増やさない（索引反映には時間がかかる）。
 - 判断材料が揃うまでは、追加の GEO 商材・有料ツールは買わない。
 
-## 7. やらないこと
+## 7. IndexNow（2026-11-27）
+
+Bing 等に「この URL を見て」と知らせる仕組み。robots は変えない。
+
+- キーは秘密ではない。所有の証明は `https://komesomme.jp/<key>.txt` を取りに来て、中身がファイル名と一致すること。だから Vercel の環境変数には置かず、`public/<key>.txt` をリポジトリに置く。Next.js は `public/` をそのままルートで配信するので、生成ステップも rewrite も要らない。
+- 送信は `npm run indexnow`。引数が無ければ本番 sitemap の URL、あればその URL だけを `https://api.indexnow.org/indexnow` に POST する。`--dry-run` は送らない。`next build` には繋いでいない（Preview の URL を通知しない、毎回叩かない）。
+- 先に Production へ出し、`/<key>.txt` が 200 でキーそのものを返してから送る。先に送ると 403 になる。
+- キーを替えるときは、古い txt を消し、ファイル名と中身が同じ新しい txt を置いてデプロイしてから、もう一度送る。
+
+## 8. やらないこと
 
 - 学習型クローラの放行（姿勢 1 と矛盾するため）。
 - Cloudflare Business プラン等、この件を理由にした upsell の購入。
